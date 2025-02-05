@@ -66,8 +66,8 @@ export default [
     filter: 'primary_sales_rep'
   },
   {
-    name: 'appt_setter',
-    displayName: 'Appt Setter',
+    name: 'partner_dealer',
+    displayName: 'Partner Dealer',
     type: 'string',
     isCheckbox: false,
 
@@ -75,7 +75,7 @@ export default [
   {
     name: 'system_size',
     displayName: 'Sys. Size',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
     filter:'contracted_system_size'
   },
@@ -149,20 +149,20 @@ export default [
   {
     name: 'cancel_date',
     displayName: 'Cancel Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
     name: 'pv_install_date',
     displayName: 'Pv Install Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
     filter:'pv_completion_date'
   },
   {
     name: 'pto_date',
     displayName: 'PTO Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
     filter:'pto_granted'
   },
@@ -175,7 +175,7 @@ export default [
   {
     name: 'fin_complete_date',
     displayName: 'Fin Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
     filter:'pv_fin_date'
   },

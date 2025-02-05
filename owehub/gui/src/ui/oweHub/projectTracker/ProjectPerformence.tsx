@@ -80,7 +80,7 @@ const ProjectPerformence = () => {
     role === TYPE_OF_USER.ADMIN ||
     role === TYPE_OF_USER.FINANCE_ADMIN ||
     role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-    role === TYPE_OF_USER.ACCOUNT_MANAGER;
+    role === TYPE_OF_USER.ACCOUNT_MANAGER || role === TYPE_OF_USER.PROJECT_MANAGER;
 
   const today = new Date();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
