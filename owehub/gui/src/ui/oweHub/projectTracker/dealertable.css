@@ -151,6 +151,11 @@
     transform: scale(1.06);
 }
 
+.export-button-container{
+    display: flex;
+    gap: 10px;
+}
+
 @media (max-width: 767px) {
     .pipe-searchInput {
         width: 160px;
@@ -158,5 +163,10 @@
 
     .TableContainer-pipeline {
         height: 76vh;
+    }
+    .newp-filInp{
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
     }
 }
