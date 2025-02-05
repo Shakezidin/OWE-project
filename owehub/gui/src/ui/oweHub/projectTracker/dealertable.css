@@ -68,7 +68,7 @@
 }
 
 .skyfilter {
-    background-color: #377CF6;
+    background-color: #363636;
     height: 30px;
     width: 30px;
     display: flex;
@@ -97,7 +97,7 @@
 
 .TableContainer-pipeline {
     position: relative;
-    height: 61vh;
+    height: 65vh;
     background: var(--white-color);
     overflow-y: auto;
     overflow-x: auto;
@@ -130,6 +130,10 @@
   .TableContainer-pipeline::-webkit-scrollbar-corner {
     background-color: transparent;
   }
+  .TableContainer-pipeline table tbody tr:hover {
+    transition: 0.4s all linear;
+    background-color: #fff;
+}
   
 
 @media (max-width: 767px) {

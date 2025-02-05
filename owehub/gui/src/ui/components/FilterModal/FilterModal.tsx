@@ -15,6 +15,7 @@ import { dateFormat } from '../../../utiles/formatDate';
 
 interface Column {
   name: string;
+  filter?: string;
   displayName: string;
   type: string;
 }
@@ -60,9 +61,10 @@ const FilterModal: React.FC<TableProps> = ({
   ]);
   const [errors, setErrors] = useState<ErrorState>({});
   const options: Option[] = columns.map((column) => ({
-    value: column.name,
+    value: column.filter ? column.filter : column.name,
     label: column.displayName,
   }));
+
   const { pathname } = useLocation();
   const init = useRef(true);
 
@@ -103,7 +105,6 @@ const FilterModal: React.FC<TableProps> = ({
       setErrors({});
     }
   };
-  console.log(filters, 'filterrrrr', columns);
 
   useEffect(() => {
     const resetFilters = filters
@@ -264,6 +265,7 @@ const FilterModal: React.FC<TableProps> = ({
             <div className="createProfileTextView">
               {filters?.map((filter, index) => {
                 const type = getInputType(filter.Column);
+                console.log(type, 'type');
                 return (
                   <div className="create-input-container" key={index}>
                     <div className="create-input-field">
@@ -305,7 +307,7 @@ const FilterModal: React.FC<TableProps> = ({
                         options={options}
                         columnType={
                           columns.find(
-                            (option) => option.name === filter.Column
+                            (option) => (option.filter ? option.filter : option.name) === filter.Column
                           )?.type || ''
                         }
                         value={filter.Operation}
