@@ -400,7 +400,7 @@ const DealerTablePipeline = () => {
                                         <td>{item.phone_number || 'N/A'}</td>
 
                                         <td>{item.rep_1 || 'N/A'}</td>
-                                        <td>{'Not Found'}</td>
+                                        <td>{item.partner_dealer || 'N/A'}</td>
                                         <td>{item.system_size || '0'}</td>
                                         <td>${item.contract_amount || '0'}</td>
                                         <td>{item.created_date || 'N/A'}</td>
