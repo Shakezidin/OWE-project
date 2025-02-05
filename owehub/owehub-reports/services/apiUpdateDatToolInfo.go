@@ -279,9 +279,25 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 
 	}
 	/////// ADDER VALUES /////////////////////////////////////////////////////////////////////////////////
-	// if dataReq.AdderValues != nil {
+	if dataReq.AdderValues != nil {
+		// if len(dataReq.AdderValues.CategoryTitle) > 0 {
+		// 	whereEleList = append(whereEleList, dataReq.AdderValues.CategoryTitle)
+		// 	updateFields = append(updateFields, fmt.Sprintf("category_title = $%d", len(whereEleList)))
+		// }
 
-	// }
+		// if len(dataReq.AdderValues.ComponentName) > 0 {
+		// 	whereEleList = append(whereEleList, dataReq.AdderValues.ComponentName)
+		// 	updateFields = append(updateFields, fmt.Sprintf("component_name = $%d", len(whereEleList)))
+		// }
+
+		if dataReq.AdderValues.NewQuantity > 0 {
+			whereEleList = append(whereEleList, dataReq.AdderValues.NewQuantity)
+			updateFields = append(updateFields, fmt.Sprintf("quantity = $%d", len(whereEleList)))
+		}
+
+		// calculate total cost and save it in database
+		// update total adders value in database
+	}
 
 	////////// OTHER VALUES //////////////////////////////////////////////////////////////////////////
 	if dataReq.OtherValues != nil {
@@ -612,15 +628,31 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	// query
+	if len(updateFields) == 0 {
+		err = fmt.Errorf("no fields provided to update")
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "No fields provided to update", http.StatusBadRequest, nil)
+		return
+	}
 
-	//data, err = db.CallDBFunction(db.RowDataDBIndex, query, whereEleList)
+	whereEleList = append(whereEleList, dataReq.ProjectId)
+
+	// query
+	//query = fmt.Sprintf("UPDATE leads_info SET %s WHERE leads_id = $%d", strings.Join(updateFields, ", "), len(whereEleList))
+
+	//err, res := db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update data err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to update data", http.StatusBadRequest, nil)
 		return
 	}
+
+	// if res == 0 {
+	// 	log.FuncErrorTrace(0, "No rows updated for lead details: %v", err)
+	// 	appserver.FormAndSendHttpResp(resp, "No rows were updated", http.StatusInternalServerError, nil)
+	// 	return
+	// }
 
 	appserver.FormAndSendHttpResp(resp, "Project Data saved successfully", http.StatusOK, nil, recordCount)
 }
