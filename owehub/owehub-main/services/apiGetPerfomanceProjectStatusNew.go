@@ -33,18 +33,6 @@ const (
 	grey  = "#E9E9E9"
 )
 
-// type ForAgRp struct {
-// 	SurveyClr     string
-// 	CadClr        string
-// 	PermittingClr string
-// 	RoofingClr    string
-// 	InstallClr    string
-// 	ElectricalClr string
-// 	InspectionClr string
-// 	ActivationClr string
-// 	NTPClr        string
-// }
-
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err            error
@@ -306,6 +294,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get agngRp with err: %v", err)
 	}
+
 	if len(dataReq.Fields) > 0 {
 		RecordCount = int64(len(perfomanceList.PerfomanceList))
 	}
@@ -478,10 +467,9 @@ func activationColor(ptoSubmittedDate, ptoDate time.Time) (string, time.Time) {
 */
 func agngRpData(AgRp []models.PerfomanceResponse, dataFilter models.PerfomanceStatusReq) ([]models.PerfomanceResponse, error) {
 	var (
-		err           error
-		filters       []string
-		values        = make(map[string]models.PerfomanceResponse) // ✅ Fixed: Initialize map
-		addedUniqueId = make(map[string]bool)
+		err     error
+		filters []string
+		values  = make(map[string]models.PerfomanceResponse)
 	)
 	log.EnterFn(0, "HandleGetAgingReport")
 	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
@@ -508,89 +496,103 @@ func agngRpData(AgRp []models.PerfomanceResponse, dataFilter models.PerfomanceSt
 		return nil, err
 	}
 
-	filteredResp := make([]models.PerfomanceResponse, 0)
+	type pending struct {
+		Days_Pending_Survey      string
+		Days_Pending_Cad_Design  string
+		Days_Pending_Permits     string
+		Days_Pending_Roofing     string
+		Days_Pending_Install     string
+		Days_Pending_Inspection  string
+		Days_Pending_Activation  string
+		Days_Pending_NTP         string
+		Days_Pending_Project_Age string
+		Days_Pending_PTO         string
+	}
+
+	val := make(map[string]pending)
 	for _, agRp := range data {
 		uniqueId, ok := agRp["unique_id"].(string)
 		if !ok {
 			continue
 		}
-
-		exists, existsOk := values[uniqueId]
-		if !existsOk {
-			continue
-			log.FuncErrorTrace(0, "value not available for unique id %v", exists.UniqueId)
+		pending := pending{
+			Days_Pending_Survey:      TextAccToInput("0"),
+			Days_Pending_Cad_Design:  TextAccToInput("0"),
+			Days_Pending_Permits:     TextAccToInput(getFieldText(agRp, "days_pending_permits")),
+			Days_Pending_Roofing:     TextAccToInput("0"),
+			Days_Pending_Install:     TextAccToInput(getFieldText(agRp, "days_pending_install")),
+			Days_Pending_Inspection:  TextAccToInput("0"),
+			Days_Pending_Activation:  TextAccToInput("0"),
+			Days_Pending_NTP:         TextAccToInput(getFieldText(agRp, "days_pending_ntp")),
+			Days_Pending_Project_Age: TextAccToInput(getFieldText(agRp, "project_age")),
+			Days_Pending_PTO:         TextAccToInput(getFieldText(agRp, "days_pending_pto")),
 		}
-
-		// ✅ Fixed: Ensure updates persist
-		if exists.SiteSurveyColour != green {
-			exists.Days_Pending_Survey = TextAccToInput("0")
-		}
-		if exists.CADDesignColour != green {
-			exists.Days_Pending_Cad_Design = TextAccToInput("0")
-		}
-		if exists.PermittingColour != green {
-			exists.Days_Pending_Permits = TextAccToInput(getFieldText(agRp, "days_pending_permits"))
-		}
-		if exists.RoofingColour != green {
-			exists.Days_Pending_Roofing = TextAccToInput("0")
-		}
-		if exists.InstallColour != green {
-			exists.Days_Pending_Install = TextAccToInput(getFieldText(agRp, "days_pending_install"))
-		}
-		if exists.InspectionsColour != green {
-			exists.Days_Pending_Inspection = TextAccToInput("0")
-		}
-		if exists.ActivationColour != green {
-			exists.Days_Pending_Activation = TextAccToInput("0")
-		}
-		exists.Days_Pending_NTP = TextAccToInput(getFieldText(agRp, "days_pending_ntp"))
-		exists.Days_Pending_Project_Age = TextAccToInput(getFieldText(agRp, "project_age"))
-		exists.Days_Pending_PTO = TextAccToInput(getFieldText(agRp, "days_pending_pto"))
-		addedUniqueId[uniqueId] = true
-
-		if len(dataFilter.Fields) == 0 {
-			// No filters provided, append everything
-			filteredResp = append(filteredResp, exists)
-		} else {
-			count := 0                           // Track number of passed conditions
-			numFilters := len(dataFilter.Fields) // Number of filters provided
-
-			for _, field := range dataFilter.Fields {
-				switch field {
-				case "days_pending_permits":
-					if exists.PermittingColour != green {
-						count++ // Condition met
-					}
-				case "days_pending_install":
-					if exists.InstallColour != green {
-						count++ // Condition met
-					}
-				case "days_pending_ntp":
-					count++
-				case "project_age":
-					count++
-				case "days_pending_pto":
-					count++
-				}
-
-			}
-
-			// Append only if all conditions pass (AND logic)
-			if count == numFilters {
-				filteredResp = append(filteredResp, exists)
-			}
-
-			// ✅ Fixed: Persist updates
-			values[uniqueId] = exists
-		}
+		val[uniqueId] = pending
 	}
+
+	for i := range AgRp {
+		values := val[AgRp[i].UniqueId]
+		if AgRp[i].SiteSurveyColour != green {
+			AgRp[i].Days_Pending_Survey = values.Days_Pending_Survey
+		}
+		if AgRp[i].CADDesignColour != green {
+			AgRp[i].Days_Pending_Cad_Design = values.Days_Pending_Cad_Design
+		}
+		if AgRp[i].PermittingColour != green {
+			AgRp[i].Days_Pending_Permits = values.Days_Pending_Permits
+		}
+		if AgRp[i].RoofingColour != green {
+			AgRp[i].Days_Pending_Roofing = values.Days_Pending_Roofing
+		}
+		if AgRp[i].InstallColour != green {
+			AgRp[i].Days_Pending_Install = values.Days_Pending_Install
+		}
+		if AgRp[i].InspectionsColour != green {
+			AgRp[i].Days_Pending_Inspection = values.Days_Pending_Inspection
+		}
+		if AgRp[i].ActivationColour != green {
+			AgRp[i].Days_Pending_Activation = values.Days_Pending_Activation
+		}
+		AgRp[i].Days_Pending_NTP = AgRp[i].NTPdate
+		AgRp[i].Days_Pending_Project_Age = values.Days_Pending_Project_Age
+		AgRp[i].Days_Pending_PTO = values.Days_Pending_PTO
+	}
+
+	// **Filter Logic**
 	if len(dataFilter.Fields) == 0 {
-		for _, val := range AgRp {
-			if !addedUniqueId[val.UniqueId] {
-				filteredResp = append(filteredResp, val)
+		return AgRp, nil
+	}
+
+	filteredResp := make([]models.PerfomanceResponse, 0)
+	for _, v := range AgRp {
+		count := 0
+		numFilters := len(dataFilter.Fields)
+
+		for _, field := range dataFilter.Fields {
+			switch field {
+			case "days_pending_permits":
+				if v.PermittingColour != green {
+					count++ // Condition met
+				}
+			case "days_pending_install":
+				if v.InstallColour != green {
+					count++ // Condition met
+				}
+			case "days_pending_ntp":
+				count++
+			case "project_age":
+				count++
+			case "days_pending_pto":
+				count++
 			}
 		}
+
+		// Append only if all conditions pass (AND logic)
+		if count == numFilters {
+			filteredResp = append(filteredResp, v)
+		}
 	}
+
 	return filteredResp, nil
 }
 
