@@ -478,14 +478,15 @@ func activationColor(ptoSubmittedDate, ptoDate time.Time) (string, time.Time) {
 */
 func agngRpData(AgRp []models.PerfomanceResponse, dataFilter models.PerfomanceStatusReq) ([]models.PerfomanceResponse, error) {
 	var (
-		err     error
-		filters []string
-		values  = make(map[string]models.PerfomanceResponse) // ✅ Fixed: Initialize map
+		err           error
+		filters       []string
+		values        = make(map[string]models.PerfomanceResponse) // ✅ Fixed: Initialize map
+		addedUniqueId = make(map[string]bool)
 	)
 	log.EnterFn(0, "HandleGetAgingReport")
 	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
 
-	query := `SELECT SELECT DISTINCT ON(unique_id)
+	query := `SELECT DISTINCT ON(unique_id)
 	unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age FROM aging_report`
 
 	if len(AgRp) > 0 {
@@ -517,6 +518,7 @@ func agngRpData(AgRp []models.PerfomanceResponse, dataFilter models.PerfomanceSt
 		exists, existsOk := values[uniqueId]
 		if !existsOk {
 			continue
+			log.FuncErrorTrace(0, "value not available for unique id %v", exists.UniqueId)
 		}
 
 		// ✅ Fixed: Ensure updates persist
@@ -544,6 +546,7 @@ func agngRpData(AgRp []models.PerfomanceResponse, dataFilter models.PerfomanceSt
 		exists.Days_Pending_NTP = TextAccToInput(getFieldText(agRp, "days_pending_ntp"))
 		exists.Days_Pending_Project_Age = TextAccToInput(getFieldText(agRp, "project_age"))
 		exists.Days_Pending_PTO = TextAccToInput(getFieldText(agRp, "days_pending_pto"))
+		addedUniqueId[uniqueId] = true
 
 		if len(dataFilter.Fields) == 0 {
 			// No filters provided, append everything
@@ -579,6 +582,13 @@ func agngRpData(AgRp []models.PerfomanceResponse, dataFilter models.PerfomanceSt
 
 			// ✅ Fixed: Persist updates
 			values[uniqueId] = exists
+		}
+	}
+	if len(dataFilter.Fields) == 0 {
+		for _, val := range AgRp {
+			if !addedUniqueId[val.UniqueId] {
+				filteredResp = append(filteredResp, val)
+			}
 		}
 	}
 	return filteredResp, nil
