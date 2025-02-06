@@ -414,16 +414,16 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 	}
 	switch dataReq.Type {
 	case "count":
-		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v THEN cs.unique_id ELSE NULL END) AS sale, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND ns.%v THEN cs.unique_id ELSE NULL END) AS ntp, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN cs.cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v THEN cs.unique_id ELSE NULL END) AS cancel, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND pis.%v THEN cs.unique_id ELSE NULL END) AS install,", len(whereEleList)-1, len(whereEleList), dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND pis.%v THEN ns.battery_count ELSE 0 END) AS battery", len(whereEleList)-1, len(whereEleList), dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN cs.unique_id ELSE NULL END) AS sale, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN cs.unique_id ELSE NULL END) AS ntp, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN cs.cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN cs.unique_id ELSE NULL END) AS cancel, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(DISTINCT CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN cs.unique_id ELSE NULL END) AS install,", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN ns.battery_count ELSE 0 END) AS battery", len(whereEleList)-1, len(whereEleList)))
 	case "kw":
-		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v THEN scs.contracted_system_size_parent ELSE 0 END) AS sale, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND ns.%v THEN scs.contracted_system_size_parent ELSE 0 END) AS ntp, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cs.cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND cs.%v THEN scs.contracted_system_size_parent ELSE 0 END) AS cancel, ", len(whereEleList)-1, len(whereEleList), dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND pis.%v THEN scs.contracted_system_size_parent ELSE 0 END) AS install", len(whereEleList)-1, len(whereEleList), dealerIn))
+		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) AS sale, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN ns.ntp_complete_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) AS ntp, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cs.cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) AS cancel, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN pis.pv_completion_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN scs.contracted_system_size_parent ELSE 0 END) AS install", len(whereEleList)-1, len(whereEleList)))
 	}
 
 	filtersBuilder.WriteString(` FROM customers_customers_schema cs
@@ -447,18 +447,12 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 	}
 
 	if !whereAdded {
-		filtersBuilder.WriteString(" WHERE (")
+		filtersBuilder.WriteString(" WHERE ")
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.%v", dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" OR ns.%v", dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" OR cs.%v", dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" OR pis.%v)", dealerIn))
 		whereAdded = true
 	} else {
-		filtersBuilder.WriteString(" AND (")
+		filtersBuilder.WriteString(" AND ")
 		filtersBuilder.WriteString(fmt.Sprintf(" cs.%v", dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" OR ns.%v", dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" OR cs.%v", dealerIn))
-		filtersBuilder.WriteString(fmt.Sprintf(" OR pis.%v)", dealerIn))
 	}
 
 	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "cs.state" && dataReq.GroupBy != "split_part(srs.team_region_untd, '/'::text, 2)" {

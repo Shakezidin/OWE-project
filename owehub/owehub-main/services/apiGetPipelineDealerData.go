@@ -31,13 +31,11 @@ var columnMap = map[string]ColumnInfo{
 	"customer_name":          {"cust", "string"},
 	"dealer":                 {"cust", "string"},
 	"finance_company":        {"cust", "string"},
-	"source_type":            {"cust", "string"},
-	"loan_type":              {"cust", "string"},
+	"type":                   {"cust", "string"}, //* column name not confirmed
+	"finance_type":           {"ntp", "string"},
 	"unique_id":              {"cust", "string"},
 	"address":                {"cust", "string"},
-	"city":                   {"cust", "string"},
 	"state":                  {"cust", "string"},
-	"zip_code":               {"cust", "string"},
 	"email_address":          {"cust", "string"},
 	"phone_number":           {"cust", "string"},
 	"primary_sales_rep":      {"cust", "string"},
@@ -52,7 +50,6 @@ var columnMap = map[string]ColumnInfo{
 	"pv_approved":                  {"permit", "date"},
 	"ic_submitted_date":            {"ic", "date"},
 	"ic_approved_date":             {"ic", "date"},
-	"jeopardy_date":                {"cust", "date"},
 	"cancel_date":                  {"cust", "date"},
 	"pv_completion_date":           {"install", "date"},
 	"pv_fin_date":                  {"fin", "date"},
@@ -156,13 +153,11 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		customerName, _ := item["customer_name"].(string)
 		partnerDealer, _ := item["partner_dealer"].(string)
 		financeCompany, _ := item["finance_company"].(string)
-		sourceType, _ := item["source_type"].(string)
+		Type, _ := item["type"].(string)
 		loanType, _ := item["loan_type"].(string)
 		uniqueId, _ := item["unique_id"].(string)
 		streetAddress, _ := item["street_address"].(string)
-		city, _ := item["city"].(string)
 		state, _ := item["state"].(string)
-		zipCode, _ := item["zip_code"].(string)
 		email, _ := item["email"].(string)
 		phoneNumber, _ := item["phone_number"].(string)
 		rep1, _ := item["rep_1"].(string)
@@ -190,17 +185,20 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		finCompleteDate, _ = item["fin_complete_date"].(time.Time)
 		ptoDate, _ = item["pto_date"].(time.Time)
 
+		var jeopardyStatus bool
+		if !jeopardyDate.IsZero() {
+			jeopardyStatus = true
+		}
+
 		pipelineDealerData := models.PipelineDealerData{
 			HomeOwner:            customerName,
 			PartnerDealer:        partnerDealer,
 			FinanceCompany:       financeCompany,
-			SourceType:           sourceType,
+			Type:                 Type,
 			LoanType:             loanType,
 			UniqueId:             uniqueId,
 			StreetAddress:        streetAddress,
-			City:                 city,
 			State:                state,
-			ZipCode:              zipCode,
 			Email:                email,
 			PhoneNumber:          phoneNumber,
 			Rep1:                 rep1,
@@ -215,7 +213,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 			PermitApprovalDate:   formatDate(permitApprovalDate),
 			IcSubmitDate:         formatDate(icSubmitDate),
 			IcApprovalDate:       formatDate(icApprovalDate),
-			JeopardyDate:         formatDate(jeopardyDate),
+			JeopardyStatus:       jeopardyStatus,
 			CancelDate:           formatDate(cancelDate),
 			PvInstallDate:        formatDate(pvInstallDate),
 			FinCompleteDate:      formatDate(finCompleteDate),

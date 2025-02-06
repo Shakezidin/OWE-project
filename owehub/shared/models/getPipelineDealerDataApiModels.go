@@ -14,13 +14,11 @@ type PipelineDealerData struct {
 	HomeOwner            string `json:"home_owner"`
 	PartnerDealer        string `json:"partner_dealer"`
 	FinanceCompany       string `json:"finance_company"`
-	SourceType           string `json:"source_type"`
+	Type                 string `json:"type"`
 	LoanType             string `json:"loan_type"`
 	UniqueId             string `json:"unique_id"`
 	StreetAddress        string `json:"street_address"`
-	City                 string `json:"city"`
 	State                string `json:"state"`
-	ZipCode              string `json:"zip_code"`
 	Email                string `json:"email"`
 	PhoneNumber          string `json:"phone_number"`
 	Rep1                 string `json:"rep_1"`
@@ -35,7 +33,7 @@ type PipelineDealerData struct {
 	PermitApprovalDate   string `json:"permit_approval_date"`
 	IcSubmitDate         string `json:"ic_submit_date"`
 	IcApprovalDate       string `json:"ic_approval_date"`
-	JeopardyDate         string `json:"jeopardy_date"`
+	JeopardyStatus       bool   `json:"jeopardy_date"`
 	CancelDate           string `json:"cancel_date"`
 	PvInstallDate        string `json:"pv_install_date"`
 	FinCompleteDate      string `json:"fin_complete_date"`

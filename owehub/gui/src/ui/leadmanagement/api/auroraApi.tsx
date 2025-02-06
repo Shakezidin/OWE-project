@@ -76,7 +76,7 @@ export const handleCreateProposal = (
 
                 if (proposalData.proposal_link) {
                   // Step 5: Generate Web Proposal
-                  await downloadProposalWithSSE(leadId);
+                  await downloadProposalWithSSE(leadId, (isLoading) => {}, (progress) => {});
 
                   toast.success('Proposal created successfully!');
                   setRefresh((prev) => prev + 1);
@@ -175,26 +175,44 @@ export const retrieveWebProposal = (leadId: number, dispatch: any) => {
   };
 };
 
-export const downloadProposalWithSSE = (leadId: number) => {
+const environments = {
+  development: 'https://staging.owe-hub.com',
+  staging: 'https://staging.owe-hub.com',
+  production: 'https://owe-hub.com'
+};
+
+const getBaseUrl = () => {
+  // Can be set via env variables or build config
+  const env = (process.env.REACT_APP_ENV || 'staging') as 'development' | 'staging' | 'production';
+  return environments[env];
+};
+
+export const downloadProposalWithSSE = (
+  leadId: number, 
+  onLoadingChange: (isLoading: boolean) => void,
+  onProgress: (progress: number) => void
+) => {
+  const baseUrl = getBaseUrl();
+  onLoadingChange(true);
+  
   const eventSource = new EventSource(
-    `https://staging.owe-hub.com/api/owe-leads-service/v1/aurora_generate_pdf?leads_id=${leadId}`
+    `${baseUrl}/api/owe-leads-service/v1/aurora_generate_pdf?leads_id=${leadId}`
   );
 
   eventSource.onmessage = (event) => {
     const payload: SSEPayload = JSON.parse(event.data);
 
     if (!payload.is_done) {
-      const progressPercentage =
+      const progressPercentage = 
         (payload.data.current_step / payload.data.total_steps) * 100;
-      console.log(
-        `PDF generation in progress: Step ${payload.data.current_step} of ${payload.data.total_steps}`
-      );
+      onProgress(progressPercentage);
+      console.log(`PDF generation in progress: ${progressPercentage}%`);
     } else if (payload.is_done) {
-      eventSource.close(); // Close the connection once the PDF is ready or an error occurs
+      if (payload.data?.url) {
+        window.open(payload.data.url, '_self');
+      }
+      eventSource.close();
+      onLoadingChange(false);
     }
-  };
-
-  eventSource.onerror = (error) => {
-    console.error('Error with SSE connection', error);
   };
 };

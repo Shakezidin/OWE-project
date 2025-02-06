@@ -217,14 +217,8 @@ func (fb *FilterBuilder) buildOrderBy(req RequestParams, distinctOnColumn string
 	fullColumn := fmt.Sprintf("%s.%s", columnInfo.TableAlias, req.SortBy)
 
 	if distinctOnColumn == "" {
-		if columnInfo.DataType == TypeString {
-			return fmt.Sprintf(" ORDER BY LOWER(%s) %s", fullColumn, sortOrder)
-		}
 		return fmt.Sprintf(" ORDER BY %s %s", fullColumn, sortOrder)
 	}
 
-	if columnInfo.DataType == TypeString {
-		return fmt.Sprintf(" ORDER BY %s, LOWER(%s) %s", distinctOnColumn, fullColumn, sortOrder)
-	}
 	return fmt.Sprintf(" ORDER BY %s, %s %s", distinctOnColumn, fullColumn, sortOrder)
 }
