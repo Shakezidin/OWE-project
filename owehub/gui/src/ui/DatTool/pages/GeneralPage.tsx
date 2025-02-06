@@ -96,8 +96,6 @@ const InputField: React.FC<InputFieldProps> = ({
 );
  
 const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneralId}) => {
-  const dispatch = useAppDispatch();
-   
   // State variables for controlling editing and active tabs
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDatEditing, setIsDatEditing] = useState<boolean>(false);
@@ -126,10 +124,10 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
   ];
   
   const datFields = [
-    { label: 'Module QTY', value: generalData?.module_qty || 0, type: 'number' }, 
+    { label: 'Module QTY', value: generalData?.dat_module_qty || 0, type: 'number' }, 
     {
       label: 'Module Type',
-      value: generalData?.module_type?.toString() || "N/A", 
+      value: generalData?.dat_module_type || "N/A", 
     },
     { label: 'Inverter Type', value: generalData?.inverter_type || "N/A" }, 
     { label: 'Battery Type', value: generalData?.battery_type || "N/A" }, 

@@ -80,30 +80,50 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading,changeInQuantity,se
     rightPartObjInterconnection,
     rightPartObjUpgradedElectrical,
     rightPartObjOther,
+
   ];
+  
+const [price, setPrice] = useState<{ [key: number]: number }>({});
 
-  const [price, setPrice] = useState<{ [key: number]: number }>({
-    0: leftPartObj[0]?.cost || 0,
-    1: leftPartObj[1]?.cost || 0,
-    2: leftPartObj[2]?.cost || 0,
-    3: leftPartObj[3]?.cost || 0,
-    4: leftPartObj[4]?.cost || 0,
-    5: leftPartObj[5]?.cost || 0,
-    6: leftPartObj[6]?.cost || 0,
-    7: leftPartObj[7]?.cost || 0,
-  });
+useEffect(() => {
+  if (addersData && addersData.categories) {
+    setPrice((prevState) => {
+      const newPrice: { [key: number]: number } = {};
+      const leftPartObj: CategoryItem[] = addersData.categories.map((category: any) => ({
+        text: category?.title ?? 'N/A',
+        cost: category?.cost ?? 0
+      }));
+      leftPartObj.forEach((item, index) => {
+        newPrice[index] = item.cost;
+      });
+      return newPrice;
+    });
+  }
+}, [addersData]);
 
-  const [values, setValues] = useState<{ [key: number]: number[] }>({
-    0: rightPartObj.map(item => item.quantity || 0), 
-    1: rightPartObjElectrical.map(item => item.quantity || 0), 
-    2: rightPartObjSiteAdders.map(item => item.quantity || 0), 
-    3: rightPartObjStructural.map(item => item.quantity || 0), 
-    4: rightPartObjUpgrades.map(item => item.quantity || 0), 
-    5: rightPartObjInterconnection.map(item => item.quantity || 0), 
-    6: rightPartObjUpgradedElectrical.map(item => item.quantity || 0), 
-    7: rightPartObjOther.map(item => item.quantity || 0), 
-  });
+const [values, setValues] = useState<{ [key: number]: number[] }>({});
 
+useEffect(() => {
+  if (Array.isArray(rightPartObj) &&
+      Array.isArray(rightPartObjElectrical) &&
+      Array.isArray(rightPartObjSiteAdders) &&
+      Array.isArray(rightPartObjStructural) &&
+      Array.isArray(rightPartObjUpgrades) &&
+      Array.isArray(rightPartObjInterconnection) &&
+      Array.isArray(rightPartObjUpgradedElectrical) &&
+      Array.isArray(rightPartObjOther)) {
+    setValues({
+      0: rightPartObj.map(item => item.quantity || 0),
+      1: rightPartObjElectrical.map(item => item.quantity || 0),
+      2: rightPartObjSiteAdders.map(item => item.quantity || 0),
+      3: rightPartObjStructural.map(item => item.quantity || 0),
+      4: rightPartObjUpgrades.map(item => item.quantity || 0),
+      5: rightPartObjInterconnection.map(item => item.quantity || 0),
+      6: rightPartObjUpgradedElectrical.map(item => item.quantity || 0),
+      7: rightPartObjOther.map(item => item.quantity || 0),
+    });
+  }
+}, [addersData]);
 
 
   const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
@@ -165,7 +185,7 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading,changeInQuantity,se
       0
     );
     setTotal(parseFloat(totalPrice.toFixed(2)));
-  }, [price]);
+  }, [price,addersData]);
 
   useEscapeKey(() => setOpenPopUp(false));
   const crossAdderHandler = ()=>{
