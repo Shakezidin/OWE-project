@@ -169,15 +169,20 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		4. With this we get the full data for those unique ids after joining
 	*/
 
-	data, err = FilterAgRpData(dataReq, data)
-	if err != nil {
-		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
+	RecordCount = int64(len(data))
+	if len(dataReq.Fields) <= 0 {
+		data = Paginate(data, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+	} else {
+		data, err = FilterAgRpData(dataReq, data)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
+		}
 	}
-	if len(data) <= 0 {
-		appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceList, RecordCount)
+	if len(data) == 0 {
+		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 		return
 	}
-	RecordCount = int64(len(data))
 	UniqueIds := joinUniqueIdsWithDbResponse(data)
 	tileQuery := models.GetBasePipelineQuery(UniqueIds)
 
@@ -297,10 +302,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	if len(dataReq.Fields) > 0 {
 		RecordCount = int64(len(perfomanceList.PerfomanceList))
+		perfomanceList.PerfomanceList = Paginate(perfomanceList.PerfomanceList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	}
-	paginateData := Paginate(perfomanceList.PerfomanceList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 
-	paginatedData := postCalculation(paginateData, dataReq)
+	paginatedData := postCalculation(perfomanceList.PerfomanceList, dataReq)
 	perfomanceList.PerfomanceList = paginatedData
 
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v\n", RecordCount, perfomanceList)
