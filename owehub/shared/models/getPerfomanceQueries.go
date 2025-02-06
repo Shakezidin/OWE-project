@@ -840,7 +840,7 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
         WHERE
 	        cad.active_inactive = 'Active'
             AND cad.plan_set_status != 'Plan Set Complete'
-            AND cad.project_status IN (%v)
+            AND cad.project_status_new IN (%v)
             AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')
             AND cad.plan_set_version NOT IN (
 			    'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5', 
@@ -1106,7 +1106,7 @@ func GetBasePipelineQuery(uniqueIds string) string {
             fin_permits_fin_schema AS fin ON cust.unique_id = fin.customer_unique_id
         LEFT JOIN
             pto_ic_schema AS pto ON cust.our = pto.customer_unique_id 
-		WHERE cust.unique_id in (%v)`, uniqueIds)
+		WHERE cust.unique_id in (%v) ORDER BY cust.unique_id, install.pv_completion_date DESC NULLS LAST`, uniqueIds)
 }
 
 func PipelineDealerDataQuery(filterUserQuery string) string {
