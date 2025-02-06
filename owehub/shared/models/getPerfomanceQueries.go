@@ -993,6 +993,7 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
         WHERE
 	        fin.project_status IN (%v)                                  AND
             fin.app_status not in ('PV FIN Complete', 'DUPLICATE')      AND
+            cust.unique_id != ''                                        AND 
             %v %v;`, projectStatus, filterUserQuery, searchValue)
 
 	return PipelineDataQuery
