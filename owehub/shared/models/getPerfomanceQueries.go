@@ -751,6 +751,7 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
         WHERE
 	        fin.project_status IN (%v)                                  AND
             fin.app_status not in ('PV FIN Complete', 'DUPLICATE')      AND
+            cust.unique_id != ''                                        AND
             %v`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
