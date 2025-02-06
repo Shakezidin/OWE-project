@@ -558,7 +558,12 @@ func agngRpData(AgRp []models.PerfomanceResponse, dataFilter models.PerfomanceSt
 					if exists.InstallColour != green {
 						count++ // Condition met
 					}
+				default:
+					// If the field is not in "days_pending_permits" or "days_pending_install", append it directly
+					filteredResp = append(filteredResp, exists)
+					continue // No need to check further if field is already in the list
 				}
+
 			}
 
 			// Append only if all conditions pass (AND logic)
