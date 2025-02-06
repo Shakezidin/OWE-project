@@ -19,6 +19,7 @@ interface TableProps {
   page_size: number;
   fetchFunction: (req: any) => void;
   resetOnChange: boolean;
+  isNew?: boolean;
 }
 const FilterHoc = ({ isOpen = false, ...rest }: TableProps) => {
   const dispatch = useAppDispatch();
