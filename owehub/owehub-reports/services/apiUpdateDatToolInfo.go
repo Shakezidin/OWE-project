@@ -64,23 +64,23 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if len(dataReq.GeneralValues.ProjectId) <= 0 {
-		err = fmt.Errorf("invalid project ID %s", dataReq.GeneralValues.ProjectId)
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Invalid project ID, update failed", http.StatusBadRequest, nil)
-		return
-	}
+	// if len(dataReq.GeneralValues.ProjectId) <= 0 {
+	// 	err = fmt.Errorf("invalid project ID %s", dataReq.GeneralValues.ProjectId)
+	// 	log.FuncErrorTrace(0, "%v", err)
+	// 	appserver.FormAndSendHttpResp(resp, "Invalid project ID, update failed", http.StatusBadRequest, nil)
+	// 	return
+	// }
 	/////////// GENERAL VALUES ///////////////////////////////////////////////////////////////////////////////////
 	if dataReq.GeneralValues != nil {
 
-		if len(dataReq.GeneralValues.ProjectName) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.ProjectName)
-			updateFields = append(updateFields, fmt.Sprintf("project_name = $%d", len(whereEleList)))
-		}
-		if len(dataReq.GeneralValues.ProjectId) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.ProjectId)
-			updateFields = append(updateFields, fmt.Sprintf("project_id = $%d", len(whereEleList)))
-		}
+		// if len(dataReq.GeneralValues.ProjectName) > 0 {
+		// 	whereEleList = append(whereEleList, dataReq.GeneralValues.ProjectName)
+		// 	updateFields = append(updateFields, fmt.Sprintf("project_name = $%d", len(whereEleList)))
+		// }
+		// if len(dataReq.GeneralValues.ProjectId) > 0 {
+		// 	whereEleList = append(whereEleList, dataReq.GeneralValues.ProjectId)
+		// 	updateFields = append(updateFields, fmt.Sprintf("project_id = $%d", len(whereEleList)))
+		// }
 		if len(dataReq.GeneralValues.ProjectAddress) > 0 {
 			whereEleList = append(whereEleList, dataReq.GeneralValues.ProjectAddress)
 			updateFields = append(updateFields, fmt.Sprintf("project_address = $%d", len(whereEleList)))

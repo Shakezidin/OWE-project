@@ -27,6 +27,7 @@ interface TableProps {
   fetchFunction: (req: any) => void;
   resetOnChange?: boolean;
   isOpen?: boolean;
+  isNew?:boolean;
 }
 interface FilterModel {
   Column: string;
@@ -50,8 +51,10 @@ const FilterModal: React.FC<TableProps> = ({
   page_size,
   fetchFunction,
   resetOnChange,
+  isNew
 }) => {
   const dispatch = useAppDispatch();
+  const format = isNew ? [{ Column: '', Operation: '', Data: '' }] : [{ column: '', operation: '', data: '' }]
   const [filters, setFilters] = useState<FilterModel[]>([
     { Column: '', Operation: '', Data: '' },
   ]);
@@ -172,7 +175,8 @@ const FilterModal: React.FC<TableProps> = ({
     setFilters(newFilters);
   };
   const getInputType = (columnName: string) => {
-    const type = columns.find((option) => option.name === columnName)?.type;
+    const type = columns.find((option) => (option.filter ? option.filter : option.name) === columnName)?.type;
+    console.log(columns, columnName, "hjghjhg")
     if (type === 'number') {
       return 'number';
     } else if (type === 'date') {

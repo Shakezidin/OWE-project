@@ -116,5 +116,6 @@ func HandleGetDropDownListRequest(resp http.ResponseWriter, req *http.Request) {
 	apiResponse = models.DropdownResponse{
 		Data: filteredData,
 	}
+
 	appserver.FormAndSendHttpResp(resp, "Drop down Data", http.StatusOK, apiResponse, 0)
 }

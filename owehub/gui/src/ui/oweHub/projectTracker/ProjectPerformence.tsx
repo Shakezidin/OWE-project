@@ -691,7 +691,6 @@ const ProjectPerformence = () => {
 
   const showNewPage =
     role === TYPE_OF_USER.DEALER_OWNER ||
-    role === TYPE_OF_USER.ADMIN ||
     role === TYPE_OF_USER.REGIONAL_MANGER;
 
 
@@ -712,10 +711,6 @@ const ProjectPerformence = () => {
           <div className="pipeline-header-btns">
             {(showNewPage && (isStaging === 'staging')) &&
               <div
-                style={{
-                  pointerEvents: loading || isLoading ? "none" : "auto",
-                  cursor: loading || isLoading ? "default" : "pointer",
-                }}
                 className='skygroup-btn'
                 onClick={handleNewPage}
               >
@@ -945,7 +940,7 @@ const ProjectPerformence = () => {
             </div>
 
             <div className="perf-export-btn relative pipline-export-btn">
-              {!!(projectStatus.length && !loading) && (
+             
                 <div className='filterButtonAddition '>
 
                   <div
@@ -985,7 +980,7 @@ const ProjectPerformence = () => {
                     )}
                   </button>
                 </div>
-              )}
+           
 
               <Tooltip
                 style={{

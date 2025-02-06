@@ -21,6 +21,7 @@ import { LuImport } from 'react-icons/lu'
 import { FaUpload } from 'react-icons/fa'
 import { Tooltip } from 'react-tooltip'
 import useMatchMedia from '../../../hooks/useMatchMedia'
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl'
 
 
 interface ColumnMap {
@@ -107,7 +108,7 @@ const DealerTablePipeline = () => {
                 "search_filters": {
                     "page_number": page,
                     "page_size": itemsPerPage,
-                    "filters": (filters.length > 0) ? filters : [
+                    "filters": (filters && filters.length > 0) ? filters : [
                         { "column": "unique_id", "operation": "cont", "data": searchTerm },
                         { "column": "customer_name", "operation": "cont", "data": searchTerm },
                     ],
@@ -181,7 +182,23 @@ const DealerTablePipeline = () => {
         setIsExporting(true);
         const headers = pipeLineColumn.map((item) => item.displayName);
         try {
-            const csvData = cuurentPageData?.map?.((item: any) => [
+            const data = {
+                "dealer_names": dealerNames,
+                "search_filters": {
+                    "page_number": page,
+                    "page_size": totalCount,
+                    "filters": [ ],
+                    "sort_by": "",
+                    "sort_order": ""
+                }
+            };
+            const response = await postCaller('getPipelineDealerData', data);
+            if (response.status > 201) {
+                toast.error(response.data.message);
+                setIsExporting(false);
+                return;
+            }
+            const csvData = response.data.pipeline_dealer_data_list?.map?.((item: any) => [
                 item.unique_id || 'N/A',
                 item.home_owner || 'N/A',
                 item.finance_company || 'N/A',
