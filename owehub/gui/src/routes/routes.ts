@@ -119,5 +119,6 @@ export const ROUTES = {
   PERMIT_REDLINE:'/reporting/permit-redline',
   DYNAMIC_REPORT:'/reporting/:id',
   SUMMARY_DASBOARD:'/summary-dashboard',
-  DAT_TOOL:'/dat_tool'
+  DAT_TOOL:'/dat_tool',
+  DEALERDATA_PIPELINE:'/pipeline/pipeline_data'
 };

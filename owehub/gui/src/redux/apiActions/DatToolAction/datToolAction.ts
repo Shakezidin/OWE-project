@@ -43,12 +43,14 @@ export const getDatAddersInfo = createAsyncThunk(
         project_id: payload.project_id
       });
       
+      console.log(response, 'response.................');
       return response;
     } catch (error) {
       return rejectWithValue('Failed to fetch Adders Info');
     }
   }
 );
+
 
 export const getStructuralInfo = createAsyncThunk(
   'dataTool/getStructuralInfo',
@@ -102,6 +104,20 @@ export const getDropdownList = createAsyncThunk(
         drop_down_list
       });
       
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue('Failed to fetch dropdown list');
+    }
+  }
+);
+export const updateDatTool = createAsyncThunk(
+  'dataTool/updateDatTool',
+  async ({ update_data }: { update_data: string[] }, { rejectWithValue }) => {
+    try {
+      const response = await reportingCaller('update_dat_tool_info', {
+        update_data
+      });
+      console.log(response, 'response.................');
       return response.data.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch dropdown list');

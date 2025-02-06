@@ -12,7 +12,7 @@ import AdderssPopUp from './components/AdderssPopUp';
 import RefreshPopUp from './components/RefreshPopUp';
 import CommonComponent from './pages/CommonComponent';
 import { useOutletContext } from 'react-router-dom';
-import { getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getStructuralInfo } from '../../redux/apiActions/DatToolAction/datToolAction';
+import { getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getStructuralInfo, updateDatTool } from '../../redux/apiActions/DatToolAction/datToolAction';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 
 const DatTool: React.FC = () => {
@@ -38,6 +38,9 @@ const DatTool: React.FC = () => {
   useEffect(() => {
     dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
   }, [currentGeneralId]);
+  useEffect(() => {
+    dispatch(updateDatTool({ update_data:[] }));
+  }, [currentGeneralId]);
 
 
   const renderPage = () => {
@@ -45,7 +48,7 @@ const DatTool: React.FC = () => {
       case 'Structural':
         return <StructuralPage structuralData={structuralData} currentGeneralId={currentGeneralId} loading={loading}/>;
       case 'Adders':
-        return <AddressPage setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId} loading={loading}/>;
+        return <AddressPage setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId} loading={loading} changeInQuantity={changeInQuantity} setChangeInQuantity={setChangeInQuantity}/>;
       case 'Notes':
         return <NotesPage currentGeneralId={currentGeneralId}/>;
       case 'Other':
@@ -61,7 +64,6 @@ const DatTool: React.FC = () => {
 
   const [pageSize, setPageSize] = useState<number>(10);
   const [sort, setSort] = useState<string>('asc');
-  const projectId = data[0]?.project_id;
   useEffect(() => {
     dispatch(getDatProjectList({ search: searchPara, page_number:1,page_size:pageSize,sort:sort }));
     if (data?.length > 0) {
@@ -70,12 +72,12 @@ const DatTool: React.FC = () => {
     }
   }, [searchPara, pageSize, sort]);
  
-  
+  const[changeInQuantity,setChangeInQuantity] = useState<boolean>(false);
   return (
     <div className={styles.mainContainer}>
 
       {
-        openPopUp && <AdderssPopUp setOpenPopUp={setOpenPopUp} />
+        openPopUp && <AdderssPopUp setOpenPopUp={setOpenPopUp} currentGeneralId={currentGeneralId}/>
       }
       {
         refreshDat && <RefreshPopUp setOpenRefresh={setRefreshDat} />

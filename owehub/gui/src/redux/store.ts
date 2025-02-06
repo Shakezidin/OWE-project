@@ -72,6 +72,7 @@ import leadManagmentSlice from './apiSlice/leadManagementSlice/leadsSlice';
 import reportingSlice from './apiSlice/reportingSlice/reportingSlice';
 import datSlice from './apiSlice/DatToolSlice/datToolSlice';
 
+
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -148,7 +149,8 @@ export const store = configureStore({
     teamManagmentSlice,
     leadManagmentSlice,
     reportingSlice,
-    datSlice
+    datSlice,
+  
   },
 });
 
