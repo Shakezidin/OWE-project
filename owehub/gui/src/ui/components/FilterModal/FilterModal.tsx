@@ -176,7 +176,6 @@ const FilterModal: React.FC<TableProps> = ({
   };
   const getInputType = (columnName: string) => {
     const type = columns.find((option) => (option.filter ? option.filter : option.name) === columnName)?.type;
-    console.log(columns, columnName, "hjghjhg")
     if (type === 'number') {
       return 'number';
     } else if (type === 'date') {

@@ -34,7 +34,7 @@ const DealerTablePipeline = () => {
 
     const [page, setPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
-    const [itemsPerPage, setItemPerPage] = useState(20);
+    const [itemsPerPage, setItemPerPage] = useState(25);
     const startIndex = (page - 1) * itemsPerPage + 1;
     const endIndex = page * itemsPerPage;
     const totalPage = Math.ceil(totalCount / itemsPerPage);
@@ -95,6 +95,12 @@ const DealerTablePipeline = () => {
         }, 800),
         []
     );
+    const formattedFilters = filters ? filters.map(filter => ({
+        column: filter.Column,
+        operation: filter.Operation,
+        data: filter.Data
+    })) : [];
+
     const getColumnKey = (sortKey: string): string => {
         return columnMap[sortKey] || sortKey;
     };
@@ -108,7 +114,7 @@ const DealerTablePipeline = () => {
                 "search_filters": {
                     "page_number": page,
                     "page_size": itemsPerPage,
-                    "filters": (filters && filters.length > 0) ? filters : [
+                    "filters": (formattedFilters && formattedFilters.length > 0) ? formattedFilters : [
                         { "column": "unique_id", "operation": "cont", "data": searchTerm },
                         { "column": "customer_name", "operation": "cont", "data": searchTerm },
                     ],
@@ -147,7 +153,15 @@ const DealerTablePipeline = () => {
             const aValue = a[sortKey];
             const bValue = b[sortKey];
 
-            if (typeof aValue === 'string' && typeof bValue === 'string') {
+            if (sortKey === 'system_size' || sortKey === 'contract_amount') {
+                // Extract numeric values from system_size or contract_amount
+                const numericAValue = parseFloat(aValue.replace(/[^0-9.]/g, ''));
+                const numericBValue = parseFloat(bValue.replace(/[^0-9.]/g, ''));
+
+                return sortDirection === 'asc'
+                    ? numericAValue - numericBValue
+                    : numericBValue - numericAValue;
+            } else if (typeof aValue === 'string' && typeof bValue === 'string') {
                 return sortDirection === 'asc'
                     ? aValue.localeCompare(bValue)
                     : bValue.localeCompare(aValue);
@@ -157,6 +171,7 @@ const DealerTablePipeline = () => {
                     typeof aValue === 'number' ? aValue : parseFloat(aValue);
                 const numericBValue =
                     typeof bValue === 'number' ? bValue : parseFloat(bValue);
+
                 return sortDirection === 'asc'
                     ? numericAValue - numericBValue
                     : numericBValue - numericAValue;
@@ -187,7 +202,7 @@ const DealerTablePipeline = () => {
                 "search_filters": {
                     "page_number": page,
                     "page_size": totalCount,
-                    "filters": [ ],
+                    "filters": [],
                     "sort_by": "",
                     "sort_order": ""
                 }
@@ -211,7 +226,7 @@ const DealerTablePipeline = () => {
                 item.rep_1 || 'N/A',
                 'Not Found',
                 item.system_size || '0',
-                `$${item.contract_amount || '0'}`,
+                `${item.contract_amount || '0'}`,
                 item.created_date || 'N/A',
                 item.contract_date || 'N/A',
                 item.survey_final_completion_date || 'N/A',
@@ -248,6 +263,9 @@ const DealerTablePipeline = () => {
         }
         setIsExporting(false);
     };
+
+
+    console.log(formattedFilters, "sdjjfgj")
 
     return (
         <>
@@ -419,7 +437,7 @@ const DealerTablePipeline = () => {
                                         <td>{item.rep_1 || 'N/A'}</td>
                                         <td>{item.partner_dealer || 'N/A'}</td>
                                         <td>{item.system_size || '0'}</td>
-                                        <td>${item.contract_amount || '0'}</td>
+                                        <td>{item.contract_amount || '0'}</td>
                                         <td>{item.created_date || 'N/A'}</td>
                                         <td>{item.contract_date || 'N/A'}</td>
 
