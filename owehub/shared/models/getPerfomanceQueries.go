@@ -668,7 +668,7 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
         WHERE
             cad.active_inactive = 'Active'
             AND cad.plan_set_status != 'Plan Set Complete'
-            AND cad.project_status IN (%v)
+            AND cad.project_status_new IN (%v)
             AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')
             AND cad.plan_set_version NOT IN (
                 'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5', 
