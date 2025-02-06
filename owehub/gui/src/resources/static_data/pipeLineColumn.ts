@@ -169,7 +169,7 @@ export default [
   {
     name: 'pto_date',
     displayName: 'Elec Install',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
