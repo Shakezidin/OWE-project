@@ -189,6 +189,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceList, RecordCount)
 		return
 	}
+	RecordCount = int64(len(data))
 	UniqueIds := joinUniqueIdsWithDbResponse(data)
 	tileQuery := models.GetBasePipelineQuery(UniqueIds)
 
@@ -305,7 +306,9 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get agngRp with err: %v", err)
 	}
-	RecordCount = int64(len(perfomanceList.PerfomanceList))
+	if len(dataReq.Fields) > 0 {
+		RecordCount = int64(len(perfomanceList.PerfomanceList))
+	}
 	paginateData := Paginate(perfomanceList.PerfomanceList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 
 	paginatedData := postCalculation(paginateData, dataReq)
@@ -482,7 +485,8 @@ func agngRpData(AgRp []models.PerfomanceResponse, dataFilter models.PerfomanceSt
 	log.EnterFn(0, "HandleGetAgingReport")
 	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
 
-	query := `SELECT unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age FROM aging_report`
+	query := `SELECT SELECT DISTINCT ON(unique_id)
+	unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age FROM aging_report`
 
 	if len(AgRp) > 0 {
 		uniqueIdValues := make([]string, 0, len(AgRp))
