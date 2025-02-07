@@ -88,6 +88,7 @@ export const getOtherInfo = createAsyncThunk(
       const response = await reportingCaller('get_tab_other_info', {
         project_id: payload.project_id
       });
+      console.log(response, 'response in my action dat.................');
       return response;
     } catch (error) {
       console.error('API Error:', error);

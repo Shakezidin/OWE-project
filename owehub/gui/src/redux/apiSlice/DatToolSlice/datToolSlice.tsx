@@ -170,6 +170,7 @@ interface DatToolState {
   othersData: OthersData | null;
   dropdownListData: { [key: string]: string[] } | null;
   projectData: ProjectData | null;
+  loadingOtherData:boolean;
 }
 
 interface GeneralData {
@@ -365,6 +366,7 @@ const initialState: DatToolState = {
   othersData: null,
   dropdownListData: null,
   projectData: null,
+  loadingOtherData:false
 };
 
 
@@ -448,14 +450,16 @@ const datSlice = createSlice({
     
 
     builder.addCase(getOtherInfo.pending, (state) => {
-      state.loading = true;
+      state.loadingOtherData = true;
     });
     builder.addCase(getOtherInfo.fulfilled, (state, action) => {
-      state.loading = false;
+      console.log(action.payload,"Checking for other data.......");
+      state.loadingOtherData = false;
       state.othersData = action.payload?.data;
     });
+    
     builder.addCase(getOtherInfo.rejected, (state, action) => {
-      state.loading = false;
+      state.loadingOtherData = false;
       state.error = action.payload as string;
       toast.error(action.payload as string);
     });

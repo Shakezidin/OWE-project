@@ -38,9 +38,7 @@ const DatTool: React.FC = () => {
   useEffect(() => {
     dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
   }, [currentGeneralId]);
-  useEffect(() => {
-    dispatch(updateDatTool({ update_data:[] }));
-  }, [currentGeneralId]);
+  
 
 
   const renderPage = () => {

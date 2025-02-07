@@ -8,6 +8,7 @@ import CommonComponent from './CommonComponent';
 import MicroLoader from '../../components/loader/MicroLoader';
 import { useAppDispatch } from '../../../redux/hooks';
 import { getDatGeneralInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
+import DataNotFound from '../../components/loader/DataNotFound';
  
 
 
@@ -148,7 +149,7 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
       
  
       {/* Section displaying contract and DAT information */}
-      {loading? <div className={styles.loaderContainer}> <MicroLoader/> </div>:<div className={styles.genSecCont}>
+      {loading? <div className={styles.loaderContainer}> <MicroLoader/> </div>: generalData  ? <div className={styles.genSecCont}>
         {/* Contract Information Left Section */}
         <div className={styles.genSecLeft}>
           <div className={styles.genSecLeftHdr}>
@@ -258,7 +259,9 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
             </div>
           </div>
         </div>
-      </div>}
+      </div>: <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <DataNotFound />
+        </div>}
     </div>
   );
 };
