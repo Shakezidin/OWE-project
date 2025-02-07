@@ -58,21 +58,37 @@ const DealerTablePipeline = () => {
     };
 
 
-    
+
     const handleSearchChange = useCallback(
         debounce((e: React.ChangeEvent<HTMLInputElement>) => {
             setSearchTerm(e.target.value);
         }, 800),
         []
     );
-    const formattedFilters = filters ? filters.map(filter => ({
-        column: filter.Column,
-        operation: filter.Operation,
-        data: filter.Data
-    })) : [];
+    const formattedFilters = filters ? filters.map(filter => {
+        if (filter.Column === 'jeopardy_date') {
+            return {
+                column: "jeopardy_date",
+                operation: (filter.Data !== "yes") ? "isnull" : "isnotnull"
+            };
+        } else if (filter.start_date !== '' && filter.end_date !== '') {
+            return {
+                "column": filter.Column,
+                "operation": "btw",
+                "start_date": filter.start_date,
+                "end_date": filter.end_date
+            };
+        } else {
+            return {
+                column: filter.Column,
+                operation: filter.Operation,
+                data: filter.Data
+            };
+        }
+    }) : [];
 
-   
-    
+
+
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -124,11 +140,11 @@ const DealerTablePipeline = () => {
             if (sortKey === 'system_size' || sortKey === 'contract_amount') {
                 const numericAValue = aValue ? parseFloat(aValue.replace(/[^0-9.]/g, '')) : 0;
                 const numericBValue = bValue ? parseFloat(bValue.replace(/[^0-9.]/g, '')) : 0;
-              
+
                 return sortDirection === 'asc'
-                  ? numericAValue - numericBValue 
-                  : numericBValue - numericAValue;
-              } else if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    ? numericAValue - numericBValue
+                    : numericBValue - numericAValue;
+            } else if (typeof aValue === 'string' && typeof bValue === 'string') {
                 return sortDirection === 'asc'
                     ? aValue.localeCompare(bValue)
                     : bValue.localeCompare(aValue);
@@ -232,7 +248,7 @@ const DealerTablePipeline = () => {
     };
 
 
-    console.log(formattedFilters, "sdjjfgj")
+    console.log(cuurentPageData, "sdjjfgj")
 
     return (
         <>
@@ -283,23 +299,47 @@ const DealerTablePipeline = () => {
                             />
                         </div>
 
+
+
                         <div className='export-button-container'>
-                            <div className='skyfilter' onClick={open} data-tooltip-id={isMobile ? "" : "filter"}><img src={ICONS.skyfilter} alt='' /></div>
-                            <Tooltip
-                                style={{
-                                    zIndex: 103,
-                                    background: '#f7f7f7',
-                                    color: '#000',
-                                    fontSize: 12,
-                                    paddingBlock: 4,
-                                    fontWeight: '400',
-                                }}
-                                offset={8}
-                                delayShow={800}
-                                id="filter"
-                                place="bottom"
-                                content="Filter"
-                            />
+                            <div
+                                className="filter-line-pipe relative"
+                                onClick={open}
+                                style={{ backgroundColor: '#000' }}
+                                data-tooltip-id={isMobile ? "" : "dealer-filter"}
+                            >
+                                <Tooltip
+                                    style={{
+                                        zIndex: 103,
+                                        background: '#f7f7f7',
+                                        color: '#000',
+                                        fontSize: 12,
+                                        paddingBlock: 4,
+                                        fontWeight: '400',
+                                    }}
+                                    offset={8}
+                                    id="dealer-filter"
+                                    place="top"
+                                    content="Filter"
+                                    delayShow={200}
+                                    className="pagination-tooltip"
+                                />
+                                {formattedFilters && (formattedFilters.length > 0) && (
+                                    <span
+                                        className="absolute"
+                                        style={{
+                                            border: '1px solid #fff',
+                                            borderRadius: '50%',
+                                            backgroundColor: '#2DC74F',
+                                            width: 8,
+                                            height: 8,
+                                            top: 0,
+                                            right: -2,
+                                        }}
+                                    ></span>
+                                )}
+                                <img src={ICONS.skyfilter} alt='' />
+                            </div>
                             <div
                                 className="export-button-pipe"
                                 onClick={exportCsv}
@@ -353,7 +393,7 @@ const DealerTablePipeline = () => {
                         >
                             <MicroLoader />
                         </div>
-                    ) : (cuurentPageData && cuurentPageData.length <= 0) ? (
+                    ) : (!cuurentPageData) ? (
                         <div
                             className="flex items-center justify-center"
                             style={{ height: '100%' }}
