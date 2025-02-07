@@ -27,13 +27,15 @@ interface TableProps {
   fetchFunction: (req: any) => void;
   resetOnChange?: boolean;
   isOpen?: boolean;
-  isNew?:boolean;
+  isNew?: boolean;
 }
 interface FilterModel {
   Column: string;
   Operation: string;
   Data: string;
   type?: string;
+  start_date?: string;
+  end_date?: string;
 }
 interface Option {
   value: string;
@@ -54,13 +56,17 @@ const FilterModal: React.FC<TableProps> = ({
   isNew
 }) => {
   const dispatch = useAppDispatch();
-  const format = isNew ? [{ Column: '', Operation: '', Data: '' }] : [{ column: '', operation: '', data: '' }]
+
+  const data = {
+    start: '',
+    end: ''
+  }
   const [filters, setFilters] = useState<FilterModel[]>([
-    { Column: '', Operation: '', Data: '' },
+    { Column: '', Operation: '', Data: '', start_date: "", end_date: '' },
   ]);
 
   const [applyFilters, setApplyFilters] = useState<FilterModel[]>([
-    { Column: '', Operation: '', Data: '' },
+    { Column: '', Operation: '', Data: '', start_date: "", end_date: '' },
   ]);
   const [errors, setErrors] = useState<ErrorState>({});
   const options: Option[] = columns.map((column) => ({
@@ -133,7 +139,7 @@ const FilterModal: React.FC<TableProps> = ({
   }, [resetOnChange]);
 
   const handleAddRow = () => {
-    setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
+    setFilters([...filters, { Column: '', Operation: '', Data: '', start_date: "", end_date: '' }]);
   };
 
   const handleRemoveRow = (index: number) => {
@@ -160,7 +166,7 @@ const FilterModal: React.FC<TableProps> = ({
   const handleDataChange = (
     index: number,
     value: string,
-    type: 'number' | 'date' | 'boolean' | 'text'
+    type: 'number' | 'date' | 'boolean' | 'text' | 'start' | 'end'
   ) => {
     const newFilters = [...filters];
     // Convert ".1" to "0.1" if the column is "rate" or "rate list"
@@ -170,10 +176,16 @@ const FilterModal: React.FC<TableProps> = ({
     ) {
       value = value.replace(/^(\.)(\d+)/, '0$1$2');
     }
+    
     newFilters[index].Data = value;
+    newFilters[index].start_date = value;
+    newFilters[index].end_date = value;
     newFilters[index].type = type;
     setFilters(newFilters);
   };
+
+
+
   const getInputType = (columnName: string) => {
     const type = columns.find((option) => (option.filter ? option.filter : option.name) === columnName)?.type;
     if (type === 'number') {
@@ -213,6 +225,14 @@ const FilterModal: React.FC<TableProps> = ({
           filter.type === 'date'
             ? `${String(new Date(filter.Data).getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.Data).getDate()).padStart(2, '0')}-${new Date(filter.Data).getFullYear()}`
             : filter.Data,
+        start_date:
+          (filter.type === 'date' && isNew === true)
+            ? `${String(new Date(filter.start_date || '').getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.start_date || '').getDate()).padStart(2, '0')}-${new Date(filter.start_date || '').getFullYear()}`
+            : filter.start_date,
+        end_date:
+          (filter.type === 'date' && isNew === true)
+            ? `${String(new Date(filter.end_date || '').getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.end_date || '').getDate()).padStart(2, '0')}-${new Date(filter.end_date || '').getFullYear()}`
+            : filter.start_date,
       }));
       const req = {
         page_number: page_number,
@@ -234,10 +254,13 @@ const FilterModal: React.FC<TableProps> = ({
     }
   };
 
+  console.log(filters, "jhgghj")
+
   const handleCloseModal = () => {
     handleClose();
     setErrors({});
   };
+  console.log(filters, ".Data")
   return (
     <div className="transparent-model">
       <div className="modal">
@@ -324,7 +347,7 @@ const FilterModal: React.FC<TableProps> = ({
                       />
                     </div>
 
-                    <div className="create-input-field">
+                    <div className="create-input-field" style={{ display: (type === 'date' && isNew === true) ? 'flex' : '', gap: (type === 'date' && isNew === true) ? "6px" : '', paddingRight: (type === 'date' && isNew === true) ? "10px" : '' }}>
                       {type === 'boolean' ? (
                         <SelectOption
                           onChange={(newValue) =>
@@ -333,9 +356,9 @@ const FilterModal: React.FC<TableProps> = ({
                           value={
                             filter.Data
                               ? {
-                                  value: filter.Data,
-                                  label: filter.Data === 'yes' ? 'Yes' : 'No',
-                                }
+                                value: filter.Data,
+                                label: filter.Data === 'yes' ? 'Yes' : 'No',
+                              }
                               : undefined
                           }
                           options={[
@@ -344,22 +367,65 @@ const FilterModal: React.FC<TableProps> = ({
                           ]}
                         />
                       ) : (
-                        <Input
-                          type={type}
-                          label="Data"
-                          name="Data"
-                          onKeyUp={(e) => {
-                            if (e.key === 'Enter') {
-                              applyFilter();
-                            }
-                          }}
-                          value={filter.Data}
-                          onChange={(e: any) => {
-                            handleDataChange(index, e.target.value, type);
-                            setErrors({ ...errors, [`data${index}`]: '' });
-                          }}
-                          placeholder={'Enter'}
-                        />
+                        <>
+                          {(type === 'date' && isNew === true) &&
+                            <>
+                              <Input
+                                type={type}
+                                label="Start Date"
+                                name="end_date"
+                                onKeyUp={(e) => {
+                                  if (e.key === 'Enter') {
+                                    applyFilter();
+                                  }
+                                }}
+                                value={filter.start_date || ''}
+                                onChange={(e: any) => {
+                                  handleDataChange(index, e.target.value, 'start');
+                                  setErrors({ ...errors, [`data${index}`]: '' });
+                                }}
+                                placeholder={'Enter'}
+                              />
+                              <Input
+                                type={type}
+                                label="End Date"
+                                name="end_date"
+                                onKeyUp={(e) => {
+                                  if (e.key === 'Enter') {
+                                    applyFilter();
+                                  }
+                                }}
+                                value={filter.end_date || ''}
+                                onChange={(e: any) => {
+                                  handleDataChange(index, e.target.value, 'end');
+                                  setErrors({ ...errors, [`data${index}`]: '' });
+                                }}
+                                placeholder={'Enter'}
+                              />
+                            </>
+                          }
+                          {!(type === 'date' && isNew === true) &&
+                            <>
+                              <Input
+                                type={type}
+                                label="Data"
+                                name="Data"
+                                onKeyUp={(e) => {
+                                  if (e.key === 'Enter') {
+                                    applyFilter();
+                                  }
+                                }}
+                                value={filter.Data}
+                                onChange={(e: any) => {
+                                  handleDataChange(index, e.target.value, type);
+                                  setErrors({ ...errors, [`data${index}`]: '' });
+                                }}
+                                placeholder={'Enter'}
+                              />
+
+                            </>
+                          }
+                        </>
                       )}
                       {errors[`data${index}`] && (
                         <span style={{ color: 'red', fontSize: '12px' }}>

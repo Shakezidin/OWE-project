@@ -54,7 +54,7 @@ const pipelineSlice = createSlice({
           .addCase(getPipeLineData.fulfilled, (state, action) => {
             state.pipelineData.loading = false;
             state.pipelineData.data = action.payload;
-            state.pipelineData.list = action.payload?.list?.data.pipeline_dealer_data_list;
+            state.pipelineData.list = action.payload?.list?.data?.pipeline_dealer_data_list;
           })
           .addCase(getPipeLineData.rejected, (state, action) => {
             state.pipelineData.loading = false;
