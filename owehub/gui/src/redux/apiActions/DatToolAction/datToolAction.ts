@@ -120,7 +120,7 @@ export const updateDatTool = createAsyncThunk(
       console.log(response, 'response.................');
       return response.data.data;
     } catch (error) {
-      return rejectWithValue('Failed to fetch dropdown list');
+      return rejectWithValue('Failed to fetch updateDatTool');
     }
   }
 );
