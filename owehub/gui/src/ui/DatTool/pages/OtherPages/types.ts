@@ -26,4 +26,5 @@ export interface StringInverterProps {
   parentConfig: InverterConfigParent;
   onParentChange: (field: 'inverter' | 'max', value: string | number) => void;
   onConfigChange: (mppt: MpptKey, field: keyof MpptConfig, value: string) => void;
+  inverterOptions?: string[];
 }

@@ -13,6 +13,7 @@ const StringInverterConfig: React.FC<StringInverterProps> = ({
   parentConfig,
   onParentChange,
   onConfigChange,
+  inverterOptions = [],
 }) => {
 
 
@@ -81,7 +82,7 @@ const StringInverterConfig: React.FC<StringInverterProps> = ({
           {isEditing ? (
             <Select
               value={editedConfig.inverter}
-              options={inverterOptions}
+              options={inverterOptions.map(opt => ({ label: opt, value: opt }))}
               onChange={(selected) => setEditedConfig((prev) => ({ ...prev, inverter: String(selected || '') }))} // Fixed key
             />
           ) : (

@@ -124,12 +124,12 @@ const SideContainer: React.FC<SideContainerProps> = ({
       ) : (
         <div className={styles.wrapperBox}>
           <div className={styles.dataBoxWrapper}>
-            {mappedDataList?.map((data: any, index: number) => (
+            {mappedDataList?.map((data: any, index: any) => (
               <div key={index} className={styles.dataBox} onClick={() => setCurrentGeneralId(data.projectID)} onMouseOver={() => setIsHovered(index)} onMouseOut={() => setIsHovered(null)} style={{ 
                 backgroundColor: currentGeneralId === data.projectID 
                   ? '#377CF6' 
                   : isHovered === index 
-                  ? '#d5e4ff' 
+                  ? '#377CF6' 
                   : '', 
                   color:isHovered === index ? '#000000' : ''
                

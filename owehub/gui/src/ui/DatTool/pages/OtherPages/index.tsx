@@ -6,7 +6,7 @@ import Select from '../../components/Select';
 import styles from '../../styles/OtherPage.module.css';
 import { InverterConfigParent, MpptKey, MpptConfig } from './types';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { getOtherInfo } from '../../../../redux/apiActions/DatToolAction/datToolAction';
+import { getDropdownList, getOtherInfo } from '../../../../redux/apiActions/DatToolAction/datToolAction';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import style2 from '../../styles/AdderssPage.module.css'
 
@@ -14,7 +14,14 @@ interface CardProps {
   title: string;
   fields: Record<string, string>;
   onSave: (fields: Record<string, string>) => void;
-  options?: Record<string, string[]>;
+  options?: Partial<Record<string, string[]>>;  // Changed to Partial
+}
+
+interface StringInverterProps {
+  parentConfig: InverterConfigParent;
+  onParentChange: (field: "inverter" | "max", value: string | number) => void;
+  onConfigChange: (mppt: MpptKey, field: keyof MpptConfig, value: string) => void;
+  inverterOptions?: string[];  // Add this line
 }
 
 const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
@@ -28,6 +35,17 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
   const handleFieldChange = (field: string, value: string) => {
     setEditedFields((prev) => ({ ...prev, [field]: value }));
   };
+
+  const getOptionsForField = (key: string): { label: string; value: string; }[] => {
+    const fieldOptions = options?.[key];
+    if (!fieldOptions) return [];
+    return fieldOptions.map((opt) => ({
+      label: opt,
+      value: opt,
+    }));
+  };
+
+  
 
   return (
     <div className={styles.card}>
@@ -68,10 +86,7 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
             {isEditing ? (
               options?.[key] ? (
                 <Select
-                  options={options[key].map((opt) => ({
-                    label: opt,
-                    value: opt,
-                  }))}
+                options={getOptionsForField(key)}
                   value={editedFields[key]}
                   onChange={(selectedValue) =>
                     handleFieldChange(key, selectedValue.toString())
@@ -98,9 +113,43 @@ interface OtherInfoPageProps {
   currentGeneralId: string;
   loading?:boolean;
 }
+interface DropdownData {
+  new_or_existing: string[];
+  panel_brand: string[];
+  busbar_rating: string[];
+  main_breaker_rating: string[];
+  system_phase: string[];
+  system_voltage: string[];
+  service_entrance: string[];
+  service_rating: string[];
+  meter_enclosure_type: string[];
+  pv_conduct_run: string[];
+  drywall_cut_needed: string[];
+  number_of_stories: string[];
+  trenching_required: string[];
+  points_of_interconnection: string[];
+  inverter: string[];
+}
 const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
 
   const [loading, setLoading] = useState(false);
+  const [dropdownData, setDropdownData] = useState<DropdownData>({
+    new_or_existing: [],
+    panel_brand: [],
+    busbar_rating: [],
+    main_breaker_rating: [],
+    system_phase: [],
+    system_voltage: [],
+    service_entrance: [],
+    service_rating: [],
+    meter_enclosure_type: [],
+    pv_conduct_run: [],
+    drywall_cut_needed: [],
+    number_of_stories: [],
+    trenching_required: [],
+    points_of_interconnection: [],
+    inverter: []
+  });
      const dispatch = useAppDispatch();
      const { othersData } = useAppSelector((state) => state.datSlice);
     //  useEffect(()=>{
@@ -212,13 +261,17 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
 
 
   useEffect(() => {
+    // Start loading
     setLoading(true);
-    if (currentGeneralId) { 
+  
+    // If currentGeneralId exists, fetch other info
+    if (currentGeneralId) {
+      // Fetch additional info for project
       dispatch(getOtherInfo({ project_id: currentGeneralId }))
         .unwrap()
-        .then((data:any) => {
+        .then((data: any) => {
           if (data) {
-            setEquipment(data.equipment || { ...equipment }); // Use spread for fallback
+            setEquipment(data.equipment || { ...equipment });
             setSystem(data.system || { ...system });
             setSiteInfo(data.siteInfo || { ...siteInfo });
             setPvInterconnection(data.pvInterconnection || { ...pvInterconnection });
@@ -228,16 +281,66 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
             setMeasurement(data.measurement || { ...measurement });
             setExistingPV(data.existingPV || { ...existingPV });
           }
-          setLoading(false);
         })
-        .catch((error:any) => {
+        .catch((error: any) => {
           console.error("Error fetching data:", error);
-          setLoading(false);
         });
-    } else {
-      setLoading(false); 
     }
-  }, [currentGeneralId]);
+  
+    // Fetch dropdown list data
+    dispatch(getDropdownList({
+      drop_down_list: [
+        "new_or_existing", "panel_brand", "busbar_rating", "main_breaker_rating",
+        "system_phase", "system_voltage", "service_entrance", "service_rating",
+        "meter_enclosure_type", "pv_conduct_run", "drywall_cut_needed",
+        "number_of_stories", "trenching_required", "points_of_interconnection", "inverter"
+      ]
+    }))
+      .unwrap()
+      .then((data: DropdownData) => {
+        setDropdownData(data);
+      })
+      .catch((error: any) => {
+        console.error("Error fetching dropdown list data:", error);
+      })
+      .finally(() => {
+        // Stop loading after all async tasks are complete
+        setLoading(false);
+      });
+  
+  }, [currentGeneralId, dispatch]);
+  
+
+
+  const getOptionsForCard = (cardType: string): Partial<Record<string, string[]>> => {
+    switch (cardType) {
+      case 'equipment':
+        return {
+          'New Or Existing': dropdownData.new_or_existing || [],
+          'Panel Brand': dropdownData.panel_brand || [],
+          'Busbar Rating': dropdownData.busbar_rating || [],
+          'Main Breaker Rating': dropdownData.main_breaker_rating || [],
+        };
+      case 'system':
+        return {
+          'System Phase': dropdownData.system_phase || [],
+          'System Voltage': dropdownData.system_voltage || [],
+          'Service Entrance': dropdownData.service_entrance || [],
+          'Service Rating': dropdownData.service_rating || [],
+          'Meter Enclosure Type': dropdownData.meter_enclosure_type || [],
+        };
+      case 'siteInfo':
+        return {
+          'PV Conduit Run': dropdownData.pv_conduct_run || [],
+          'Drywall Cut Needed': dropdownData.drywall_cut_needed || [],
+          'Number of Stories': dropdownData.number_of_stories || [],
+          'Trenching Required': dropdownData.trenching_required || [],
+          'Points of Interconnection': dropdownData.points_of_interconnection || [],
+        };
+      default:
+        return {};
+    }
+  };
   
 
   return (
@@ -253,36 +356,19 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
               title="Electrical Equipment Info"
               fields={equipment}
               onSave={(fields) => setEquipment(fields as typeof equipment)}
-              options={{
-                'New Or Existing': ['New', 'Existing'],
-                'Panel Brand': ['Eaton', 'Other'],
-                'Busbar Rating': ['200', '400'],
-                'Main Breaker Rating': ['200', '400'],
-              }}
+              options={getOptionsForCard('equipment')}
             />
             <Card
               title="Electrical System Info"
               fields={system}
               onSave={(fields) => setSystem(fields as typeof system)}
-              options={{
-                'System Phase': ['---', 'Single', 'Three'],
-                'System Voltage': ['---', 'Single', 'Three'],
-                'Service Entrance': ['---', 'Overhead', 'Underground'],
-                'Service Rating': ['---', 'Single', 'Three'],
-                'Meter Enclosure Type': ['Meter Combo'],
-              }}
+              options={getOptionsForCard('system')}
             />
             <Card
               title="Site Info"
               fields={siteInfo}
               onSave={(fields) => setSiteInfo(fields as typeof siteInfo)}
-              options={{
-                'PV Conduit Run': ['---', 'Interior', 'Exterior'],
-                'Drywall Cut Needed': ['Yes', 'No'],
-                'Number of Stories': ['---', '1', '2'],
-                'Trenching Required': ['Yes', 'No'],
-                'Points of Interconnection': ['---', '1', '2'],
-              }}
+              options={getOptionsForCard('siteInfo')}
             />
             <Card
               title="PV only Interconnection"
@@ -301,7 +387,7 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
           </div>
 
           <div className={styles.column}>
-            <StringInverterConfig
+          <StringInverterConfig
               parentConfig={inverterConfigParent}
               onParentChange={(field, value) =>
                 setInverterConfigParent((prev) => ({
@@ -318,6 +404,7 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
                   },
                 }))
               }
+              inverterOptions={dropdownData.inverter}
             />
             <Card
               title="Roof Coverage Calculator"
