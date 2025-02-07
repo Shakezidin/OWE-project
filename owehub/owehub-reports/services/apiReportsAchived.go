@@ -388,6 +388,12 @@ func getProductionTargetOrAchievedItem(rawRecord map[string]interface{}) *models
 		log.FuncErrorTrace(0, "Failed to cast batteries_ct from type %T to float64", rawRecord["batteries_ct"])
 	}
 
+	ntp, ok := rawRecord["ntp"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast ntp from type %T to float64", rawRecord["ntp"])
+	}
+
+	item.NTP = ntp
 	item.ProjectsSold = projectsSold
 	item.MwSold = mwSold
 	item.InstallCt = installCt
@@ -460,5 +466,10 @@ func getProductionAchievedPercentage(target *models.ProductionTargetOrAchievedIt
 	if target.BatteriesCt > 0 {
 		pct.BatteriesCt = acheived.BatteriesCt / target.BatteriesCt * 100
 	}
+
+	if target.NTP > 0 {
+		pct.NTP = acheived.NTP / target.NTP * 100
+	}
+
 	return &pct
 }
