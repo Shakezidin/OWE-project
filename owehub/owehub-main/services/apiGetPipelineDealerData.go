@@ -190,6 +190,8 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		var jeopardyStatus bool
 		if !jeopardyDate.IsZero() {
 			jeopardyStatus = true
+		} else {
+			jeopardyStatus = false
 		}
 
 		pipelineDealerData := models.PipelineDealerData{
