@@ -68,6 +68,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		pipelineDealerDataList models.PipelineDealerDataList
 		data                   []map[string]interface{}
 		whereEleList           []interface{}
+		specialFilters         []string
 		email                  string
 		userRole               string
 		pipelineDealerQuery    string
@@ -129,8 +130,9 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 	pipelineDealerQuery = models.PipelineDealerDataQuery(roleFilter)
 
 	/* Creating Filter */
+	specialFilters = []string{"unique_id", "customer_name"}
 	builder := NewFilterBuilder(columnMap)
-	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, "", false, false)
+	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, "", false, false, specialFilters)
 
 	/* Querying the final query */
 	query = pipelineDealerQuery + queryFilter
