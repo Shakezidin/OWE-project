@@ -95,6 +95,8 @@ const FilterModal: React.FC<TableProps> = ({
           Column: '',
           Operation: '',
           Data: '',
+          start_date: '',
+          end_date: ''
         }));
       setFilters(resetFilters);
       setApplyFilters(resetFilters);
@@ -172,7 +174,7 @@ const FilterModal: React.FC<TableProps> = ({
     type: 'number' | 'date' | 'boolean' | 'text' | 'start' | 'end'
   ) => {
     const newFilters = [...filters];
-  
+
     if (type === 'start') {
       newFilters[index].start_date = value;
       newFilters[index].Data = ''; // Clear Data when setting start_date
@@ -184,11 +186,11 @@ const FilterModal: React.FC<TableProps> = ({
       newFilters[index].start_date = ''; // Clear start_date for non-date types
       newFilters[index].end_date = ''; // Clear end_date for non-date types
     }
-  
+
     newFilters[index].type = type;
     setFilters(newFilters);
   };
-  
+
 
   const getInputType = (columnName: string) => {
     const type = columns.find(
@@ -207,7 +209,7 @@ const FilterModal: React.FC<TableProps> = ({
 
   const applyFilter = async () => {
     setErrors({});
-  
+
     // Validation
     const newErrors: ErrorState = {};
     filters.forEach((filter, index) => {
@@ -217,49 +219,64 @@ const FilterModal: React.FC<TableProps> = ({
       if (!filter.Operation) {
         newErrors[`operation${index}`] = `Please provide Operation`;
       }
-      if (!filter.Data && filter.type !== 'date' && !filter.start_date && !filter.end_date) {
+
+      if (!filter.Data && filter.type !== 'date' && (filter.start_date === '' || filter.end_date === '')) {
         newErrors[`data${index}`] = `Please provide Data`;
       }
     });
-  
+
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
-      const formattedFilters: FilterModel[] = filters.map((filter) => ({
-        Column: filter.Column,
-        Operation: filter.Operation,
-        Data: filter.type === 'date' ? '' : filter.Data.trim(), // Ensure Data always exists
-        start_date:
-          filter.type === 'date' && filter.start_date
-            ? `${String(new Date(filter.start_date).getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.start_date).getDate()).padStart(2, '0')}-${new Date(filter.start_date).getFullYear()}`
-            : '',
-        end_date:
-          filter.type === 'date' && filter.end_date
-            ? `${String(new Date(filter.end_date).getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.end_date).getDate()).padStart(2, '0')}-${new Date(filter.end_date).getFullYear()}`
-            : '',
-      }));
-  
+      const formattedFilters: FilterModel[] = filters.map((filter) => {
+        const filterModel: FilterModel = {
+          Column: filter.Column,
+          Operation: filter.Operation,
+          Data: filter.type === 'date' ? `${String(new Date(filter.Data).getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.Data).getDate()).padStart(2, '0')}-${new Date(filter.Data).getFullYear()}` : filter.Data, // Ensure Data always exists
+        };
+
+        if (isNew) {
+          filterModel.start_date =
+            filter.type === 'date' && filter.start_date
+              ? `${String(new Date(filter.start_date).getMonth() + 1).padStart(2, '0')}-${String(
+                new Date(filter.start_date).getDate()
+              ).padStart(2, '0')}-${new Date(filter.start_date).getFullYear()}`
+              : filter.start_date;
+
+          filterModel.end_date =
+            filter.type === 'date' && filter.end_date
+              ? `${String(new Date(filter.end_date).getMonth() + 1).padStart(2, '0')}-${String(
+                new Date(filter.end_date).getDate()
+              ).padStart(2, '0')}-${new Date(filter.end_date).getFullYear()}`
+              : filter.end_date;
+        }
+
+        return filterModel;
+      });
+
+      console.log(formattedFilters, "format filter")
+
       const req = {
         page_number: page_number,
         page_size: page_size,
         filters: formattedFilters,
       };
-  
+
       setApplyFilters([...formattedFilters]);
       dispatch(activeFilter({ name: pathname }));
       handleClose();
       fetchFunction(req);
     }
   };
-  
-  console.log(applyFilters, 'applyFilters');
 
-  console.log(filters, 'jhgghj');
+
 
   const handleCloseModal = () => {
     handleClose();
     setErrors({});
   };
-  console.log(filters, '.Data');
+
+  console.log(filters, "fdhbgf")
+
   return (
     <div className="transparent-model">
       <div className="modal">
@@ -290,10 +307,16 @@ const FilterModal: React.FC<TableProps> = ({
             <div className="createProfileTextView">
               {filters?.map((filter, index) => {
                 const type = getInputType(filter.Column);
-                console.log(type, 'type');
+
                 return (
                   <div className="create-input-container" key={index}>
-                    <div className="create-input-field">
+                    <div
+                      className="create-input-field"
+                      style={{
+                        width:
+                          (type === 'date' && isNew === true) ? '25%' : '',
+                      }}
+                    >
                       <label
                         className="inputLabel-select"
                         style={{ fontWeight: 400 }}
@@ -321,7 +344,13 @@ const FilterModal: React.FC<TableProps> = ({
                         )}
                       </div>
                     </div>
-                    <div className="create-input-field">
+                    <div
+                      className="create-input-field"
+                      style={{
+                        width:
+                          (type === 'date' && isNew === true) ? '25%' : '',
+                      }}
+                    >
                       <label
                         className="inputLabel-select"
                         style={{ fontWeight: 400 }}
@@ -351,11 +380,11 @@ const FilterModal: React.FC<TableProps> = ({
                     <div
                       className="create-input-field"
                       style={{
-                        display:
-                          type === 'date' && isNew === true ? 'flex' : '',
-                        gap: type === 'date' && isNew === true ? '6px' : '',
+
                         paddingRight:
                           type === 'date' && isNew === true ? '10px' : '',
+                        width:
+                          (type === 'date' && isNew === true) ? '40%' : '',
                       }}
                     >
                       {type === 'boolean' ? (
@@ -366,9 +395,9 @@ const FilterModal: React.FC<TableProps> = ({
                           value={
                             filter.Data
                               ? {
-                                  value: filter.Data,
-                                  label: filter.Data === 'yes' ? 'Yes' : 'No',
-                                }
+                                value: filter.Data,
+                                label: filter.Data === 'yes' ? 'Yes' : 'No',
+                              }
                               : undefined
                           }
                           options={[
@@ -380,57 +409,76 @@ const FilterModal: React.FC<TableProps> = ({
                         <>
                           {type === 'date' && isNew === true && (
                             <>
-                              <Input
-                                type="date"
-                                label="Start Date"
-                                name="start_date"
-                                onKeyUp={(e) => {
-                                  if (e.key === 'Enter') {
-                                    applyFilter();
-                                  }
+                              <div
+                                style={{
+
+                                  display:
+                                    type === 'date' && isNew === true ? 'flex' : '',
+                                  gap:
+                                    type === 'date' && isNew === true ? '6px' : '',
+
                                 }}
-                                value={filter.start_date || ''}
-                                onChange={(e: any) => {
-                                  handleDataChange(
-                                    index,
-                                    e.target.value,
-                                    'start'
-                                  ); // Use 'start' type
-                                  setErrors({
-                                    ...errors,
-                                    [`data${index}`]: '',
-                                  });
-                                }}
-                                placeholder={'Enter'}
-                              />
-                              <Input
-                                type="date"
-                                label="End Date"
-                                name="end_date"
-                                onKeyUp={(e) => {
-                                  if (e.key === 'Enter') {
-                                    applyFilter();
-                                  }
-                                }}
-                                value={filter.end_date || ''}
-                                onChange={(e: any) => {
-                                  handleDataChange(
-                                    index,
-                                    e.target.value,
-                                    'end'
-                                  ); // Use 'end' type
-                                  setErrors({
-                                    ...errors,
-                                    [`data${index}`]: '',
-                                  });
-                                }}
-                                placeholder={'Enter'}
-                              />
+                              >
+                                <Input
+                                  type="date"
+                                  label="Start Date"
+                                  name="start_date"
+                                  onKeyUp={(e) => {
+                                    if (e.key === 'Enter') {
+                                      applyFilter();
+                                    }
+                                  }}
+                                  value={filter.start_date || ''}
+                                  onChange={(e: any) => {
+                                    handleDataChange(
+                                      index,
+                                      e.target.value,
+                                      'start'
+                                    ); // Use 'start' type
+                                    if (filter.start_date !== '' && filter.end_date !== '') {
+                                      setErrors({
+                                        ...errors,
+                                        [`data${index}`]: '',
+                                      });
+                                    }
+
+                                  }}
+                                  placeholder={'Enter'}
+                                />
+                                <Input
+                                  min={filter.start_date}
+                                  type="date"
+                                  label="End Date"
+                                  name="end_date"
+                                  onKeyUp={(e) => {
+                                    if (e.key === 'Enter') {
+                                      applyFilter();
+                                    }
+                                  }}
+                                  value={filter.end_date || ''}
+                                  onChange={(e: any) => {
+                                    handleDataChange(
+                                      index,
+                                      e.target.value,
+                                      'end'
+                                    ); // Use 'end' type
+                                    if (filter.start_date !== '' && filter.end_date !== '') {
+                                      setErrors({
+                                        ...errors,
+                                        [`data${index}`]: '',
+                                      });
+                                    }
+
+                                  }}
+                                  placeholder={'Enter'}
+                                />
+                              </div>
                             </>
                           )}
                           {!(type === 'date' && isNew === true) && (
                             <>
                               <Input
+
                                 type={type}
                                 label="Data"
                                 name="Data"

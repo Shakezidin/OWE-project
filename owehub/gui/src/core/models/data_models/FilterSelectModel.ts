@@ -2,6 +2,8 @@ export interface FilterModel {
   Column: string;
   Operation: string;
   Data: string;
+  start_date?: string;
+  end_date?: string;
 }
 export interface Column {
   name: string;
