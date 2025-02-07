@@ -12,12 +12,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import { MdClose, MdDone } from 'react-icons/md';
 import style2 from '../styles/GeneralPage.module.css';
 import { toast } from 'react-toastify';
-
-interface Component {
-  name: string;
-  quantity: number;
-  cost: number;
-}
+import DataNotFound from '../../components/loader/DataNotFound';
 
 interface Item {
   name: string;
@@ -30,19 +25,13 @@ interface CategoryItem {
   cost: number;
 }
 
-
-interface AddersData {
-  categories: CategoryItem[];
-  total_cost: number;
-}
-
-
 function AdderssPage({ setOpenPopUp,currentGeneralId,loading,changeInQuantity,setChangeInQuantity}: any) {
   const dispatch = useAppDispatch();
-   const { addersData } = useAppSelector((state) => state.datSlice);
+   const addersData= useAppSelector((state) => state.datSlice.addersData);
   useEffect(()=>{
     dispatch(getDatAddersInfo({ project_id: currentGeneralId }));
   },[currentGeneralId]);
+  console.log(addersData, 'addersData.................'); 
   const leftPartObj: CategoryItem[] = addersData?.categories?.map((category:any) => ({
     text: category?.title ?? 'N/A',  
     cost: category?.cost ?? 0  
@@ -101,7 +90,17 @@ useEffect(() => {
   }
 }, [addersData]);
 
-const [values, setValues] = useState<{ [key: number]: number[] }>({});
+const [values, setValues] = useState<{ [key: number]: number[] }>({
+  0: Array(rightPartObj.length).fill(0),
+  1: Array(rightPartObjElectrical.length).fill(0),
+  2: Array(rightPartObjSiteAdders.length).fill(0),
+  3: Array(rightPartObjStructural.length).fill(0),
+  4: Array(rightPartObjUpgrades.length).fill(0),
+  5: Array(rightPartObjInterconnection.length).fill(0),
+  6: Array(rightPartObjUpgradedElectrical.length).fill(0),
+  7: Array(rightPartObjOther.length).fill(0),
+});
+
 
 useEffect(() => {
   if (Array.isArray(rightPartObj) &&
@@ -126,10 +125,9 @@ useEffect(() => {
 }, [addersData]);
 
 
+
   const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
   const currentItems = sectionData[currentSectionIndex];
-  
-
   const handleIncrement = (index: number) => {
     setValues((prevValues) => {
       const newValues = { ...prevValues };
@@ -219,7 +217,7 @@ useEffect(() => {
   }
   return (
     <div className={styles.container}>
-      {loading ? <div className={styles.loaderContainer}> <MicroLoader/> </div> : <div className={styles.wrapper}>
+      {loading ? <div className={styles.loaderContainer}> <MicroLoader/> </div> : addersData? <div className={styles.wrapper}>
       
       <div className={styles.adderssPageTopPart}>
         <div className={styles.adderssPageTopPart_leftText}>
@@ -241,9 +239,7 @@ useEffect(() => {
         </div>
       </div>
 
-      {}
       <div className={styles.adderssPageMainPart}>
-        {}
         <div className={styles.adderssPageMainPart_left}>
           {leftPartObj.map((bar, index) => (
             <div
@@ -318,7 +314,7 @@ useEffect(() => {
                     onClick={() => handleDecrement(index)}
                   />
                   <p className={styles.adderssPageMainPart_text}>
-                    { values[currentSectionIndex][index]  }
+                    { values[currentSectionIndex][index] ? values[currentSectionIndex][index] : 0 }
                   </p>
                   <FiPlus
                     className={styles.adderssPageMainPart_increment}
@@ -331,7 +327,9 @@ useEffect(() => {
           ))}
         </div>
       </div>
-    </div>}
+    </div>:<div style={{ display: 'flex', justifyContent: 'center' }}>
+          <DataNotFound />
+        </div>}
     </div>
     
   );
