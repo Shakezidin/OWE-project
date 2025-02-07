@@ -68,6 +68,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		pipelineDealerDataList models.PipelineDealerDataList
 		data                   []map[string]interface{}
 		whereEleList           []interface{}
+		specialFilters         []string
 		email                  string
 		userRole               string
 		pipelineDealerQuery    string
@@ -128,9 +129,13 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 	/* Base query */
 	pipelineDealerQuery = models.PipelineDealerDataQuery(roleFilter)
 
-	/* Creating Filter */
+	/* 
+		Creating Filter 
+		Special Filters are to wrap column in an OR bracket
+	*/
+	specialFilters = []string{"unique_id", "customer_name"}
 	builder := NewFilterBuilder(columnMap)
-	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, "", false, false)
+	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, "", false, false, specialFilters)
 
 	/* Querying the final query */
 	query = pipelineDealerQuery + queryFilter
@@ -188,6 +193,8 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		var jeopardyStatus bool
 		if !jeopardyDate.IsZero() {
 			jeopardyStatus = true
+		} else {
+			jeopardyStatus = false
 		}
 
 		pipelineDealerData := models.PipelineDealerData{

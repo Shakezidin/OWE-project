@@ -20,16 +20,18 @@ type FilterOperator string
 type DataType string
 
 const (
-	Equal            FilterOperator = "eq"   // equals
-	NotEqual         FilterOperator = "neq"  // not equals
-	LessThan         FilterOperator = "lt"   // less than
-	LessThanEqual    FilterOperator = "lte"  // less than or equal
-	GreaterThan      FilterOperator = "gt"   // greater than
-	GreaterThanEqual FilterOperator = "gte"  // greater than or equal
-	StartsWith       FilterOperator = "sw"   // starts with
-	EndsWith         FilterOperator = "ew"   // ends with
-	Contain          FilterOperator = "cont" // Contain
-	Between          FilterOperator = "btw"  // between (for date ranges)
+	Equal            FilterOperator = "eq"        // equals
+	NotEqual         FilterOperator = "neq"       // not equals
+	LessThan         FilterOperator = "lt"        // less than
+	LessThanEqual    FilterOperator = "lte"       // less than or equal
+	GreaterThan      FilterOperator = "gt"        // greater than
+	GreaterThanEqual FilterOperator = "gte"       // greater than or equal
+	StartsWith       FilterOperator = "sw"        // starts with
+	EndsWith         FilterOperator = "ew"        // ends with
+	Contain          FilterOperator = "cont"      // Contain
+	Between          FilterOperator = "btw"       // between (for date ranges)
+	IsNull           FilterOperator = "isnull"    // is null
+	IsNotNull        FilterOperator = "isnotnull" // is not null
 )
 
 const (
@@ -81,16 +83,35 @@ var operatorMap = map[FilterOperator]string{
 	StartsWith:       "ILIKE",
 	EndsWith:         "ILIKE",
 	Contain:          "ILIKE",
+	IsNull:           "IS NULL",
+	IsNotNull:        "IS NOT NULL",
 }
 
 /*
 This is the main function that is to be called to create filter
 But to use this we need to create a FilterBuilder calling funciton NewFilterBuilder
 and passing column map which contains the table alias and data type
+
+If this function needs to wrap some columns inside OR condition,
+add those columns in specialFilterColumns
 */
-func (fb *FilterBuilder) BuildFilters(req RequestParams, distincOnColumn string, includeGroupBy, whereAdded bool) (string, []interface{}) {
+func (fb *FilterBuilder) BuildFilters(req RequestParams, distincOnColumn string, includeGroupBy, whereAdded bool, specialFilterColumns []string) (string, []interface{}) {
 	var builder strings.Builder
 	var params []interface{}
+	var specialFilters, otherFilters []Filter
+
+	specialFilterMap := make(map[string]bool)
+	for _, column := range specialFilterColumns {
+		specialFilterMap[column] = true
+	}
+
+	for _, filter := range req.Filters {
+		if specialFilterMap[filter.Column] {
+			specialFilters = append(specialFilters, filter)
+		} else {
+			otherFilters = append(otherFilters, filter)
+		}
+	}
 
 	if len(req.Filters) > 0 {
 		if whereAdded {
@@ -99,8 +120,41 @@ func (fb *FilterBuilder) BuildFilters(req RequestParams, distincOnColumn string,
 			builder.WriteString(" WHERE ")
 		}
 
-		for i, filter := range req.Filters {
-			if i > 0 {
+		if len(specialFilters) > 0 {
+			builder.WriteString("(")
+			for i, filter := range specialFilters {
+				if i > 0 {
+					builder.WriteString(" OR ")
+				}
+
+				columnInfo, exists := fb.ColumnMap[filter.Column]
+				if !exists {
+					continue
+				}
+
+				if columnInfo.DataType == TypeDate && filter.Operation == Between {
+					if filter.StartDate != "" && filter.EndDate != "" {
+						builder.WriteString(fb.buildDateRangeCondition(columnInfo, filter.Column, len(params)+1))
+						params = append(params, filter.StartDate, filter.EndDate)
+					}
+					continue
+				}
+
+				operator := operatorMap[filter.Operation]
+
+				if filter.Operation == IsNull || filter.Operation == IsNotNull {
+					builder.WriteString(fb.buildCondition(columnInfo, filter.Column, operator, 0))
+				} else {
+					value := fb.modifyFilterValue(filter.Operation, filter.Data)
+					builder.WriteString(fb.buildCondition(columnInfo, filter.Column, operator, len(params)+1))
+					params = append(params, value)
+				}
+			}
+			builder.WriteString(")")
+		}
+
+		for i, filter := range otherFilters {
+			if i > 0 || len(specialFilters) > 0 {
 				builder.WriteString(" AND ")
 			}
 
@@ -118,10 +172,14 @@ func (fb *FilterBuilder) BuildFilters(req RequestParams, distincOnColumn string,
 			}
 
 			operator := operatorMap[filter.Operation]
-			value := fb.modifyFilterValue(filter.Operation, filter.Data)
 
-			builder.WriteString(fb.buildCondition(columnInfo, filter.Column, operator, len(params)+1))
-			params = append(params, value)
+			if filter.Operation == IsNull || filter.Operation == IsNotNull {
+				builder.WriteString(fb.buildCondition(columnInfo, filter.Column, operator, 0))
+			} else {
+				value := fb.modifyFilterValue(filter.Operation, filter.Data)
+				builder.WriteString(fb.buildCondition(columnInfo, filter.Column, operator, len(params)+1))
+				params = append(params, value)
+			}
 		}
 	}
 
@@ -139,6 +197,10 @@ func (fb *FilterBuilder) BuildFilters(req RequestParams, distincOnColumn string,
 
 func (fb *FilterBuilder) buildCondition(info ColumnInfo, column, operator string, paramIndex int) string {
 	fullColumn := fmt.Sprintf("%s.%s", info.TableAlias, column)
+
+	if operator == "IS NULL" || operator == "IS NOT NULL" {
+		return fmt.Sprintf("%s %s", fullColumn, operator)
+	}
 
 	switch info.DataType {
 	case TypeString:
