@@ -127,7 +127,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			COALESCE(SUM(p.mw_sold), 0) AS mw_sold,
 			COALESCE(SUM(p.install_ct), 0) AS install_ct,
 			COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
-			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct
+			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct,
+			COALESCE(SUM(p.ntp), 0) AS ntp
 		FROM months
 		LEFT JOIN production_targets p
 		ON months.n = p.month AND p.target_percentage = $3 AND p.year = $4 AND p.user_id = $5 AND %s
@@ -310,6 +311,11 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					Achieved:          acheived.BatteriesCt,
 					LastMonthAcheived: lastMonthPct.BatteriesCt,
 				},
+				"ntp": {
+					Target:            target.NTP,
+					Achieved:          acheived.NTP,
+					LastMonthAcheived: lastMonthPct.NTP,
+				},
 			}
 
 			thisMonthPct = getProductionAchievedPercentage(target, acheived)
@@ -338,6 +344,11 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					Target:             target.BatteriesCt,
 					Achieved:           acheived.BatteriesCt,
 					PercentageAchieved: thisMonthPct.BatteriesCt,
+				},
+				"ntp": {
+					Target:             target.NTP,
+					Achieved:           acheived.NTP,
+					PercentageAchieved: thisMonthPct.NTP,
 				},
 			}
 		}
