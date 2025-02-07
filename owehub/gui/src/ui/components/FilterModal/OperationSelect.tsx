@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   getOperationsForColumnType,
+  getOperationsForPipelineColumnType,
   optionOperation,
 } from '../../../core/models/data_models/FilterSelectModel';
 import SelectOption from '../selectOption/SelectOption';
@@ -12,8 +13,9 @@ const OperationSelect: React.FC<{
   onChange: (value: string) => void;
   errors: Record<string, string>;
   index: number;
-}> = ({ options, columnType, value, onChange, errors, index }) => {
-  const operations = getOperationsForColumnType(columnType);
+  isNew?: boolean;
+}> = ({isNew, options, columnType, value, onChange, errors, index }) => {
+  const operations = isNew ? getOperationsForPipelineColumnType(columnType) : getOperationsForColumnType(columnType);
 
   return (
     <div className="">

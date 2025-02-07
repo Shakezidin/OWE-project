@@ -65,3 +65,27 @@ export const getLabelForOperation = (value: string) => {
       return value;
   }
 };
+
+
+export const getOperationsForPipelineColumnType = (columnType: string) => {
+  const options: optionOperation[] = [];
+  if (columnType === 'string') {
+    options.push({ value: 'sw', label: 'Start With' });
+    options.push({ value: 'ew', label: 'End With' });
+    options.push({ value: 'cont', label: 'Contains' });
+  }
+  if (columnType === 'number') {
+    options.push({ value: 'eq', label: 'Equals' });
+    options.push({ value: 'gt', label: 'Greater Than' });
+    options.push({ value: 'gte', label: 'Greater Than Equals To' });
+    options.push({ value: 'lt', label: 'Less Than' });
+    options.push({ value: 'lte', label: 'Less Than Equals To' });
+  }
+  if (columnType === 'date') {
+    options.push({ value: 'btw', label: 'Between' });
+  }
+  if (columnType === 'boolean') {
+    options.push({ value: 'eqs', label: 'Equals' });
+  }
+  return options;
+};

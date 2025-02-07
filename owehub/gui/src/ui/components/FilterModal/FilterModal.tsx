@@ -320,6 +320,7 @@ const FilterModal: React.FC<TableProps> = ({
                         }}
                         errors={errors}
                         index={index}
+                        isNew={isNew}
                       />
                     </div>
 

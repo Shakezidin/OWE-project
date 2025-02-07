@@ -116,7 +116,7 @@ const DealerTablePipeline = () => {
                     "page_size": itemsPerPage,
                     "filters": (formattedFilters && formattedFilters.length > 0) ? formattedFilters : [
                         { "column": "unique_id", "operation": "cont", "data": searchTerm },
-                        { "column": "customer_name", "operation": "cont", "data": searchTerm },
+                        { "column": "home_owner", "operation": "cont", "data": searchTerm },
                     ],
                     "sort_by": "",
                     "sort_order": ""
@@ -154,14 +154,13 @@ const DealerTablePipeline = () => {
             const bValue = b[sortKey];
 
             if (sortKey === 'system_size' || sortKey === 'contract_amount') {
-                // Extract numeric values from system_size or contract_amount
-                const numericAValue = parseFloat(aValue.replace(/[^0-9.]/g, ''));
-                const numericBValue = parseFloat(bValue.replace(/[^0-9.]/g, ''));
-
+                const numericAValue = aValue ? parseFloat(aValue.replace(/[^0-9.]/g, '')) : 0;
+                const numericBValue = bValue ? parseFloat(bValue.replace(/[^0-9.]/g, '')) : 0;
+              
                 return sortDirection === 'asc'
-                    ? numericAValue - numericBValue
-                    : numericBValue - numericAValue;
-            } else if (typeof aValue === 'string' && typeof bValue === 'string') {
+                  ? numericAValue - numericBValue 
+                  : numericBValue - numericAValue;
+              } else if (typeof aValue === 'string' && typeof bValue === 'string') {
                 return sortDirection === 'asc'
                     ? aValue.localeCompare(bValue)
                     : bValue.localeCompare(aValue);
@@ -277,6 +276,7 @@ const DealerTablePipeline = () => {
                 page_number={page}
                 page_size={20}
                 fetchFunction={fetchFunction}
+                isNew={true}
             />
             <div className="dashBoard-container">
                 <div className="newp-heading-container">
@@ -385,7 +385,7 @@ const DealerTablePipeline = () => {
                         >
                             <MicroLoader />
                         </div>
-                    ) : !(pipelineData && pipelineData.data.list.data && pipelineData.data.list.data.pipeline_dealer_data_list) ? (
+                    ) : (cuurentPageData.length <= 0) ? (
                         <div
                             className="flex items-center justify-center"
                             style={{ height: '100%' }}
