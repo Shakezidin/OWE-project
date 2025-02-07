@@ -62,11 +62,13 @@ const DatTool: React.FC = () => {
 
   const [pageSize, setPageSize] = useState<number>(10);
   const [sort, setSort] = useState<string>('asc');
+  const [numFlag, setNumFlag]=useState<boolean>(true);
   useEffect(() => {
     dispatch(getDatProjectList({ search: searchPara, page_number:1,page_size:pageSize,sort:sort }));
-    if (data?.length > 0) {
+    if (data?.length > 0 && numFlag) {
       const projectId = data[0]?.project_id;
       setCurrentGeneralId(projectId?.startsWith(' ') ? projectId.trim() : projectId);
+      setNumFlag(false);
     }
   }, [searchPara, pageSize, sort]);
  
