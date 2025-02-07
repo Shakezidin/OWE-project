@@ -58,37 +58,7 @@ const DealerTablePipeline = () => {
     };
 
 
-    const columnMap: ColumnMap = {
-        "customer_name": "customer_name",
-        "partner_dealer": "dealer",
-        "finance_company": "finance_company",
-        "source_type": "source_type",
-        "loan_type": "loan_type",
-        "unique_id": "unique_id",
-        "street_address": "address",
-        "city": "city",
-        "state": "state",
-        "zip_code": "zip_code",
-        "email": "email_address",
-        "phone_number": "phone_number",
-        "rep_1": "primary_sales_rep",
-        "rep_2": "secondary_sales_rep",
-        "system_size": "contracted_system_size",
-        "contract_amount": "total_system_cost",
-        "created_date": "sale_date",
-        "contract_date": "sale_date",
-        "survey_final_completion_date": "survey_final_completion_date",
-        "ntp_complete_date": "ntp_complete_date",
-        "permit_submit_date": "pv_submitted",
-        "permit_approval_date": "pv_approved",
-        "ic_submit_date": "ic_submitted_date",
-        "ic_approval_date": "ic_approved_date",
-        "jeopardy_date": "jeopardy_date",
-        "cancel_date": "cancel_date",
-        "pv_install_date": "pv_completion_date",
-        "fin_complete_date": "pv_fin_date",
-        "pto_date": "pto_granted"
-    };
+    
     const handleSearchChange = useCallback(
         debounce((e: React.ChangeEvent<HTMLInputElement>) => {
             setSearchTerm(e.target.value);
@@ -101,10 +71,8 @@ const DealerTablePipeline = () => {
         data: filter.Data
     })) : [];
 
-    const getColumnKey = (sortKey: string): string => {
-        return columnMap[sortKey] || sortKey;
-    };
-    const columnKey = getColumnKey(sortKey);
+   
+    
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -154,14 +122,13 @@ const DealerTablePipeline = () => {
             const bValue = b[sortKey];
 
             if (sortKey === 'system_size' || sortKey === 'contract_amount') {
-                // Extract numeric values from system_size or contract_amount
-                const numericAValue = parseFloat(aValue.replace(/[^0-9.]/g, ''));
-                const numericBValue = parseFloat(bValue.replace(/[^0-9.]/g, ''));
-
+                const numericAValue = aValue ? parseFloat(aValue.replace(/[^0-9.]/g, '')) : 0;
+                const numericBValue = bValue ? parseFloat(bValue.replace(/[^0-9.]/g, '')) : 0;
+              
                 return sortDirection === 'asc'
-                    ? numericAValue - numericBValue
-                    : numericBValue - numericAValue;
-            } else if (typeof aValue === 'string' && typeof bValue === 'string') {
+                  ? numericAValue - numericBValue 
+                  : numericBValue - numericAValue;
+              } else if (typeof aValue === 'string' && typeof bValue === 'string') {
                 return sortDirection === 'asc'
                     ? aValue.localeCompare(bValue)
                     : bValue.localeCompare(aValue);
@@ -277,6 +244,7 @@ const DealerTablePipeline = () => {
                 page_number={page}
                 page_size={20}
                 fetchFunction={fetchFunction}
+                isNew={true}
             />
             <div className="dashBoard-container">
                 <div className="newp-heading-container">
@@ -385,7 +353,7 @@ const DealerTablePipeline = () => {
                         >
                             <MicroLoader />
                         </div>
-                    ) : !(pipelineData && pipelineData.data.list.data && pipelineData.data.list.data.pipeline_dealer_data_list) ? (
+                    ) : (cuurentPageData && cuurentPageData.length <= 0) ? (
                         <div
                             className="flex items-center justify-center"
                             style={{ height: '100%' }}
@@ -462,7 +430,7 @@ const DealerTablePipeline = () => {
                         </table>
                     )}
                 </div>
-                {pipelineData && pipelineData.data && pipelineData.data.list.data.pipeline_dealer_data_list && pipelineData.data.list.data.pipeline_dealer_data_list?.length > 0 ? (
+                {cuurentPageData && cuurentPageData?.length > 0 ? (
                     <div className="page-heading-container">
                         <p className="page-heading">
                             {startIndex} - {endIndex > totalCount! ? totalCount : endIndex} of {totalCount} item
