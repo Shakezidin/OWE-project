@@ -200,7 +200,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 				/ LENGTH('powerwall')) 
 			+ SUM((LENGTH(adder_breakdown_total) - LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'enphase battery', '', 'gi')))
 				/ LENGTH('enphase battery')) AS batteries_ct
-		FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
+			FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
 		LEFT JOIN
 		NTP_NTP_SCHEMA AS N
 		ON N.UNIQUE_ID = P.CUSTOMER_UNIQUE_ID
@@ -213,18 +213,35 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			AND P.DEALER IN (SELECT DEALER FROM AM)
 		   	AND P.STATE IN (SELECT STATES FROM STATES)
 		GROUP BY month
-	 )
+	 ),
+	 NTP_NEW AS (
+     SELECT
+        DATE_PART('MONTH', N.ntp_complete_date) AS month,
+        COUNT(N.ntp_complete_date) AS ntp_ct  -- Count occurrences of ntp_complete_date
+     FROM NTP_NTP_SCHEMA AS N
+     WHERE
+        DATE_PART('YEAR', N.ntp_complete_date) = $3  -- Ensure same year
+        AND N.APP_STATUS NOT ILIKE '%DUPLICATE%'
+        AND N.UNIQUE_ID IS NOT NULL
+        AND N.UNIQUE_ID != ''
+        AND N.DEALER IN (SELECT DEALER FROM AM)
+		AND N.STATE IN (SELECT STATES FROM STATES )
+     GROUP BY month
+)
+
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
 			COALESCE(CUSTOMERS.projects_sold, 0)::FLOAT AS projects_sold,
 			COALESCE(CUSTOMERS.kw_sold, 0) / 1000 AS mw_sold,
 			COALESCE(PV.install_ct, 0)::FLOAT AS install_ct,
 			COALESCE(PV.kw_installed, 0) / 1000 AS mw_installed,
-			COALESCE(NTP.batteries_ct, 0)::FLOAT AS batteries_ct
+			COALESCE(NTP.batteries_ct, 0)::FLOAT AS batteries_ct,
+			COALESCE(NTP_NEW.ntp_ct, 0)::FLOAT AS ntp
 		FROM MONTHS
 		LEFT JOIN CUSTOMERS ON CUSTOMERS.month = MONTHS.n
 		LEFT JOIN PV ON PV.month = MONTHS.n
 		LEFT JOIN NTP ON NTP.month = MONTHS.n
+		LEFT JOIN NTP_NEW ON NTP_NEW.month = MONTHS.n
 		ORDER BY MONTHS.n
 	 `
 	whereEleList = []interface{}{1, 12, dataReq.Year, dataReq.State, accountManagerName}
