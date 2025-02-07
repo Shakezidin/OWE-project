@@ -157,107 +157,69 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
       dispatch(getOtherInfo({ project_id: currentGeneralId }));
       console.log(othersData?.equipment.new_or_existing)
     },[currentGeneralId]);
-    const [equipment, setEquipment] = useState({
-      'New Or Existing': othersData?.equipment?.new_or_existing ?? 'N/A',  // Default to 'N/A' if not found
-      'Panel Brand': othersData?.equipment?.panel_brand ?? 'N/A',        // Default to 'N/A' if not found
-      'Busbar Rating': othersData?.equipment?.busbar_rating?.toString() ?? 'N/A',      // Default to 'N/A' if not found
-      'Main Breaker Rating': othersData?.equipment?.main_breaker_rating?.toString() ?? 'N/A',  // Default to 'N/A' if not found
-      'Available Backfeed': othersData?.equipment?.available_backfeed?.toString() ?? 'N/A',  // Default to 'N/A' if not found
-      'Required Backfeed': othersData?.equipment?.required_backfeed ?? 'N/A',  // Default to 'N/A' if not found
-    });
+    const [equipment, setEquipment] = useState({});
 
-    const [system, setSystem] = useState({
-      'System Phase': othersData?.system?.system_phase ?? 'N/A',
-      'System Voltage': othersData?.system?.system_voltage ?? 'N/A',
-      'Service Entrance': othersData?.system?.service_entrance ?? 'N/A',
-      'Service Rating': othersData?.system?.service_rating ?? 'N/A',
-      'Meter Enclosure Type': othersData?.system?.meter_enclosure_type ?? 'N/A',
-    });
+    const [system, setSystem] = useState({});
   
-    const [siteInfo, setSiteInfo] = useState({
-      'PV Conduit Run': othersData?.siteInfo?.pv_conduct_run ?? 'N/A',
-      'Drywall Cut Needed': othersData?.siteInfo?.drywall_cut_needed ?? 'N/A',
-      'Number of Stories': othersData?.siteInfo?.number_of_stories?.toString() ?? 'N/A',
-      'Trenching Required': othersData?.siteInfo?.trenching_required ?? 'N/A',
-      'Points of Interconnection': othersData?.siteInfo?.points_of_interconnection?.toString() ?? 'N/A',
-    });
+    const [siteInfo, setSiteInfo] = useState({});
     
-    const [pvInterconnection, setPvInterconnection] = useState({
-      Type: othersData?.pvInterconnection?.type ?? 'N/A',
-      'Supply/Load Side': othersData?.pvInterconnection?.supply_load_side ?? 'N/A',
-      Location: othersData?.pvInterconnection?.location ?? 'N/A',
-      'Sub - Location Tap Details': othersData?.pvInterconnection?.sub_location_tap_details ?? 'N/A',
-    });
+    const [pvInterconnection, setPvInterconnection] = useState({});
     
-    const [essInterconnection, setEssInterconnection] = useState({
-      'Backup Type': othersData?.essInterconnection?.backup_type ?? 'N/A',
-      'Transfer Switch': othersData?.essInterconnection?.transfer_switch ?? 'N/A',
-      'Fed By': othersData?.essInterconnection?.fed_by ?? 'N/A',
-    });
+    const [essInterconnection, setEssInterconnection] = useState({});
     
   const [inverterConfigParent, setInverterConfigParent] = useState<InverterConfigParent>({
     inverter: othersData?.inverterConfigParent?.inverter ?? 'N/A',
     max: Number(othersData?.inverterConfigParent?.max) || 0,
     mppt1: {
-      s1: othersData?.inverterConfigParent?.mppt1?.s1 ?? '---',
-      s2: othersData?.inverterConfigParent?.mppt1?.s2 ?? '---'
+      s1: '---',
+      s2: '---'
     },
     mppt2: {
-      s1: othersData?.inverterConfigParent?.mppt2?.s1 ?? '---',
-      s2: othersData?.inverterConfigParent?.mppt2?.s2 ?? '---'
+      s1:'---',
+      s2: '---'
     },
     mppt3: {
-      s1: othersData?.inverterConfigParent?.mppt3?.s1 ?? '---',
-      s2: othersData?.inverterConfigParent?.mppt3?.s2 ?? '---'
+      s1:'---',
+      s2:'---'
     },
     mppt4: {
-      s1: othersData?.inverterConfigParent?.mppt4?.s1 ?? '---',
-      s2: othersData?.inverterConfigParent?.mppt4?.s2 ?? '---'
+      s1:'---',
+      s2:'---'
     },
     mppt5: {
-      s1: othersData?.inverterConfigParent?.mppt5?.s1 ?? '---',
-      s2: othersData?.inverterConfigParent?.mppt5?.s2 ?? '---'
+      s1:'---',
+      s2:'---'
     },
     mppt6: {
-      s1: othersData?.inverterConfigParent?.mppt6?.s1 ?? '---',
-      s2: othersData?.inverterConfigParent?.mppt6?.s2 ?? '---'
+      s1:'---',
+      s2:'---'
     },
     mppt7: {
-      s1: othersData?.inverterConfigParent?.mppt7?.s1 ?? '---',
-      s2: othersData?.inverterConfigParent?.mppt7?.s2 ?? '---'
+      s1:'---',
+      s2:'---'
     },
     mppt8: {
-      s1: othersData?.inverterConfigParent?.mppt8?.s1 ?? '---',
-      s2: othersData?.inverterConfigParent?.mppt8?.s2 ?? '---'
+      s1: '---',
+      s2:'---'
     }
   });
   
-  const [roofCoverage, setRoofCoverage] = useState({
-    'Total Roof Area': othersData?.roofCoverage?.total_roof_area ?? 'N/A',
-    'Area of New Modules': othersData?.roofCoverage?.area_of_new_modules ?? '---',
-    'Area of EXST Modules': othersData?.roofCoverage?.area_of_exst_modules ?? '---',
-    'Coverage Percentage': othersData?.roofCoverage?.coverage_percentage ?? '50%',  // Default to '50%' if not found
-  });
+  const [roofCoverage, setRoofCoverage] = useState({});
   
-  const [measurement, setMeasurement] = useState({
-    Length: othersData?.measurement?.length ?? '---',
-    Width: othersData?.measurement?.width ?? '---',
-    Height: othersData?.measurement?.height ?? '---',
-    Other: othersData?.measurement?.other ?? '---',
-  });
+  const [measurement, setMeasurement] = useState({});
   
   const [existingPV, setExistingPV] = useState({
-    'Module Quantity': othersData?.existingPV?.module_quantity?.toString() ?? '---',
-    'Model#': othersData?.existingPV?.model_number ?? '---',
-    'Wattage': othersData?.existingPV?.wattage ?? '---',
-    'Module Area': othersData?.existingPV?.module_area ?? '---',
-    'Inverter 1 Quantity': othersData?.existingPV?.inverter1_info.quantity?.toString() ?? '---',
-    'Inverter 1 Model#': othersData?.existingPV?.inverter1_info.model_number ?? '---',
-    'Inverter 1 Output(A)': othersData?.existingPV?.inverter1_info.output_a ?? '---',
-    'Inverter 2 Quantity': othersData?.existingPV?.inverter2_info.quantity?.toString() ?? '---',
-    'Inverter 2 Model#': othersData?.existingPV?.inverter2_info.model_number ?? '---',
-    'Inverter 2 Output(A)': othersData?.existingPV?.inverter2_info.output_a ?? '---',
-    'Backfeed': othersData?.existingPV?.existing_calculated_backfeed_without_125?.toString() ?? '---',
+    'Module Quantity': '---',
+    'Model#': '---',
+    'Wattage': '---',
+    'Module Area':'---',
+    'Inverter 1 Quantity': '---',
+    'Inverter 1 Model#': '---',
+    'Inverter 1 Output(A)':'---',
+    'Inverter 2 Quantity':'---',
+    'Inverter 2 Model#':  '---',
+    'Inverter 2 Output(A)': '---',
+    'Backfeed': '---',
   });
 
 
