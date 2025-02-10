@@ -141,3 +141,24 @@
 .seeMore:hover{
   text-decoration: underline;
 }
+
+
+.iconContainer{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap:0.8rem;
+}
+.searchIconContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #2A2626;
+  border-radius: 50%;
+  padding: 0.8rem;
+  cursor: pointer;
+}
+.iconSearch{
+  height: 1.4rem;
+  width: 1.4rem;
+}

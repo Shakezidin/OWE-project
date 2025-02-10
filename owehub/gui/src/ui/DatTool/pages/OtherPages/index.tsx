@@ -155,7 +155,7 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
      const { othersData } = useAppSelector((state) => state.datSlice);
      useEffect(()=>{
       dispatch(getOtherInfo({ project_id: currentGeneralId }));
-      console.log(othersData?.equipment.new_or_existing)
+      console.log(othersData,"Others data ");
     },[currentGeneralId]);
     const [equipment, setEquipment] = useState({});
 
@@ -228,27 +228,27 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
     setLoading(true);
   
     // If currentGeneralId exists, fetch other info
-    if (currentGeneralId) {
-      // Fetch additional info for project
-      dispatch(getOtherInfo({ project_id: currentGeneralId }))
-        .unwrap()
-        .then((data: any) => {
-          if (data) {
-            setEquipment(data.equipment || { ...equipment });
-            setSystem(data.system || { ...system });
-            setSiteInfo(data.siteInfo || { ...siteInfo });
-            setPvInterconnection(data.pvInterconnection || { ...pvInterconnection });
-            setEssInterconnection(data.essInterconnection || { ...essInterconnection });
-            setInverterConfigParent(data.inverterConfigParent || { ...inverterConfigParent });
-            setRoofCoverage(data.roofCoverage || { ...roofCoverage });
-            setMeasurement(data.measurement || { ...measurement });
-            setExistingPV(data.existingPV || { ...existingPV });
-          }
-        })
-        .catch((error: any) => {
-          console.error("Error fetching data:", error);
-        });
-    }
+    // if (currentGeneralId) {
+    //   // Fetch additional info for project
+    //   dispatch(getOtherInfo({ project_id: currentGeneralId }))
+    //     .unwrap()
+    //     .then((data: any) => {
+    //       if (data) {
+    //         setEquipment(data.equipment || { ...equipment });
+    //         setSystem(data.system || { ...system });
+    //         setSiteInfo(data.siteInfo || { ...siteInfo });
+    //         setPvInterconnection(data.pvInterconnection || { ...pvInterconnection });
+    //         setEssInterconnection(data.essInterconnection || { ...essInterconnection });
+    //         setInverterConfigParent(data.inverterConfigParent || { ...inverterConfigParent });
+    //         setRoofCoverage(data.roofCoverage || { ...roofCoverage });
+    //         setMeasurement(data.measurement || { ...measurement });
+    //         setExistingPV(data.existingPV || { ...existingPV });
+    //       }
+    //     })
+    //     .catch((error: any) => {
+    //       console.error("Error fetching data:", error);
+    //     });
+    // }
   
     // Fetch dropdown list data
     dispatch(getDropdownList({

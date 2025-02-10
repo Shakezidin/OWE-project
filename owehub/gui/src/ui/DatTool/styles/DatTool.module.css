@@ -51,3 +51,7 @@
 .contentContainer::-webkit-scrollbar-corner {
   background-color: transparent;
 }
+
+.closedSideBar{
+  padding:1.2rem;
+}
