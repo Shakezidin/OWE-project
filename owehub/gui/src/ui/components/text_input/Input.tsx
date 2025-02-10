@@ -7,17 +7,17 @@ import { FormInput } from '../../../core/models/data_models/typesModel';
 import { useRef, useEffect, useState } from 'react';
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type:
-    | 'text'
-    | 'number'
-    | 'email'
-    | 'password'
-    | 'date'
-    | 'datetime-local'
-    | 'file'
-    | 'category'
-    | 'title'
-    | 'subTitle'
-    | 'dashboard_id';
+  | 'text'
+  | 'number'
+  | 'email'
+  | 'password'
+  | 'date'
+  | 'datetime-local'
+  | 'file'
+  | 'category'
+  | 'title'
+  | 'subTitle'
+  | 'dashboard_id';
   value: string | number;
   placeholder: string;
   label?: string;
@@ -36,6 +36,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   backgroundColor?: string;
   labelClassName?: string;
   innerViewClassName?: string;
+  noVal?: boolean
 }
 const Input: FC<InputProps> = ({
   type,
@@ -57,6 +58,7 @@ const Input: FC<InputProps> = ({
   backgroundColor,
   labelClassName,
   innerViewClassName = '',
+  noVal,
   ...rest
 }) => {
   const validationRules = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,6 +131,10 @@ const Input: FC<InputProps> = ({
             if (name.includes('unique')) {
               const trim = e.target.value.trim();
               e.target.value = trim;
+            }
+            if (noVal) {
+              onChange(e);
+              return;
             }
             return typeof onChange !== 'undefined' &&
               !e.target.value.startsWith(' ')

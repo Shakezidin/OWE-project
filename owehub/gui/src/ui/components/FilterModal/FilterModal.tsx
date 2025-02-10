@@ -12,6 +12,7 @@ import {
 import { useLocation } from 'react-router-dom';
 import { showAlert } from '../alert/ShowAlert';
 import { dateFormat } from '../../../utiles/formatDate';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 
 interface Column {
   name: string;
@@ -275,7 +276,8 @@ const FilterModal: React.FC<TableProps> = ({
     setErrors({});
   };
 
-  console.log(filters, "fdhbgf")
+  const isMobile = useMatchMedia('(max-width: 767px)');
+
 
   return (
     <div className="transparent-model">
@@ -313,9 +315,13 @@ const FilterModal: React.FC<TableProps> = ({
                     <div
                       className="create-input-field"
                       style={{
-                        width:
-                          (type === 'date' && isNew === true) ? '25%' : '',
+                        width: isMobile
+                          ? '100%'
+                          : (type === 'date' && isNew === true)
+                          ? '25%'
+                          : '',
                       }}
+                      
                     >
                       <label
                         className="inputLabel-select"
@@ -347,9 +353,13 @@ const FilterModal: React.FC<TableProps> = ({
                     <div
                       className="create-input-field"
                       style={{
-                        width:
-                          (type === 'date' && isNew === true) ? '25%' : '',
+                        width: isMobile
+                          ? '100%'
+                          : (type === 'date' && isNew === true)
+                          ? '25%'
+                          : '',
                       }}
+                      
                     >
                       <label
                         className="inputLabel-select"
@@ -447,6 +457,7 @@ const FilterModal: React.FC<TableProps> = ({
                                 />
                                 <Input
                                   min={filter.start_date}
+                                  disabled={filter.start_date === ''}
                                   type="date"
                                   label="End Date"
                                   name="end_date"
@@ -496,6 +507,7 @@ const FilterModal: React.FC<TableProps> = ({
                                   });
                                 }}
                                 placeholder={'Enter'}
+                                noVal={isNew}
                               />
                             </>
                           )}
