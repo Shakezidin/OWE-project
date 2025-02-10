@@ -327,7 +327,7 @@ const [values, setValues] = useState<{ [key: number]: number[] }>({
           ))}
         </div>
       </div>
-    </div>:<div style={{ display: 'flex', justifyContent: 'center' }}>
+    </div>:<div style={{ display: 'flex', justifyContent: 'center' ,height:"70vh"  }}>
           <DataNotFound />
         </div>}
     </div>

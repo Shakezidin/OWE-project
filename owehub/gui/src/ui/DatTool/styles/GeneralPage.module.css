@@ -493,3 +493,19 @@
   justify-content: center;
   align-items: center;
 }
+
+
+
+/* RESPONSIVE CODE STARTS FROM HERE */
+
+
+/* RESPONSIVE FOR COMMON COMPONENT */
+
+/* TABLET */
+
+@media (max-width:1024px)
+{
+  .genOneLeft{
+    
+  }
+}

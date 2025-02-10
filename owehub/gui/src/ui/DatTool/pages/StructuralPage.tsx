@@ -964,7 +964,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
           </div>
         </div>
       ) : (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center',height:"70vh"  }}>
           <DataNotFound />
         </div>
       )}

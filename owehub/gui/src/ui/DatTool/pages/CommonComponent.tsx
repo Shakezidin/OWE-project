@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { FiArrowRight } from 'react-icons/fi';
@@ -93,8 +93,9 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading}) 
     { icon: ICONS.DatCapture, name: 'Site Capture' },
   ];
   
+
   return (
-    <div> {loading ? <div> </div> : generalData ? <div className={styles.genOneCont}>
+    <div> {loading ? <div> </div> : generalData ? <div className={`${styles.genOneCont}`}>
     <div className={styles.genOneLeft}>
       <div className={styles.gOneHeader}>
         <div className={styles.gOneHeaderTitle}>

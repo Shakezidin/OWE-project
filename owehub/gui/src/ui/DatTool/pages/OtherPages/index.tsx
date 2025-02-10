@@ -488,7 +488,7 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
             <ExistingPVSystemInfo fields={existingPV} onSave={setExistingPV} />
           </div>
         </div>
-      ): <div style={{ display: 'flex', justifyContent: 'center' }}>
+      ): <div style={{ display: 'flex', justifyContent: 'center',height:"70vh" }}>
       <DataNotFound />
     </div>}
     </div>
