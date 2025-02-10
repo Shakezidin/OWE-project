@@ -100,7 +100,7 @@ import (
 		 return "", err
 	 }
  
-	 request, err := http.NewRequest("POST", "http://45.77.121.171:8088/api/v1/security/login", bytes.NewBuffer(loginPayloadBytes))
+	 request, err := http.NewRequest("POST", "https://superset.owe-hub.com/api/v1/security/login", bytes.NewBuffer(loginPayloadBytes))
 	 if err != nil {
 		 return "", err
 	 }
@@ -132,7 +132,7 @@ import (
  
  func getCSRFToken(authToken string) (string, string, error) {
 	client := &http.Client{}
-	request, err := http.NewRequest("GET", "http://45.77.121.171:8088/api/v1/security/csrf_token/", nil)
+	request, err := http.NewRequest("GET", "https://superset.owe-hub.com/api/v1/security/csrf_token/", nil)
 	if err != nil {
 		return "", "", err
 	}
@@ -194,7 +194,7 @@ func getGuestToken(authToken, csrfToken, sessionCookie, DashboardId string) (str
 		return "", err
 	}
 
-	request, err := http.NewRequest("POST", "http://45.77.121.171:8088/api/v1/security/guest_token/", bytes.NewBuffer(guestTokenPayloadBytes))
+	request, err := http.NewRequest("POST", "https://superset.owe-hub.com/api/v1/security/guest_token/", bytes.NewBuffer(guestTokenPayloadBytes))
 	if err != nil {
 		return "", err
 	}

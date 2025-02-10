@@ -412,6 +412,21 @@ func HandleGetTabAddersInfoRequest(resp http.ResponseWriter, req *http.Request) 
 		Adders:    "Summarized cost for all additional components and customizations.9",
 	}
 
+	// Collect all adder details
+	var viewAllAdders []models.Component
+	for _, category := range apiResponse.Categories {
+		for _, item := range category.Items {
+			viewAllAdders = append(viewAllAdders, models.Component{
+				Name:     item.Name,
+				Quantity: item.Quantity,
+				Cost:     item.Cost,
+			})
+		}
+	}
+
+	// Assign collected names to ViewAllAdders
+	apiResponse.ViewAllAdders = viewAllAdders
+
 	appserver.FormAndSendHttpResp(resp, "Project Data", http.StatusOK, apiResponse, 0)
 
 }

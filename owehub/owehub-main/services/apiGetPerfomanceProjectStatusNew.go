@@ -33,18 +33,6 @@ const (
 	grey  = "#E9E9E9"
 )
 
-type ForAgRp struct {
-	SurveyClr     string
-	CadClr        string
-	PermittingClr string
-	RoofingClr    string
-	InstallClr    string
-	ElectricalClr string
-	InspectionClr string
-	ActivationClr string
-	NTPClr        string
-}
-
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err            error
@@ -57,8 +45,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		queueStatus    string
 		searchValue    string
 		RecordCount    int64
-		forAGRp        = make(map[string]ForAgRp)
-		updated        = make(map[string]bool)
 	)
 	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
 	defer func() { log.ExitFn(0, "HandleGetPerfomanceProjectStatusRequest", err) }()
@@ -183,18 +169,22 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		4. With this we get the full data for those unique ids after joining
 	*/
 
-	data, err = FilterAgRpData(dataReq, data)
-	if err != nil {
-		log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
-	}
 	RecordCount = int64(len(data))
-	if len(data) <= 0 {
-		appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceList, RecordCount)
+	if len(dataReq.Fields) <= 0 {
+		data = Paginate(data, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+	} else {
+		data, err = FilterAgRpData(dataReq, data)
+		if err != nil {
+			log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
+		}
+	}
+	if len(data) == 0 {
+		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 		return
 	}
-	paginateData := PaginatePerfomanceData(data, dataReq)
-	paginatedUniqueIds := joinUniqueIdsWithDbResponse(paginateData)
-	tileQuery := models.GetBasePipelineQuery(paginatedUniqueIds)
+	UniqueIds := joinUniqueIdsWithDbResponse(data)
+	tileQuery := models.GetBasePipelineQuery(UniqueIds)
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, tileQuery, nil)
 	if err != nil {
@@ -302,43 +292,20 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			perfomanceResponse.ActivationColour = activationColor
 		}
 
-		forAGRp[UniqueId] = ForAgRp{
-			SurveyClr:     perfomanceResponse.SiteSurveyColour,
-			CadClr:        perfomanceResponse.CADDesignColour,
-			PermittingClr: perfomanceResponse.PermittingColour,
-			RoofingClr:    perfomanceResponse.RoofingColour,
-			InstallClr:    perfomanceResponse.InstallColour,
-			InspectionClr: perfomanceResponse.InspectionsColour,
-			ActivationClr: perfomanceResponse.ActivationColour,
-		}
-
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
 
-	agngRpForUserId, err := agngRpData(forAGRp, dataReq)
+	perfomanceList.PerfomanceList, err = agngRpData(perfomanceList.PerfomanceList, dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get agngRpForUserId err: %v", err)
+		log.FuncErrorTrace(0, "Failed to get agngRp with err: %v", err)
 	}
 
-	for i := range perfomanceList.PerfomanceList {
-		prsntUniqueId := perfomanceList.PerfomanceList[i].UniqueId
-
-		if _, alreadyUpdated := updated[prsntUniqueId]; !alreadyUpdated {
-			if exists, ok := agngRpForUserId[prsntUniqueId]; ok {
-
-				perfomanceList.PerfomanceList[i].Days_Pending_Permits = exists.Days_Pending_Permits
-				perfomanceList.PerfomanceList[i].Days_Pending_Install = exists.Days_Pending_Install
-				perfomanceList.PerfomanceList[i].Days_Pending_PTO = exists.Days_Pending_PTO
-				perfomanceList.PerfomanceList[i].Days_Pending_Project_Age = exists.Days_Pending_Project_Age
-				perfomanceList.PerfomanceList[i].Days_Pending_Cad_Design = exists.Days_Pending_Cad_Design
-				perfomanceList.PerfomanceList[i].Days_Pending_Roofing = exists.Days_Pending_Roofing
-				perfomanceList.PerfomanceList[i].Days_Pending_Inspection = exists.Days_Pending_Inspection
-				updated[prsntUniqueId] = true
-			}
-		}
+	if len(dataReq.Fields) > 0 {
+		RecordCount = int64(len(perfomanceList.PerfomanceList))
+		perfomanceList.PerfomanceList = Paginate(perfomanceList.PerfomanceList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	}
 
-	paginatedData := postCalculation(perfomanceList, dataReq, agngRpForUserId)
+	paginatedData := postCalculation(perfomanceList.PerfomanceList, dataReq)
 	perfomanceList.PerfomanceList = paginatedData
 
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v\n", RecordCount, perfomanceList)
@@ -503,21 +470,23 @@ func activationColor(ptoSubmittedDate, ptoDate time.Time) (string, time.Time) {
 
 *****************************************************************************
 */
-func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) (map[string]models.PerfomanceResponse, error) {
+func agngRpData(AgRp []models.PerfomanceResponse, dataFilter models.PerfomanceStatusReq) ([]models.PerfomanceResponse, error) {
 	var (
 		err     error
-		resp    = make(map[string]models.PerfomanceResponse)
 		filters []string
+		values  = make(map[string]models.PerfomanceResponse)
 	)
 	log.EnterFn(0, "HandleGetAgingReport")
 	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
 
-	query := `SELECT unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age FROM aging_report`
+	query := `SELECT DISTINCT ON(unique_id)
+	unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age FROM aging_report`
 
 	if len(AgRp) > 0 {
 		uniqueIdValues := make([]string, 0, len(AgRp))
-		for uid := range AgRp {
-			uniqueIdValues = append(uniqueIdValues, fmt.Sprintf("'%s'", strings.ReplaceAll(uid, "'", "''")))
+		for _, uid := range AgRp {
+			uniqueIdValues = append(uniqueIdValues, fmt.Sprintf("'%s'", strings.ReplaceAll(uid.UniqueId, "'", "''")))
+			values[uid.UniqueId] = uid
 		}
 		filters = append(filters, fmt.Sprintf("unique_id IN (%s)", strings.Join(uniqueIdValues, ", ")))
 	}
@@ -529,59 +498,107 @@ func agngRpData(AgRp map[string]ForAgRp, dataFilter models.PerfomanceStatusReq) 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get AgingReport data from db err: %v", err)
-		return resp, err
+		return nil, err
 	}
 
+	type pending struct {
+		Days_Pending_Survey      string
+		Days_Pending_Cad_Design  string
+		Days_Pending_Permits     string
+		Days_Pending_Roofing     string
+		Days_Pending_Install     string
+		Days_Pending_Inspection  string
+		Days_Pending_Activation  string
+		Days_Pending_NTP         string
+		Days_Pending_Project_Age string
+		Days_Pending_PTO         string
+	}
+
+	val := make(map[string]pending)
 	for _, agRp := range data {
 		uniqueId, ok := agRp["unique_id"].(string)
 		if !ok {
-			// log.FuncErrorTrace(0, "[agngRpData] error while fetching data for uniqueId: %v", err)
 			continue
 		}
-
-		// exists, existsOk := AgRp[uniqueId]
-		// if !existsOk {
-		// 	continue
-		// }
-
-		resp1 := models.PerfomanceResponse{
-			UniqueId: uniqueId,
+		pending := pending{
+			Days_Pending_Survey:      TextAccToInput("0"),
+			Days_Pending_Cad_Design:  TextAccToInput("0"),
+			Days_Pending_Permits:     TextAccToInput(getFieldText(agRp, "days_pending_permits")),
+			Days_Pending_Roofing:     TextAccToInput("0"),
+			Days_Pending_Install:     TextAccToInput(getFieldText(agRp, "days_pending_install")),
+			Days_Pending_Inspection:  TextAccToInput("0"),
+			Days_Pending_Activation:  TextAccToInput("0"),
+			Days_Pending_NTP:         TextAccToInput(getFieldText(agRp, "days_pending_ntp")),
+			Days_Pending_Project_Age: TextAccToInput(getFieldText(agRp, "project_age")),
+			Days_Pending_PTO:         TextAccToInput(getFieldText(agRp, "days_pending_pto")),
 		}
-
-		// if exists.SurveyClr == blue || exists.SurveyClr == grey {
-		resp1.Days_Pending_Survey = TextAccToInput("0")
-		// }
-		// if exists.CadClr == blue || exists.CadClr == grey {
-		resp1.Days_Pending_Cad_Design = TextAccToInput("0")
-		// }
-		// if exists.PermittingClr == blue || exists.PermittingClr == grey {
-		resp1.Days_Pending_Permits = TextAccToInput(getFieldText(agRp, "days_pending_permits"))
-		// }
-		// if exists.RoofingClr == blue || exists.RoofingClr == grey {
-		resp1.Days_Pending_Roofing = TextAccToInput("0")
-		// }
-		// if exists.InstallClr == blue || exists.InstallClr == grey {
-		resp1.Days_Pending_Install = TextAccToInput(getFieldText(agRp, "days_pending_install"))
-		// }
-		// if exists.InspectionClr == blue || exists.InspectionClr == grey {
-		resp1.Days_Pending_Inspection = TextAccToInput("0")
-		// }
-		// if exists.ActivationClr == blue || exists.ActivationClr == grey {
-		resp1.Days_Pending_Activation = TextAccToInput("0")
-		// }
-		// if exists.NTPClr == "" || exists.NTPClr == grey {
-		resp1.Days_Pending_NTP = TextAccToInput(getFieldText(agRp, "days_pending_ntp"))
-		// }
-
-		resp1.Days_Pending_Project_Age = TextAccToInput(getFieldText(agRp, "project_age"))
-
-		resp1.Days_Pending_PTO = TextAccToInput(getFieldText(agRp, "days_pending_pto"))
-
-		resp[uniqueId] = resp1
+		val[uniqueId] = pending
 	}
 
-	// log.FuncInfoTrace(0, " :  %v and count is : %d", resp, len(resp))
-	return resp, nil
+	for i := range AgRp {
+		values := val[AgRp[i].UniqueId]
+		if AgRp[i].SiteSurveyColour != green {
+			AgRp[i].Days_Pending_Survey = values.Days_Pending_Survey
+		}
+		if AgRp[i].CADDesignColour != green {
+			AgRp[i].Days_Pending_Cad_Design = values.Days_Pending_Cad_Design
+		}
+		if AgRp[i].PermittingColour != green {
+			AgRp[i].Days_Pending_Permits = values.Days_Pending_Permits
+		}
+		if AgRp[i].RoofingColour != green {
+			AgRp[i].Days_Pending_Roofing = values.Days_Pending_Roofing
+		}
+		if AgRp[i].InstallColour != green {
+			AgRp[i].Days_Pending_Install = values.Days_Pending_Install
+		}
+		if AgRp[i].InspectionsColour != green {
+			AgRp[i].Days_Pending_Inspection = values.Days_Pending_Inspection
+		}
+		if AgRp[i].ActivationColour != green {
+			AgRp[i].Days_Pending_Activation = values.Days_Pending_Activation
+		}
+		AgRp[i].Days_Pending_NTP = AgRp[i].NTPdate
+		AgRp[i].Days_Pending_Project_Age = values.Days_Pending_Project_Age
+		AgRp[i].Days_Pending_PTO = values.Days_Pending_PTO
+	}
+
+	// **Filter Logic**
+	if len(dataFilter.Fields) == 0 {
+		return AgRp, nil
+	}
+
+	filteredResp := make([]models.PerfomanceResponse, 0)
+	for _, v := range AgRp {
+		count := 0
+		numFilters := len(dataFilter.Fields)
+
+		for _, field := range dataFilter.Fields {
+			switch field {
+			case "days_pending_permits":
+				if v.PermittingColour != green {
+					count++ // Condition met
+				}
+			case "days_pending_install":
+				if v.InstallColour != green {
+					count++ // Condition met
+				}
+			case "days_pending_ntp":
+				count++
+			case "project_age":
+				count++
+			case "days_pending_pto":
+				count++
+			}
+		}
+
+		// Append only if all conditions pass (AND logic)
+		if count == numFilters {
+			filteredResp = append(filteredResp, v)
+		}
+	}
+
+	return filteredResp, nil
 }
 
 func TextAccToInput(s string) string {
@@ -636,16 +653,16 @@ func PaginatePerfomanceData(data []map[string]interface{}, req models.Perfomance
 *****************************************************************************
 */
 
-func postCalculation(data models.PerfomanceListResponse, req models.PerfomanceStatusReq, agngRpForUserId map[string]models.PerfomanceResponse) []models.PerfomanceResponse {
+func postCalculation(data []models.PerfomanceResponse, req models.PerfomanceStatusReq) []models.PerfomanceResponse {
 
 	var (
-		updated = make(map[string]bool)
-		err     error
+		// updated = make(map[string]bool)
+		err error
 	)
 
 	log.EnterFn(0, "PaginateData")
 	defer func() { log.ExitFn(0, "PaginateData", err) }()
-	paginatedData := data.PerfomanceList
+	paginatedData := data
 
 	uniqueIds := make([]string, len(paginatedData))
 	for i, item := range paginatedData {
@@ -725,15 +742,18 @@ func postCalculation(data models.PerfomanceListResponse, req models.PerfomanceSt
 				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
 				ActionRequiredCount:          actionRequiredCount,
 			}
-			if actionRequiredCount >= 1 {
-				if _, alrdyupdatd := updated[paginatedData[i].UniqueId]; !alrdyupdatd {
-					if exists, ok := agngRpForUserId[paginatedData[i].UniqueId]; ok {
-						paginatedData[i].Days_Pending_NTP = exists.Days_Pending_NTP
-						updated[paginatedData[i].UniqueId] = true
-					}
-				}
-			}
+			// if actionRequiredCount >= 1 {
+			// 	if _, alrdyupdatd := updated[paginatedData[i].UniqueId]; !alrdyupdatd {
+			// 		if exists, ok := agngRpForUserId[paginatedData[i].UniqueId]; ok {
+			// 			paginatedData[i].Days_Pending_NTP = exists.Days_Pending_NTP
+			// 			updated[paginatedData[i].UniqueId] = true
+			// 		}
+			// 	}
+			// }
 
+			if actionRequiredCount <= 1 {
+				datas.Days_Pending_NTP = ""
+			}
 			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate, prospectId)
 			actionRequiredCount += count
 			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only", datas.NTPdate, prospectId)
@@ -815,3 +835,84 @@ func FilterAgRpData(req models.PerfomanceStatusReq, alldata []map[string]interfa
 	log.FuncInfoTrace(0, "FilterAgRpData filtered result count: %d", len(result))
 	return result, nil
 }
+
+// func agngRpData(AgRp []models.PerfomanceResponse, dataFilter models.PerfomanceStatusReq) ([]models.PerfomanceResponse, error) {
+// 	var (
+// 		err     error
+// 		resp    = make(map[string]models.PerfomanceResponse)
+// 		filters []string
+// 	)
+// 	log.EnterFn(0, "HandleGetAgingReport")
+// 	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
+
+// 	query := `SELECT unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age FROM aging_report`
+
+// 	if len(AgRp) > 0 {
+// 		uniqueIdValues := make([]string, 0, len(AgRp))
+// 		for uid := range AgRp {
+// 			uniqueIdValues = append(uniqueIdValues, fmt.Sprintf("'%s'", strings.ReplaceAll(uid, "'", "''")))
+// 		}
+// 		filters = append(filters, fmt.Sprintf("unique_id IN (%s)", strings.Join(uniqueIdValues, ", ")))
+// 	}
+
+// 	if len(filters) > 0 {
+// 		query += " WHERE " + strings.Join(filters, " AND ")
+// 	}
+
+// 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "Failed to get AgingReport data from db err: %v", err)
+// 		return resp, err
+// 	}
+
+// 	for _, agRp := range data {
+// 		uniqueId, ok := agRp["unique_id"].(string)
+// 		if !ok {
+// 			// log.FuncErrorTrace(0, "[agngRpData] error while fetching data for uniqueId: %v", err)
+// 			continue
+// 		}
+
+// 		exists, existsOk := AgRp[uniqueId]
+// 		if !existsOk {
+// 			continue
+// 		}
+
+// 		resp1 := models.PerfomanceResponse{
+// 			UniqueId: uniqueId,
+// 		}
+
+// 		if exists.SurveyClr == blue || exists.SurveyClr == grey {
+// 			resp1.Days_Pending_Survey = TextAccToInput("0")
+// 		}
+// 		if exists.CadClr == blue || exists.CadClr == grey {
+// 			resp1.Days_Pending_Cad_Design = TextAccToInput("0")
+// 		}
+// 		if exists.PermittingClr == blue || exists.PermittingClr == grey {
+// 			resp1.Days_Pending_Permits = TextAccToInput(getFieldText(agRp, "days_pending_permits"))
+// 		}
+// 		if exists.RoofingClr == blue || exists.RoofingClr == grey {
+// 			resp1.Days_Pending_Roofing = TextAccToInput("0")
+// 		}
+// 		if exists.InstallClr == blue || exists.InstallClr == grey {
+// 			resp1.Days_Pending_Install = TextAccToInput(getFieldText(agRp, "days_pending_install"))
+// 		}
+// 		if exists.InspectionClr == blue || exists.InspectionClr == grey {
+// 			resp1.Days_Pending_Inspection = TextAccToInput("0")
+// 		}
+// 		if exists.ActivationClr == blue || exists.ActivationClr == grey {
+// 			resp1.Days_Pending_Activation = TextAccToInput("0")
+// 		}
+// 		if exists.NTPClr == "" || exists.NTPClr == grey {
+// 			resp1.Days_Pending_NTP = TextAccToInput(getFieldText(agRp, "days_pending_ntp"))
+// 		}
+
+// 		resp1.Days_Pending_Project_Age = TextAccToInput(getFieldText(agRp, "project_age"))
+
+// 		resp1.Days_Pending_PTO = TextAccToInput(getFieldText(agRp, "days_pending_pto"))
+
+// 		resp[uniqueId] = resp1
+// 	}
+
+// 	// log.FuncInfoTrace(0, " :  %v and count is : %d", resp, len(resp))
+// 	return resp, nil
+// }

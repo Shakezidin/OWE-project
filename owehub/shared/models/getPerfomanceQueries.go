@@ -668,7 +668,7 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
         WHERE
             cad.active_inactive = 'Active'
             AND cad.plan_set_status != 'Plan Set Complete'
-            AND cad.project_status IN (%v)
+            AND cad.project_status_new IN (%v)
             AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')
             AND cad.plan_set_version NOT IN (
                 'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5', 
@@ -751,6 +751,7 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
         WHERE
 	        fin.project_status IN (%v)                                  AND
             fin.app_status not in ('PV FIN Complete', 'DUPLICATE')      AND
+            cust.unique_id != ''                                        AND
             %v`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
@@ -840,7 +841,7 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
         WHERE
 	        cad.active_inactive = 'Active'
             AND cad.plan_set_status != 'Plan Set Complete'
-            AND cad.project_status IN (%v)
+            AND cad.project_status_new IN (%v)
             AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')
             AND cad.plan_set_version NOT IN (
 			    'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5', 
@@ -993,6 +994,7 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
         WHERE
 	        fin.project_status IN (%v)                                  AND
             fin.app_status not in ('PV FIN Complete', 'DUPLICATE')      AND
+            cust.unique_id != ''                                        AND 
             %v %v;`, projectStatus, filterUserQuery, searchValue)
 
 	return PipelineDataQuery
@@ -1106,7 +1108,7 @@ func GetBasePipelineQuery(uniqueIds string) string {
             fin_permits_fin_schema AS fin ON cust.unique_id = fin.customer_unique_id
         LEFT JOIN
             pto_ic_schema AS pto ON cust.our = pto.customer_unique_id 
-		WHERE cust.unique_id in (%v)`, uniqueIds)
+		WHERE cust.unique_id in (%v) ORDER BY cust.unique_id, install.pv_completion_date DESC NULLS LAST`, uniqueIds)
 }
 
 func PipelineDealerDataQuery(filterUserQuery string) string {
@@ -1122,14 +1124,11 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
         DISTINCT (cust.unique_id),
         cust.customer_name AS customer_name,
         cust.dealer AS partner_dealer,
-        cust.customer_name AS finance_company,
-        cust.customer_name AS source_type,
-        cust.customer_name AS loan_type,
+        cust.finance_company AS finance_company,
+        cust.customer_name AS type,
         cust.unique_id,
         cust.address AS street_address,
-        cust.customer_name AS city,
         cust.state,
-        cust.customer_name AS zip_code,
         cust.email_address AS email,
         cust.phone_number,
         cust.primary_sales_rep AS rep_1,
@@ -1148,6 +1147,7 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
         
         -- NTP Dates
         ntp.ntp_complete_date,
+        ntp.finance_type AS loan_type,
         
         -- Permit Dates
         permit.pv_submitted AS permit_submit_date,
