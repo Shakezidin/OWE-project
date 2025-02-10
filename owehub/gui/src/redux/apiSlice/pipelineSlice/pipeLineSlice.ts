@@ -47,22 +47,20 @@ const pipelineSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-           
-              .addCase(getPipeLineData.pending, (state) => {
-                state.pipelineData.loading = true;
-                state.pipelineData.error = null;
-              })
-              .addCase(getPipeLineData.fulfilled, (state, action) => {
-                state.pipelineData.loading = false;
-                state.pipelineData.data = action.payload;
-                state.pipelineData.list = action.payload?.list?.data.pipeline_dealer_data_list
-              })
-              .addCase(getPipeLineData.rejected, (state, action) => {
-                state.pipelineData.loading = false;
-                state.pipelineData.error = action.payload as string;
-                toast.error(action.payload as string);
-              });
-    }
+          .addCase(getPipeLineData.pending, (state) => {
+            state.pipelineData.loading = true;
+            state.pipelineData.error = null;
+          })
+          .addCase(getPipeLineData.fulfilled, (state, action) => {
+            state.pipelineData.loading = false;
+            state.pipelineData.data = action.payload;
+            state.pipelineData.list = action.payload?.list?.data?.pipeline_dealer_data_list;
+          })
+          .addCase(getPipeLineData.rejected, (state, action) => {
+            state.pipelineData.loading = false;
+            state.pipelineData.error = action.payload as string;
+          });
+      }
 });
 
 export const {  clearPipelineData } = pipelineSlice.actions;

@@ -170,3 +170,23 @@
         align-items: flex-start;
     }
 }
+
+.filter-line-pipe {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      transform 0.3s ease,
+      background-color 0.3s ease;
+  }
+  
+  .filter-line-pipe:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    background-color: #000000 !important;
+  }

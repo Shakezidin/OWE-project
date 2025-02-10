@@ -10,6 +10,7 @@ export default [
     displayName: 'Home Owner',
     type: 'string',
     isCheckbox: false,
+    filter:'customer_name'
   },
   {
     name: 'finance_company',
@@ -70,7 +71,7 @@ export default [
     displayName: 'Partner Dealer',
     type: 'string',
     isCheckbox: false,
-
+    filter:'dealer'
   },
   {
     name: 'system_size',
@@ -166,12 +167,7 @@ export default [
     isCheckbox: false,
     filter:'pto_granted'
   },
-  {
-    name: 'pto_date',
-    displayName: 'Elec Install',
-    type: 'date',
-    isCheckbox: false,
-  },
+  
   {
     name: 'fin_complete_date',
     displayName: 'Fin Date',

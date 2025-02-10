@@ -12,6 +12,7 @@ import {
 import { useLocation } from 'react-router-dom';
 import { showAlert } from '../alert/ShowAlert';
 import { dateFormat } from '../../../utiles/formatDate';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 
 interface Column {
   name: string;
@@ -27,13 +28,15 @@ interface TableProps {
   fetchFunction: (req: any) => void;
   resetOnChange?: boolean;
   isOpen?: boolean;
-  isNew?:boolean;
+  isNew?: boolean;
 }
 interface FilterModel {
   Column: string;
   Operation: string;
   Data: string;
   type?: string;
+  start_date?: string;
+  end_date?: string;
 }
 interface Option {
   value: string;
@@ -51,16 +54,20 @@ const FilterModal: React.FC<TableProps> = ({
   page_size,
   fetchFunction,
   resetOnChange,
-  isNew
+  isNew,
 }) => {
   const dispatch = useAppDispatch();
-  const format = isNew ? [{ Column: '', Operation: '', Data: '' }] : [{ column: '', operation: '', data: '' }]
+
+  const data = {
+    start: '',
+    end: '',
+  };
   const [filters, setFilters] = useState<FilterModel[]>([
-    { Column: '', Operation: '', Data: '' },
+    { Column: '', Operation: '', Data: '', start_date: '', end_date: '' },
   ]);
 
   const [applyFilters, setApplyFilters] = useState<FilterModel[]>([
-    { Column: '', Operation: '', Data: '' },
+    { Column: '', Operation: '', Data: '', start_date: '', end_date: '' },
   ]);
   const [errors, setErrors] = useState<ErrorState>({});
   const options: Option[] = columns.map((column) => ({
@@ -89,6 +96,8 @@ const FilterModal: React.FC<TableProps> = ({
           Column: '',
           Operation: '',
           Data: '',
+          start_date: '',
+          end_date: ''
         }));
       setFilters(resetFilters);
       setApplyFilters(resetFilters);
@@ -133,7 +142,10 @@ const FilterModal: React.FC<TableProps> = ({
   }, [resetOnChange]);
 
   const handleAddRow = () => {
-    setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
+    setFilters([
+      ...filters,
+      { Column: '', Operation: '', Data: '', start_date: '', end_date: '' },
+    ]);
   };
 
   const handleRemoveRow = (index: number) => {
@@ -160,22 +172,31 @@ const FilterModal: React.FC<TableProps> = ({
   const handleDataChange = (
     index: number,
     value: string,
-    type: 'number' | 'date' | 'boolean' | 'text'
+    type: 'number' | 'date' | 'boolean' | 'text' | 'start' | 'end'
   ) => {
     const newFilters = [...filters];
-    // Convert ".1" to "0.1" if the column is "rate" or "rate list"
-    if (
-      newFilters[index].Column === 'rate' ||
-      newFilters[index].Column === 'rl'
-    ) {
-      value = value.replace(/^(\.)(\d+)/, '0$1$2');
+
+    if (type === 'start') {
+      newFilters[index].start_date = value;
+      newFilters[index].Data = ''; // Clear Data when setting start_date
+    } else if (type === 'end') {
+      newFilters[index].end_date = value;
+      newFilters[index].Data = ''; // Clear Data when setting end_date
+    } else {
+      newFilters[index].Data = value;
+      newFilters[index].start_date = ''; // Clear start_date for non-date types
+      newFilters[index].end_date = ''; // Clear end_date for non-date types
     }
-    newFilters[index].Data = value;
+
     newFilters[index].type = type;
     setFilters(newFilters);
   };
+
+
   const getInputType = (columnName: string) => {
-    const type = columns.find((option) => (option.filter ? option.filter : option.name) === columnName)?.type;
+    const type = columns.find(
+      (option) => (option.filter ? option.filter : option.name) === columnName
+    )?.type;
     if (type === 'number') {
       return 'number';
     } else if (type === 'date') {
@@ -190,9 +211,8 @@ const FilterModal: React.FC<TableProps> = ({
   const applyFilter = async () => {
     setErrors({});
 
-    // Perform validation
+    // Validation
     const newErrors: ErrorState = {};
-
     filters.forEach((filter, index) => {
       if (!filter.Column) {
         newErrors[`column${index}`] = `Please provide Column Name`;
@@ -200,44 +220,65 @@ const FilterModal: React.FC<TableProps> = ({
       if (!filter.Operation) {
         newErrors[`operation${index}`] = `Please provide Operation`;
       }
-      if (!filter.Data) {
+
+      if (!filter.Data && filter.type !== 'date' && (filter.start_date === '' || filter.end_date === '')) {
         newErrors[`data${index}`] = `Please provide Data`;
       }
     });
+
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
-      const formattedFilters = filters.map((filter) => ({
-        Column: filter.Column,
-        Operation: filter.Operation,
-        Data:
-          filter.type === 'date'
-            ? `${String(new Date(filter.Data).getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.Data).getDate()).padStart(2, '0')}-${new Date(filter.Data).getFullYear()}`
-            : filter.Data,
-      }));
+      const formattedFilters: FilterModel[] = filters.map((filter) => {
+        const filterModel: FilterModel = {
+          Column: filter.Column,
+          Operation: filter.Operation,
+          Data: filter.type === 'date' ? `${String(new Date(filter.Data).getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.Data).getDate()).padStart(2, '0')}-${new Date(filter.Data).getFullYear()}` : filter.Data, // Ensure Data always exists
+        };
+
+        if (isNew) {
+          filterModel.start_date =
+            filter.type === 'date' && filter.start_date
+              ? `${String(new Date(filter.start_date).getMonth() + 1).padStart(2, '0')}-${String(
+                new Date(filter.start_date).getDate()
+              ).padStart(2, '0')}-${new Date(filter.start_date).getFullYear()}`
+              : filter.start_date;
+
+          filterModel.end_date =
+            filter.type === 'date' && filter.end_date
+              ? `${String(new Date(filter.end_date).getMonth() + 1).padStart(2, '0')}-${String(
+                new Date(filter.end_date).getDate()
+              ).padStart(2, '0')}-${new Date(filter.end_date).getFullYear()}`
+              : filter.end_date;
+        }
+
+        return filterModel;
+      });
+
+      console.log(formattedFilters, "format filter")
+
       const req = {
         page_number: page_number,
         page_size: page_size,
         filters: formattedFilters,
       };
+
       setApplyFilters([...formattedFilters]);
       dispatch(activeFilter({ name: pathname }));
       handleClose();
-      // @ts-ignore
-      req.filters = formattedFilters.map((filter) => ({
-        ...filter,
-        Data:
-          filter.Data === 'yes' || filter.Data === 'no'
-            ? filter.Data === 'yes'
-            : filter.Data.trim(),
-      }));
       fetchFunction(req);
     }
   };
+
+
 
   const handleCloseModal = () => {
     handleClose();
     setErrors({});
   };
+
+  const isMobile = useMatchMedia('(max-width: 767px)');
+
+
   return (
     <div className="transparent-model">
       <div className="modal">
@@ -268,10 +309,20 @@ const FilterModal: React.FC<TableProps> = ({
             <div className="createProfileTextView">
               {filters?.map((filter, index) => {
                 const type = getInputType(filter.Column);
-                console.log(type, 'type');
+
                 return (
                   <div className="create-input-container" key={index}>
-                    <div className="create-input-field">
+                    <div
+                      className="create-input-field"
+                      style={{
+                        width: isMobile
+                          ? '100%'
+                          : (type === 'date' && isNew === true)
+                          ? '25%'
+                          : '',
+                      }}
+                      
+                    >
                       <label
                         className="inputLabel-select"
                         style={{ fontWeight: 400 }}
@@ -299,7 +350,17 @@ const FilterModal: React.FC<TableProps> = ({
                         )}
                       </div>
                     </div>
-                    <div className="create-input-field">
+                    <div
+                      className="create-input-field"
+                      style={{
+                        width: isMobile
+                          ? '100%'
+                          : (type === 'date' && isNew === true)
+                          ? '25%'
+                          : '',
+                      }}
+                      
+                    >
                       <label
                         className="inputLabel-select"
                         style={{ fontWeight: 400 }}
@@ -310,7 +371,9 @@ const FilterModal: React.FC<TableProps> = ({
                         options={options}
                         columnType={
                           columns.find(
-                            (option) => (option.filter ? option.filter : option.name) === filter.Column
+                            (option) =>
+                              (option.filter ? option.filter : option.name) ===
+                              filter.Column
                           )?.type || ''
                         }
                         value={filter.Operation}
@@ -320,10 +383,20 @@ const FilterModal: React.FC<TableProps> = ({
                         }}
                         errors={errors}
                         index={index}
+                        isNew={isNew}
                       />
                     </div>
 
-                    <div className="create-input-field">
+                    <div
+                      className="create-input-field"
+                      style={{
+
+                        paddingRight:
+                          type === 'date' && isNew === true ? '10px' : '',
+                        width:
+                          (type === 'date' && isNew === true) ? '40%' : '',
+                      }}
+                    >
                       {type === 'boolean' ? (
                         <SelectOption
                           onChange={(newValue) =>
@@ -332,9 +405,9 @@ const FilterModal: React.FC<TableProps> = ({
                           value={
                             filter.Data
                               ? {
-                                  value: filter.Data,
-                                  label: filter.Data === 'yes' ? 'Yes' : 'No',
-                                }
+                                value: filter.Data,
+                                label: filter.Data === 'yes' ? 'Yes' : 'No',
+                              }
                               : undefined
                           }
                           options={[
@@ -343,22 +416,102 @@ const FilterModal: React.FC<TableProps> = ({
                           ]}
                         />
                       ) : (
-                        <Input
-                          type={type}
-                          label="Data"
-                          name="Data"
-                          onKeyUp={(e) => {
-                            if (e.key === 'Enter') {
-                              applyFilter();
-                            }
-                          }}
-                          value={filter.Data}
-                          onChange={(e: any) => {
-                            handleDataChange(index, e.target.value, type);
-                            setErrors({ ...errors, [`data${index}`]: '' });
-                          }}
-                          placeholder={'Enter'}
-                        />
+                        <>
+                          {type === 'date' && isNew === true && (
+                            <>
+                              <div
+                                style={{
+
+                                  display:
+                                    type === 'date' && isNew === true ? 'flex' : '',
+                                  gap:
+                                    type === 'date' && isNew === true ? '6px' : '',
+
+                                }}
+                              >
+                                <Input
+                                  type="date"
+                                  label="Start Date"
+                                  name="start_date"
+                                  onKeyUp={(e) => {
+                                    if (e.key === 'Enter') {
+                                      applyFilter();
+                                    }
+                                  }}
+                                  value={filter.start_date || ''}
+                                  onChange={(e: any) => {
+                                    handleDataChange(
+                                      index,
+                                      e.target.value,
+                                      'start'
+                                    ); // Use 'start' type
+                                    if (filter.start_date !== '' && filter.end_date !== '') {
+                                      setErrors({
+                                        ...errors,
+                                        [`data${index}`]: '',
+                                      });
+                                    }
+
+                                  }}
+                                  placeholder={'Enter'}
+                                />
+                                <Input
+                                  min={filter.start_date}
+                                  disabled={filter.start_date === ''}
+                                  type="date"
+                                  label="End Date"
+                                  name="end_date"
+                                  onKeyUp={(e) => {
+                                    if (e.key === 'Enter') {
+                                      applyFilter();
+                                    }
+                                  }}
+                                  value={filter.end_date || ''}
+                                  onChange={(e: any) => {
+                                    handleDataChange(
+                                      index,
+                                      e.target.value,
+                                      'end'
+                                    ); // Use 'end' type
+                                    if (filter.start_date !== '' && filter.end_date !== '') {
+                                      setErrors({
+                                        ...errors,
+                                        [`data${index}`]: '',
+                                      });
+                                    }
+
+                                  }}
+                                  placeholder={'Enter'}
+                                />
+                              </div>
+                            </>
+                          )}
+                          {!(type === 'date' && isNew === true) && (
+                            <>
+                              <Input
+
+                                type={type}
+                                label="Data"
+                                name="Data"
+                                onKeyUp={(e) => {
+                                  if (e.key === 'Enter') {
+                                    applyFilter();
+                                  }
+                                }}
+                                value={filter.Data}
+                                onChange={(e: any) => {
+                                  handleDataChange(index, e.target.value, type);
+                                  setErrors({
+                                    ...errors,
+                                    [`data${index}`]: '',
+                                  });
+                                }}
+                                placeholder={'Enter'}
+                                noVal={isNew}
+                              />
+                            </>
+                          )}
+                        </>
                       )}
                       {errors[`data${index}`] && (
                         <span style={{ color: 'red', fontSize: '12px' }}>

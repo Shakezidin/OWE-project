@@ -296,13 +296,13 @@ func HandleGetTabStructuralInfoRequest(resp http.ResponseWriter, req *http.Reque
 	// 	log.FuncErrorTrace(0, "Failed to get roof structural upgrade from db : %+v\n", data)
 	// }
 
-	structure := "Select"                 // string
-	roofType := "Flat"                    // string
-	sheathingType := "OSB"                // string
-	framingSize := "2x4"                  // string
-	framingType1 := "Standing Seam Metal" // string
-	framingType2 := "Mfg.Truss"           // string
-	framingSpacing := 16                  // int
+	structure := "Select"                           // string
+	roofType := "Flat"                              // string
+	sheathingType := "OSB"                          // string
+	framingSize := "2x4"                            // string
+	structuralRoofMaterial := "Standing Seam Metal" // string
+	framingType := "Mfg.Truss"                      // string
+	framingSpacing := 16                            // int
 
 	attachment := "K2 Flex Foot" // string
 	racking := "k2 cross rail"   // string
@@ -343,8 +343,8 @@ func HandleGetTabStructuralInfoRequest(resp http.ResponseWriter, req *http.Reque
 		RoofType:                 roofType,
 		SheathingType:            sheathingType,
 		FramingSize:              framingSize,
-		FramingType1:             framingType1,
-		FramingType2:             framingType2,
+		StructuralRoofMaterial:   structuralRoofMaterial,
+		FramingType:              framingType,
 		FramingSpacing:           int64(framingSpacing),
 		Attachment:               attachment,
 		Racking:                  racking,
