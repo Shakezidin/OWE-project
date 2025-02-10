@@ -22,6 +22,7 @@ import { FaUpload } from 'react-icons/fa'
 import { Tooltip } from 'react-tooltip'
 import useMatchMedia from '../../../hooks/useMatchMedia'
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl'
+import { format, parseISO } from 'date-fns'
 
 
 interface ColumnMap {
@@ -58,53 +59,37 @@ const DealerTablePipeline = () => {
     };
 
 
-    const columnMap: ColumnMap = {
-        "customer_name": "customer_name",
-        "partner_dealer": "dealer",
-        "finance_company": "finance_company",
-        "source_type": "source_type",
-        "loan_type": "loan_type",
-        "unique_id": "unique_id",
-        "street_address": "address",
-        "city": "city",
-        "state": "state",
-        "zip_code": "zip_code",
-        "email": "email_address",
-        "phone_number": "phone_number",
-        "rep_1": "primary_sales_rep",
-        "rep_2": "secondary_sales_rep",
-        "system_size": "contracted_system_size",
-        "contract_amount": "total_system_cost",
-        "created_date": "sale_date",
-        "contract_date": "sale_date",
-        "survey_final_completion_date": "survey_final_completion_date",
-        "ntp_complete_date": "ntp_complete_date",
-        "permit_submit_date": "pv_submitted",
-        "permit_approval_date": "pv_approved",
-        "ic_submit_date": "ic_submitted_date",
-        "ic_approval_date": "ic_approved_date",
-        "jeopardy_date": "jeopardy_date",
-        "cancel_date": "cancel_date",
-        "pv_install_date": "pv_completion_date",
-        "fin_complete_date": "pv_fin_date",
-        "pto_date": "pto_granted"
-    };
+
     const handleSearchChange = useCallback(
         debounce((e: React.ChangeEvent<HTMLInputElement>) => {
             setSearchTerm(e.target.value);
         }, 800),
         []
     );
-    const formattedFilters = filters ? filters.map(filter => ({
-        column: filter.Column,
-        operation: filter.Operation,
-        data: filter.Data
-    })) : [];
+    const formattedFilters = filters ? filters.map(filter => {
+        if (filter.Column === 'jeopardy_date') {
+            return {
+                column: "jeopardy_date",
+                operation: (filter.Data !== "yes") ? "isnull" : "isnotnull"
+            };
+        } else if (filter.start_date !== '' && filter.end_date !== '') {
+            return {
+                "column": filter.Column,
+                "operation": "btw",
+                "start_date": filter.start_date,
+                "end_date": filter.end_date
+            };
+        } else {
+            return {
+                column: filter.Column,
+                operation: filter.Operation,
+                data: filter.Data
+            };
+        }
+    }) : [];
 
-    const getColumnKey = (sortKey: string): string => {
-        return columnMap[sortKey] || sortKey;
-    };
-    const columnKey = getColumnKey(sortKey);
+
+
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -133,6 +118,7 @@ const DealerTablePipeline = () => {
             setTotalCount(pipelineData.data.count);
         }
     }, [pipelineData]);
+    console.log(sortDirection, sortKey, "shjdg")
     const handleSort = (key: any) => {
 
         if (sortKey === key) {
@@ -146,21 +132,27 @@ const DealerTablePipeline = () => {
 
     const cuurentPageData = pipelineData.list?.slice();
 
-
-
     if (sortKey) {
+
         cuurentPageData?.sort((a: any, b: any) => {
+            console.log(sortDirection, sortKey, "first time")
             const aValue = a[sortKey];
             const bValue = b[sortKey];
 
             if (sortKey === 'system_size' || sortKey === 'contract_amount') {
-                // Extract numeric values from system_size or contract_amount
-                const numericAValue = parseFloat(aValue.replace(/[^0-9.]/g, ''));
-                const numericBValue = parseFloat(bValue.replace(/[^0-9.]/g, ''));
+                const numericAValue = aValue ? parseFloat(aValue.replace(/[^0-9.]/g, '')) : 0;
+                const numericBValue = bValue ? parseFloat(bValue.replace(/[^0-9.]/g, '')) : 0;
 
                 return sortDirection === 'asc'
                     ? numericAValue - numericBValue
                     : numericBValue - numericAValue;
+            } else if (sortKey === 'jeopardy_date') {
+                const aValue = String(a[sortKey]);
+                const bValue = String(b[sortKey]);
+
+                return sortDirection === 'asc'
+                    ? aValue.localeCompare(bValue)
+                    : bValue.localeCompare(aValue);
             } else if (typeof aValue === 'string' && typeof bValue === 'string') {
                 return sortDirection === 'asc'
                     ? aValue.localeCompare(bValue)
@@ -178,6 +170,7 @@ const DealerTablePipeline = () => {
             }
         });
     }
+
 
 
     const filterClose = () => {
@@ -200,13 +193,16 @@ const DealerTablePipeline = () => {
             const data = {
                 "dealer_names": dealerNames,
                 "search_filters": {
-                    "page_number": page,
+                    "page_number": 1,
                     "page_size": totalCount,
-                    "filters": [],
+                    "filters": (formattedFilters && formattedFilters.length > 0) ? formattedFilters : [
+                        { "column": "unique_id", "operation": "cont", "data": searchTerm },
+                        { "column": "customer_name", "operation": "cont", "data": searchTerm },
+                    ],
                     "sort_by": "",
                     "sort_order": ""
                 }
-            };
+            }
             const response = await postCaller('getPipelineDealerData', data);
             if (response.status > 201) {
                 toast.error(response.data.message);
@@ -224,24 +220,49 @@ const DealerTablePipeline = () => {
                 item.email || 'N/A',
                 item.phone_number || 'N/A',
                 item.rep_1 || 'N/A',
-                'Not Found',
+                item.partner_dealer || 'N/A',
                 item.system_size || '0',
                 `${item.contract_amount || '0'}`,
-                item.created_date || 'N/A',
-                item.contract_date || 'N/A',
-                item.survey_final_completion_date || 'N/A',
-                item.ntp_complete_date || 'N/A',
-                item.permit_submit_date || 'N/A',
-                item.permit_approval_date || 'N/A',
-                item.ic_submit_date || 'N/A',
-                item.ic_approval_date || 'N/A',
+                // item.created_date || 'N/A',
+                item.contract_date
+                    ? format(parseISO(item.contract_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.survey_final_completion_date
+                    ? format(parseISO(item.survey_final_completion_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.ntp_complete_date
+                    ? format(parseISO(item.ntp_complete_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.permit_submit_date
+                    ? format(parseISO(item.permit_submit_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.permit_approval_date
+                    ? format(parseISO(item.permit_approval_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.ic_submit_date
+                    ? format(parseISO(item.ic_submit_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.ic_approval_date
+                    ? format(parseISO(item.ic_approval_date), 'dd-MM-yyyy')
+                    : 'N/A',
                 item.rep_2 || 'N/A',
-                item.cancel_date || 'N/A',
-                item.pv_install_date || 'N/A',
-                item.pto_date || 'N/A',
-                'N/A',
-                item.fin_complete_date || 'N/A',
-                item.jeopardy_date ? item.jeopardy_date.toString() : 'N/A',
+                item.cancel_date
+                    ? format(parseISO(item.cancel_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.pv_install_date
+                    ? format(parseISO(item.pv_install_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.pto_date
+                    ? format(parseISO(item.pto_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.fin_complete_date
+                    ? format(parseISO(item.fin_complete_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.jeopardy_date === undefined || item.jeopardy_date === null
+                    ? "N/A"
+                    : item.jeopardy_date === true
+                        ? "True"
+                        : "False"
             ]);
 
 
@@ -265,7 +286,8 @@ const DealerTablePipeline = () => {
     };
 
 
-    console.log(formattedFilters, "sdjjfgj")
+
+
 
     return (
         <>
@@ -277,6 +299,7 @@ const DealerTablePipeline = () => {
                 page_number={page}
                 page_size={20}
                 fetchFunction={fetchFunction}
+                isNew={true}
             />
             <div className="dashBoard-container">
                 <div className="newp-heading-container">
@@ -292,50 +315,77 @@ const DealerTablePipeline = () => {
                     </div>
                     <div className='newp-filInp'>
                         <div className='inp-cont'>
-                            <div className="search-icon">
-                                <IoMdSearch style={{ color: search ? "#377cf6" : "inherit", height: '20px', width: '20px' }} />
-                            </div>
-                            <input
-                                value={searchInp}
-                                type="text"
-                                placeholder="Search"
-                                className="pipe-searchInput"
-                                onChange={(e) => {
-                                    if (e.target.value.length <= 50) {
-                                        e.target.value = e.target.value.replace(
-                                            /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
-                                            ''
-                                        );
-                                        setSearchInp(e.target.value);
-                                        handleSearchChange(e);
-                                    }
-                                }}
-                                onFocus={() => setSearch(true)}
-                                onBlur={() => setSearch(false)}
-                            />
+                            {formattedFilters.length === 0 &&
+                                <div className="search-icon">
+                                    <IoMdSearch style={{ color: search ? "#377cf6" : "inherit", height: '20px', width: '20px' }} />
+                                </div>
+                            }
+                            {formattedFilters.length === 0 &&
+                                <input
+                                    value={searchInp}
+                                    type="text"
+                                    placeholder="Search"
+                                    className="pipe-searchInput"
+                                    onChange={(e) => {
+                                        setPage(1);
+                                        if (e.target.value.length <= 50) {
+                                            const trimmedValue = e.target.value.trimStart();
+                                            e.target.value = trimmedValue.replace(/\s+/g, ' ');
+                                            setSearchInp(e.target.value);
+                                            handleSearchChange(e);
+                                        }
+                                    }}
+                                    onFocus={() => setSearch(true)}
+                                    onBlur={() => setSearch(false)}
+                                />
+                            }
                         </div>
 
+
+
                         <div className='export-button-container'>
-                            <div className='skyfilter' onClick={open} data-tooltip-id={isMobile ? "" : "filter"}><img src={ICONS.skyfilter} alt='' /></div>
-                            <Tooltip
-                                style={{
-                                    zIndex: 103,
-                                    background: '#f7f7f7',
-                                    color: '#000',
-                                    fontSize: 12,
-                                    paddingBlock: 4,
-                                    fontWeight: '400',
-                                }}
-                                offset={8}
-                                delayShow={800}
-                                id="filter"
-                                place="bottom"
-                                content="Filter"
-                            />
+                            <div
+                                className="filter-line-pipe relative"
+                                onClick={open}
+                                style={{ backgroundColor: '#363636' }}
+                                data-tooltip-id={isMobile ? "" : "dealer-filter"}
+                            >
+                                <Tooltip
+                                    style={{
+                                        zIndex: 103,
+                                        background: '#f7f7f7',
+                                        color: '#000',
+                                        fontSize: 12,
+                                        paddingBlock: 4,
+                                        fontWeight: '400',
+                                    }}
+                                    offset={8}
+                                    id="dealer-filter"
+                                    place="top"
+                                    content="Filter"
+                                    delayShow={200}
+                                    className="pagination-tooltip"
+                                />
+                                {formattedFilters && (formattedFilters.length > 0) && (
+                                    <span
+                                        className="absolute"
+                                        style={{
+                                            border: '1px solid #fff',
+                                            borderRadius: '50%',
+                                            backgroundColor: '#2DC74F',
+                                            width: 8,
+                                            height: 8,
+                                            top: 0,
+                                            right: -2,
+                                        }}
+                                    ></span>
+                                )}
+                                <img src={ICONS.skyfilter} alt='' />
+                            </div>
                             <div
                                 className="export-button-pipe"
                                 onClick={exportCsv}
-                                data-tooltip-id={isMobile ? "" : "export"}
+                                data-tooltip-id={(isMobile) ? "" : "export"}
                                 style={{
                                     pointerEvents: isExporting ? 'none' : 'auto',
                                     opacity: isExporting ? 0.6 : 1,
@@ -352,21 +402,23 @@ const DealerTablePipeline = () => {
                                     <FaUpload size={12} color="white" />
                                 )}
                             </div>
-                            <Tooltip
-                                style={{
-                                    zIndex: 103,
-                                    background: '#f7f7f7',
-                                    color: '#000',
-                                    fontSize: 12,
-                                    paddingBlock: 4,
-                                    fontWeight: '400',
-                                }}
-                                offset={8}
-                                delayShow={800}
-                                id="export"
-                                place="bottom"
-                                content="Export"
-                            />
+                            {!isExporting &&
+                                <Tooltip
+                                    style={{
+                                        zIndex: 103,
+                                        background: '#f7f7f7',
+                                        color: '#000',
+                                        fontSize: 12,
+                                        paddingBlock: 4,
+                                        fontWeight: '400',
+                                    }}
+                                    offset={8}
+                                    delayShow={800}
+                                    id="export"
+                                    place="bottom"
+                                    content="Export"
+                                />
+                            }
                         </div>
                     </div>
                 </div>
@@ -385,7 +437,7 @@ const DealerTablePipeline = () => {
                         >
                             <MicroLoader />
                         </div>
-                    ) : !(pipelineData && pipelineData.data.list.data && pipelineData.data.list.data.pipeline_dealer_data_list) ? (
+                    ) : (!cuurentPageData) ? (
                         <div
                             className="flex items-center justify-center"
                             style={{ height: '100%' }}
@@ -438,22 +490,68 @@ const DealerTablePipeline = () => {
                                         <td>{item.partner_dealer || 'N/A'}</td>
                                         <td>{item.system_size || '0'}</td>
                                         <td>{item.contract_amount || '0'}</td>
-                                        <td>{item.created_date || 'N/A'}</td>
-                                        <td>{item.contract_date || 'N/A'}</td>
-
-                                        <td>{item.survey_final_completion_date || 'N/A'}</td>
-                                        <td>{item.ntp_complete_date || 'N/A'}</td>
-                                        <td>{item.permit_submit_date || 'N/A'}</td>
-                                        <td>{item.permit_approval_date || 'N/A'}</td>
-                                        <td>{item.ic_submit_date || 'N/A'}</td>
-                                        <td>{item.ic_approval_date || 'N/A'}</td>
+                                        <td>
+                                            {item.contract_date
+                                                ? format(parseISO(item.contract_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>{item.survey_final_completion_date
+                                            ? format(parseISO(item.survey_final_completion_date), 'dd-MM-yyyy')
+                                            : 'N/A'}</td>
+                                        <td>
+                                            {item.ntp_complete_date
+                                                ? format(parseISO(item.ntp_complete_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.permit_submit_date
+                                                ? format(parseISO(item.permit_submit_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.permit_approval_date
+                                                ? format(parseISO(item.permit_approval_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.ic_submit_date
+                                                ? format(parseISO(item.ic_submit_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.ic_approval_date
+                                                ? format(parseISO(item.ic_approval_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
                                         <td>{item.rep_2 || 'N/A'}</td>
-                                        <td>{item.cancel_date || 'N/A'}</td>
-                                        <td>{item.pv_install_date || 'N/A'}</td>
-                                        <td>{item.pto_date || 'N/A'}</td>
-                                        <td>{'N/A'}</td>
-                                        <td>{item.fin_complete_date || 'N/A'}</td>
-                                        <td>{item.jeopardy_date ? item.jeopardy_date.toString() : 'N/A'}</td>
+                                        <td>
+                                            {item.cancel_date
+                                                ? format(parseISO(item.cancel_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.pv_install_date
+                                                ? format(parseISO(item.pv_install_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.pto_date
+                                                ? format(parseISO(item.pto_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.fin_complete_date
+                                                ? format(parseISO(item.fin_complete_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+
+                                        <td>
+                                            {item.jeopardy_date === undefined || item.jeopardy_date === null
+                                                ? "N/A"
+                                                : item.jeopardy_date === true
+                                                    ? "Yes"
+                                                    : "No"}
+                                        </td>
                                     </tr>
                                 ))}
 
@@ -462,7 +560,7 @@ const DealerTablePipeline = () => {
                         </table>
                     )}
                 </div>
-                {pipelineData && pipelineData.data && pipelineData.data.list.data.pipeline_dealer_data_list && pipelineData.data.list.data.pipeline_dealer_data_list?.length > 0 ? (
+                {(cuurentPageData && cuurentPageData?.length > 0 && !pipelineData.loading) ? (
                     <div className="page-heading-container">
                         <p className="page-heading">
                             {startIndex} - {endIndex > totalCount! ? totalCount : endIndex} of {totalCount} item

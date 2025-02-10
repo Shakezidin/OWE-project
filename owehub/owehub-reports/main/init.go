@@ -259,6 +259,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/delete_dat_state",
+		apiHandler.HandleDeleteDatStateRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************

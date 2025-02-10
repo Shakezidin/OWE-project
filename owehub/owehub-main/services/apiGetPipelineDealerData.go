@@ -28,32 +28,32 @@ import (
 ******************************************************************************/
 
 var columnMap = map[string]ColumnInfo{
-	"customer_name":          {"cust", "string"},
-	"dealer":                 {"cust", "string"},
-	"finance_company":        {"cust", "string"},
-	"type":                   {"cust", "string"}, //* column name not confirmed
-	"finance_type":           {"ntp", "string"},
-	"unique_id":              {"cust", "string"},
-	"address":                {"cust", "string"},
-	"state":                  {"cust", "string"},
-	"email_address":          {"cust", "string"},
-	"phone_number":           {"cust", "string"},
-	"primary_sales_rep":      {"cust", "string"},
-	"secondary_sales_rep":    {"cust", "string"},
-	"contracted_system_size": {"cust", "string"},
-	"total_system_cost":      {"cust", "string"},
-	"sale_date":              {"cust", "date"},
-	// "sale_date":                {"cust", "date"},
-	"survey_final_completion_date": {"survey", "date"},
-	"ntp_complete_date":            {"ntp", "date"},
-	"pv_submitted":                 {"permit", "date"},
-	"pv_approved":                  {"permit", "date"},
-	"ic_submitted_date":            {"ic", "date"},
-	"ic_approved_date":             {"ic", "date"},
-	"cancel_date":                  {"cust", "date"},
-	"pv_completion_date":           {"install", "date"},
-	"pv_fin_date":                  {"fin", "date"},
-	"pto_granted":                  {"pto", "date"},
+	"customer_name":                {"cust", TypeString, ""},
+	"dealer":                       {"cust", TypeString, ""},
+	"finance_company":              {"cust", TypeString, ""},
+	"type":                         {"cust", TypeString, ""},
+	"finance_type":                 {"ntp", TypeString, ""},
+	"unique_id":                    {"cust", TypeString, ""},
+	"address":                      {"cust", TypeString, ""},
+	"state":                        {"cust", TypeString, ""},
+	"email_address":                {"cust", TypeString, ""},
+	"phone_number":                 {"cust", TypeString, ""},
+	"primary_sales_rep":            {"cust", TypeString, ""},
+	"secondary_sales_rep":          {"cust", TypeString, ""},
+	"contracted_system_size":       {"cust", TypeString, "DECIMAL"},
+	"total_system_cost":            {"cust", TypeString, ""},
+	"jeopardy_date":                {"cust", TypeDate, ""},
+	"sale_date":                    {"cust", TypeDate, ""},
+	"survey_final_completion_date": {"survey", TypeDate, ""},
+	"ntp_complete_date":            {"ntp", TypeDate, ""},
+	"pv_submitted":                 {"permit", TypeDate, ""},
+	"pv_approved":                  {"permit", TypeDate, ""},
+	"ic_submitted_date":            {"ic", TypeDate, ""},
+	"ic_approved_date":             {"ic", TypeDate, ""},
+	"cancel_date":                  {"cust", TypeDate, ""},
+	"pv_completion_date":           {"install", TypeDate, ""},
+	"pv_fin_date":                  {"fin", TypeDate, ""},
+	"pto_granted":                  {"pto", TypeDate, ""},
 }
 
 type PipelineByDealerReq struct {
@@ -68,6 +68,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		pipelineDealerDataList models.PipelineDealerDataList
 		data                   []map[string]interface{}
 		whereEleList           []interface{}
+		specialFilters         []string
 		email                  string
 		userRole               string
 		pipelineDealerQuery    string
@@ -128,9 +129,13 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 	/* Base query */
 	pipelineDealerQuery = models.PipelineDealerDataQuery(roleFilter)
 
-	/* Creating Filter */
+	/*
+		Creating Filter
+		Special Filters are to wrap column in an OR bracket
+	*/
+	specialFilters = []string{"unique_id", "customer_name"}
 	builder := NewFilterBuilder(columnMap)
-	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, "", false, false)
+	queryFilter, whereEleList = builder.BuildFilters(dataReq.RequestParams, "", false, false, specialFilters)
 
 	/* Querying the final query */
 	query = pipelineDealerQuery + queryFilter
@@ -188,6 +193,8 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		var jeopardyStatus bool
 		if !jeopardyDate.IsZero() {
 			jeopardyStatus = true
+		} else {
+			jeopardyStatus = false
 		}
 
 		pipelineDealerData := models.PipelineDealerData{

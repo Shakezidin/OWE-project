@@ -10,6 +10,7 @@ export default [
     displayName: 'Home Owner',
     type: 'string',
     isCheckbox: false,
+    filter:'customer_name'
   },
   {
     name: 'finance_company',
@@ -23,12 +24,14 @@ export default [
     displayName: 'Type',
     type: 'string',
     isCheckbox: false,
+    isNotFilter: true
   },
   {
     name: 'loan_type',
     displayName: 'Loan Type',
     type: 'string',
     isCheckbox: false,
+    filter: 'finance_type'
   },
   {
     name: 'street_address',
@@ -40,7 +43,7 @@ export default [
 
   {
     name: 'state',
-    displayName: 'ST',
+    displayName: 'State',
     type: 'string',
     isCheckbox: false,
   },
@@ -67,10 +70,10 @@ export default [
   },
   {
     name: 'partner_dealer',
-    displayName: 'Partner Dealer',
+    displayName: 'Partner',
     type: 'string',
     isCheckbox: false,
-
+    filter:'dealer'
   },
   {
     name: 'system_size',
@@ -82,28 +85,24 @@ export default [
   {
     name: 'contract_amount',
     displayName: 'Contract $$',
-    type: 'number',
+    type: 'string',
     isCheckbox: false,
     filter:'total_system_cost'
   },
-  {
-    name: 'created_date',
-    displayName: 'Created',
-    type: 'date',
-    isCheckbox: false,
-    filter:'sale_date'
-  },
+ 
   {
     name: 'contract_date',
     displayName: 'Contract ✓',
     type: 'date',
     isCheckbox: false,
+    filter:'sale_date'
   },
   {
     name: 'survey_final_completion_date',
     displayName: 'Site Survey',
     type: 'date',
     isCheckbox: false,
+    isNotFilter: true
   },
   {
     name: 'ntp_complete_date',
@@ -166,12 +165,7 @@ export default [
     isCheckbox: false,
     filter:'pto_granted'
   },
-  {
-    name: 'pto_date',
-    displayName: 'Elec Install',
-    type: 'date',
-    isCheckbox: false,
-  },
+  
   {
     name: 'fin_complete_date',
     displayName: 'Fin Date',

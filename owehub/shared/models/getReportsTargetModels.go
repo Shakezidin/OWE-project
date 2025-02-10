@@ -23,6 +23,7 @@ type ProductionTargetOrAchievedItem struct {
 	InstallCt    float64 `json:"install_ct"`
 	MwInstalled  float64 `json:"mw_installed"`
 	BatteriesCt  float64 `json:"batteries_ct"`
+	NTP          float64 `json:"ntp"`
 }
 
 type ProductionTargetOrAchievedPercentage struct {
@@ -31,6 +32,7 @@ type ProductionTargetOrAchievedPercentage struct {
 	InstallCt    float64 `json:"install_ct"`
 	MwInstalled  float64 `json:"mw_installed"`
 	BatteriesCt  float64 `json:"batteries_ct"`
+	NTP          float64 `json:"ntp"`
 }
 
 type GetReportsTargetRespSummaryItem struct {
@@ -83,6 +85,7 @@ type ProductionTargetsByYearRespItem struct {
 	InstallCt    float64 `json:"install_ct"`
 	MwInstalled  float64 `json:"mw_installed"`
 	BatteriesCt  float64 `json:"batteries_ct"`
+	NTP          float64 `json:"ntp"`
 }
 
 // Update production targets models
@@ -95,6 +98,7 @@ type UpdateProductionTargetsReqItem struct {
 	InstallCt    float64 `json:"install_ct"`
 	MwInstalled  float64 `json:"mw_installed"`
 	BatteriesCt  float64 `json:"batteries_ct"`
+	NTP          float64 `json:"ntp"`
 }
 
 type UpdateProductionTargetsReq struct {
