@@ -709,7 +709,7 @@ const ProjectPerformence = () => {
         <div className="project-heading pipeline-heading">
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
           <div className="pipeline-header-btns">
-            {(showNewPage && (isStaging === 'staging')) &&
+            {(showNewPage) &&
               <div
                 className='skygroup-btn'
                 onClick={handleNewPage}
