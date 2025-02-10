@@ -206,18 +206,22 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	var currSaleRep models.CombinedResult
 	var add bool
+	filteredResults := make([]models.CombinedResult, 0, len(combinedResults)) // Create a new slice
+
 	if len(combinedResults) > 0 {
 		for i, val := range combinedResults {
 			if val.HighLight {
 				currSaleRep = val
 				currSaleRep.Rank = i + 1
 				add = true
+				continue // Skip adding this entry to filteredResults
 			}
-			combinedResults[i].Rank = i + 1
+			val.Rank = i + 1
+			filteredResults = append(filteredResults, val)
 		}
 
-		LeaderBoardList.TopLeaderBoardList = Paginate(combinedResults, 1, 3)
-		LeaderBoardList.LeaderBoardList = Paginate(combinedResults, dataReq.PageNumber, dataReq.PageSize)
+		LeaderBoardList.TopLeaderBoardList = Paginate(filteredResults, 1, 3)
+		LeaderBoardList.LeaderBoardList = Paginate(filteredResults, dataReq.PageNumber, dataReq.PageSize)
 	}
 
 	if add {
@@ -256,11 +260,11 @@ func Paginate[T any](data []T, pageNumber int64, pageSize int64) []T {
 
 func fetchDealerDetails(email string, role string) (dealerName, highlightName string, err error) {
 	query := fmt.Sprintf(`
-        SELECT sp.sales_partner_name AS dealer_name, name 
-        FROM user_details ud
-        LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
-        WHERE ud.email_id = '%v';
-    `, email)
+		 SELECT sp.sales_partner_name AS dealer_name, name 
+		 FROM user_details ud
+		 LEFT JOIN sales_partner_dbhub_schema sp ON ud.partner_id = sp.partner_id
+		 WHERE ud.email_id = '%v';
+	 `, email)
 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
@@ -357,11 +361,11 @@ func GetDealerCodes(dealerNames []string) (map[string]string, error) {
 	}
 
 	dealerQuery := fmt.Sprintf(`
-		SELECT sp.sales_partner_name AS dealer_name, pd.partner_code 
-		FROM sales_partner_dbhub_schema sp
-		LEFT JOIN partner_details pd ON sp.partner_id = pd.partner_id
-		WHERE sp.sales_partner_name IN (%s)
-	`, strings.Join(placeholders, ","))
+		 SELECT sp.sales_partner_name AS dealer_name, pd.partner_code 
+		 FROM sales_partner_dbhub_schema sp
+		 LEFT JOIN partner_details pd ON sp.partner_id = pd.partner_id
+		 WHERE sp.sales_partner_name IN (%s)
+	 `, strings.Join(placeholders, ","))
 
 	dealerData, err := db.ReteriveFromDB(db.OweHubDbIndex, dealerQuery, args)
 	if err != nil {
@@ -516,16 +520,16 @@ func combineResults(saleCancelData, installBatteryData, ntpData []map[string]int
 		totalNtp += ntp
 	}
 
+	partnerIndex := 1 // Initialize partner counter
 	// Convert map to slice and handle highlighting
 	for _, result := range combinedMap {
-		partnerIndex := 1 // Initialize partner counter
 
 		if role == string(types.RoleDealerOwner) && groupBy == "dealer" {
-			if result.Dealer != HighLightDlrName {
-				if value, exists := dealerCoded[result.Dealer]; exists && value != "" {
-					result.Dealer = value
+			if result.Name != HighLightDlrName {
+				if value, exists := dealerCoded[result.Name]; exists && value != "" {
+					result.Name = value
 				} else {
-					result.Dealer = fmt.Sprintf("partner_%d", partnerIndex)
+					result.Name = fmt.Sprintf("partner_%d", partnerIndex)
 					partnerIndex++ // Increment for the next missing dealer
 				}
 			}
