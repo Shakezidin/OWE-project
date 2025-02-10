@@ -81,20 +81,7 @@ type GetTabGeneralInfoResponse struct {
 // Structural tab structs
 type GetTabStructuralInfoResponse struct {
 	//// STRUCTURAL INFO
-	Structure              string `json:"structure"`
-	RoofType               string `json:"roof_type"`
-	SheathingType          string `json:"sheathing_type"`
-	FramingSize            string `json:"framing_size"`
-	StructuralRoofMaterial string `json:"structural_roof_material"`
-	FramingType            string `json:"framing_type"`
-	FramingSpacing         int64  `json:"framing_spacing"`
-	Attachment             string `json:"attachment"`
-	Racking                string `json:"racking"`
-	Pattern                string `json:"pattern"`
-	Mount                  string `json:"mount"`
-	StructuralUpgrades     string `json:"structural_upgrades"`
-	GmSupportType          string `json:"gm_support_type"`
-	ReroofRequired         string `json:"reroof_required"`
+	StructuralInfo map[string]GetTabStructuralInfo `json:"structural_info"`
 	////////////////////////////////////////////////
 	Quantity int64  `json:"quantity"`
 	Pitch    int64  `json:"pitch"`
@@ -124,6 +111,22 @@ type GetTabStructuralInfoResponse struct {
 	RoofSheathingType     string `json:"roof_sheathing_type"`
 	RoofMaterial          string `json:"roof_material"`
 	RoofStructuralUpgrade string `json:"roof_structural_upgrade"`
+}
+type GetTabStructuralInfo struct {
+	Structure              string `json:"structure"`
+	RoofType               string `json:"roof_type"`
+	SheathingType          string `json:"sheathing_type"`
+	FramingSize            string `json:"framing_size"`
+	StructuralRoofMaterial string `json:"structural_roof_material"`
+	FramingType            string `json:"framing_type"`
+	FramingSpacing         int64  `json:"framing_spacing"`
+	Attachment             string `json:"attachment"`
+	Racking                string `json:"racking"`
+	Pattern                string `json:"pattern"`
+	Mount                  string `json:"mount"`
+	StructuralUpgrades     string `json:"structural_upgrades"`
+	GmSupportType          string `json:"gm_support_type"`
+	ReroofRequired         string `json:"reroof_required"`
 }
 
 // Adders tab structs
