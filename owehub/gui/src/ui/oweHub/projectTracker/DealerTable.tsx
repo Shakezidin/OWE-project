@@ -133,7 +133,7 @@ const DealerTablePipeline = () => {
     const cuurentPageData = pipelineData.list?.slice();
 
     if (sortKey) {
-        
+
         cuurentPageData?.sort((a: any, b: any) => {
             console.log(sortDirection, sortKey, "first time")
             const aValue = a[sortKey];
@@ -190,7 +190,7 @@ const DealerTablePipeline = () => {
         setIsExporting(true);
         const headers = pipeLineColumn.map((item) => item.displayName);
         try {
-            const data =  {
+            const data = {
                 "dealer_names": dealerNames,
                 "search_filters": {
                     "page_number": page,
@@ -347,7 +347,7 @@ const DealerTablePipeline = () => {
                             <div
                                 className="filter-line-pipe relative"
                                 onClick={open}
-                                style={{ backgroundColor: '#000' }}
+                                style={{ backgroundColor: '#363636' }}
                                 data-tooltip-id={isMobile ? "" : "dealer-filter"}
                             >
                                 <Tooltip
@@ -385,7 +385,7 @@ const DealerTablePipeline = () => {
                             <div
                                 className="export-button-pipe"
                                 onClick={exportCsv}
-                                data-tooltip-id={isMobile ? "" : "export"}
+                                data-tooltip-id={(isMobile) ? "" : "export"}
                                 style={{
                                     pointerEvents: isExporting ? 'none' : 'auto',
                                     opacity: isExporting ? 0.6 : 1,
@@ -402,21 +402,23 @@ const DealerTablePipeline = () => {
                                     <FaUpload size={12} color="white" />
                                 )}
                             </div>
-                            <Tooltip
-                                style={{
-                                    zIndex: 103,
-                                    background: '#f7f7f7',
-                                    color: '#000',
-                                    fontSize: 12,
-                                    paddingBlock: 4,
-                                    fontWeight: '400',
-                                }}
-                                offset={8}
-                                delayShow={800}
-                                id="export"
-                                place="bottom"
-                                content="Export"
-                            />
+                            {!isExporting &&
+                                <Tooltip
+                                    style={{
+                                        zIndex: 103,
+                                        background: '#f7f7f7',
+                                        color: '#000',
+                                        fontSize: 12,
+                                        paddingBlock: 4,
+                                        fontWeight: '400',
+                                    }}
+                                    offset={8}
+                                    delayShow={800}
+                                    id="export"
+                                    place="bottom"
+                                    content="Export"
+                                />
+                            }
                         </div>
                     </div>
                 </div>
