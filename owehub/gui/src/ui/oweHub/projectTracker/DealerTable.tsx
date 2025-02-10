@@ -193,16 +193,22 @@ const DealerTablePipeline = () => {
         setIsExporting(true);
         const headers = pipeLineColumn.map((item) => item.displayName);
         try {
-            const data = {
+            const data =  {
                 "dealer_names": dealerNames,
                 "search_filters": {
                     "page_number": page,
-                    "page_size": totalCount,
-                    "filters": [],
+                    "page_size": itemsPerPage,
+                    "filters": [
+                        ...(formattedFilters && formattedFilters.length > 0 ? formattedFilters : []),
+                        ...(searchTerm ? [
+                            { "column": "unique_id", "operation": "cont", "data": searchTerm },
+                            { "column": "customer_name", "operation": "cont", "data": searchTerm },
+                        ] : []),
+                    ],
                     "sort_by": "",
                     "sort_order": ""
                 }
-            };
+            }
             const response = await postCaller('getPipelineDealerData', data);
             if (response.status > 201) {
                 toast.error(response.data.message);
