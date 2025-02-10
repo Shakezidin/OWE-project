@@ -99,9 +99,12 @@ const DealerTablePipeline = () => {
                 "search_filters": {
                     "page_number": page,
                     "page_size": itemsPerPage,
-                    "filters": (formattedFilters && formattedFilters.length > 0) ? formattedFilters : [
-                        { "column": "unique_id", "operation": "cont", "data": searchTerm },
-                        { "column": "customer_name", "operation": "cont", "data": searchTerm },
+                    "filters": [
+                        ...(formattedFilters && formattedFilters.length > 0 ? formattedFilters : []),
+                        ...(searchTerm ? [
+                            { "column": "unique_id", "operation": "cont", "data": searchTerm },
+                            { "column": "customer_name", "operation": "cont", "data": searchTerm },
+                        ] : []),
                     ],
                     "sort_by": "",
                     "sort_order": ""
@@ -118,6 +121,7 @@ const DealerTablePipeline = () => {
             setTotalCount(pipelineData.data.count);
         }
     }, [pipelineData]);
+    console.log(sortDirection, sortKey, "shjdg")
     const handleSort = (key: any) => {
 
         if (sortKey === key) {
@@ -131,10 +135,10 @@ const DealerTablePipeline = () => {
 
     const cuurentPageData = pipelineData.list?.slice();
 
-
-
     if (sortKey) {
+        
         cuurentPageData?.sort((a: any, b: any) => {
+            console.log(sortDirection, sortKey, "first time")
             const aValue = a[sortKey];
             const bValue = b[sortKey];
 
@@ -169,6 +173,7 @@ const DealerTablePipeline = () => {
             }
         });
     }
+
 
 
     const filterClose = () => {
@@ -215,24 +220,49 @@ const DealerTablePipeline = () => {
                 item.email || 'N/A',
                 item.phone_number || 'N/A',
                 item.rep_1 || 'N/A',
-                'Not Found',
+                item.partner_dealer || 'N/A',
                 item.system_size || '0',
                 `${item.contract_amount || '0'}`,
                 // item.created_date || 'N/A',
-                item.contract_date || 'N/A',
-                item.survey_final_completion_date || 'N/A',
-                item.ntp_complete_date || 'N/A',
-                item.permit_submit_date || 'N/A',
-                item.permit_approval_date || 'N/A',
-                item.ic_submit_date || 'N/A',
-                item.ic_approval_date || 'N/A',
+                item.contract_date
+                    ? format(parseISO(item.contract_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.survey_final_completion_date
+                    ? format(parseISO(item.survey_final_completion_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.ntp_complete_date
+                    ? format(parseISO(item.ntp_complete_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.permit_submit_date
+                    ? format(parseISO(item.permit_submit_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.permit_approval_date
+                    ? format(parseISO(item.permit_approval_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.ic_submit_date
+                    ? format(parseISO(item.ic_submit_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.ic_approval_date
+                    ? format(parseISO(item.ic_approval_date), 'dd-MM-yyyy')
+                    : 'N/A',
                 item.rep_2 || 'N/A',
-                item.cancel_date || 'N/A',
-                item.pv_install_date || 'N/A',
-                item.pto_date || 'N/A',
-                'N/A',
-                item.fin_complete_date || 'N/A',
-                item.jeopardy_date ? item.jeopardy_date.toString() : 'N/A',
+                item.cancel_date
+                    ? format(parseISO(item.cancel_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.pv_install_date
+                    ? format(parseISO(item.pv_install_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.pto_date
+                    ? format(parseISO(item.pto_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.fin_complete_date
+                    ? format(parseISO(item.fin_complete_date), 'dd-MM-yyyy')
+                    : 'N/A',
+                item.jeopardy_date === undefined || item.jeopardy_date === null
+                    ? "N/A"
+                    : item.jeopardy_date === true
+                        ? "True"
+                        : "False"
             ]);
 
 
@@ -254,6 +284,8 @@ const DealerTablePipeline = () => {
         }
         setIsExporting(false);
     };
+
+
 
 
 
@@ -286,24 +318,27 @@ const DealerTablePipeline = () => {
                             <div className="search-icon">
                                 <IoMdSearch style={{ color: search ? "#377cf6" : "inherit", height: '20px', width: '20px' }} />
                             </div>
-                            <input
-                                value={searchInp}
-                                type="text"
-                                placeholder="Search"
-                                className="pipe-searchInput"
-                                onChange={(e) => {
-                                    if (e.target.value.length <= 50) {
-                                        e.target.value = e.target.value.replace(
-                                            /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
-                                            ''
-                                        );
-                                        setSearchInp(e.target.value);
-                                        handleSearchChange(e);
-                                    }
-                                }}
-                                onFocus={() => setSearch(true)}
-                                onBlur={() => setSearch(false)}
-                            />
+                            {formattedFilters.length === 0 &&
+                                <input
+                                    value={searchInp}
+                                    type="text"
+                                    placeholder="Search"
+                                    className="pipe-searchInput"
+                                    onChange={(e) => {
+                                        setPage(1);
+                                        if (e.target.value.length <= 50) {
+                                            e.target.value = e.target.value.replace(
+                                                /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                                                ''
+                                            );
+                                            setSearchInp(e.target.value);
+                                            handleSearchChange(e);
+                                        }
+                                    }}
+                                    onFocus={() => setSearch(true)}
+                                    onBlur={() => setSearch(false)}
+                                />
+                            }
                         </div>
 
 
@@ -512,8 +547,8 @@ const DealerTablePipeline = () => {
                                             {item.jeopardy_date === undefined || item.jeopardy_date === null
                                                 ? "N/A"
                                                 : item.jeopardy_date === true
-                                                    ? "True"
-                                                    : "False"}
+                                                    ? "Yes"
+                                                    : "No"}
                                         </td>
                                     </tr>
                                 ))}
