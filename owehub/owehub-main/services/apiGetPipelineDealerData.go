@@ -32,7 +32,7 @@ var columnMap = map[string]ColumnInfo{
 	"dealer":                 {"cust", "string"},
 	"finance_company":        {"cust", "string"},
 	"type":                   {"cust", "string"}, //* column name not confirmed
-	"finance_type":           {"ntp", "string"},
+	"finance_type":           {"ntp", "string"},  //* loan_type
 	"unique_id":              {"cust", "string"},
 	"address":                {"cust", "string"},
 	"state":                  {"cust", "string"},
@@ -129,8 +129,8 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 	/* Base query */
 	pipelineDealerQuery = models.PipelineDealerDataQuery(roleFilter)
 
-	/* 
-		Creating Filter 
+	/*
+		Creating Filter
 		Special Filters are to wrap column in an OR bracket
 	*/
 	specialFilters = []string{"unique_id", "customer_name"}
