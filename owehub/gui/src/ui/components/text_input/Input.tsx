@@ -133,6 +133,9 @@ const Input: FC<InputProps> = ({
               e.target.value = trim;
             }
             if (noVal) {
+              const trimmedValue = e.target.value.trimStart();
+              const sanitizedValue = trimmedValue.replace(/\s+/g, ' ');
+              e.target.value = sanitizedValue;
               onChange(e);
               return;
             }

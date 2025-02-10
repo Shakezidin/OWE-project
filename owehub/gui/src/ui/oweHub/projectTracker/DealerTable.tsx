@@ -22,6 +22,7 @@ import { FaUpload } from 'react-icons/fa'
 import { Tooltip } from 'react-tooltip'
 import useMatchMedia from '../../../hooks/useMatchMedia'
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl'
+import { format, parseISO } from 'date-fns'
 
 
 interface ColumnMap {
@@ -452,21 +453,61 @@ const DealerTablePipeline = () => {
                                         <td>{item.partner_dealer || 'N/A'}</td>
                                         <td>{item.system_size || '0'}</td>
                                         <td>{item.contract_amount || '0'}</td>
-                                        {/* <td>{item.created_date || 'N/A'}</td> */}
-                                        <td>{item.contract_date || 'N/A'}</td>
-
-                                        <td>{item.survey_final_completion_date || 'N/A'}</td>
-                                        <td>{item.ntp_complete_date || 'N/A'}</td>
-                                        <td>{item.permit_submit_date || 'N/A'}</td>
-                                        <td>{item.permit_approval_date || 'N/A'}</td>
-                                        <td>{item.ic_submit_date || 'N/A'}</td>
-                                        <td>{item.ic_approval_date || 'N/A'}</td>
+                                        <td>
+                                            {item.contract_date
+                                                ? format(parseISO(item.contract_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>{item.survey_final_completion_date
+                                            ? format(parseISO(item.survey_final_completion_date), 'dd-MM-yyyy')
+                                            : 'N/A'}</td>
+                                        <td>
+                                            {item.ntp_complete_date
+                                                ? format(parseISO(item.ntp_complete_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.permit_submit_date
+                                                ? format(parseISO(item.permit_submit_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.permit_approval_date
+                                                ? format(parseISO(item.permit_approval_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.ic_submit_date
+                                                ? format(parseISO(item.ic_submit_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.ic_approval_date
+                                                ? format(parseISO(item.ic_approval_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
                                         <td>{item.rep_2 || 'N/A'}</td>
-                                        <td>{item.cancel_date || 'N/A'}</td>
-                                        <td>{item.pv_install_date || 'N/A'}</td>
-                                        <td>{item.pto_date || 'N/A'}</td>
+                                        <td>
+                                            {item.cancel_date
+                                                ? format(parseISO(item.cancel_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.pv_install_date
+                                                ? format(parseISO(item.pv_install_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.pto_date
+                                                ? format(parseISO(item.pto_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
+                                        <td>
+                                            {item.fin_complete_date
+                                                ? format(parseISO(item.fin_complete_date), 'dd-MM-yyyy')
+                                                : 'N/A'}
+                                        </td>
 
-                                        <td>{item.fin_complete_date || 'N/A'}</td>
                                         <td>
                                             {item.jeopardy_date === undefined || item.jeopardy_date === null
                                                 ? "N/A"
@@ -482,7 +523,7 @@ const DealerTablePipeline = () => {
                         </table>
                     )}
                 </div>
-                {(cuurentPageData && cuurentPageData?.length > 0 || pipelineData.loading) ? (
+                {(cuurentPageData && cuurentPageData?.length > 0 && !pipelineData.loading) ? (
                     <div className="page-heading-container">
                         <p className="page-heading">
                             {startIndex} - {endIndex > totalCount! ? totalCount : endIndex} of {totalCount} item

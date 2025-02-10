@@ -43,7 +43,7 @@ export default [
 
   {
     name: 'state',
-    displayName: 'ST',
+    displayName: 'State',
     type: 'string',
     isCheckbox: false,
   },
@@ -70,7 +70,7 @@ export default [
   },
   {
     name: 'partner_dealer',
-    displayName: 'Partner Dealer',
+    displayName: 'Partner',
     type: 'string',
     isCheckbox: false,
     filter:'dealer'
@@ -85,7 +85,7 @@ export default [
   {
     name: 'contract_amount',
     displayName: 'Contract $$',
-    type: 'number',
+    type: 'string',
     isCheckbox: false,
     filter:'total_system_cost'
   },
