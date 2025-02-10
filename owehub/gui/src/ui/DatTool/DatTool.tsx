@@ -14,6 +14,7 @@ import CommonComponent from './pages/CommonComponent';
 import { useOutletContext } from 'react-router-dom';
 import { getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getStructuralInfo, updateDatTool } from '../../redux/apiActions/DatToolAction/datToolAction';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import useMatchMedia from '../../hooks/useMatchMedia';
 
 const DatTool: React.FC = () => {
   const [selectedPage, setSelectedPage] = useState<string>('General');
@@ -34,7 +35,7 @@ const DatTool: React.FC = () => {
   
  const [showMenu,setShowMenu]=useState<boolean>(true);
   
- 
+ const isMobile = useMatchMedia('(max-width: 480px)');
   useEffect(() => {
     dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
   }, [currentGeneralId]);
@@ -82,16 +83,19 @@ const DatTool: React.FC = () => {
       {
         refreshDat && <RefreshPopUp setOpenRefresh={setRefreshDat} />
       }
-      
+      {isMobile &&  <div className={styles.mobileSideContainer}>
+      <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isMobile}/>
+        </div>}
       <div className={styles.layoutContainer}>
+       
         <div className={styles.contentContainer} style={{height: !dbStatus ? "calc(100vh - 115px)" : ""}}>
           <CommonComponent generalData={generalData} loading={loading} />
           {renderPage()}
         </div>
 
-        <div className={showMenu ? styles.sidebar: styles.closedSideBar}>
-          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef}/>
-        </div>
+        {!isMobile && <div className={showMenu ? styles.sidebar: styles.closedSideBar}>
+          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isMobile}/>
+        </div>}
 
       </div>
     </div>
