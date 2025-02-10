@@ -357,7 +357,7 @@ func GetDealerCodes(dealerNames []string) (map[string]string, error) {
 	}
 
 	dealerQuery := fmt.Sprintf(`
-		SELECT sp.sales_partner_name AS dealer_name, pd.dealer_code 
+		SELECT sp.sales_partner_name AS dealer_name, pd.partner_code 
 		FROM sales_partner_dbhub_schema sp
 		LEFT JOIN partner_details pd ON sp.partner_id = pd.partner_id
 		WHERE sp.sales_partner_name IN (%s)
@@ -371,7 +371,7 @@ func GetDealerCodes(dealerNames []string) (map[string]string, error) {
 	dealerCodes := make(map[string]string)
 	for _, item := range dealerData {
 		if dealerName, ok := item["dealer_name"].(string); ok {
-			if dealerCode, ok := item["dealer_code"].(string); ok {
+			if dealerCode, ok := item["partner_code"].(string); ok {
 				dealerCodes[dealerName] = dealerCode
 			}
 		}
@@ -518,9 +518,16 @@ func combineResults(saleCancelData, installBatteryData, ntpData []map[string]int
 
 	// Convert map to slice and handle highlighting
 	for _, result := range combinedMap {
+		partnerIndex := 1 // Initialize partner counter
+
 		if role == string(types.RoleDealerOwner) && groupBy == "dealer" {
 			if result.Dealer != HighLightDlrName {
-				result.Dealer = dealerCoded[result.Dealer]
+				if value, exists := dealerCoded[result.Dealer]; exists && value != "" {
+					result.Dealer = value
+				} else {
+					result.Dealer = fmt.Sprintf("partner_%d", partnerIndex)
+					partnerIndex++ // Increment for the next missing dealer
+				}
 			}
 		}
 
