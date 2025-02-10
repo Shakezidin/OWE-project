@@ -327,10 +327,8 @@ const DealerTablePipeline = () => {
                                     onChange={(e) => {
                                         setPage(1);
                                         if (e.target.value.length <= 50) {
-                                            e.target.value = e.target.value.replace(
-                                                /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
-                                                ''
-                                            );
+                                            const trimmedValue = e.target.value.trimStart();
+                                            e.target.value = trimmedValue.replace(/\s+/g, ' ');
                                             setSearchInp(e.target.value);
                                             handleSearchChange(e);
                                         }
