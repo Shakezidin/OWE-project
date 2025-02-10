@@ -14,7 +14,9 @@ const debounce = (func: Function, delay: number) => {
 import { useOutletContext } from 'react-router-dom';
 import shrinkImg from '../assets/shrink 1.svg';
 import searchIcon from '../assets/searchIcon.svg';
-
+import style2 from '../styles/sideContainerMobile.module.css'
+import downArrow from '../assets/downArrow.svg';
+import DropDownContainer from './DropDownContainer';
 interface Data {
   name: string;
   projectID: string;
@@ -34,6 +36,7 @@ interface SideContainerProps {
   setShowMenu: any;
   showMenu:Boolean;
   numFlagRef: any;
+  isMobile:boolean;
 }
 
 const SideContainer: React.FC<SideContainerProps> = ({
@@ -47,7 +50,10 @@ const SideContainer: React.FC<SideContainerProps> = ({
   currentGeneralId,
   showMenu,
   setShowMenu,
-numFlagRef}) => {
+  numFlagRef,
+  isMobile
+
+}) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortAscending, setSortAscending] = useState<boolean>(true);
   const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
@@ -88,9 +94,7 @@ numFlagRef}) => {
   }));
 
   const handleClick = () => {
-    console.log('Before increasing page size', currentGeneralId);
     setPageSize((prevPageSize: number) => prevPageSize + 10);
-    console.log('After increasing page size', currentGeneralId);
 
   };
 
@@ -109,9 +113,14 @@ numFlagRef}) => {
     setShowMenu(false);
   }
 
+
+
+
+  //STATES FOR MOBILE VIEW
+  const [showMore,setShowMore]=useState<boolean>(false);
   return (
     <div>
-      {showMenu?<div className={styles.container} style={{ height: !dbStatus ? "calc(100vh - 133px)" : "" }}>
+      {!isMobile && showMenu?<div className={styles.container} style={{ height: !dbStatus ? "calc(100vh - 133px)" : "" }}>
       <div className={styles.headerWrapper}>
         <div className={styles.heading}>
           <div className={styles.headingName}>Project List</div>
@@ -160,9 +169,14 @@ numFlagRef}) => {
           </div>
         </div>
       )}
-    </div> : <div className={styles.searchIconContainer} onClick={()=>setShowMenu(true)}> <img src={searchIcon} alt=""  className={styles.iconSearch}/></div>}
-    </div>
-  );
+    </div> : !isMobile && <div className={styles.searchIconContainer} onClick={()=>setShowMenu(true)}> <img src={searchIcon} alt=""  className={styles.iconSearch}/></div>}
+
+
+      
+        
+      {isMobile &&  <DropDownContainer loading={loading} mappedDataList={mappedDataList} currentGeneralId={currentGeneralId} isDataEmpty={isDataEmpty} handleClick={handleClick} setCurrentGeneralId={setCurrentGeneralId} numFlagRef={numFlagRef} data={data} showMore={showMore} setShowMore={setShowMore}/>}
+      </div>
+ );
 };
 
 export default SideContainer;

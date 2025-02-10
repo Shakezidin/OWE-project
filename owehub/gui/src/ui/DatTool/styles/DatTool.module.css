@@ -55,3 +55,9 @@
 .closedSideBar{
   padding:1.2rem;
 }
+
+
+.mobileSideContainer{
+  padding:2rem 2.5rem 0rem 2.5rem;
+  max-height: 665px;
+}
