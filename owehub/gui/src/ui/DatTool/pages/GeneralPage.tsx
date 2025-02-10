@@ -259,7 +259,7 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
             </div>
           </div>
         </div>
-      </div>: <div style={{ display: 'flex', justifyContent: 'center' }}>
+      </div>: <div style={{ display: 'flex', justifyContent: 'center' ,height:"70vh"  }}>
           <DataNotFound />
         </div>}
     </div>

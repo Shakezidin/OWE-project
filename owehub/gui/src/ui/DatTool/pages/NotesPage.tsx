@@ -192,7 +192,7 @@ const NotePage = ({ currentGeneralId }: any) => {
           </div>
         </>
       ) : (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center' ,height:"70vh" }}>
           <DataNotFound />
         </div>
       )}

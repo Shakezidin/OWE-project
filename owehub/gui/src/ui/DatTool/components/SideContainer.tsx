@@ -33,6 +33,7 @@ interface SideContainerProps {
   sort: any;
   setShowMenu: any;
   showMenu:Boolean;
+  numFlagRef: any;
 }
 
 const SideContainer: React.FC<SideContainerProps> = ({
@@ -45,7 +46,8 @@ const SideContainer: React.FC<SideContainerProps> = ({
   setCurrentGeneralId,
   currentGeneralId,
   showMenu,
-  setShowMenu}) => {
+  setShowMenu,
+numFlagRef}) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortAscending, setSortAscending] = useState<boolean>(true);
   const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
@@ -140,7 +142,7 @@ const SideContainer: React.FC<SideContainerProps> = ({
         <div className={styles.wrapperBox}>
           <div className={styles.dataBoxWrapper}>
             {mappedDataList?.map((data: any, index: any) => (
-              <div key={index} className={styles.dataBox} onClick={() => setCurrentGeneralId(data.projectID)} onMouseOver={() => setIsHovered(index)} onMouseOut={() => setIsHovered(null)} style={{ 
+              <div key={index} className={styles.dataBox} onClick={() => {setCurrentGeneralId(data.projectID); numFlagRef.current=false}} onMouseOver={() => setIsHovered(index)} onMouseOut={() => setIsHovered(null)} style={{ 
                 backgroundColor: currentGeneralId === data.projectID 
                   ? '#377CF6' 
                   : isHovered === index 
@@ -154,7 +156,7 @@ const SideContainer: React.FC<SideContainerProps> = ({
                 <p className={styles.content_three} style={{ color: currentGeneralId === data.projectID ? '#fafafa' : '' }}>{data.address}</p>
               </div>
             ))}
-            <p className={styles.seeMore} onClick={handleClick}>See More</p>
+            {data && <p className={styles.seeMore} onClick={handleClick}>See More</p>}
           </div>
         </div>
       )}

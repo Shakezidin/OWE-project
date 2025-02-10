@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './styles/DatTool.module.css';
 
 import Header from './components/Header';
@@ -62,13 +62,13 @@ const DatTool: React.FC = () => {
 
   const [pageSize, setPageSize] = useState<number>(10);
   const [sort, setSort] = useState<string>('asc');
-  const [numFlag, setNumFlag]=useState<boolean>(true);
+  const numFlagRef = useRef<boolean>(true);
   useEffect(() => {
     dispatch(getDatProjectList({ search: searchPara, page_number:1,page_size:pageSize,sort:sort }));
-    if (data?.length > 0 && numFlag) {
+    if (data?.length > 0 && numFlagRef.current) {
+      numFlagRef.current = false;
       const projectId = data[0]?.project_id;
       setCurrentGeneralId(projectId?.startsWith(' ') ? projectId.trim() : projectId);
-      setNumFlag(false);
     }
   }, [searchPara, pageSize, sort]);
  
@@ -90,7 +90,7 @@ const DatTool: React.FC = () => {
         </div>
 
         <div className={showMenu ? styles.sidebar: styles.closedSideBar}>
-          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu}/>
+          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef}/>
         </div>
 
       </div>
