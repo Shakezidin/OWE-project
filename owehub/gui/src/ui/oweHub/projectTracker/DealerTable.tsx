@@ -482,7 +482,7 @@ const DealerTablePipeline = () => {
                         </table>
                     )}
                 </div>
-                {cuurentPageData && cuurentPageData?.length > 0 ? (
+                {(cuurentPageData && cuurentPageData?.length > 0 || pipelineData.loading) ? (
                     <div className="page-heading-container">
                         <p className="page-heading">
                             {startIndex} - {endIndex > totalCount! ? totalCount : endIndex} of {totalCount} item
