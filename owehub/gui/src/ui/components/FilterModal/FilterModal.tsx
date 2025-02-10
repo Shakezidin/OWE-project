@@ -167,6 +167,8 @@ const FilterModal: React.FC<TableProps> = ({
     const newRules = [...filters];
     newRules[index][field] = value;
     newRules[index].Data = '';
+    newRules[index].start_date = '';
+    newRules[index].end_date = '';
     setFilters(newRules);
   };
   const handleDataChange = (

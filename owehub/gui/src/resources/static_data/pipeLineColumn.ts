@@ -99,6 +99,7 @@ export default [
     displayName: 'Contract ✓',
     type: 'date',
     isCheckbox: false,
+    filter:'sale_date'
   },
   {
     name: 'survey_final_completion_date',
