@@ -144,6 +144,13 @@ const DealerTablePipeline = () => {
                 return sortDirection === 'asc'
                     ? numericAValue - numericBValue
                     : numericBValue - numericAValue;
+            } else if (sortKey === 'jeopardy_date') {
+                const aValue = String(a[sortKey]);
+                const bValue = String(b[sortKey]);
+
+                return sortDirection === 'asc'
+                    ? aValue.localeCompare(bValue)
+                    : bValue.localeCompare(aValue);
             } else if (typeof aValue === 'string' && typeof bValue === 'string') {
                 return sortDirection === 'asc'
                     ? aValue.localeCompare(bValue)
@@ -460,7 +467,13 @@ const DealerTablePipeline = () => {
                                         <td>{item.pto_date || 'N/A'}</td>
 
                                         <td>{item.fin_complete_date || 'N/A'}</td>
-                                        <td>{item.jeopardy_date ? item.jeopardy_date.toString() : 'N/A'}</td>
+                                        <td>
+                                            {item.jeopardy_date === undefined || item.jeopardy_date === null
+                                                ? "N/A"
+                                                : item.jeopardy_date === true
+                                                    ? "True"
+                                                    : "False"}
+                                        </td>
                                     </tr>
                                 ))}
 
