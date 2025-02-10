@@ -64,216 +64,221 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// if len(dataReq.GeneralValues.ProjectId) <= 0 {
-	// 	err = fmt.Errorf("invalid project ID %s", dataReq.GeneralValues.ProjectId)
-	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	appserver.FormAndSendHttpResp(resp, "Invalid project ID, update failed", http.StatusBadRequest, nil)
-	// 	return
-	// }
+	if len(dataReq.ProjectId) <= 0 {
+		err = fmt.Errorf("invalid project ID %s", dataReq.ProjectId)
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Invalid project ID, update failed", http.StatusBadRequest, nil)
+		return
+	}
 	/////////// GENERAL VALUES ///////////////////////////////////////////////////////////////////////////////////
-	if dataReq.GeneralValues != nil {
+	if dataReq.GeneraBasics != nil {
 
-		// if len(dataReq.GeneralValues.ProjectName) > 0 {
-		// 	whereEleList = append(whereEleList, dataReq.GeneralValues.ProjectName)
-		// 	updateFields = append(updateFields, fmt.Sprintf("project_name = $%d", len(whereEleList)))
-		// }
-		// if len(dataReq.GeneralValues.ProjectId) > 0 {
-		// 	whereEleList = append(whereEleList, dataReq.GeneralValues.ProjectId)
-		// 	updateFields = append(updateFields, fmt.Sprintf("project_id = $%d", len(whereEleList)))
-		// }
-		if len(dataReq.GeneralValues.ProjectAddress) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.ProjectAddress)
+		if len(dataReq.GeneraBasics.ProjectAddress) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneraBasics.ProjectAddress)
 			updateFields = append(updateFields, fmt.Sprintf("project_address = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralValues.PhoneNumber) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.PhoneNumber)
+		if len(dataReq.GeneraBasics.PhoneNumber) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneraBasics.PhoneNumber)
 			updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralValues.EmailID) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.EmailID)
+		if len(dataReq.GeneraBasics.EmailID) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneraBasics.EmailID)
 			updateFields = append(updateFields, fmt.Sprintf("email_id = $%d", len(whereEleList)))
 		}
-		if dataReq.GeneralValues.DATModuleQty > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.DATModuleQty)
+	}
+	if dataReq.GeneralDatInformation != nil {
+		if dataReq.GeneralDatInformation.DATModuleQty > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATModuleQty)
 			updateFields = append(updateFields, fmt.Sprintf("dat_module_qty = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralValues.DATModuleType) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.DATModuleType)
+		if len(dataReq.GeneralDatInformation.DATModuleType) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATModuleType)
 			updateFields = append(updateFields, fmt.Sprintf("dat_module_type = $%d", len(whereEleList)))
 		}
-		if dataReq.GeneralValues.DATDesignVersion > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.DATDesignVersion)
+		if dataReq.GeneralDatInformation.DATDesignVersion > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATDesignVersion)
 			updateFields = append(updateFields, fmt.Sprintf("dat_design_version = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralValues.DATDesignerName) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.DATDesignerName)
+		if len(dataReq.GeneralDatInformation.DATDesignerName) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATDesignerName)
 			updateFields = append(updateFields, fmt.Sprintf("dat_designer_name = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralValues.DATAuroraId) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.DATAuroraId)
+		if len(dataReq.GeneralDatInformation.DATAuroraId) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATAuroraId)
 			updateFields = append(updateFields, fmt.Sprintf("dat_aurora_id = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralValues.DATSysteSizeAC) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.DATSysteSizeAC)
+		if len(dataReq.GeneralDatInformation.DATSysteSizeAC) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATSysteSizeAC)
 			updateFields = append(updateFields, fmt.Sprintf("dat_system_size_ac = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralValues.DATSysteSizeDC) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.DATSysteSizeDC)
+		if len(dataReq.GeneralDatInformation.DATSysteSizeDC) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATSysteSizeDC)
 			updateFields = append(updateFields, fmt.Sprintf("dat_system_size_dc = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralValues.DATChanges) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.DATChanges)
+		if len(dataReq.GeneralDatInformation.DATChanges) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATChanges)
 			updateFields = append(updateFields, fmt.Sprintf("dat_changes = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralValues.DATChangeOrder) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralValues.DATChangeOrder)
+		if len(dataReq.GeneralDatInformation.DATChangeOrder) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATChangeOrder)
 			updateFields = append(updateFields, fmt.Sprintf("dat_change_order = $%d", len(whereEleList)))
 		}
 	}
 
 	/////// STRUCTURAL VALUES ///////////////////////////////////////////////////////////////////////////////
-	if dataReq.StructuralValues != nil {
 
-		if len(dataReq.StructuralValues.Structure) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.Structure)
+	if dataReq.StructuralInfo != nil {
+
+		if len(dataReq.StructuralState) <= 0 {
+			err = fmt.Errorf("invalid structural State %s", dataReq.StructuralState)
+			log.FuncErrorTrace(0, "%v", err)
+			appserver.FormAndSendHttpResp(resp, "Invalid structural state, update failed", http.StatusBadRequest, nil)
+			return
+		}
+
+		if len(dataReq.StructuralInfo.Structure) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.Structure)
 			updateFields = append(updateFields, fmt.Sprintf("structure = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.RoofType) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RoofType)
+		if len(dataReq.StructuralInfo.RoofType) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.RoofType)
 			updateFields = append(updateFields, fmt.Sprintf("roof_type = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.SheathingType) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.SheathingType)
+		if len(dataReq.StructuralInfo.SheathingType) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.SheathingType)
 			updateFields = append(updateFields, fmt.Sprintf("sheathing_type = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.FramingSize) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.FramingSize)
+		if len(dataReq.StructuralInfo.FramingSize) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.FramingSize)
 			updateFields = append(updateFields, fmt.Sprintf("framing_size = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.FramingType1) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.FramingType1)
+		if len(dataReq.StructuralInfo.StructuralRoofMaterial) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.StructuralRoofMaterial)
 			updateFields = append(updateFields, fmt.Sprintf("framing_type_1 = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.FramingType2) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.FramingType2)
+		if len(dataReq.StructuralInfo.FramingType) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.FramingType)
 			updateFields = append(updateFields, fmt.Sprintf("framing_type_2 = $%d", len(whereEleList)))
 		}
 
-		if dataReq.StructuralValues.FramingSpacing > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.FramingSpacing)
+		if dataReq.StructuralInfo.FramingSpacing > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.FramingSpacing)
 			updateFields = append(updateFields, fmt.Sprintf("framing_spacing = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.Attachment) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.Attachment)
+		if len(dataReq.StructuralInfo.Attachment) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.Attachment)
 			updateFields = append(updateFields, fmt.Sprintf("attachment = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.Racking) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.Racking)
+		if len(dataReq.StructuralInfo.Racking) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.Racking)
 			updateFields = append(updateFields, fmt.Sprintf("racking = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.Pattern) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.Pattern)
+		if len(dataReq.StructuralInfo.Pattern) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.Pattern)
 			updateFields = append(updateFields, fmt.Sprintf("pattern = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.Mount) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.Mount)
+		if len(dataReq.StructuralInfo.Mount) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.Mount)
 			updateFields = append(updateFields, fmt.Sprintf("mount = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.StructuralUpgrades) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.StructuralUpgrades)
+		if len(dataReq.StructuralInfo.StructuralUpgrades) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.StructuralUpgrades)
 			updateFields = append(updateFields, fmt.Sprintf("structural_upgrades = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.GmSupportType) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.GmSupportType)
+		if len(dataReq.StructuralInfo.GmSupportType) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.GmSupportType)
 			updateFields = append(updateFields, fmt.Sprintf("gm_support_type = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.ReroofRequired) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.ReroofRequired)
+		if len(dataReq.StructuralInfo.ReroofRequired) > 0 {
+			whereEleList = append(whereEleList, dataReq.StructuralInfo.ReroofRequired)
 			updateFields = append(updateFields, fmt.Sprintf("reroof_required = $%d", len(whereEleList)))
 		}
-
+	}
+	if dataReq.Attachment != nil {
 		// Attachment Information
-		if len(dataReq.StructuralValues.AttachmentType) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.AttachmentType)
+		if len(dataReq.Attachment.AttachmentType) > 0 {
+			whereEleList = append(whereEleList, dataReq.Attachment.AttachmentType)
 			updateFields = append(updateFields, fmt.Sprintf("attachment_type = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.AttachmentPattern) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.AttachmentPattern)
+		if len(dataReq.Attachment.AttachmentPattern) > 0 {
+			whereEleList = append(whereEleList, dataReq.Attachment.AttachmentPattern)
 			updateFields = append(updateFields, fmt.Sprintf("attachment_pattern = $%d", len(whereEleList)))
 		}
 
-		if dataReq.StructuralValues.AttachmentQty > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.AttachmentQty)
+		if dataReq.Attachment.AttachmentQty > 0 {
+			whereEleList = append(whereEleList, dataReq.Attachment.AttachmentQty)
 			updateFields = append(updateFields, fmt.Sprintf("attachment_quantity = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.AttachmentSpacing) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.AttachmentSpacing)
+		if len(dataReq.Attachment.AttachmentSpacing) > 0 {
+			whereEleList = append(whereEleList, dataReq.Attachment.AttachmentSpacing)
 			updateFields = append(updateFields, fmt.Sprintf("attachment_spacing = $%d", len(whereEleList)))
 		}
-
+	}
+	if dataReq.Racking != nil {
 		// Racking Information
-		if len(dataReq.StructuralValues.RackingType) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RackingType)
+		if len(dataReq.Racking.RackingType) > 0 {
+			whereEleList = append(whereEleList, dataReq.Racking.RackingType)
 			updateFields = append(updateFields, fmt.Sprintf("racking_type = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.RackingMountType) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RackingMountType)
+		if len(dataReq.Racking.RackingMountType) > 0 {
+			whereEleList = append(whereEleList, dataReq.Racking.RackingMountType)
 			updateFields = append(updateFields, fmt.Sprintf("racking_mount_type = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.RackingTiltInfo) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RackingTiltInfo)
+		if len(dataReq.Racking.RackingTiltInfo) > 0 {
+			whereEleList = append(whereEleList, dataReq.Racking.RackingTiltInfo)
 			updateFields = append(updateFields, fmt.Sprintf("racking_title_info = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.RackingMaxRailCantilever) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RackingMaxRailCantilever)
+		if len(dataReq.Racking.RackingMaxRailCantilever) > 0 {
+			whereEleList = append(whereEleList, dataReq.Racking.RackingMaxRailCantilever)
 			updateFields = append(updateFields, fmt.Sprintf("racking_max_rail_cantilever = $%d", len(whereEleList)))
 		}
-
+	}
+	if dataReq.RoofStructure != nil {
 		// Roof Structure
-		if len(dataReq.StructuralValues.RoofFramingType) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RoofFramingType)
+		if len(dataReq.RoofStructure.RoofFramingType) > 0 {
+			whereEleList = append(whereEleList, dataReq.RoofStructure.RoofFramingType)
 			updateFields = append(updateFields, fmt.Sprintf("roof_framing_type = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.RoofSize) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RoofSize)
+		if len(dataReq.RoofStructure.RoofSize) > 0 {
+			whereEleList = append(whereEleList, dataReq.RoofStructure.RoofSize)
 			updateFields = append(updateFields, fmt.Sprintf("roof_size = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.RoofSpacing) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RoofSpacing)
+		if len(dataReq.RoofStructure.RoofSpacing) > 0 {
+			whereEleList = append(whereEleList, dataReq.RoofStructure.RoofSpacing)
 			updateFields = append(updateFields, fmt.Sprintf("roof_spacing = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.RoofSheathingType) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RoofSheathingType)
+		if len(dataReq.RoofStructure.RoofSheathingType) > 0 {
+			whereEleList = append(whereEleList, dataReq.RoofStructure.RoofSheathingType)
 			updateFields = append(updateFields, fmt.Sprintf("roof_sheathing_type = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.RoofMaterial) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RoofMaterial)
+		if len(dataReq.RoofStructure.RoofMaterial) > 0 {
+			whereEleList = append(whereEleList, dataReq.RoofStructure.RoofMaterial)
 			updateFields = append(updateFields, fmt.Sprintf("roof_material = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.StructuralValues.RoofStructuralUpgrade) > 0 {
-			whereEleList = append(whereEleList, dataReq.StructuralValues.RoofStructuralUpgrade)
+		if len(dataReq.RoofStructure.RoofStructuralUpgrade) > 0 {
+			whereEleList = append(whereEleList, dataReq.RoofStructure.RoofStructuralUpgrade)
 			updateFields = append(updateFields, fmt.Sprintf("roof_structural_upgrade = $%d", len(whereEleList)))
 		}
 
@@ -300,311 +305,324 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	////////// OTHER VALUES //////////////////////////////////////////////////////////////////////////
-	if dataReq.OtherValues != nil {
+	if dataReq.ElectricalEquipmentInfo != nil {
 		////////// EQUIPMENT INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		if len(dataReq.OtherValues.Equipment.NewOrExisting) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.Equipment.NewOrExisting)
+		if len(dataReq.ElectricalEquipmentInfo.NewOrExisting) > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalEquipmentInfo.NewOrExisting)
 			updateFields = append(updateFields, fmt.Sprintf("new_or_existing = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.Equipment.PanelBrand) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.Equipment.PanelBrand)
+		if len(dataReq.ElectricalEquipmentInfo.PanelBrand) > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalEquipmentInfo.PanelBrand)
 			updateFields = append(updateFields, fmt.Sprintf("panel_brand = $%d", len(whereEleList)))
 		}
 
-		if dataReq.OtherValues.Equipment.BusbarRating > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.Equipment.BusbarRating)
+		if dataReq.ElectricalEquipmentInfo.BusbarRating > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalEquipmentInfo.BusbarRating)
 			updateFields = append(updateFields, fmt.Sprintf("busbar_rating = $%d", len(whereEleList)))
 		}
 
-		if dataReq.OtherValues.Equipment.MainBreakerRating > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.Equipment.MainBreakerRating)
+		if dataReq.ElectricalEquipmentInfo.MainBreakerRating > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalEquipmentInfo.MainBreakerRating)
 			updateFields = append(updateFields, fmt.Sprintf("main_breaker_rating = $%d", len(whereEleList)))
 		}
 
-		if dataReq.OtherValues.Equipment.AvailableBackfeed > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.Equipment.AvailableBackfeed)
+		if dataReq.ElectricalEquipmentInfo.AvailableBackfeed > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalEquipmentInfo.AvailableBackfeed)
 			updateFields = append(updateFields, fmt.Sprintf("available_backfeed = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.Equipment.RequiredBackfeed) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.Equipment.RequiredBackfeed)
+		if len(dataReq.ElectricalEquipmentInfo.RequiredBackfeed) > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalEquipmentInfo.RequiredBackfeed)
 			updateFields = append(updateFields, fmt.Sprintf("required_backfeed = $%d", len(whereEleList)))
 		}
-
+	}
+	if dataReq.ElectricalEquipmentInfo != nil {
 		///////// SYSTEM INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		if len(dataReq.OtherValues.System.SystemPhase) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.System.SystemPhase)
+		if len(dataReq.ElectricalSystemInfo.SystemPhase) > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalSystemInfo.SystemPhase)
 			updateFields = append(updateFields, fmt.Sprintf("system_phase = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.System.SystemVoltage) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.System.SystemVoltage)
+		if len(dataReq.ElectricalSystemInfo.SystemVoltage) > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalSystemInfo.SystemVoltage)
 			updateFields = append(updateFields, fmt.Sprintf("system_voltage = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.System.ServiceEntrance) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.System.ServiceEntrance)
+		if len(dataReq.ElectricalSystemInfo.ServiceEntrance) > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalSystemInfo.ServiceEntrance)
 			updateFields = append(updateFields, fmt.Sprintf("service_entrance = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.System.ServiceRating) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.System.ServiceRating)
+		if len(dataReq.ElectricalSystemInfo.ServiceRating) > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalSystemInfo.ServiceRating)
 			updateFields = append(updateFields, fmt.Sprintf("service_rating = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.System.MeterEnclosureType) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.System.MeterEnclosureType)
+		if len(dataReq.ElectricalSystemInfo.MeterEnclosureType) > 0 {
+			whereEleList = append(whereEleList, dataReq.ElectricalSystemInfo.MeterEnclosureType)
 			updateFields = append(updateFields, fmt.Sprintf("meter_enclosure_type = $%d", len(whereEleList)))
 		}
-
+	}
+	if dataReq.ElectricalEquipmentInfo != nil {
 		////////// SiteInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		if len(dataReq.OtherValues.SiteInfo.PVConductRun) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.SiteInfo.PVConductRun)
+		if len(dataReq.SiteInfoRequest.PVConductRun) > 0 {
+			whereEleList = append(whereEleList, dataReq.SiteInfoRequest.PVConductRun)
 			updateFields = append(updateFields, fmt.Sprintf("pv_conduct_run = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.SiteInfo.DrywallCutNeeded) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.SiteInfo.DrywallCutNeeded)
+		if len(dataReq.SiteInfoRequest.DrywallCutNeeded) > 0 {
+			whereEleList = append(whereEleList, dataReq.SiteInfoRequest.DrywallCutNeeded)
 			updateFields = append(updateFields, fmt.Sprintf("drywall_cut_needed = $%d", len(whereEleList)))
 		}
 
-		if dataReq.OtherValues.SiteInfo.NumberOfStories > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.SiteInfo.NumberOfStories)
+		if dataReq.SiteInfoRequest.NumberOfStories > 0 {
+			whereEleList = append(whereEleList, dataReq.SiteInfoRequest.NumberOfStories)
 			updateFields = append(updateFields, fmt.Sprintf("number_of_stories = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.SiteInfo.TrenchingRequired) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.SiteInfo.TrenchingRequired)
+		if len(dataReq.SiteInfoRequest.TrenchingRequired) > 0 {
+			whereEleList = append(whereEleList, dataReq.SiteInfoRequest.TrenchingRequired)
 			updateFields = append(updateFields, fmt.Sprintf("trenching_required = $%d", len(whereEleList)))
 		}
 
-		if dataReq.OtherValues.SiteInfo.PointsOfInterconnection > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.SiteInfo.PointsOfInterconnection)
+		if dataReq.SiteInfoRequest.PointsOfInterconnection > 0 {
+			whereEleList = append(whereEleList, dataReq.SiteInfoRequest.PointsOfInterconnection)
 			updateFields = append(updateFields, fmt.Sprintf("points_of_interconnection = $%d", len(whereEleList)))
 		}
+	}
+	if dataReq.PvOnlyInterconnection != nil {
 		////// PV INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		if len(dataReq.OtherValues.PvInterconnection.Type) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.PvInterconnection.Type)
+		if len(dataReq.PvOnlyInterconnection.Type) > 0 {
+			whereEleList = append(whereEleList, dataReq.PvOnlyInterconnection.Type)
 			updateFields = append(updateFields, fmt.Sprintf("type = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.PvInterconnection.SupplyLoadSide) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.PvInterconnection.SupplyLoadSide)
+		if len(dataReq.PvOnlyInterconnection.SupplyLoadSide) > 0 {
+			whereEleList = append(whereEleList, dataReq.PvOnlyInterconnection.SupplyLoadSide)
 			updateFields = append(updateFields, fmt.Sprintf("supply_load_side = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.PvInterconnection.Location) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.PvInterconnection.Location)
+		if len(dataReq.PvOnlyInterconnection.Location) > 0 {
+			whereEleList = append(whereEleList, dataReq.PvOnlyInterconnection.Location)
 			updateFields = append(updateFields, fmt.Sprintf("location = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.PvInterconnection.SubLocationTapDetails) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.PvInterconnection.SubLocationTapDetails)
+		if len(dataReq.PvOnlyInterconnection.SubLocationTapDetails) > 0 {
+			whereEleList = append(whereEleList, dataReq.PvOnlyInterconnection.SubLocationTapDetails)
 			updateFields = append(updateFields, fmt.Sprintf("sub_location_tap_details = $%d", len(whereEleList)))
 		}
+	}
+	if dataReq.EssInterconnection != nil {
 		//////////// EssInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		if len(dataReq.OtherValues.EssInterconnection.BackupType) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.EssInterconnection.BackupType)
+		if len(dataReq.EssInterconnection.BackupType) > 0 {
+			whereEleList = append(whereEleList, dataReq.EssInterconnection.BackupType)
 			updateFields = append(updateFields, fmt.Sprintf("backup_type = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.EssInterconnection.TransferSwitch) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.EssInterconnection.TransferSwitch)
+		if len(dataReq.EssInterconnection.TransferSwitch) > 0 {
+			whereEleList = append(whereEleList, dataReq.EssInterconnection.TransferSwitch)
 			updateFields = append(updateFields, fmt.Sprintf("transfer_switch = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.EssInterconnection.FedBy) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.EssInterconnection.FedBy)
+		if len(dataReq.EssInterconnection.FedBy) > 0 {
+			whereEleList = append(whereEleList, dataReq.EssInterconnection.FedBy)
 			updateFields = append(updateFields, fmt.Sprintf("fed_by = $%d", len(whereEleList)))
 		}
+	}
+	if dataReq.StringInverterConfiguration != nil {
 		////////// InverterConfigInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		if len(dataReq.OtherValues.InverterConfigParent.Inverter) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Inverter)
+		if len(dataReq.StringInverterConfiguration.Inverter) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Inverter)
 			updateFields = append(updateFields, fmt.Sprintf("inverter = $%d", len(whereEleList)))
 		}
 
-		if dataReq.OtherValues.InverterConfigParent.Max > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Max)
+		if dataReq.StringInverterConfiguration.Max > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Max)
 			updateFields = append(updateFields, fmt.Sprintf("max = $%d", len(whereEleList)))
 		}
 
 		// Handling MPPTs
 		// MPPTs 1
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt1.S1) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt1.S1)
+		if len(dataReq.StringInverterConfiguration.Mppt1.S1) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt1.S1)
 			updateFields = append(updateFields, fmt.Sprintf("mppt1 = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt1.S2) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt1.S2)
+		if len(dataReq.StringInverterConfiguration.Mppt1.S2) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt1.S2)
 			updateFields = append(updateFields, fmt.Sprintf("mppt2 = $%d", len(whereEleList)))
 		}
 		// MPPTs 2
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt2.S1) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt2.S1)
+		if len(dataReq.StringInverterConfiguration.Mppt2.S1) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt2.S1)
 			updateFields = append(updateFields, fmt.Sprintf("mppt1 = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt2.S2) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt2.S2)
+		if len(dataReq.StringInverterConfiguration.Mppt2.S2) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt2.S2)
 			updateFields = append(updateFields, fmt.Sprintf("mppt2 = $%d", len(whereEleList)))
 		}
 		// MPPTs 3
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt3.S1) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt3.S1)
+		if len(dataReq.StringInverterConfiguration.Mppt3.S1) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt3.S1)
 			updateFields = append(updateFields, fmt.Sprintf("mppt1 = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt3.S2) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt3.S2)
+		if len(dataReq.StringInverterConfiguration.Mppt3.S2) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt3.S2)
 			updateFields = append(updateFields, fmt.Sprintf("mppt2 = $%d", len(whereEleList)))
 		}
 		// MPPTs 4
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt4.S1) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt4.S1)
+		if len(dataReq.StringInverterConfiguration.Mppt4.S1) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt4.S1)
 			updateFields = append(updateFields, fmt.Sprintf("mppt1 = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt4.S2) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt4.S2)
+		if len(dataReq.StringInverterConfiguration.Mppt4.S2) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt4.S2)
 			updateFields = append(updateFields, fmt.Sprintf("mppt2 = $%d", len(whereEleList)))
 		}
 		// MPPTs 5
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt5.S1) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt5.S1)
+		if len(dataReq.StringInverterConfiguration.Mppt5.S1) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt5.S1)
 			updateFields = append(updateFields, fmt.Sprintf("mppt1 = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt5.S2) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt5.S2)
+		if len(dataReq.StringInverterConfiguration.Mppt5.S2) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt5.S2)
 			updateFields = append(updateFields, fmt.Sprintf("mppt2 = $%d", len(whereEleList)))
 		}
 		// MPPTs 6
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt6.S1) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt6.S1)
+		if len(dataReq.StringInverterConfiguration.Mppt6.S1) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt6.S1)
 			updateFields = append(updateFields, fmt.Sprintf("mppt1 = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt6.S2) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt6.S2)
+		if len(dataReq.StringInverterConfiguration.Mppt6.S2) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt6.S2)
 			updateFields = append(updateFields, fmt.Sprintf("mppt2 = $%d", len(whereEleList)))
 		}
 		// MPPTs 7
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt7.S1) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt7.S1)
+		if len(dataReq.StringInverterConfiguration.Mppt7.S1) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt7.S1)
 			updateFields = append(updateFields, fmt.Sprintf("mppt1 = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt7.S2) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt7.S2)
+		if len(dataReq.StringInverterConfiguration.Mppt7.S2) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt7.S2)
 			updateFields = append(updateFields, fmt.Sprintf("mppt2 = $%d", len(whereEleList)))
 		}
 		// MPPTs 8
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt8.S1) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt8.S1)
+		if len(dataReq.StringInverterConfiguration.Mppt8.S1) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt8.S1)
 			updateFields = append(updateFields, fmt.Sprintf("mppt1 = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.InverterConfigParent.Mppt8.S2) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.InverterConfigParent.Mppt8.S2)
+		if len(dataReq.StringInverterConfiguration.Mppt8.S2) > 0 {
+			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Mppt8.S2)
 			updateFields = append(updateFields, fmt.Sprintf("mppt2 = $%d", len(whereEleList)))
 		}
-
+	}
+	if dataReq.RoofCoverageCalculator != nil {
 		////////// RoofInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		if len(dataReq.OtherValues.RoofCoverage.TotalRoofArea) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.RoofCoverage.TotalRoofArea)
+		if len(dataReq.RoofCoverageCalculator.TotalRoofArea) > 0 {
+			whereEleList = append(whereEleList, dataReq.RoofCoverageCalculator.TotalRoofArea)
 			updateFields = append(updateFields, fmt.Sprintf("total_roof_area = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.RoofCoverage.AreaOfNewModules) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.RoofCoverage.AreaOfNewModules)
+		if len(dataReq.RoofCoverageCalculator.AreaOfNewModules) > 0 {
+			whereEleList = append(whereEleList, dataReq.RoofCoverageCalculator.AreaOfNewModules)
 			updateFields = append(updateFields, fmt.Sprintf("area_of_new_modules = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.RoofCoverage.AreaOfExstModules) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.RoofCoverage.AreaOfExstModules)
+		if len(dataReq.RoofCoverageCalculator.AreaOfExstModules) > 0 {
+			whereEleList = append(whereEleList, dataReq.RoofCoverageCalculator.AreaOfExstModules)
 			updateFields = append(updateFields, fmt.Sprintf("area_of_exst_modules = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.RoofCoverage.CoveragePercentage) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.RoofCoverage.CoveragePercentage)
+		if len(dataReq.RoofCoverageCalculator.CoveragePercentage) > 0 {
+			whereEleList = append(whereEleList, dataReq.RoofCoverageCalculator.CoveragePercentage)
 			updateFields = append(updateFields, fmt.Sprintf("coverage_percentage = $%d", len(whereEleList)))
 		}
+	}
+	if dataReq.MeasurementConversion != nil {
 		////// MeasurementInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		if len(dataReq.OtherValues.Measurement.Length) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.Measurement.Length)
+		if len(dataReq.MeasurementConversion.Length) > 0 {
+			whereEleList = append(whereEleList, dataReq.MeasurementConversion.Length)
 			updateFields = append(updateFields, fmt.Sprintf("length = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.Measurement.Width) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.Measurement.Width)
+		if len(dataReq.MeasurementConversion.Width) > 0 {
+			whereEleList = append(whereEleList, dataReq.MeasurementConversion.Width)
 			updateFields = append(updateFields, fmt.Sprintf("width = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.Measurement.Height) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.Measurement.Height)
+		if len(dataReq.MeasurementConversion.Height) > 0 {
+			whereEleList = append(whereEleList, dataReq.MeasurementConversion.Height)
 			updateFields = append(updateFields, fmt.Sprintf("height = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.Measurement.Other) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.Measurement.Other)
+		if len(dataReq.MeasurementConversion.Other) > 0 {
+			whereEleList = append(whereEleList, dataReq.MeasurementConversion.Other)
 			updateFields = append(updateFields, fmt.Sprintf("other = $%d", len(whereEleList)))
 		}
+	}
+	if dataReq.MeasurementConversion != nil {
 		//////////// ExistingPvInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		if dataReq.OtherValues.ExistingPV.ModuleQuantity > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.ModuleQuantity)
+		if dataReq.ExistingPvSystemInfo.ModuleQuantity > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.ModuleQuantity)
 			updateFields = append(updateFields, fmt.Sprintf("module_quantity = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.ExistingPV.ModelNumber) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.ModelNumber)
+		if len(dataReq.ExistingPvSystemInfo.ModelNumber) > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.ModelNumber)
 			updateFields = append(updateFields, fmt.Sprintf("model_number = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.ExistingPV.Wattage) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.Wattage)
+		if len(dataReq.ExistingPvSystemInfo.Wattage) > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.Wattage)
 			updateFields = append(updateFields, fmt.Sprintf("wattage = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.ExistingPV.ModuleArea) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.ModuleArea)
+		if len(dataReq.ExistingPvSystemInfo.ModuleArea) > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.ModuleArea)
 			updateFields = append(updateFields, fmt.Sprintf("module_area = $%d", len(whereEleList)))
 		}
 
 		//// INVERTER 1 ///////////////////////
-		if dataReq.OtherValues.ExistingPV.Inverter1.Quantity > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.Inverter1.Quantity)
+		if dataReq.ExistingPvSystemInfo.Inverter1.Quantity > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.Inverter1.Quantity)
 			updateFields = append(updateFields, fmt.Sprintf("quantity = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.ExistingPV.Inverter1.ModelNumber) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.Inverter1.ModelNumber)
+		if len(dataReq.ExistingPvSystemInfo.Inverter1.ModelNumber) > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.Inverter1.ModelNumber)
 			updateFields = append(updateFields, fmt.Sprintf("model_number = $%d", len(whereEleList)))
 		}
-		if len(dataReq.OtherValues.ExistingPV.Inverter1.OutputA) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.Inverter1.OutputA)
+		if len(dataReq.ExistingPvSystemInfo.Inverter1.OutputA) > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.Inverter1.OutputA)
 			updateFields = append(updateFields, fmt.Sprintf("output_a = $%d", len(whereEleList)))
 		}
 
 		//// INVERTER 2 ///////////////////////
 
-		if dataReq.OtherValues.ExistingPV.Inverter2.Quantity > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.Inverter2.Quantity)
+		if dataReq.ExistingPvSystemInfo.Inverter2.Quantity > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.Inverter2.Quantity)
 			updateFields = append(updateFields, fmt.Sprintf("quantity = $%d", len(whereEleList)))
 		}
 
-		if len(dataReq.OtherValues.ExistingPV.Inverter2.ModelNumber) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.Inverter2.ModelNumber)
+		if len(dataReq.ExistingPvSystemInfo.Inverter2.ModelNumber) > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.Inverter2.ModelNumber)
 			updateFields = append(updateFields, fmt.Sprintf("model_number = $%d", len(whereEleList)))
 		}
-		if len(dataReq.OtherValues.ExistingPV.Inverter2.OutputA) > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.Inverter2.OutputA)
+		if len(dataReq.ExistingPvSystemInfo.Inverter2.OutputA) > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.Inverter2.OutputA)
 			updateFields = append(updateFields, fmt.Sprintf("output_a = $%d", len(whereEleList)))
 		}
 
-		if dataReq.OtherValues.ExistingPV.ExistingCalculatedBackfeedWithout125 > 0 {
-			whereEleList = append(whereEleList, dataReq.OtherValues.ExistingPV.ExistingCalculatedBackfeedWithout125)
+		if dataReq.ExistingPvSystemInfo.ExistingCalculatedBackfeedWithout125 > 0 {
+			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.ExistingCalculatedBackfeedWithout125)
 			updateFields = append(updateFields, fmt.Sprintf("existing_calculated_backfeed_without_125 = $%d", len(whereEleList)))
 		}
 	}
