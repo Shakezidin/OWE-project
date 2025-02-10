@@ -19,6 +19,7 @@ interface Column {
   filter?: string;
   displayName: string;
   type: string;
+  isNotFilter?:boolean
 }
 interface TableProps {
   handleClose: () => void;
@@ -70,7 +71,9 @@ const FilterModal: React.FC<TableProps> = ({
     { Column: '', Operation: '', Data: '', start_date: '', end_date: '' },
   ]);
   const [errors, setErrors] = useState<ErrorState>({});
-  const options: Option[] = columns.map((column) => ({
+  const options: Option[] = columns
+  .filter((column) => !column.isNotFilter)
+  .map((column) => ({
     value: column.filter ? column.filter : column.name,
     label: column.displayName,
   }));

@@ -217,7 +217,7 @@ const DealerTablePipeline = () => {
                 'Not Found',
                 item.system_size || '0',
                 `${item.contract_amount || '0'}`,
-                item.created_date || 'N/A',
+                // item.created_date || 'N/A',
                 item.contract_date || 'N/A',
                 item.survey_final_completion_date || 'N/A',
                 item.ntp_complete_date || 'N/A',
@@ -452,7 +452,7 @@ const DealerTablePipeline = () => {
                                         <td>{item.partner_dealer || 'N/A'}</td>
                                         <td>{item.system_size || '0'}</td>
                                         <td>{item.contract_amount || '0'}</td>
-                                        <td>{item.created_date || 'N/A'}</td>
+                                        {/* <td>{item.created_date || 'N/A'}</td> */}
                                         <td>{item.contract_date || 'N/A'}</td>
 
                                         <td>{item.survey_final_completion_date || 'N/A'}</td>

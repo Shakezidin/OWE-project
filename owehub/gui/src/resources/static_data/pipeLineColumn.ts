@@ -24,12 +24,14 @@ export default [
     displayName: 'Type',
     type: 'string',
     isCheckbox: false,
+    isNotFilter: true
   },
   {
     name: 'loan_type',
     displayName: 'Loan Type',
     type: 'string',
     isCheckbox: false,
+    filter: 'finance_type'
   },
   {
     name: 'street_address',
@@ -87,13 +89,7 @@ export default [
     isCheckbox: false,
     filter:'total_system_cost'
   },
-  {
-    name: 'created_date',
-    displayName: 'Created',
-    type: 'date',
-    isCheckbox: false,
-    filter:'sale_date'
-  },
+ 
   {
     name: 'contract_date',
     displayName: 'Contract ✓',
@@ -106,6 +102,7 @@ export default [
     displayName: 'Site Survey',
     type: 'date',
     isCheckbox: false,
+    isNotFilter: true
   },
   {
     name: 'ntp_complete_date',
