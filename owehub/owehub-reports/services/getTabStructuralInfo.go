@@ -295,31 +295,36 @@ func HandleGetTabStructuralInfoRequest(resp http.ResponseWriter, req *http.Reque
 	// if !ok {
 	// 	log.FuncErrorTrace(0, "Failed to get roof structural upgrade from db : %+v\n", data)
 	// }
+	structuralData := make(map[string]models.GetTabStructuralInfo)
+	stateCount := 4
+	for i := 1; i <= stateCount; i++ {
+		stateKey := fmt.Sprintf("MP%d", i)
+		structuralData[stateKey] = models.GetTabStructuralInfo{
+			Structure:              "Select",
+			RoofType:               "Flat",
+			SheathingType:          "OSB",
+			FramingSize:            "2x4",
+			StructuralRoofMaterial: "Standing Seam Metal",
+			FramingType:            "Mfg. Truss",
+			FramingSpacing:         int64(12 + i), // Example: Adjusting spacing for variation
+			Attachment:             "K2 Flex Foot",
+			Racking:                "K2 CrossRail",
+			Pattern:                "Staggered",
+			Mount:                  "Flush",
+			StructuralUpgrades:     "Blocking",
+			GmSupportType:          "Ground Screws",
+			ReroofRequired:         "---",
+		}
+	}
 
-	structure := "Select"                           // string
-	roofType := "Flat"                              // string
-	sheathingType := "OSB"                          // string
-	framingSize := "2x4"                            // string
-	structuralRoofMaterial := "Standing Seam Metal" // string
-	framingType := "Mfg.Truss"                      // string
-	framingSpacing := 16                            // int
-
-	attachment := "K2 Flex Foot" // string
-	racking := "k2 cross rail"   // string
-	pattern := "Staggered"       // string
-	mount := "Flush"             // string
-
-	structuralUpgrades := "Blocking" // string
-	gmSupportType := "Ground Screws" // string
-	reroofRequired := "Yes"          // string
-	quantity := 10                   // int
-	pitch := 30                      // int
-	areaSqft := "1500 sqft"          // string
-	azim := 180                      // int
-	tsrf := 15                       // int
-	kwdc := 200                      // int
-	spacingP := 12                   // int
-	spacingL := 6                    // int
+	quantity := 10          // int
+	pitch := 30             // int
+	areaSqft := "1500 sqft" // string
+	azim := 180             // int
+	tsrf := 15              // int
+	kwdc := 200             // int
+	spacingP := 12          // int
+	spacingL := 6           // int
 
 	attachmentType := "Flush"         // string
 	attachmentPattern := "Horizontal" // string
@@ -339,20 +344,7 @@ func HandleGetTabStructuralInfoRequest(resp http.ResponseWriter, req *http.Reque
 	roofStructuralUpgrade := "Reinforced" // string
 
 	apiResponse = models.GetTabStructuralInfoResponse{
-		Structure:                structure,
-		RoofType:                 roofType,
-		SheathingType:            sheathingType,
-		FramingSize:              framingSize,
-		StructuralRoofMaterial:   structuralRoofMaterial,
-		FramingType:              framingType,
-		FramingSpacing:           int64(framingSpacing),
-		Attachment:               attachment,
-		Racking:                  racking,
-		Pattern:                  pattern,
-		Mount:                    mount,
-		StructuralUpgrades:       structuralUpgrades,
-		GmSupportType:            gmSupportType,
-		ReroofRequired:           reroofRequired,
+		StructuralInfo:           structuralData,
 		Quantity:                 int64(quantity),
 		Pitch:                    int64(pitch),
 		AreaSqft:                 areaSqft,
