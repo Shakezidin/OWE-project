@@ -99,12 +99,9 @@ const DealerTablePipeline = () => {
                 "search_filters": {
                     "page_number": page,
                     "page_size": itemsPerPage,
-                    "filters": [
-                        ...(formattedFilters && formattedFilters.length > 0 ? formattedFilters : []),
-                        ...(searchTerm ? [
-                            { "column": "unique_id", "operation": "cont", "data": searchTerm },
-                            { "column": "customer_name", "operation": "cont", "data": searchTerm },
-                        ] : []),
+                    "filters": (formattedFilters && formattedFilters.length > 0) ? formattedFilters : [
+                        { "column": "unique_id", "operation": "cont", "data": searchTerm },
+                        { "column": "customer_name", "operation": "cont", "data": searchTerm },
                     ],
                     "sort_by": "",
                     "sort_order": ""
@@ -198,12 +195,9 @@ const DealerTablePipeline = () => {
                 "search_filters": {
                     "page_number": page,
                     "page_size": itemsPerPage,
-                    "filters": [
-                        ...(formattedFilters && formattedFilters.length > 0 ? formattedFilters : []),
-                        ...(searchTerm ? [
-                            { "column": "unique_id", "operation": "cont", "data": searchTerm },
-                            { "column": "customer_name", "operation": "cont", "data": searchTerm },
-                        ] : []),
+                    "filters": (formattedFilters && formattedFilters.length > 0) ? formattedFilters : [
+                        { "column": "unique_id", "operation": "cont", "data": searchTerm },
+                        { "column": "customer_name", "operation": "cont", "data": searchTerm },
                     ],
                     "sort_by": "",
                     "sort_order": ""
