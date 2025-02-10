@@ -16,6 +16,7 @@ import {
 import s3Upload from '../../../utiles/s3Upload';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
+import { toast } from 'react-toastify';
 
 type Option = {
   value: string | number;
@@ -287,7 +288,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     const files = event.target.files ? Array.from(event.target.files) : [];
 
     if (files.length + uploadedImages.length > 3) {
-      alert('You can only upload up to 3 images.');
+      toast.error('You can only upload up to 3 images.');
       return;
     }
 
@@ -310,7 +311,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
           });
         } catch (error) {
           console.error(`Failed to upload ${file.name}:`, error);
-          alert(`Failed to upload ${file.name}`);
+         toast.error(`Failed to upload ${file.name}`);
         }
       }
 
@@ -319,15 +320,27 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       }
     } catch (error) {
       console.error('Upload failed:', error);
-      alert('Failed to upload images');
+      toast.error('Failed to upload images');
     } finally {
       setIsUploading(false);
     }
   };
 
-  const handleImageRemove = (index: number) => {
-    setUploadedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  const handleImageRemove = async (index: number) => {
+    try {
+      const imageToRemove = uploadedImages[index];
+      const s3Client = s3Upload('/datTool-images'); 
+  
+      const keyToDelete = imageToRemove.url.split('/datTool-images/')[1]; 
+        await s3Client.deleteFile(keyToDelete);
+  
+      setUploadedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    } catch (error) {
+      console.error('Failed to remove image:', error);
+      toast.error('Failed to remove image');
+    }
   };
+  
 
 
   const renderComponent = (
