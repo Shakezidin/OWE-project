@@ -248,7 +248,6 @@ const DealerTablePipeline = () => {
     };
 
 
-    console.log(cuurentPageData, "sdjjfgj")
 
     return (
         <>
@@ -459,7 +458,7 @@ const DealerTablePipeline = () => {
                                         <td>{item.cancel_date || 'N/A'}</td>
                                         <td>{item.pv_install_date || 'N/A'}</td>
                                         <td>{item.pto_date || 'N/A'}</td>
-                                        <td>{'N/A'}</td>
+
                                         <td>{item.fin_complete_date || 'N/A'}</td>
                                         <td>{item.jeopardy_date ? item.jeopardy_date.toString() : 'N/A'}</td>
                                     </tr>
