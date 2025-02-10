@@ -20,7 +20,7 @@ type GetLeaderBoardRequest struct {
 	PageSize   int64    `json:"page_size"`
 }
 
-type GetLeaderBoard struct {
+type CombinedResult struct {
 	Rank      int     `json:"rank"`
 	Dealer    string  `json:"dealer"`
 	Name      string  `json:"rep_name"`
@@ -33,8 +33,8 @@ type GetLeaderBoard struct {
 }
 
 type GetLeaderBoardList struct {
-	TopLeaderBoardList []GetLeaderBoard `json:"top_leader_board_list"`
-	LeaderBoardList    []GetLeaderBoard `json:"leader_board_list"`
+	TopLeaderBoardList []CombinedResult `json:"top_leader_board_list"`
+	LeaderBoardList    []CombinedResult `json:"leader_board_list"`
 	TotalSale          float64          `json:"total_sale"`
 	TotalNtp           float64          `json:"total_ntp"`
 	TotalInstall       float64          `json:"total_install"`
