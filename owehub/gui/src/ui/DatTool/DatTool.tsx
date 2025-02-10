@@ -32,7 +32,7 @@ const DatTool: React.FC = () => {
   const { data,loading,generalData, structuralData,sideLoading } = useAppSelector((state) => state.datSlice);
   const [currentGeneralId, setCurrentGeneralId] = useState<string>('OUR01037');
   
- 
+ const [showMenu,setShowMenu]=useState<boolean>(true);
   
  
   useEffect(() => {
@@ -89,8 +89,8 @@ const DatTool: React.FC = () => {
           {renderPage()}
         </div>
 
-        <div className={styles.sidebar}>
-          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId}/>
+        <div className={showMenu ? styles.sidebar: styles.closedSideBar}>
+          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu}/>
         </div>
 
       </div>

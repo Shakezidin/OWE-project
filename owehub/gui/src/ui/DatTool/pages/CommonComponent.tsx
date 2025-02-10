@@ -6,6 +6,7 @@ import { MdClose, MdDone } from 'react-icons/md';
 import { ICONS } from '../../../resources/icons/Icons';
 import styles from '../styles/GeneralPage.module.css';
 import { current } from '@reduxjs/toolkit';
+import DataNotFound from '../../components/loader/DataNotFound';
 interface GeneralData {
   project_name: string;
   project_id: string;
@@ -93,16 +94,14 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading}) 
   ];
   
   return (
-    <div> {loading ? <div> </div> :<div className={styles.genOneCont}>
+    <div> {loading ? <div> </div> : generalData ? <div className={styles.genOneCont}>
     <div className={styles.genOneLeft}>
       <div className={styles.gOneHeader}>
-        {}
         <div className={styles.gOneHeaderTitle}>
           <div className={styles.gOneHeaderTitleTxt}>
             <p>{generalData?.project_name}</p>
             <p>{generalData?.project_id}</p>
           </div>
-          {}
           <div>
             {isEditing ? (
               <div className={styles.gOneHeaderBtn}>
@@ -218,8 +217,9 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading}) 
           </span>
         </div>
       </div>
-    </div>
-  </div>}</div>
+    </div> 
+  </div>: <div>
+        </div>}</div>
   )
 }
 

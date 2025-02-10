@@ -12,6 +12,8 @@ const debounce = (func: Function, delay: number) => {
   };
 };
 import { useOutletContext } from 'react-router-dom';
+import shrinkImg from '../assets/shrink 1.svg';
+import searchIcon from '../assets/searchIcon.svg';
 
 interface Data {
   name: string;
@@ -29,6 +31,8 @@ interface SideContainerProps {
   setSort: any;
   pageSize: any;
   sort: any;
+  setShowMenu: any;
+  showMenu:Boolean;
 }
 
 const SideContainer: React.FC<SideContainerProps> = ({
@@ -39,13 +43,15 @@ const SideContainer: React.FC<SideContainerProps> = ({
   setSearchPara,
   loading,
   setCurrentGeneralId,
-  currentGeneralId
-}) => {
+  currentGeneralId,
+  showMenu,
+  setShowMenu}) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortAscending, setSortAscending] = useState<boolean>(true);
   const { dbStatus } = useOutletContext<{ dbStatus: boolean }>();
   const [isHovered, setIsHovered] = useState<number | null>(null);
   const [initialLoadDone, setInitialLoadDone] = useState(false);
+  
 
   useEffect(() => {
     if (data && data.length > 0 && !loading && !initialLoadDone) {
@@ -97,19 +103,28 @@ const SideContainer: React.FC<SideContainerProps> = ({
   const handleDataClick = (projectID: string) => {
     setCurrentGeneralId(projectID);
   };
+  const showMenuHandler=()=>{
+    setShowMenu(false);
+  }
 
   return (
-    <div className={styles.container} style={{ height: !dbStatus ? "calc(100vh - 133px)" : "" }}>
+    <div>
+      {showMenu?<div className={styles.container} style={{ height: !dbStatus ? "calc(100vh - 133px)" : "" }}>
       <div className={styles.headerWrapper}>
         <div className={styles.heading}>
           <div className={styles.headingName}>Project List</div>
+          <div className={styles.iconContainer}>
           <div onClick={handleSort} style={{ cursor: 'pointer' }}>
             <TbArrowsSort size={18} />
+          </div>
+          <div onClick={showMenuHandler} style={{ cursor: 'pointer' }} className={styles.shrinkIcon}> 
+            <img src={shrinkImg} alt="shrink" />
+          </div>
           </div>
         </div>
         <div className={styles.searchBox}>
           <input
-            placeholder="Search by project ID."
+            placeholder="Search by name or project ID."
             type="text"
             value={searchTerm}
             onChange={handleSearchChange}
@@ -143,6 +158,7 @@ const SideContainer: React.FC<SideContainerProps> = ({
           </div>
         </div>
       )}
+    </div> : <div className={styles.searchIconContainer} onClick={()=>setShowMenu(true)}> <img src={searchIcon} alt=""  className={styles.iconSearch}/></div>}
     </div>
   );
 };
