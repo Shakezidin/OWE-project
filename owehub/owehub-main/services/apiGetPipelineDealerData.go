@@ -42,6 +42,7 @@ var columnMap = map[string]ColumnInfo{
 	"secondary_sales_rep":    {"cust", "string"},
 	"contracted_system_size": {"cust", "string"},
 	"total_system_cost":      {"cust", "string"},
+	"jeopardy_date":          {"cust", "date"},
 	"sale_date":              {"cust", "date"},
 	// "sale_date":                {"cust", "date"},
 	"survey_final_completion_date": {"survey", "date"},
