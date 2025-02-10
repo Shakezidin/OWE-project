@@ -193,8 +193,8 @@ const DealerTablePipeline = () => {
             const data = {
                 "dealer_names": dealerNames,
                 "search_filters": {
-                    "page_number": page,
-                    "page_size": itemsPerPage,
+                    "page_number": 1,
+                    "page_size": totalCount,
                     "filters": (formattedFilters && formattedFilters.length > 0) ? formattedFilters : [
                         { "column": "unique_id", "operation": "cont", "data": searchTerm },
                         { "column": "customer_name", "operation": "cont", "data": searchTerm },
@@ -315,9 +315,11 @@ const DealerTablePipeline = () => {
                     </div>
                     <div className='newp-filInp'>
                         <div className='inp-cont'>
-                            <div className="search-icon">
-                                <IoMdSearch style={{ color: search ? "#377cf6" : "inherit", height: '20px', width: '20px' }} />
-                            </div>
+                            {formattedFilters.length === 0 &&
+                                <div className="search-icon">
+                                    <IoMdSearch style={{ color: search ? "#377cf6" : "inherit", height: '20px', width: '20px' }} />
+                                </div>
+                            }
                             {formattedFilters.length === 0 &&
                                 <input
                                     value={searchInp}
