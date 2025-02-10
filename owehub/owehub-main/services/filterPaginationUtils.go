@@ -46,6 +46,7 @@ const (
 type ColumnInfo struct {
 	TableAlias string   // Database table alias
 	DataType   DataType // Column data type
+	CastType   string   // Optional casting type (e.g., "DECIMAL", "INTEGER")
 }
 type Filter struct {
 	Column    string         `json:"column"`
@@ -202,8 +203,15 @@ func (fb *FilterBuilder) buildCondition(info ColumnInfo, column, operator string
 		return fmt.Sprintf("%s %s", fullColumn, operator)
 	}
 
+	if info.CastType != "" {
+		fullColumn = fmt.Sprintf("NULLIF(%s, '')::"+info.CastType, fullColumn)
+	}
+
 	switch info.DataType {
 	case TypeString:
+		if info.CastType != "" {
+			return fmt.Sprintf("%s %s $%d", fullColumn, operator, paramIndex)
+		}
 		return fmt.Sprintf("LOWER(%s) %s LOWER($%d)", fullColumn, operator, paramIndex)
 	case TypeDate:
 		return fmt.Sprintf("%s %s $%d::date", fullColumn, operator, paramIndex)
