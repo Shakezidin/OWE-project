@@ -27,7 +27,8 @@ const (
 )
 
 type ResultChan struct {
-	Data interface{}
+	Data []map[string]interface{}
+	Type string // Add a Type field to identify the data
 	Err  error
 }
 
@@ -41,10 +42,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err              error
 		dataReq          models.GetLeaderBoardRequest
-		data             []map[string]interface{}
 		RecordCount      int64
 		dealerIn         string
-		dlrName          string
 		HighlightName    string
 		HighLightDlrName string
 		totalNtp         float64
@@ -52,8 +51,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		totalInstall     float64
 		totalCancel      float64
 		totalBattery     float64
-		ownerDealerName  string
-		groupBy          string
+		dealerCodes      map[string]string
+		combinedResults  []models.CombinedResult
 	)
 
 	log.EnterFn(0, "HandleGetLeaderBoardDataRequest")
@@ -100,16 +99,31 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 
 		if len(dataReq.DealerName) == 0 {
-			LeaderBoardList.TopLeaderBoardList = []models.GetLeaderBoard{}
-			LeaderBoardList.LeaderBoardList = []models.GetLeaderBoard{}
+			LeaderBoardList.TopLeaderBoardList = []models.CombinedResult{}
+			LeaderBoardList.LeaderBoardList = []models.CombinedResult{}
 
 			log.FuncErrorTrace(0, "no dealer name selected")
 			appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
 			return
 		}
+		if dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer" {
+			HighLightDlrName, _, err = fetchDealerDetails(dataReq.Email, dataReq.Role)
+			if err != nil {
+				log.FuncErrorTrace(0, "Error fetching dealer details: %v", err)
+				appserver.FormAndSendHttpResp(resp, "Failed to fetch dealer details", http.StatusBadRequest, nil)
+				return
+			}
+
+			dealerCodes, err = GetDealerCodes(dataReq.DealerName)
+			if err != nil {
+				log.FuncErrorTrace(0, "Error retrieving dealer codes: %v", err)
+				appserver.FormAndSendHttpResp(resp, "Failed to fetch dealer codes", http.StatusBadRequest, nil)
+				return
+			}
+		}
 	} else {
 		var dealerName string
-		dealerName, HighlightName, ownerDealerName, err = fetchDealerDetails(dataReq.Email, dataReq.Role, dataReq.GroupBy)
+		dealerName, HighlightName, err = fetchDealerDetails(dataReq.Email, dataReq.Role)
 		if err != nil {
 			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusBadRequest, nil)
 			return
@@ -123,29 +137,33 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	dealerIn = GenerateDealerInClause(dataReq.DealerName)
 
-	//temporory
+	// Temporary grouping logic
 	if dataReq.GroupBy == "team" {
 		dataReq.GroupBy = "split_part(srs.team_region_untd, '/'::text, 1)"
 	} else if dataReq.GroupBy == "region" {
 		dataReq.GroupBy = "split_part(srs.team_region_untd, '/'::text, 2)"
 	}
 
-	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "state" && dataReq.GroupBy != "split_part(srs.team_region_untd, '/'::text, 2)" {
-		groupBy = fmt.Sprintf(" %v, cs.dealer as dealer, ", dataReq.GroupBy)
-	} else {
-		groupBy = dataReq.GroupBy
+	customergroupBy := getTableAliasForGroupBy(dataReq.GroupBy, "cs.") + dataReq.GroupBy
+	pvInstallgroupBy := getTableAliasForGroupBy(dataReq.GroupBy, "pis.") + dataReq.GroupBy
+	ntpgroupBy := getTableAliasForGroupBy(dataReq.GroupBy, "ns.") + dataReq.GroupBy
+	if shouldIncludeDealerInGroupBy(dataReq.GroupBy) {
+		// Determine the correct table alias for dealer based on the groupBy field
+		customergroupBy = fmt.Sprintf("%s%s, cs.dealer", getTableAliasForGroupBy(dataReq.GroupBy, "cs."), dataReq.GroupBy)
+		pvInstallgroupBy = fmt.Sprintf("%s%s, pis.dealer", getTableAliasForGroupBy(dataReq.GroupBy, "pis."), dataReq.GroupBy)
+		ntpgroupBy = fmt.Sprintf("%s%s, ns.dealer", getTableAliasForGroupBy(dataReq.GroupBy, "ns."), dataReq.GroupBy)
 	}
 
 	dateRange, _ := CreateDateRange(dataReq.StartDate, dataReq.EndDate)
 	resultChan := make(chan ResultChan, LeaderBoardDataCount)
 	hasError := false
-	go fetchLeaderBoardData(models.LeaderBoardSaleCancelData, dateRange, dealerIn, groupBy, dataReq.Type, resultChan)
-	go fetchLeaderBoardData(models.LeaderBoardInstallBatteryData, dateRange, dealerIn, groupBy, dataReq.Type, resultChan)
-	go fetchLeaderBoardData(models.LeaderBoardNTPData, dateRange, dealerIn, groupBy, dataReq.Type, resultChan)
+	go fetchLeaderBoardData(models.LeaderBoardSaleCancelData, dateRange, dealerIn, customergroupBy, dataReq.Type, resultChan)
+	go fetchLeaderBoardData(models.LeaderBoardInstallBatteryData, dateRange, dealerIn, pvInstallgroupBy, dataReq.Type, resultChan)
+	go fetchLeaderBoardData(models.LeaderBoardNTPData, dateRange, dealerIn, ntpgroupBy, dataReq.Type, resultChan)
 
-	var finalResult map[string]interface{} = make(map[string]interface{})
-
-	for i := 0; i < LeaderBoardDataCount; i++ {
+	// Collect results from goroutines
+	var saleCancelData, installBatteryData, ntpData []map[string]interface{}
+	for i := 0; i < 3; i++ {
 		result := <-resultChan
 		if result.Err != nil {
 			hasError = true
@@ -153,161 +171,56 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
-		switch data := result.Data.(type) {
-		case []map[string]interface{}:
-			for _, record := range data {
-				key := record["name"].(string)
-				if _, exists := finalResult[key]; !exists {
-					finalResult[key] = record
-				} else {
-					existing, ok := finalResult[key].(map[string]interface{})
-					if !ok {
-						existing = make(map[string]interface{})
-					}
-
-					for k, v := range record {
-						if k != "name" && k != "dealer" {
-							if val, ok := v.(int64); ok {
-								if existingVal, exists := existing[k].(int64); exists {
-									existing[k] = existingVal + val
-								} else {
-									existing[k] = val
-								}
-							}
-						}
-					}
-
-					finalResult[key] = existing
-
-				}
-			}
+		switch result.Type {
+		case "sale":
+			saleCancelData = result.Data
+		case "install":
+			installBatteryData = result.Data
+		case "ntp":
+			ntpData = result.Data
 		}
-	}
-
-	// Dealer Code Mapping
-	if dataReq.GroupBy == "dealer" && dataReq.Role != string(types.RoleAdmin) {
-		dealerNames := make([]string, 0, len(finalResult))
-		for _, item := range finalResult {
-			// Type assert item to a map
-			if dealerMap, ok := item.(map[string]interface{}); ok {
-				if dealer, ok := dealerMap["dealer"].(string); ok {
-					dealerNames = append(dealerNames, dealer)
-				}
-			}
-		}
-
-		dealerCodes, err := GetDealerCodes(dealerNames)
-		if err != nil {
-			log.FuncErrorTrace(0, "Error retrieving dealer codes: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Failed to fetch dealer codes", http.StatusBadRequest, nil)
-			return
-		}
-
-		for key, item := range finalResult {
-			// Type assertion to access map keys
-			if record, ok := item.(map[string]interface{}); ok {
-				if dealerName, ok := record["dealer"].(string); ok {
-					if dataReq.Role == string(types.RoleDealerOwner) && ownerDealerName == dealerName {
-						record["name"] = dealerName
-					} else if dealerCode, ok := dealerCodes[dealerName]; ok {
-						record["name"] = dealerCode
-					}
-				}
-				// Update the finalResult with modified record
-				finalResult[key] = record
-			}
-		}
-
 	}
 
 	if hasError {
-		fmt.Println("Some errors occurred while fetching leaderboard data.")
-	} else {
-		fmt.Println("Final Result:", finalResult)
+		fmt.Println("One or more errors occurred while fetching data.")
+		return
 	}
 
-	if len(data) > 0 {
-		for _, item := range data {
-			var hightlight bool
-			Name, _ := item["name"].(string)
+	// Combine the results
+	combinedResults, totalSale, totalNtp, totalCancel, totalBattery, totalInstall = combineResults(saleCancelData, installBatteryData, ntpData, dataReq.Role, HighLightDlrName, HighlightName, dataReq.GroupBy, dealerCodes)
 
-			// Helper function to convert interface{} to int64
-			toInt64 := func(v interface{}) float64 {
-				switch value := v.(type) {
-				case float64:
-					return value
-				case int64:
-					return float64(value)
-				default:
-					return 0
-				}
-			}
-
-			Sale := toInt64(item["sale"])
-			Ntp := toInt64(item["ntp"])
-			Cancel := toInt64(item["cancel"])
-			Install := toInt64(item["install"])
-			Battery := toInt64(item["battery"])
-			if len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0 {
-				dlrName, _ = item["dealer"].(string)
-			} else {
-				dlrName = dataReq.DealerName[0]
-			}
-
-			if HighLightDlrName == dlrName && HighlightName == Name && (dataReq.Role == string(types.RoleSalesRep) || dataReq.Role == string(types.RoleApptSetter)) {
-				hightlight = true
-			}
-			totalSale += Sale
-			totalNtp += Ntp
-			totalInstall += Install
-			totalCancel += Cancel
-			totalBattery += Battery
-			LeaderBoard := models.GetLeaderBoard{
-				Dealer:    dlrName,
-				Name:      Name,
-				Sale:      Sale,
-				Ntp:       Ntp,
-				Cancel:    Cancel,
-				Install:   Install,
-				Battery:   Battery,
-				HighLight: hightlight,
-			}
-
-			LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, LeaderBoard)
-		}
-	}
-
-	sort.Slice(LeaderBoardList.LeaderBoardList, func(i, j int) bool {
+	sort.Slice(combinedResults, func(i, j int) bool {
 		switch dataReq.SortBy {
 		case "ntp":
-			return LeaderBoardList.LeaderBoardList[i].Ntp > LeaderBoardList.LeaderBoardList[j].Ntp
+			return combinedResults[i].Ntp > combinedResults[j].Ntp
 		case "cancel":
-			return LeaderBoardList.LeaderBoardList[i].Cancel > LeaderBoardList.LeaderBoardList[j].Cancel
+			return combinedResults[i].Cancel > combinedResults[j].Cancel
 		case "install":
-			return LeaderBoardList.LeaderBoardList[i].Install > LeaderBoardList.LeaderBoardList[j].Install
+			return combinedResults[i].Install > combinedResults[j].Install
 		case "battery":
-			return LeaderBoardList.LeaderBoardList[i].Battery > LeaderBoardList.LeaderBoardList[j].Battery
+			return combinedResults[i].Battery > combinedResults[j].Battery
 		default:
-			return LeaderBoardList.LeaderBoardList[i].Sale > LeaderBoardList.LeaderBoardList[j].Sale
+			return combinedResults[i].Sale > combinedResults[j].Sale
 		}
 	})
 
-	var currSaleRep models.GetLeaderBoard
+	var currSaleRep models.CombinedResult
 	var add bool
-	for i, val := range LeaderBoardList.LeaderBoardList {
-		if val.HighLight { // check name equeals
-			currSaleRep = val
-			currSaleRep.Rank = i + 1
-			add = true
+	if len(combinedResults) > 0 {
+		for i, val := range combinedResults {
+			if val.HighLight {
+				currSaleRep = val
+				currSaleRep.Rank = i + 1
+				add = true
+			}
+			combinedResults[i].Rank = i + 1
 		}
-		LeaderBoardList.LeaderBoardList[i].Rank = i + 1
+
+		LeaderBoardList.TopLeaderBoardList = Paginate(combinedResults, 1, 3)
+		LeaderBoardList.LeaderBoardList = Paginate(combinedResults, dataReq.PageNumber, dataReq.PageSize)
 	}
 
-	LeaderBoardList.TopLeaderBoardList = Paginate(LeaderBoardList.LeaderBoardList, 1, 3)
-
-	LeaderBoardList.LeaderBoardList = Paginate(LeaderBoardList.LeaderBoardList, dataReq.PageNumber, dataReq.PageSize)
-
-	if (dataReq.Role == string(types.RoleSalesRep) || dataReq.Role == string(types.RoleApptSetter)) && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") && add {
+	if add {
 		LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, currSaleRep)
 	}
 	LeaderBoardList.TotalCancel = totalCancel
@@ -316,7 +229,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	LeaderBoardList.TotalSale = totalSale
 	LeaderBoardList.TotalBattery = totalBattery
 
-	RecordCount = int64(len(data))
+	RecordCount = int64(len(combinedResults))
 	// log.FuncInfoTrace(0, "Number of LeaderBoard List fetched : %v list %+v", len(LeaderBoardList.LeaderBoardList), LeaderBoardList)
 	appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
 }
@@ -341,7 +254,7 @@ func Paginate[T any](data []T, pageNumber int64, pageSize int64) []T {
 	return data[start:end]
 }
 
-func fetchDealerDetails(email string, role string, groupBy string) (dealerName, highlightName, ownerDealerName string, err error) {
+func fetchDealerDetails(email string, role string) (dealerName, highlightName string, err error) {
 	query := fmt.Sprintf(`
         SELECT sp.sales_partner_name AS dealer_name, name 
         FROM user_details ud
@@ -352,33 +265,29 @@ func fetchDealerDetails(email string, role string, groupBy string) (dealerName, 
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
-		return "", "", "", fmt.Errorf("failed to fetch dealer name")
+		return "", "", fmt.Errorf("failed to fetch dealer name")
 	}
 
 	if len(data) == 0 {
 		log.FuncErrorTrace(0, "No dealer name found for %v", email)
-		return "", "", "", fmt.Errorf("dealer name not found")
+		return "", "", fmt.Errorf("dealer name not found")
 	}
 
 	dealerName, ok := data[0]["dealer_name"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to convert dealer_name to string for data: %v", data[0])
-		return "", "", "", fmt.Errorf("failed to process dealer name")
+		return "", "", fmt.Errorf("failed to process dealer name")
 	}
 
 	if role == string(types.RoleSalesRep) || role == string(types.RoleApptSetter) {
 		highlightName, ok = data[0]["name"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to convert name to string for data: %v", data[0])
-			return "", "", "", fmt.Errorf("failed to process sales rep name")
+			return "", "", fmt.Errorf("failed to process sales rep name")
 		}
 	}
 
-	if role == string(types.RoleDealerOwner) && groupBy == "dealer" {
-		ownerDealerName = dealerName
-	}
-
-	return dealerName, highlightName, ownerDealerName, nil
+	return dealerName, highlightName, nil
 }
 
 // GenerateDealerInClause constructs the SQL IN clause for dealer names.
@@ -402,10 +311,10 @@ func GenerateDealerInClause(dealerNames []string) string {
 	return builder.String()
 }
 
-func fetchLeaderBoardData(queryFunc func(dateRange, dealers, groupBy, chosen string) string, dateRange, dealers, groupBy, chosen string, resultChan chan<- ResultChan) {
-	query := queryFunc(dateRange, dealers, groupBy, chosen)
+func fetchLeaderBoardData(queryFunc func(dateRange, dealers, groupBy, chosen string) (string, string), dateRange, dealers, groupBy, chosen string, resultChan chan<- ResultChan) {
+	query, types := queryFunc(dateRange, dealers, groupBy, chosen)
 	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
-	resultChan <- ResultChan{Data: data, Err: err}
+	resultChan <- ResultChan{Data: data, Err: err, Type: types}
 }
 
 // CreateDateRange generates a SQL-compatible date range condition
@@ -470,55 +379,164 @@ func GetDealerCodes(dealerNames []string) (map[string]string, error) {
 	return dealerCodes, nil
 }
 
-type LeaderBoardData struct {
-	Name    string
-	Dealer  string
-	Sale    int
-	Cancel  int
-	NTP     int
-	Install int
-	Battery int
+func shouldIncludeDealerInGroupBy(groupBy string) bool {
+	return groupBy == "primary_sales_rep" || groupBy == "split_part(srs.team_region_untd, '/'::text, 1)" || groupBy == "setter"
 }
 
-func AggregateLeaderBoardData(results []ChanResult) map[string]*LeaderBoardData {
-	leaderBoardMap := make(map[string]*LeaderBoardData)
+// getTableAliasForGroupBy returns the correct table alias for the groupBy field
+func getTableAliasForGroupBy(groupBy string, tableAlias string) string {
+	switch groupBy {
+	case "primary_sales_rep":
+		return "cs." // customers_customers_schema
+	case "split_part(srs.team_region_untd, '/'::text, 1)", "split_part(srs.team_region_untd, '/'::text, 2)":
+		return "" // sales_rep_dbhub_schema
+	case "setter":
+		return "cs." // pv_install_install_subcontracting_schema
+	default:
+		return tableAlias // default to customers_customers_schema
+	}
+}
 
-	for _, result := range results {
-		if result.Err != nil {
-			fmt.Println("Error:", result.Err)
-			continue
+func combineResults(saleCancelData, installBatteryData, ntpData []map[string]interface{}, role, HighLightDlrName, HighlightName, groupBy string, dealerCoded map[string]string) (combinedResults []models.CombinedResult, totalSale, totalNtp, totalCancel, totalBattery, totalInstall float64) {
+	combinedMap := make(map[string]models.CombinedResult)
+	var saleemptyKey, ntpemptyKey, InstallEmptykey bool
+
+	// Helper functions remain the same
+	getString := func(m map[string]interface{}, key string) string {
+		if val, ok := m[key].(string); ok {
+			return val
 		}
+		return ""
+	}
 
-		for _, row := range result.Data {
-			name := row["name"].(string)
-			dealer := row["dealer"].(string)
+	buildKey := func(row map[string]interface{}) string {
+		name, nameOk := row["name"].(string)
+		dealer, dealerOk := row["dealer"].(string)
+
+		if nameOk && dealerOk {
 			key := name + "_" + dealer
+			return key
+		} else if nameOk {
+			return name
+		} else if dealerOk {
+			return dealer
+		}
+		return ""
+	}
 
-			if _, exists := leaderBoardMap[key]; !exists {
-				leaderBoardMap[key] = &LeaderBoardData{
-					Name:   name,
-					Dealer: dealer,
-				}
-			}
-
-			// Aggregate data based on available fields
-			if sale, ok := row["sale"].(int); ok {
-				leaderBoardMap[key].Sale += sale
-			}
-			if cancel, ok := row["cancel"].(int); ok {
-				leaderBoardMap[key].Cancel += cancel
-			}
-			if ntp, ok := row["ntp"].(int); ok {
-				leaderBoardMap[key].NTP += ntp
-			}
-			if install, ok := row["install"].(int); ok {
-				leaderBoardMap[key].Install += install
-			}
-			if battery, ok := row["battery"].(int); ok {
-				leaderBoardMap[key].Battery += battery
-			}
+	getNumber := func(m map[string]interface{}, key string) float64 {
+		val, ok := m[key]
+		if !ok {
+			return 0
+		}
+		switch v := val.(type) {
+		case float64:
+			return v
+		case int64:
+			return float64(v)
+		case int:
+			return float64(v)
+		default:
+			return 0
 		}
 	}
 
-	return leaderBoardMap
+	// Process sale and cancel data first
+	for _, row := range saleCancelData {
+		key := buildKey(row)
+		if key == "" {
+			if !saleemptyKey {
+				saleemptyKey = true
+			} else {
+				continue
+			}
+		}
+
+		sale := getNumber(row, "sale")
+		cancel := getNumber(row, "cancel")
+
+		result := models.CombinedResult{
+			Name:   getString(row, "name"),
+			Dealer: getString(row, "dealer"),
+			Sale:   sale,
+			Cancel: cancel,
+		}
+		combinedMap[key] = result
+
+		totalSale += sale
+		totalCancel += cancel
+	}
+
+	// Process install and battery data
+	for _, row := range installBatteryData {
+		key := buildKey(row)
+		if key == "" {
+			if !InstallEmptykey {
+				InstallEmptykey = true
+			} else {
+				continue
+			}
+		}
+
+		result := combinedMap[key] // Get existing or zero value
+		install := getNumber(row, "install")
+		battery := getNumber(row, "battery")
+
+		result.Name = getString(row, "name") // Ensure name is set even if it's a new entry
+		result.Dealer = getString(row, "dealer")
+		result.Install = install
+		result.Battery = battery
+
+		combinedMap[key] = result // Store back in map
+
+		totalInstall += install
+		totalBattery += battery
+	}
+
+	// Process NTP data
+	for _, row := range ntpData {
+		key := buildKey(row)
+		if key == "" {
+			if !ntpemptyKey {
+				ntpemptyKey = true
+			} else {
+				continue
+			}
+		}
+
+		result := combinedMap[key] // Get existing or zero value
+		ntp := getNumber(row, "ntp")
+
+		result.Name = getString(row, "name") // Ensure name is set even if it's a new entry
+		result.Dealer = getString(row, "dealer")
+		result.Ntp = ntp
+
+		combinedMap[key] = result // Store back in map
+
+		totalNtp += ntp
+	}
+
+	// Convert map to slice and handle highlighting
+	for _, result := range combinedMap {
+		if role == string(types.RoleDealerOwner) && groupBy == "dealer" {
+			if result.Dealer != HighLightDlrName {
+				result.Dealer = dealerCoded[result.Dealer]
+			}
+		}
+
+		if HighLightDlrName == result.Dealer &&
+			HighlightName == result.Name &&
+			(role == string(types.RoleSalesRep) || role == string(types.RoleApptSetter)) &&
+			groupBy == "primary_sales_rep" {
+			result.HighLight = true
+		}
+
+		if result.Battery == 0 && result.Cancel == 0 && result.Install == 0 && result.Ntp == 0 && result.Sale == 0 {
+			continue
+		}
+
+		combinedResults = append(combinedResults, result)
+	}
+
+	return combinedResults, totalSale, totalNtp, totalCancel, totalBattery, totalInstall
 }
