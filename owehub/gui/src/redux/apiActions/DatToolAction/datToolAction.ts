@@ -113,15 +113,14 @@ export const getDropdownList = createAsyncThunk(
 );
 export const updateDatTool = createAsyncThunk(
   'dataTool/updateDatTool',
-  async ({ data }: any , { rejectWithValue }) => {
+  async (param: any, { rejectWithValue }) => {
     try {
-      const response = await reportingCaller('update_dat_tool_info', {
-        data
-      });
-      console.log(response, 'response.................');
+      const response = await reportingCaller('update_dat_tool_info', param);
+      console.log(response, 'response for update DAT TOOL.................');
       return response.data.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch updateDatTool');
     }
   }
 );
+
