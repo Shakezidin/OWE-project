@@ -485,6 +485,7 @@ const datSlice = createSlice({
     builder.addCase(updateDatTool.fulfilled, (state, action) => {
       state.loading = false;
       state.projectData = action.payload;
+      toast.success("Adder Updated Successfully");
     });
     builder.addCase(updateDatTool.rejected, (state, action) => {
       state.loading = false;

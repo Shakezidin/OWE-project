@@ -116,8 +116,8 @@ export const updateDatTool = createAsyncThunk(
   async (param: any, { rejectWithValue }) => {
     try {
       const response = await reportingCaller('update_dat_tool_info', param);
-      console.log(response, 'response for update DAT TOOL.................');
-      return response.data.data;
+      console.log(response,"my response..............");
+      return response;
     } catch (error) {
       return rejectWithValue('Failed to fetch updateDatTool');
     }
