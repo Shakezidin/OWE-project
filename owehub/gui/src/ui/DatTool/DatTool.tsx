@@ -89,7 +89,7 @@ const DatTool: React.FC = () => {
       <div className={styles.layoutContainer}>
        
         <div className={styles.contentContainer} style={{height: !dbStatus ? "calc(100vh - 115px)" : ""}}>
-          <CommonComponent generalData={generalData} loading={loading} />
+          <CommonComponent generalData={generalData} loading={loading} currentGeneralId={currentGeneralId}/>
           {renderPage()}
         </div>
 

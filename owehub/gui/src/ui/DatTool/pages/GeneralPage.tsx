@@ -7,7 +7,7 @@ import styles from '../styles/GeneralPage.module.css';
 import CommonComponent from './CommonComponent';
 import MicroLoader from '../../components/loader/MicroLoader';
 import { useAppDispatch } from '../../../redux/hooks';
-import { getDatGeneralInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
+import { getDatGeneralInfo, updateDatTool } from '../../../redux/apiActions/DatToolAction/datToolAction';
 import DataNotFound from '../../components/loader/DataNotFound';
  
 
@@ -101,13 +101,32 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDatEditing, setIsDatEditing] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState<number>(0);
- 
+  const dispatch = useAppDispatch();
   
  
   // Handlers for DAT editing
   const handleDatEdit = (): void => setIsDatEditing(true);
   const handleDatCancel = (): void => setIsDatEditing(false);
-  const handleDatSave = (): void => setIsDatEditing(false);
+  const handleDatSave = async(): Promise<void> => {setIsDatEditing(false);
+
+    await dispatch(updateDatTool(
+      {
+        project_id: currentGeneralId,
+        general_dat_information: {
+          dat_module_qty: datFields[0].value,
+          dat_module_type: datFields[1].value,
+          dat_design_version: datRightFields[0].value,
+          dat_designer_name:datRightFields[1].value,
+          dat_aurora_id: datRightFields[2].value,
+          dat_system_size_ac: "",
+          dat_system_size_dc: "",
+          dat_changes: "",
+          dat_change_order: datRightFields[4].value
+        }
+      }
+    ));
+    
+  };
  
 
  
