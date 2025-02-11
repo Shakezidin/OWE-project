@@ -223,6 +223,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		LeaderBoardList.TopLeaderBoardList = Paginate(filteredResults, 1, 3)
 		LeaderBoardList.LeaderBoardList = Paginate(filteredResults, dataReq.PageNumber, dataReq.PageSize)
 	} else {
+		LeaderBoardList.TopLeaderBoardList = []models.CombinedResult{}
+		LeaderBoardList.LeaderBoardList = []models.CombinedResult{}
 		appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
 		return
 	}
