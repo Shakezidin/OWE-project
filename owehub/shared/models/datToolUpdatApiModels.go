@@ -96,7 +96,10 @@ type RoofStructure struct {
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // for adder tab
 type AdderUpdateQuantityRequest struct {
-	CategoryTitle string `json:"category_title"`
+	CategoryTitle    string            `json:"category_title"`
+	ComponentUpdates []ComponentUpdate `json:"component_updates"`
+}
+type ComponentUpdate struct {
 	ComponentName string `json:"component_name"`
 	NewQuantity   int64  `json:"new_quantity"`
 }
