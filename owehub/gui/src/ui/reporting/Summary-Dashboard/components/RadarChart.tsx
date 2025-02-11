@@ -56,17 +56,27 @@ const RadarChartComponenet = ({ radData }: any) => {
 
   const newData = [...data];
 
-  const CustomTick = ({ payload, x, y, textAnchor }: any) => {
+  const CustomTick = ({ payload, x, y, textAnchor, index }: any) => {
     const entry = data.find((item) => item.subject === payload.value);
+    
     if (entry) {
       const percentage = entry.Percent_Achieve;
       const formattedPercentage = percentage % 1 === 0 ? percentage.toFixed(0) : percentage.toFixed(2);
-
+  
+      // Calculate angle-based offset
+      const angleInDegrees = (360 / data.length) * index;
+      const angleInRadians = (Math.PI / 180) * angleInDegrees;
+      
+      // Adjust offset distance
+      const offset = 16; // Increase this to push ticks further
+      const offsetX = offset * Math.cos(angleInRadians);
+      const offsetY = offset * Math.sin(angleInRadians);
+  
       return (
         <g>
           <text
-            x={x}
-            y={y - 3}
+            x={x + offsetX}
+            y={y + offsetY - 2}
             textAnchor={textAnchor}
             style={{ fontSize: '10px' }}
           >
@@ -76,11 +86,11 @@ const RadarChartComponenet = ({ radData }: any) => {
             </tspan>
           </text>
           <text
-            x={x}
-            y={y + 7}
+            x={x + offsetX}
+            y={y + offsetY + 7}
             textAnchor={textAnchor}
             fill="#767676"
-            style={{ fontSize: '10px', fontWeight: '400', padding: 50 }}
+            style={{ fontSize: '10px', fontWeight: '400' }}
           >
             {payload.value}
           </text>
@@ -89,6 +99,8 @@ const RadarChartComponenet = ({ radData }: any) => {
     }
     return null;
   };
+  
+  
 
   const width = useWindowWidth();
   const isMobile = width <= 767;
