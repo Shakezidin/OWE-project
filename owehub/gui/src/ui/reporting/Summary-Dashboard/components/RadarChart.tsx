@@ -68,7 +68,7 @@ const RadarChartComponenet = ({ radData }: any) => {
             x={x}
             y={y - 3}
             textAnchor={textAnchor}
-            style={{ fontSize: '12px' }}
+            style={{ fontSize: '10px' }}
           >
             <tspan fill="#377CF6" fontWeight="bold">●</tspan>
             <tspan dx="2" fill="#000000" fontWeight="500">
@@ -80,7 +80,7 @@ const RadarChartComponenet = ({ radData }: any) => {
             y={y + 7}
             textAnchor={textAnchor}
             fill="#767676"
-            style={{ fontSize: '12px', fontWeight: '400' }}
+            style={{ fontSize: '10px', fontWeight: '400', padding: 50 }}
           >
             {payload.value}
           </text>
