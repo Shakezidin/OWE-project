@@ -86,7 +86,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
             COALESCE(SUM(p.mw_sold), 0) AS mw_sold,
 			COALESCE(SUM(p.install_ct), 0) AS install_ct,
 			COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
-			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct
+			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct,
 			COALESCE(SUM(p.ntp), 0) AS ntp
 		FROM months
 		LEFT JOIN production_targets p
