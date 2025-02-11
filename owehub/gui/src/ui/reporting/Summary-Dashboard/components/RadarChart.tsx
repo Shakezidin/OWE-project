@@ -66,7 +66,7 @@ const RadarChartComponenet = ({ radData }: any) => {
         <g>
           <text
             x={x}
-            y={y - 15}
+            y={y - 3}
             textAnchor={textAnchor}
             style={{ fontSize: '12px' }}
           >
@@ -77,7 +77,7 @@ const RadarChartComponenet = ({ radData }: any) => {
           </text>
           <text
             x={x}
-            y={y + 5}
+            y={y + 7}
             textAnchor={textAnchor}
             fill="#767676"
             style={{ fontSize: '12px', fontWeight: '400' }}
@@ -100,7 +100,7 @@ const RadarChartComponenet = ({ radData }: any) => {
       <RadarChart
         cx="50%"
         cy="50%"
-        outerRadius={(isTablet || isMobile) ? "65%" : "80%"}
+        outerRadius={(isTablet || isMobile) ? "65%" : "70%"}
         data={newData}
       >
 
@@ -108,6 +108,7 @@ const RadarChartComponenet = ({ radData }: any) => {
         <PolarAngleAxis
           dataKey="subject"
           tick={<CustomTick />}
+          
         />
         <Radar name="Lily" dataKey="B" stroke="#D5E4FF" fill="#fff" fillOpacity={0} />
         <Radar
