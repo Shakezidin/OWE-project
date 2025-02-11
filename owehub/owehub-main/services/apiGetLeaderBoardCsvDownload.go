@@ -105,7 +105,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			return
 		}
 
-		dataReq.DealerNames = append(dataReq.DealerNames, dealerName)
+		dataReq.DealerNames = []string{dealerName}
 	}
 
 	if dataReq.Role == string(types.RoleAccountManager) || dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleProjectManager) {
