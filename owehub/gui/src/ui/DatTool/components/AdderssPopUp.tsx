@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styles from '../styles/AdderssPopUp.module.css';
 import { RxCross2 } from 'react-icons/rx';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { getDatAddersInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
+import { getDatAddersInfo, updateDatTool } from '../../../redux/apiActions/DatToolAction/datToolAction';
 
 const AdderssPopUp = ({ setOpenPopUp,currentGeneralId }: any) => {
   const dummyObj = [
@@ -109,6 +109,7 @@ const AdderssPopUp = ({ setOpenPopUp,currentGeneralId }: any) => {
      const { addersData } = useAppSelector((state) => state.datSlice);
     useEffect(()=>{
       dispatch(getDatAddersInfo({ project_id: currentGeneralId }));
+      
     },[currentGeneralId]);
   return (
     <div className={styles.transparent_model}>
