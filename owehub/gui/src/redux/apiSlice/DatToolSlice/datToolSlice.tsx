@@ -57,8 +57,7 @@ interface StructuralValues {
 
 interface AdderValues {
   category_title: string;
-  component_name: string;
-  new_quantity: number;
+  component_updates:any;
 }
 
 interface OtherValues {

@@ -6,7 +6,7 @@ import useEscapeKey from '../../../hooks/useEscape';
 import { useEffect } from 'react';
 import CommonComponent from './CommonComponent';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { getDatAddersInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
+import { getDatAddersInfo, updateDatTool } from '../../../redux/apiActions/DatToolAction/datToolAction';
 import { add, set } from 'date-fns';
 import MicroLoader from '../../components/loader/MicroLoader';
 import { MdClose, MdDone } from 'react-icons/md';
@@ -34,8 +34,12 @@ function AdderssPage({
 }: any) {
   const [adderValues,setAdderValues]=useState({
     category_title:"",
-    component_name:"",
-    new_quantity:"",
+    component_updates: [
+      {
+        component_name: '',
+        new_quantity: 0,
+      },
+    ]
   })
   const dispatch = useAppDispatch();
   const addersData = useAppSelector((state) => state.datSlice.addersData);
@@ -57,7 +61,6 @@ function AdderssPage({
         }));
       }
     },[currentSectionIndex,addersData]);
-    console.log(adderValues.category_title,"Title............");
 
   const getCategoryItems = (categoryIndex: number): Item[] => {
     return (
@@ -146,12 +149,64 @@ function AdderssPage({
 
  
   const currentItems = sectionData[currentSectionIndex];
-  const handleIncrement = (index: number) => {
+  const handleIncrement = (index: number,name:string) => {
     setValues((prevValues) => {
       const newValues = { ...prevValues };
 
       newValues[currentSectionIndex][index] += 1;
-      setChangeInQuantity(true);
+
+      if (adderValues.component_updates[0].component_name !== "" && adderValues.component_updates[0].new_quantity !== 0) {
+        setAdderValues((prevValues) => {
+          
+          const updatedComponentUpdates = prevValues.component_updates.map((update) => {
+            
+            if (update.component_name === name) {
+              return {
+                ...update,
+                new_quantity: newValues[currentSectionIndex][index], 
+              };
+            }
+            return update; 
+          });
+      
+          
+          const isComponentExists = updatedComponentUpdates.some(
+            (update) => update.component_name === name
+          );
+      
+          
+          if (!isComponentExists) {
+            updatedComponentUpdates.push({
+              component_name: name,
+              new_quantity: newValues[currentSectionIndex][index],
+            });
+          }
+      
+          return {
+            ...prevValues,
+            component_updates: updatedComponentUpdates, 
+          };
+        });
+      } else {
+        
+        setAdderValues((prevValues) => {
+          const updatedComponentUpdates = [...prevValues.component_updates];
+      
+          updatedComponentUpdates[0] = {
+            component_name: name,  
+            new_quantity: newValues[currentSectionIndex][index], 
+          };
+      
+          return {
+            ...prevValues,
+            component_updates: updatedComponentUpdates, 
+          };
+        });
+      }
+      
+      
+      
+      
       return newValues;
     });
 
@@ -164,16 +219,67 @@ function AdderssPage({
 
       return newPrice;
     });
+    setChangeInQuantity(true);
   };
 
-  const handleDecrement = (index: number) => {
+  const handleDecrement = (index: number,name:string) => {
     setValues((prevValues) => {
       const newValues = { ...prevValues };
       newValues[currentSectionIndex][index] = Math.max(
         (newValues[currentSectionIndex][index] || 0) - 1,
         0
       );
-      setChangeInQuantity(true);
+      if (adderValues.component_updates[0].component_name !== "" && adderValues.component_updates[0].new_quantity !== 0) {
+        setAdderValues((prevValues) => {
+          
+          const updatedComponentUpdates = prevValues.component_updates.map((update) => {
+            
+            if (update.component_name === name) {
+              return {
+                ...update,
+                new_quantity: newValues[currentSectionIndex][index], 
+              };
+            }
+            return update; 
+          });
+      
+          
+          const isComponentExists = updatedComponentUpdates.some(
+            (update) => update.component_name === name
+          );
+      
+          
+          if (!isComponentExists) {
+            updatedComponentUpdates.push({
+              component_name: name,
+              new_quantity: newValues[currentSectionIndex][index],
+            });
+          }
+      
+          return {
+            ...prevValues,
+            component_updates: updatedComponentUpdates, 
+          };
+        });
+      } else {
+        
+        setAdderValues((prevValues) => {
+          const updatedComponentUpdates = [...prevValues.component_updates];
+      
+          updatedComponentUpdates[0] = {
+            component_name: name,  
+            new_quantity: newValues[currentSectionIndex][index], 
+          };
+      
+          return {
+            ...prevValues,
+            component_updates: updatedComponentUpdates, 
+          };
+        });
+      }
+      
+      
+      
       return newValues;
     });
 
@@ -186,6 +292,7 @@ function AdderssPage({
         (newPrice[currentSectionIndex] || 0) - itemPrice;
       return newPrice;
     });
+    setChangeInQuantity(true);
   };
 
   const handleSectionIndex = (index: number) => {
@@ -227,10 +334,16 @@ function AdderssPage({
     });
   };
 
-  const updateAdderHandler = () => {
+  const updateAdderHandler = async () => {
     setChangeInQuantity(false);
-    toast.success('Adder Updated Successfully');
+      
+      await dispatch(updateDatTool(
+        {  project_id: currentGeneralId,adder_values : adderValues  }
+      ));
+      toast.success('Adder Updated Successfully');
+    
   };
+  
 
  
   return (
@@ -354,7 +467,7 @@ function AdderssPage({
                     >
                       <FiMinus
                         className={styles.adderssPageMainPart_decrement}
-                        onClick={() => handleDecrement(index)}
+                        onClick={() => handleDecrement(index,obj.name)}
                       />
                       <p className={styles.adderssPageMainPart_text}>
                         {values[currentSectionIndex][index]
@@ -363,7 +476,7 @@ function AdderssPage({
                       </p>
                       <FiPlus
                         className={styles.adderssPageMainPart_increment}
-                        onClick={() => handleIncrement(index)}
+                        onClick={() => {handleIncrement(index,obj.name)}}
                       />
                     </div>
                     <p className={styles.adderssPageMainPart_price}>
