@@ -29,18 +29,26 @@ import (
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
+
+type DealerPayment struct {
+	AmountPrepaid             float64 `json:"amount_prepaid"`
+	PipelineRemaining         float64 `json:"pipeline_remaining"`
+	CurrentDue                float64 `json:"current_due"`
+	Period                    string  `json:"period"`
+	PreviousAmountPrepaid     float64
+	PreviousPipelineRemaining float64
+	PreviousCurrentDue        float64
+}
+
 func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err               error
-		dataReq           models.DealerPayReportRequest
-		RecordCount       int
-		dlsPayCommResp    models.DealerPayCommissions
-		whereEleList      []interface{}
-		query             string
-		filter            string
-		amountPrepaid     float64
-		pipelineRemaining float64
-		currentDue        float64
+		err          error
+		dataReq      models.DealerPayReportRequest
+		RecordCount  int
+		response     models.DealerPayCommissions
+		whereEleList []interface{}
+		query        string
+		filter       string
 	)
 
 	log.EnterFn(0, "HandleGetDealerPayCommissionsRequest")
@@ -81,8 +89,8 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 	if len(dataReq.PartnerName) <= 0 && dataReq.Role == string(types.RoleAdmin) {
 		var dlrpayComm []models.DealerPayReportResponse
-		dlsPayCommResp.DealerPayComm = dlrpayComm
-		appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, dlsPayCommResp, int64(RecordCount))
+		response.DealerPayComm = dlrpayComm
+		appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, response, int64(RecordCount))
 		return
 	}
 
@@ -168,149 +176,134 @@ func HandleGetDealerPayCommissionsRequest(resp http.ResponseWriter, req *http.Re
 
 		// Assign `adder` to `dlrPay` and add `dlrPay` to the response
 		dlrPay.Adder = adder
-		dlsPayCommResp.DealerPayComm = append(dlsPayCommResp.DealerPayComm, dlrPay)
+		response.DealerPayComm = append(response.DealerPayComm, dlrPay)
 	}
 
-	RecordCount = len(dlsPayCommResp.DealerPayComm)
+	RecordCount = len(response.DealerPayComm)
 
 	if dataReq.Paginate {
-		dlsPayCommResp.DealerPayComm = Paginate(dlsPayCommResp.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+		response.DealerPayComm = Paginate(response.DealerPayComm, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	}
 
 	if len(dataReq.PartnerName) > 0 {
 		if dataReq.PayroleDate == "" {
-			dataReq.PayroleDate = time.Now().Format("02-01-2006") // Format to match expected input
+			dataReq.PayroleDate = time.Now().Format("02-01-2006")
 		}
-		// Prepare a string for dealer names, with each name properly escaped
-		escapedPartnerNames := make([]string, len(dataReq.PartnerName))
-		for i, name := range dataReq.PartnerName {
-			escapedPartnerNames[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'" // Escape single quotes
-		}
-		dealerNames := strings.Join(escapedPartnerNames, ", ")
 
 		// Parse the PayroleDate
-		payroleDate, err := time.Parse("02-01-2006", dataReq.PayroleDate) // Ensure the format matches your input
+		currentDate, err := time.Parse("02-01-2006", dataReq.PayroleDate)
 		if err != nil {
-			log.FuncErrorTrace(0, "error while parsing PayroleDate")
 			return
 		}
 
-		// Calculate one month before the PayroleDate
-		oneMonthBefore := payroleDate.AddDate(0, -1, 0) // Subtract one month
-		twoMonthBefore := payroleDate.AddDate(0, -2, 0)
+		// Escape dealer names
+		dealerNames := make([]string, len(dataReq.PartnerName))
+		for i, name := range dataReq.PartnerName {
+			dealerNames[i] = "'" + strings.ReplaceAll(name, "'", "''") + "'"
+		}
+		dealerList := strings.Join(dealerNames, ", ")
 
-		// Format the dates for SQL
-		formattedPayroleDate := payroleDate.Format("2006-01-02 15:04:05")
-		formattedOneMonthBefore := oneMonthBefore.Format("2006-01-02 15:04:05")
-		formattedTwoMonthBefore := twoMonthBefore.Format("2006-01-02 15:04:05")
+		// SQL query to get month-wise data with cumulative totals
+		query := fmt.Sprintf(`
+			WITH monthly_data AS (
+				SELECT
+					DATE_TRUNC('month', $1::timestamp) AS current_period,
+					DATE_TRUNC('month', $1::timestamp - INTERVAL '1 month') AS previous_period,
+					-- Current month amount_prepaid (cumulative)
+					(
+						SELECT SUM(CASE WHEN sys_size IS NOT NULL THEN amt_paid ELSE 0 END)
+						FROM dealer_pay
+						WHERE dealer_code IN (%s)
+						AND ntp_date <= $1::timestamp
+					) as current_amount_prepaid,
+					-- Previous month amount_prepaid (cumulative)
+					(
+						SELECT SUM(CASE WHEN sys_size IS NOT NULL THEN amt_paid ELSE 0 END)
+						FROM dealer_pay
+						WHERE dealer_code IN (%s)
+						AND ntp_date <= ($1::timestamp - INTERVAL '1 month')
+					) as previous_amount_prepaid,
+					-- Current month pipeline_remaining (cumulative)
+					(
+						SELECT SUM(CASE WHEN unique_id IS NOT NULL THEN amount ELSE 0 END)
+						FROM dealer_pay
+						WHERE dealer_code IN (%s)
+						AND ntp_date <= $1::timestamp
+					) as current_pipeline_remaining,
+					-- Previous month pipeline_remaining (cumulative)
+					(
+						SELECT SUM(CASE WHEN unique_id IS NOT NULL THEN amount ELSE 0 END)
+						FROM dealer_pay
+						WHERE dealer_code IN (%s)
+						AND ntp_date <= ($1::timestamp - INTERVAL '1 month')
+					) as previous_pipeline_remaining,
+					-- Current month current_due (cumulative)
+					(
+						SELECT SUM(balance)
+						FROM dealer_pay
+						WHERE dealer_code IN (%s)
+						AND ntp_date <= $1::timestamp
+					) as current_due,
+					-- Previous month current_due (cumulative)
+					(
+						SELECT SUM(balance)
+						FROM dealer_pay
+						WHERE dealer_code IN (%s)
+						AND ntp_date <= ($1::timestamp - INTERVAL '1 month')
+					) as previous_current_due
+				FROM dealer_pay
+				WHERE dealer_code IN (%s)
+				AND ntp_date >= DATE_TRUNC('month', $1::timestamp - INTERVAL '1 month')
+				AND ntp_date < DATE_TRUNC('month', $1::timestamp + INTERVAL '1 month')
+				GROUP BY 1, 2
+			)
+			SELECT 
+				current_period as period,
+				current_amount_prepaid as amount_prepaid,
+				previous_amount_prepaid,
+				current_pipeline_remaining as pipeline_remaining,
+				previous_pipeline_remaining,
+				current_due,
+				previous_current_due
+			FROM monthly_data`,
+			dealerList, dealerList, dealerList, dealerList, dealerList, dealerList, dealerList)
 
-		query = fmt.Sprintf(`
-			SELECT
-				(SELECT SUM(amt_paid) 
-				 FROM dealer_pay 
-				 WHERE sys_size IS NOT NULL 
-				   AND dealer_code IN (%s)
-				   AND ntp_date <= '%s') AS amount_prepaid,
-				
-				(SELECT SUM(amount) 
-				 FROM dealer_pay 
-				 WHERE unique_id IS NOT NULL 
-				   AND dealer_code IN (%s)
-				   AND ntp_date <= '%s') AS pipeline_remaining,
-				
-				(SELECT SUM(balance) 
-				 FROM dealer_pay 
-				 WHERE dealer_code IN (%s)
-				   AND ntp_date <= '%s') AS current_due,
-				
-				(SELECT SUM(amt_paid) 
-				 FROM dealer_pay 
-				 WHERE sys_size IS NOT NULL 
-				   AND dealer_code IN (%s)
-				   AND ntp_date <= '%s') AS amount_prepaid_this_month,
-				
-				(SELECT SUM(amount) 
-				 FROM dealer_pay 
-				 WHERE unique_id IS NOT NULL 
-				   AND dealer_code IN (%s)
-				   AND ntp_date <= '%s') AS pipeline_remaining_this_month,
-				
-				(SELECT SUM(balance) 
-				 FROM dealer_pay 
-				 WHERE dealer_code IN (%s)
-				   AND ntp_date <= '%s') AS current_due_this_month,
-				   
-				(SELECT SUM(amt_paid) 
-				 FROM dealer_pay 
-				 WHERE sys_size IS NOT NULL 
-				   AND dealer_code IN (%s)
-				   AND ntp_date <= '%s') AS amount_prepaid_last_month,
-				
-				(SELECT SUM(amount) 
-				 FROM dealer_pay 
-				 WHERE unique_id IS NOT NULL 
-				   AND dealer_code IN (%s)
-				   AND ntp_date <= '%s') AS pipeline_remaining_last_month,
-				
-				(SELECT SUM(balance) 
-				 FROM dealer_pay 
-				 WHERE dealer_code IN (%s)
-				   AND ntp_date <= '%s') AS current_due_last_month`,
-			dealerNames, formattedPayroleDate,
-			dealerNames, formattedPayroleDate,
-			dealerNames, formattedPayroleDate,
-			dealerNames, formattedOneMonthBefore,
-			dealerNames, formattedOneMonthBefore,
-			dealerNames, formattedOneMonthBefore,
-			dealerNames, formattedTwoMonthBefore,
-			dealerNames, formattedTwoMonthBefore,
-			dealerNames, formattedTwoMonthBefore)
-
-		// Execute the query
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		// Execute query with the current date as parameter
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{currentDate})
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get dlrpay tile data from DB err: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Failed to get dlrpay tile data from DB", http.StatusBadRequest, nil)
 			return
 		}
 
-		if len(data) > 0 {
-			amountPrepaid = getFloat(data[0], "amount_prepaid")
-			pipelineRemaining = getFloat(data[0], "pipeline_remaining")
-			currentDue = getFloat(data[0], "current_due")
-
-			amountPrepaidThisMonth := getFloat(data[0], "amount_prepaid_this_month")
-			pipelineRemainingThisMonth := getFloat(data[0], "pipeline_remaining_this_month")
-			currentDueThisMonth := getFloat(data[0], "current_due_this_month")
-
-			amountPrepaidLastMonth := getFloat(data[0], "amount_prepaid_last_month")
-			pipelineRemainingLastMonth := getFloat(data[0], "pipeline_remaining_last_month")
-			currentDueLastMonth := getFloat(data[0], "current_due_last_month")
-
-			amountPrepaidThisMonth = amountPrepaid - amountPrepaidThisMonth          // This month’s value only
-			amountPrepaidLastMonth = amountPrepaidThisMonth - amountPrepaidLastMonth // Last month’s value only
-
-			pipelineRemainingThisMonth = pipelineRemaining - pipelineRemainingThisMonth
-			pipelineRemainingLastMonth = pipelineRemainingThisMonth - pipelineRemainingLastMonth
-
-			currentDueThisMonth = currentDue - currentDueThisMonth
-			currentDueLastMonth = currentDueThisMonth - currentDueLastMonth
-
-			// Add last month data to response if needed
-			dlsPayCommResp.AmountPrepaid = amountPrepaid
-			dlsPayCommResp.Pipeline_Remaining = pipelineRemaining
-			dlsPayCommResp.Current_Due = currentDue
-			// Revised percentage calculation
-			dlsPayCommResp.AmountPrepaidPerc = calculatePercentageIncrease(amountPrepaidThisMonth, amountPrepaidLastMonth)
-			dlsPayCommResp.PipelineRemainingPerc = calculatePercentageIncrease(pipelineRemainingThisMonth, pipelineRemainingLastMonth)
-			dlsPayCommResp.CurrentDuePerc = calculatePercentageIncrease(currentDueThisMonth, currentDueLastMonth)
-
+		// Process the results
+		var currentMonth DealerPayment
+		for _, row := range data {
+			period := row["period"].(time.Time)
+			payment := DealerPayment{
+				AmountPrepaid:             getFloat(row, "amount_prepaid"),
+				PreviousAmountPrepaid:     getFloat(row, "previous_amount_prepaid"),
+				PipelineRemaining:         getFloat(row, "pipeline_remaining"),
+				PreviousPipelineRemaining: getFloat(row, "previous_pipeline_remaining"),
+				CurrentDue:                getFloat(row, "current_due"),
+				PreviousCurrentDue:        getFloat(row, "previous_current_due"),
+				Period:                    period.Format("2006-01"),
+			}
+			currentMonth = payment
 		}
+
+		// Set response values
+		response.AmountPrepaid = currentMonth.AmountPrepaid
+		response.Pipeline_Remaining = currentMonth.PipelineRemaining
+		response.Current_Due = currentMonth.CurrentDue
+
+		// Calculate growth rates using cumulative totals
+		response.AmountPrepaidPerc = calculateGrowthRate(currentMonth.AmountPrepaid, currentMonth.PreviousAmountPrepaid)
+		response.PipelineRemainingPerc = calculateGrowthRate(currentMonth.PipelineRemaining, currentMonth.PreviousPipelineRemaining)
+		response.CurrentDuePerc = calculateGrowthRate(currentMonth.CurrentDue, currentMonth.PreviousCurrentDue)
 	}
 
 	// Send the response
 	// log.FuncInfoTrace(0, "Number of dealer pay commissions fetched: %v, data: %+v", RecordCount, dlsPayCommResp)
-	appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, dlsPayCommResp, int64(RecordCount))
+	appserver.FormAndSendHttpResp(resp, "Dealer pay commissions data", http.StatusOK, response, int64(RecordCount))
 }
 
 func Paginate[T any](data []T, pageNumber int64, pageSize int64) []T {
@@ -486,17 +479,19 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.DealerPayReport
 	return filters, whereEleList
 }
 
-func calculatePercentageIncrease(currentMonthValue, lastMonthValue float64) float64 {
-	if lastMonthValue == 0 {
-		if currentMonthValue > 0 {
-			return 100 // To indicate a full increase from zero
+func calculateGrowthRate(current, previous float64) float64 {
+	if previous == 0 {
+		if current == 0 {
+			return 0
 		}
-		return 0 // No change if both are zero
+		return 100 // Represent infinite growth as 100%
 	}
 
-	increase := currentMonthValue - lastMonthValue
-	percentageIncrease := (increase / lastMonthValue) * 100
-	return percentageIncrease
+	if current == 0 {
+		return -100 // Represent complete decline as -100%
+	}
+
+	return ((current - previous) / math.Abs(previous)) * 100
 }
 
 func getStringVal(item map[string]interface{}, key string) string {
