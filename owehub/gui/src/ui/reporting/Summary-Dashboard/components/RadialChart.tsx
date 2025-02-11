@@ -179,8 +179,8 @@ const RadialChart = ({
       <RadialBarChart
         cx="50%"
         cy={isMobile ? '48%' : isTablet ? '52%' : '70%'}
-        innerRadius={isTablet || isMobile ? '26%' : '30%'}
-        outerRadius={isTablet || isMobile ? '120%' : '140%'}
+        innerRadius={isTablet || isMobile ? '6%' : '30%'}
+        outerRadius={isTablet || isMobile ? '140%' : '140%'}
         barSize={15}
         data={data}
         startAngle={180}
@@ -222,7 +222,7 @@ const RadialChart = ({
                 style={{
                   display: 'flex',
                   justifyContent: 'center',
-                  gap: '19px',
+                  gap: isMobile ? '8px' : '19px',
                   marginBottom: '20px',
                 }}
               >
