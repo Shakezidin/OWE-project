@@ -340,7 +340,6 @@ function AdderssPage({
       await dispatch(updateDatTool(
         {  project_id: currentGeneralId,adder_values : adderValues  }
       ));
-      toast.success('Adder Updated Successfully');
     
   };
   
