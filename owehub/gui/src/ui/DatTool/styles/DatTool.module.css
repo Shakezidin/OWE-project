@@ -59,5 +59,6 @@
 
 .mobileSideContainer{
   padding:2rem 2.5rem 0rem 2.5rem;
-  max-height: 665px;
+  /* max-height: 665px; */
+  height: fit-content;
 }

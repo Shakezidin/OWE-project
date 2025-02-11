@@ -11,22 +11,23 @@ interface DropDownContainerProps{
   mappedDataList: any[]; 
   currentGeneralId: string | null; 
   isDataEmpty: boolean; 
-  handleClick: (id: string) => void; 
+  handleClick: () => void; 
   setCurrentGeneralId:any;
   numFlagRef:any;
   data:any;
   showMore:boolean;
   setShowMore:any;
+  setSearchPara: any;
 }
-const DropDownContainer: React.FC<DropDownContainerProps>  = ({loading,mappedDataList,currentGeneralId,isDataEmpty,handleClick,setCurrentGeneralId,numFlagRef,data,showMore,setShowMore}) => {
+const DropDownContainer: React.FC<DropDownContainerProps>  = ({loading,mappedDataList,currentGeneralId,isDataEmpty,handleClick,setCurrentGeneralId,numFlagRef,data,showMore,setShowMore,setSearchPara}) => {
       const [isHovered, setIsHovered] = useState<number | null>(null);
       
       
   return (
     <div>
-        {showMore ? <DropDownOpen showMore={showMore} setShowMore={setShowMore} mappedDataList={mappedDataList} currentGeneralId={currentGeneralId}/> :<DropDownClosed showMore={showMore} setShowMore={setShowMore} mappedDataList={mappedDataList} currentGeneralId={currentGeneralId}/>}
+        {showMore ? <DropDownOpen showMore={showMore} setShowMore={setShowMore} mappedDataList={mappedDataList} currentGeneralId={currentGeneralId} setSearchPara={setSearchPara}/> :<DropDownClosed showMore={showMore} setShowMore={setShowMore} mappedDataList={mappedDataList} currentGeneralId={currentGeneralId} />}
         
-        {showMore && <div className={style2.container2} style={{    padding: "0.6rem 0rem 0.6rem 1.4rem"}}> 
+        {showMore && <div className={style2.container2} style={{    padding: "0.6rem 0rem 1.6rem 1.4rem"}}> 
     {
         (loading ? (
           <div className={styles.microLoaderContainer}><MicroLoader /></div>
@@ -36,7 +37,7 @@ const DropDownContainer: React.FC<DropDownContainerProps>  = ({loading,mappedDat
           <div className={styles.wrapperBox}>
             <div className={styles.dataBoxWrapper}>
               {mappedDataList?.map((data: any, index: any) => (
-                <div key={index} className={styles.dataBox} onClick={() => {setCurrentGeneralId(data.projectID); numFlagRef.current=false}} onMouseOver={() => setIsHovered(index)} onMouseOut={() => setIsHovered(null)} style={{ 
+                <div key={index} className={styles.dataBox} onClick={() => {setCurrentGeneralId(data.projectID); numFlagRef.current=false; setShowMore(false)}} onMouseOver={() => setIsHovered(index)} onMouseOut={() => setIsHovered(null)} style={{ 
                   backgroundColor: currentGeneralId === data.projectID 
                     ? '#377CF6' 
                     : isHovered === index 
@@ -50,7 +51,7 @@ const DropDownContainer: React.FC<DropDownContainerProps>  = ({loading,mappedDat
                   <p className={styles.content_three} style={{ color: currentGeneralId === data.projectID ? '#fafafa' : '' }}>{data.address}</p>
                 </div>
               ))}
-              {data && <p className={styles.seeMore} onClick={() => handleClick}>See More</p>}
+              {data && <p className={styles.seeMore} onClick={handleClick}>See More</p>}
             </div>
           </div>
         ))}
