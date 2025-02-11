@@ -71,7 +71,7 @@ const DatTool: React.FC = () => {
 
         <div className={styles.sidebar}>
 
-          <SideContainer data={data}/>
+          <SideContainer/>
         </div>
 
       </div>
