@@ -25,28 +25,48 @@ interface CategoryItem {
   cost: number;
 }
 
-function AdderssPage({ setOpenPopUp,currentGeneralId,loading,changeInQuantity,setChangeInQuantity}: any) {
+function AdderssPage({
+  setOpenPopUp,
+  currentGeneralId,
+  loading,
+  changeInQuantity,
+  setChangeInQuantity,
+}: any) {
+  const [adderValues,setAdderValues]=useState({
+    category_title:"",
+    component_name:"",
+    new_quantity:"",
+  })
   const dispatch = useAppDispatch();
-   const addersData= useAppSelector((state) => state.datSlice.addersData);
-  useEffect(()=>{
+  const addersData = useAppSelector((state) => state.datSlice.addersData);
+  useEffect(() => {
     dispatch(getDatAddersInfo({ project_id: currentGeneralId }));
-  },[currentGeneralId]);
-  console.log(addersData, 'addersData.................'); 
-  const leftPartObj: CategoryItem[] = addersData?.categories?.map((category:any) => ({
-    text: category?.title ?? 'N/A',  
-    cost: category?.cost ?? 0  
-  })) ?? [];
+  }, [currentGeneralId]);
+  const leftPartObj: CategoryItem[] =
+    addersData?.categories?.map((category: any) => ({
+      text: category?.title ?? 'N/A',
+      cost: category?.cost ?? 0,
+    })) ?? [];
 
-
-
-
+    const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
+    useEffect(()=>{
+      if(leftPartObj) {
+        setAdderValues((prevValues) => ({
+          ...prevValues,
+          category_title: leftPartObj?.[currentSectionIndex]?.text ?? "N/A",
+        }));
+      }
+    },[currentSectionIndex,addersData]);
+    console.log(adderValues.category_title,"Title............");
 
   const getCategoryItems = (categoryIndex: number): Item[] => {
-    return addersData?.categories?.[categoryIndex]?.items?.map((item: any) => ({
-      name: item.name ?? 'N/A',
-      quantity: item.quantity ?? 1,
-      cost: item.cost ?? 0
-    })) ?? [];
+    return (
+      addersData?.categories?.[categoryIndex]?.items?.map((item: any) => ({
+        name: item.name ?? 'N/A',
+        quantity: item.quantity ?? 1,
+        cost: item.cost ?? 0,
+      })) ?? []
+    );
   };
 
   const rightPartObj: Item[] = getCategoryItems(0);
@@ -58,8 +78,6 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading,changeInQuantity,se
   const rightPartObjUpgradedElectrical: Item[] = getCategoryItems(6);
   const rightPartObjOther: Item[] = getCategoryItems(7);
 
-
-
   const sectionData = [
     rightPartObj,
     rightPartObjElectrical,
@@ -69,7 +87,6 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading,changeInQuantity,se
     rightPartObjInterconnection,
     rightPartObjUpgradedElectrical,
     rightPartObjOther,
-
   ];
 
   const [price, setPrice] = useState<{ [key: number]: number }>({});
@@ -78,10 +95,12 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading,changeInQuantity,se
     if (addersData && addersData.categories) {
       setPrice((prevState) => {
         const newPrice: { [key: number]: number } = {};
-        const leftPartObj: CategoryItem[] = addersData.categories.map((category: any) => ({
-          text: category?.title ?? 'N/A',
-          cost: category?.cost ?? 0
-        }));
+        const leftPartObj: CategoryItem[] = addersData.categories.map(
+          (category: any) => ({
+            text: category?.title ?? 'N/A',
+            cost: category?.cost ?? 0,
+          })
+        );
         leftPartObj.forEach((item, index) => {
           newPrice[index] = item.cost;
         });
@@ -90,43 +109,42 @@ function AdderssPage({ setOpenPopUp,currentGeneralId,loading,changeInQuantity,se
     }
   }, [addersData]);
 
-const [values, setValues] = useState<{ [key: number]: number[] }>({
-  0: Array(rightPartObj.length).fill(0),
-  1: Array(rightPartObjElectrical.length).fill(0),
-  2: Array(rightPartObjSiteAdders.length).fill(0),
-  3: Array(rightPartObjStructural.length).fill(0),
-  4: Array(rightPartObjUpgrades.length).fill(0),
-  5: Array(rightPartObjInterconnection.length).fill(0),
-  6: Array(rightPartObjUpgradedElectrical.length).fill(0),
-  7: Array(rightPartObjOther.length).fill(0),
-});
-
+  const [values, setValues] = useState<{ [key: number]: number[] }>({
+    0: Array(rightPartObj.length).fill(0),
+    1: Array(rightPartObjElectrical.length).fill(0),
+    2: Array(rightPartObjSiteAdders.length).fill(0),
+    3: Array(rightPartObjStructural.length).fill(0),
+    4: Array(rightPartObjUpgrades.length).fill(0),
+    5: Array(rightPartObjInterconnection.length).fill(0),
+    6: Array(rightPartObjUpgradedElectrical.length).fill(0),
+    7: Array(rightPartObjOther.length).fill(0),
+  });
 
   useEffect(() => {
-    if (Array.isArray(rightPartObj) &&
+    if (
+      Array.isArray(rightPartObj) &&
       Array.isArray(rightPartObjElectrical) &&
       Array.isArray(rightPartObjSiteAdders) &&
       Array.isArray(rightPartObjStructural) &&
       Array.isArray(rightPartObjUpgrades) &&
       Array.isArray(rightPartObjInterconnection) &&
       Array.isArray(rightPartObjUpgradedElectrical) &&
-      Array.isArray(rightPartObjOther)) {
-    setValues({
-      0: rightPartObj.map(item => item.quantity || 0),
-      1: rightPartObjElectrical.map(item => item.quantity || 0),
-      2: rightPartObjSiteAdders.map(item => item.quantity || 0),
-      3: rightPartObjStructural.map(item => item.quantity || 0),
-      4: rightPartObjUpgrades.map(item => item.quantity || 0),
-      5: rightPartObjInterconnection.map(item => item.quantity || 0),
-      6: rightPartObjUpgradedElectrical.map(item => item.quantity || 0),
-      7: rightPartObjOther.map(item => item.quantity || 0),
-    });
-  }
-}, [addersData]);
+      Array.isArray(rightPartObjOther)
+    ) {
+      setValues({
+        0: rightPartObj.map((item) => item.quantity || 0),
+        1: rightPartObjElectrical.map((item) => item.quantity || 0),
+        2: rightPartObjSiteAdders.map((item) => item.quantity || 0),
+        3: rightPartObjStructural.map((item) => item.quantity || 0),
+        4: rightPartObjUpgrades.map((item) => item.quantity || 0),
+        5: rightPartObjInterconnection.map((item) => item.quantity || 0),
+        6: rightPartObjUpgradedElectrical.map((item) => item.quantity || 0),
+        7: rightPartObjOther.map((item) => item.quantity || 0),
+      });
+    }
+  }, [addersData]);
 
-
-
-  const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
+ 
   const currentItems = sectionData[currentSectionIndex];
   const handleIncrement = (index: number) => {
     setValues((prevValues) => {
@@ -175,9 +193,7 @@ const [values, setValues] = useState<{ [key: number]: number[] }>({
   };
   const [total, setTotal] = useState<number>(0);
 
-
   useEffect(() => {
-
     const totalPrice = Object.values(price).reduce(
       (acc, priceValue) => acc + priceValue,
       0
@@ -189,14 +205,14 @@ const [values, setValues] = useState<{ [key: number]: number[] }>({
   const crossAdderHandler = () => {
     setChangeInQuantity(false);
     setValues({
-      0: rightPartObj.map(item => item.quantity || 0),
-      1: rightPartObjElectrical.map(item => item.quantity || 0),
-      2: rightPartObjSiteAdders.map(item => item.quantity || 0),
-      3: rightPartObjStructural.map(item => item.quantity || 0),
-      4: rightPartObjUpgrades.map(item => item.quantity || 0),
-      5: rightPartObjInterconnection.map(item => item.quantity || 0),
-      6: rightPartObjUpgradedElectrical.map(item => item.quantity || 0),
-      7: rightPartObjOther.map(item => item.quantity || 0),
+      0: rightPartObj.map((item) => item.quantity || 0),
+      1: rightPartObjElectrical.map((item) => item.quantity || 0),
+      2: rightPartObjSiteAdders.map((item) => item.quantity || 0),
+      3: rightPartObjStructural.map((item) => item.quantity || 0),
+      4: rightPartObjUpgrades.map((item) => item.quantity || 0),
+      5: rightPartObjInterconnection.map((item) => item.quantity || 0),
+      6: rightPartObjUpgradedElectrical.map((item) => item.quantity || 0),
+      7: rightPartObjOther.map((item) => item.quantity || 0),
     });
 
     setPrice({
@@ -209,129 +225,164 @@ const [values, setValues] = useState<{ [key: number]: number[] }>({
       6: leftPartObj[6]?.cost || 0,
       7: leftPartObj[7]?.cost || 0,
     });
-  }
+  };
 
   const updateAdderHandler = () => {
     setChangeInQuantity(false);
     toast.success('Adder Updated Successfully');
-  }
+  };
+
+ 
   return (
     <div className={styles.container}>
-      {loading ? <div className={styles.loaderContainer}> <MicroLoader/> </div> : addersData? <div className={styles.wrapper}>
-      
-      <div className={styles.adderssPageTopPart}>
-        <div className={styles.adderssPageTopPart_leftText}>
-          <p className={styles.adderssPageTopPart_leftText_Adders}>Adders</p>
-          <p className={styles.adderssPageTopPart_leftText_text}>
-            Summarized cost for all additional components and customizations
-          </p>
+      {loading ? (
+        <div className={styles.loaderContainer}>
+          {' '}
+          <MicroLoader />{' '}
         </div>
-        <div className={styles.adderssPageTopPart_rightText}>
-          <p className={styles.adderssPageTopPart_rightText_amount}>
-            $ {total}
-          </p>
-          <p
-            className={styles.adderssPageTopPart_rightText_popUpText}
-            onClick={() => setOpenPopUp(true)}
-          >
-            View all adders
-          </p>
-        </div>
-      </div>
-
-      <div className={styles.adderssPageMainPart}>
-        <div className={styles.adderssPageMainPart_left}>
-          {leftPartObj.map((bar, index) => (
-            <div
-              className={styles.adderssPageMainPart_leftBarContainer}
-              key={index}
-              style={{
-                backgroundColor: currentSectionIndex === index ? '#377CF6' : '',
-              }}
-              onClick={() => handleSectionIndex(index)}
-            >
-              <p
-                className={styles.adderssPageMainPart_leftBarContainer_heading}
-                style={{
-                  color: currentSectionIndex === index ? '#FFFFFF' : '',
-                }}
-              >
-                {bar.text}
+      ) : addersData ? (
+        <div className={styles.wrapper}>
+          <div className={styles.adderssPageTopPart}>
+            <div className={styles.adderssPageTopPart_leftText}>
+              <p className={styles.adderssPageTopPart_leftText_Adders}>
+                Adders
               </p>
-              <div
-                className={styles.adderssPageMainPart_leftBarContainer_right}
-              >
-                <p
-                  className={
-                    styles.adderssPageMainPart_leftBarContainer_staticText
-                  }
-                  style={{
-                    color: currentSectionIndex === index ? '#FFFFFF' : '',
-                  }}
-                >
-                  Total cost
-                </p>
-                <p
-                  className={styles.adderssPageMainPart_leftBarContainer_price}
-                  style={{
-                    color: currentSectionIndex === index ? '#FFFFFF' : '',
-                  }}
-                >
-                  $ {price[index]}
-                </p>
-              </div>
+              <p className={styles.adderssPageTopPart_leftText_text}>
+                Summarized cost for all additional components and customizations
+              </p>
             </div>
-          ))}
-        </div>
-
-          <div className={styles.adderssPageMainPart_Right}>
-            {changeInQuantity && <div className={styles.editing}>
-              <p className={styles.editingPara}>Save Changes</p>
-              <div className={style2.gSecHeaderBtn}>
-                <div className={style2.editUser} onClick={crossAdderHandler}>
-                  <MdClose color="#434343" />
-                </div>
-                <div className={style2.editUserDone} onClick={updateAdderHandler}>
-                  <MdDone color="white" />
-                </div>
-              </div>
-
-             </div>}
-          {currentItems.map((obj, index) => (
-            <div
-              className={styles.adderssPageMainPart_rightBarContainer}
-              key={index}
-            >
-              <p
-                className={styles.adderssPageMainPart_rightBarContainer_heading}
-              >
-                {obj.name}
+            <div className={styles.adderssPageTopPart_rightText}>
+              <p className={styles.adderssPageTopPart_rightText_amount}>
+                $ {total}
               </p>
-              <div className={styles.adderssPageMainPart_rightContainer}>
-                <div className={styles.adderssPageMainPart_expressionContainer}>
-                  <FiMinus
-                    className={styles.adderssPageMainPart_decrement}
-                    onClick={() => handleDecrement(index)}
-                  />
-                  <p className={styles.adderssPageMainPart_text}>
-                    { values[currentSectionIndex][index] ? values[currentSectionIndex][index] : 0 }
+              <p
+                className={styles.adderssPageTopPart_rightText_popUpText}
+                onClick={() => setOpenPopUp(true)}
+              >
+                View all adders
+              </p>
+            </div>
+          </div>
+
+          <div className={styles.adderssPageMainPart}>
+            <div className={styles.adderssPageMainPart_left}>
+              {leftPartObj.map((bar, index) => (
+                <div
+                  className={styles.adderssPageMainPart_leftBarContainer}
+                  key={index}
+                  style={{
+                    backgroundColor:
+                      currentSectionIndex === index ? '#377CF6' : '',
+                  }}
+                  onClick={() => handleSectionIndex(index)}
+                >
+                  <p
+                    className={
+                      styles.adderssPageMainPart_leftBarContainer_heading
+                    }
+                    style={{
+                      color: currentSectionIndex === index ? '#FFFFFF' : '',
+                    }}
+                  >
+                    {bar.text}
                   </p>
-                  <FiPlus
-                    className={styles.adderssPageMainPart_increment}
-                    onClick={() => handleIncrement(index)}
-                  />
+                  <div
+                    className={
+                      styles.adderssPageMainPart_leftBarContainer_right
+                    }
+                  >
+                    <p
+                      className={
+                        styles.adderssPageMainPart_leftBarContainer_staticText
+                      }
+                      style={{
+                        color: currentSectionIndex === index ? '#FFFFFF' : '',
+                      }}
+                    >
+                      Total cost
+                    </p>
+                    <p
+                      className={
+                        styles.adderssPageMainPart_leftBarContainer_price
+                      }
+                      style={{
+                        color: currentSectionIndex === index ? '#FFFFFF' : '',
+                      }}
+                    >
+                      $ {price[index]}
+                    </p>
+                  </div>
                 </div>
-                <p className={styles.adderssPageMainPart_price}>$ {obj.cost}</p>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-    </div>:<div style={{ display: 'flex', justifyContent: 'center' ,height:"70vh"  }}>
-          <DataNotFound />
-        </div>}
-    </div>
 
+            <div className={styles.adderssPageMainPart_Right}>
+              {changeInQuantity && (
+                <div className={styles.editing}>
+                  <p className={styles.editingPara}>Save Changes</p>
+                  <div className={style2.gSecHeaderBtn}>
+                    <div
+                      className={style2.editUser}
+                      onClick={crossAdderHandler}
+                    >
+                      <MdClose color="#434343" />
+                    </div>
+                    <div
+                      className={style2.editUserDone}
+                      onClick={updateAdderHandler}
+                    >
+                      <MdDone color="white" />
+                    </div>
+                  </div>
+                </div>
+              )}
+              {currentItems.map((obj, index) => (
+                <div
+                  className={styles.adderssPageMainPart_rightBarContainer}
+                  key={index}
+                >
+                  <p
+                    className={
+                      styles.adderssPageMainPart_rightBarContainer_heading
+                    }
+                  >
+                    {obj.name}
+                  </p>
+                  <div className={styles.adderssPageMainPart_rightContainer}>
+                    <div
+                      className={styles.adderssPageMainPart_expressionContainer}
+                    >
+                      <FiMinus
+                        className={styles.adderssPageMainPart_decrement}
+                        onClick={() => handleDecrement(index)}
+                      />
+                      <p className={styles.adderssPageMainPart_text}>
+                        {values[currentSectionIndex][index]
+                          ? values[currentSectionIndex][index]
+                          : 0}
+                      </p>
+                      <FiPlus
+                        className={styles.adderssPageMainPart_increment}
+                        onClick={() => handleIncrement(index)}
+                      />
+                    </div>
+                    <p className={styles.adderssPageMainPart_price}>
+                      $ {obj.cost}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          style={{ display: 'flex', justifyContent: 'center', height: '70vh' }}
+        >
+          <DataNotFound />
+        </div>
+      )}
+    </div>
   );
 }
 
