@@ -115,12 +115,12 @@ const Summary_Dashboard = () => {
     ];
     const amData: Option[] = res?.data?.account_manager
       ? [
-          { label: 'OWE', value: 'All' },
-          ...(res.data.account_manager as string[]).map((state) => ({
-            label: state,
-            value: state,
-          })),
-        ]
+        { label: 'OWE', value: 'All' },
+        ...(res.data.account_manager as string[]).map((state) => ({
+          label: state,
+          value: state,
+        })),
+      ]
       : [{ label: 'OWE', value: 'All' }];
     setAM(amData);
     setDrop(false);
@@ -252,6 +252,10 @@ const Summary_Dashboard = () => {
       label: 'Batteries Installed',
       value: 'batteries_ct',
     },
+    {
+      label: 'NTP',
+      value: 'ntp',
+    },
   ];
   const [datas, setDatas] = useState<Option>({
     label: 'Projects Sold',
@@ -328,6 +332,7 @@ const Summary_Dashboard = () => {
     'Install Ct',
     'mW Installed',
     'Batteries Installed',
+    'ntp'
   ];
 
   return (
@@ -642,13 +647,19 @@ const Summary_Dashboard = () => {
                     </div>
                     <div
                       className={`${classes.bottom_box_button} ${activeButton === 'batteries_ct' ? classes.active : ''}`}
+                      onClick={() => handleButtonClick('batteries_ct')}
+                    >
+                      Batteries Installed
+                    </div>
+                    <div
+                      className={`${classes.bottom_box_button} ${activeButton === 'ntp' ? classes.active : ''}`}
                       style={{
                         borderBottomRightRadius: '10px',
                         borderTopRightRadius: '10px',
                       }}
-                      onClick={() => handleButtonClick('batteries_ct')}
+                      onClick={() => handleButtonClick('ntp')}
                     >
-                      Batteries Installed
+                      NTP
                     </div>
                   </div>
                 ) : (
