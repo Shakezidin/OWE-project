@@ -7,6 +7,8 @@ import { ICONS } from '../../../resources/icons/Icons';
 import styles from '../styles/GeneralPage.module.css';
 import { current } from '@reduxjs/toolkit';
 import DataNotFound from '../../components/loader/DataNotFound';
+import { useAppDispatch } from '../../../redux/hooks';
+import { updateDatTool } from '../../../redux/apiActions/DatToolAction/datToolAction';
 interface GeneralData {
   project_name: string;
   project_id: string;
@@ -46,17 +48,31 @@ interface GeneralData {
 interface commonComponentProps {
   generalData:GeneralData| null;
   loading:boolean;
+  currentGeneralId:string;
 }
-const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading}) => {
+const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,currentGeneralId}) => {
       
   const handleClick = (index: number): void => setActiveIndex(index);
-  
+  const [address,setAddress]=useState(generalData?.project_address);
+  const [phoneNumber,setPhoneNumber]=useState(generalData?.phone_number);
+  const [emailId,setEmailId]=useState(generalData?.email_id);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState<number>(0);
  
-  
+  const dispatch = useAppDispatch();
   const handleEdit = (): void => setIsEditing(true);
-  const handleSave = (): void => setIsEditing(false);
+  const handleSave = async(): Promise<void> => {setIsEditing(false);
+    await dispatch(updateDatTool(
+          {
+            project_id: currentGeneralId,
+            general_basics: {
+              project_address:generalData?.project_address,
+              phone_number:generalData?.phone_number,
+              email_id:generalData?.email_id,
+            }
+          }
+        ));
+  };
   const handleCancel = (): void => setIsEditing(false);
 
   
@@ -92,8 +108,23 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading}) 
     { icon: ICONS.DatTape, name: 'Tape' },
     { icon: ICONS.DatCapture, name: 'Site Capture' },
   ];
+  const valueChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, fieldType: string) => {
+    const value = e.target.value; // Get the new value from the input
   
+    if (fieldType === 'text') {
+      setAddress(value); // Assuming setAddress updates the address with the new value
+    }
+    else if (fieldType === 'tel') {
+      setPhoneNumber(value); // Updates phone number
+    }
+    else if (fieldType === 'email') {
+      setEmailId(value); // Updates email ID
+    }
+  }
+// useEffect(()=>{
+//   console.log(address," ",phoneNumber," ",emailId," ");
 
+// },[address,emailId,phoneNumber]);
   return (
     <div> {loading ? <div> </div> : generalData ? <div className={`${styles.genOneCont}`}>
     <div className={styles.genOneLeft}>
@@ -125,9 +156,10 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading}) 
         </div>
         <div className={styles.gOneHeaderDesc}>
           {[
-            { type: 'text', value: generalData?.project_address },
-            { type: 'tel', value: generalData?.phone_number },
-            { type: 'email', value: generalData?.email_id },
+           
+              { type: 'text', value: address, onChange: (e: React.ChangeEvent<HTMLInputElement>) => valueChangeHandler(e, 'text') },
+              { type: 'tel', value: phoneNumber, onChange: (e: React.ChangeEvent<HTMLInputElement>) => valueChangeHandler(e, 'tel') },
+              { type: 'email', value: emailId, onChange: (e: React.ChangeEvent<HTMLInputElement>) => valueChangeHandler(e, 'email') },
           ].map((input, index) => (
             <input
               key={index}

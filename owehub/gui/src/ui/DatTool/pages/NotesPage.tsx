@@ -4,7 +4,7 @@ import { ICONS } from '../../../resources/icons/Icons';
 import { format } from 'date-fns';
 import CommonComponent from './CommonComponent';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { getNotesInfo } from '../../../redux/apiActions/DatToolAction/datToolAction';
+import { getNotesInfo, updateDatTool } from '../../../redux/apiActions/DatToolAction/datToolAction';
 import DataNotFound from '../../components/loader/DataNotFound';
 import MicroLoader from '../../components/loader/MicroLoader';
 import { time } from 'console';
@@ -84,10 +84,10 @@ const NotePage = ({ currentGeneralId }: any) => {
     setSelectedCategory(category);
   };
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
     if (newNote.trim()) {
       const now = new Date();
-      const formattedTime = format(now, 'dd MMM yyyy hh:mm a');
+      const formattedTime = new Date().toISOString();
       setNotes([
         ...notes,
         {
@@ -96,6 +96,10 @@ const NotePage = ({ currentGeneralId }: any) => {
           timestamp: formattedTime
         }
       ]);
+      await dispatch(updateDatTool(
+              {project_id: currentGeneralId,notes_values : {title:selectedCategory,description: [{note:newNote,created_at:formattedTime}]}  }
+            ));
+      
       setNewNote('');
     }
   };
