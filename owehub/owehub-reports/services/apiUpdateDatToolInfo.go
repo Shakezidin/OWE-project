@@ -285,21 +285,24 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	/////// ADDER VALUES /////////////////////////////////////////////////////////////////////////////////
 	if dataReq.AdderValues != nil {
-		// if len(dataReq.AdderValues.CategoryTitle) > 0 {
-		// 	whereEleList = append(whereEleList, dataReq.AdderValues.CategoryTitle)
-		// 	updateFields = append(updateFields, fmt.Sprintf("category_title = $%d", len(whereEleList)))
-		// }
+		// Loop through each component update
+		for _, componentUpdate := range dataReq.AdderValues.ComponentUpdates {
+			// Check if NewQuantity is greater than 0
+			if componentUpdate.NewQuantity > 0 {
+				// Append the new quantity for this component to the whereEleList
+				whereEleList = append(whereEleList, componentUpdate.NewQuantity)
 
-		// if len(dataReq.AdderValues.ComponentName) > 0 {
-		// 	whereEleList = append(whereEleList, dataReq.AdderValues.ComponentName)
-		// 	updateFields = append(updateFields, fmt.Sprintf("component_name = $%d", len(whereEleList)))
-		// }
+				// Add the corresponding SQL update field for this component's quantity
+				updateFields = append(updateFields, fmt.Sprintf("quantity = $%d", len(whereEleList)))
 
-		if dataReq.AdderValues.NewQuantity > 0 {
-			whereEleList = append(whereEleList, dataReq.AdderValues.NewQuantity)
-			updateFields = append(updateFields, fmt.Sprintf("quantity = $%d", len(whereEleList)))
+				// If you want to track the component name as well, you can append it as needed
+				// Append the component name to the whereEleList (if needed for your SQL condition)
+				// whereEleList = append(whereEleList, componentUpdate.ComponentName)
+
+				// // Add the corresponding SQL update field for the component name
+				// updateFields = append(updateFields, fmt.Sprintf("component_name = $%d", len(whereEleList)))
+			}
 		}
-
 		// calculate total cost and save it in database
 		// update total adders value in database
 	}
