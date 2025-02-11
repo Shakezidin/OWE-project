@@ -105,7 +105,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
-	// Populate the response items
+	// Populate the response items.
 	for _, item := range data {
 		month, ok := item["month"].(string)
 		if !ok {
