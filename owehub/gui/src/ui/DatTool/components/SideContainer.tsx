@@ -174,7 +174,7 @@ const SideContainer: React.FC<SideContainerProps> = ({
 
       
         
-      {isMobile &&  <DropDownContainer loading={loading} mappedDataList={mappedDataList} currentGeneralId={currentGeneralId} isDataEmpty={isDataEmpty} handleClick={handleClick} setCurrentGeneralId={setCurrentGeneralId} numFlagRef={numFlagRef} data={data} showMore={showMore} setShowMore={setShowMore}/>}
+      {isMobile &&  <DropDownContainer loading={loading} mappedDataList={mappedDataList} currentGeneralId={currentGeneralId} isDataEmpty={isDataEmpty} handleClick={handleClick} setCurrentGeneralId={setCurrentGeneralId} numFlagRef={numFlagRef} data={data} showMore={showMore} setShowMore={setShowMore} setSearchPara={setSearchPara}/>}
       </div>
  );
 };

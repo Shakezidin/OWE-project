@@ -99,3 +99,10 @@
     color: #fff !important;
   }
 
+
+  @media (max-width:450px)
+  {
+    .menuItems{
+      display: none;
+    }
+  }
