@@ -24,6 +24,7 @@ type GetProjectListResponse struct {
 // models for tab general info
 type GetTabGeneralInfoRequest struct {
 	ProjectId string `json:"project_id"`
+	Id        string `json:"id"`
 }
 
 type GetTabGeneralInfoResponse struct {
