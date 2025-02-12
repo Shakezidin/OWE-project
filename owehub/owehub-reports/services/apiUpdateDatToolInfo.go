@@ -356,7 +356,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 			updateFields = append(updateFields, fmt.Sprintf("required_backfeed = $%d", len(whereEleList)))
 		}
 	}
-	if dataReq.ElectricalEquipmentInfo != nil {
+	if dataReq.ElectricalSystemInfo != nil {
 		///////// SYSTEM INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.ElectricalSystemInfo.SystemPhase) > 0 {
 			whereEleList = append(whereEleList, dataReq.ElectricalSystemInfo.SystemPhase)
@@ -383,7 +383,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 			updateFields = append(updateFields, fmt.Sprintf("meter_enclosure_type = $%d", len(whereEleList)))
 		}
 	}
-	if dataReq.ElectricalEquipmentInfo != nil {
+	if dataReq.SiteInfoRequest != nil {
 		////////// SiteInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.SiteInfoRequest.PVConductRun) > 0 {
 			whereEleList = append(whereEleList, dataReq.SiteInfoRequest.PVConductRun)
