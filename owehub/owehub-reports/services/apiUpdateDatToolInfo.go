@@ -115,12 +115,28 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATSysteSizeDC)
 			updateFields = append(updateFields, fmt.Sprintf("dat_system_size_dc = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralDatInformation.DATChanges) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATChanges)
+		if len(dataReq.GeneralDatInformation.DATInverterType) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATInverterType)
+			updateFields = append(updateFields, fmt.Sprintf("dat_inverter_type = $%d", len(whereEleList)))
+		}
+		if len(dataReq.GeneralDatInformation.DATBatteryType) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATBatteryType)
+			updateFields = append(updateFields, fmt.Sprintf("dat_battery_type = $%d", len(whereEleList)))
+		}
+		if len(dataReq.GeneralDatInformation.DATSiteCaptureUrl) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATSiteCaptureUrl)
+			updateFields = append(updateFields, fmt.Sprintf("dat_site_capture_url = $%d", len(whereEleList)))
+		}
+		if len(dataReq.GeneralDatInformation.DATChangeLayout) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATChangeLayout)
 			updateFields = append(updateFields, fmt.Sprintf("dat_changes = $%d", len(whereEleList)))
 		}
-		if len(dataReq.GeneralDatInformation.DATChangeOrder) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATChangeOrder)
+		if len(dataReq.GeneralDatInformation.DATChangeProduction) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATChangeProduction)
+			updateFields = append(updateFields, fmt.Sprintf("dat_changes = $%d", len(whereEleList)))
+		}
+		if len(dataReq.GeneralDatInformation.DATChangeOrderRequired) > 0 {
+			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATChangeOrderRequired)
 			updateFields = append(updateFields, fmt.Sprintf("dat_change_order = $%d", len(whereEleList)))
 		}
 	}
@@ -340,7 +356,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 			updateFields = append(updateFields, fmt.Sprintf("required_backfeed = $%d", len(whereEleList)))
 		}
 	}
-	if dataReq.ElectricalEquipmentInfo != nil {
+	if dataReq.ElectricalSystemInfo != nil {
 		///////// SYSTEM INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.ElectricalSystemInfo.SystemPhase) > 0 {
 			whereEleList = append(whereEleList, dataReq.ElectricalSystemInfo.SystemPhase)
@@ -367,7 +383,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 			updateFields = append(updateFields, fmt.Sprintf("meter_enclosure_type = $%d", len(whereEleList)))
 		}
 	}
-	if dataReq.ElectricalEquipmentInfo != nil {
+	if dataReq.SiteInfoRequest != nil {
 		////////// SiteInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.SiteInfoRequest.PVConductRun) > 0 {
 			whereEleList = append(whereEleList, dataReq.SiteInfoRequest.PVConductRun)
