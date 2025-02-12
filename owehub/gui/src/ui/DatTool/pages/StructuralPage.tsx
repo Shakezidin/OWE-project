@@ -2,22 +2,24 @@ import React, { useEffect, useState } from 'react';
 import styles from '../styles/StructuralPage.module.css';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { IoMdAdd, IoMdCheckmark } from 'react-icons/io';
-import Select from '../components/Select';
-import DisplaySelect from '../components/DisplaySelect';
 import { HiMiniXMark } from 'react-icons/hi2';
 import { FaXmark } from 'react-icons/fa6';
-import CustomInput from '../components/Input';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import Select from '../components/Select';
+import DisplaySelect from '../components/DisplaySelect';
+import CustomInput from '../components/Input';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
   getDropdownList,
   getStructuralInfo,
+  updateDatTool,
 } from '../../../redux/apiActions/DatToolAction/datToolAction';
 import s3Upload from '../../../utiles/s3Upload';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { toast } from 'react-toastify';
 
+// Types remain the same as in your original code...
 type Option = {
   value: string | number;
   label: string;
@@ -35,13 +37,13 @@ type S3Response = {
   status: number;
 };
 
-interface StructuralData {
+interface MPStructuralInfo {
   structure: string;
   roof_type: string;
   sheathing_type: string;
   framing_size: string;
-  framing_type_1: string;
-  framing_type_2: string;
+  structural_roof_material: string;
+  framing_type: string;
   framing_spacing: number;
   attachment: string;
   racking: string;
@@ -50,6 +52,12 @@ interface StructuralData {
   structural_upgrades: string;
   gm_support_type: string;
   reroof_required: string;
+}
+
+interface StructuralData {
+  structural_info: {
+    [key: string]: MPStructuralInfo;
+  };
   quantity: number;
   pitch: number;
   area_sqft: string;
@@ -68,7 +76,7 @@ interface StructuralData {
   racking_max_rail_cantilever: string;
   roof_framing_type: string;
   roof_size: string;
-  roof_spacing: number;
+  roof_spacing: string;
   roof_sheathing_type: string;
   roof_material: string;
   roof_structural_upgrade: string;
@@ -79,8 +87,8 @@ interface DropdownListData {
   roof_type: string[];
   sheathing_type: string[];
   framing_size: string[];
-  framing_type_1: string[];
-  framing_type_2: string[];
+  roof_material: string[];
+  framing_type: string[];
   framing_spacing: string[];
   attachment: string[];
   racking: string[];
@@ -118,8 +126,8 @@ const selectFieldsBySection: SelectFieldsSections = {
     roof_type: true,
     sheathing_type: true,
     framing_size: true,
-    framing_type_1: true,
-    framing_type_2: true,
+    roof_material: true,
+    framing_type: true,
     framing_spacing: true,
     attachment: true,
     racking: true,
@@ -148,26 +156,13 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     (state) => state.datSlice.dropdownListData
   ) as DropdownListData;
 
-  const getDropdownFields = (section: keyof SelectFieldsSections): string[] => {
-    return Object.keys(selectFieldsBySection[section]);
-  };
-  useEffect(() => {
-    dispatch(getStructuralInfo({ project_id: currentGeneralId }));
-    dispatch(
-      getDropdownList({
-        drop_down_list: [
-          ...getDropdownFields('structuralInfo'),
-          ...getDropdownFields('attachment'),
-          ...getDropdownFields('racking')
-        ]
-      })
-    );
-  }, [currentGeneralId, dispatch]);
-
-  const [editStructuralInfo, setEditStructuralInfo] = useState(false);
-  const [editAttachment, setEditAttachment] = useState(false);
-  const [editRacking, setEditRacking] = useState(false);
-  const [editRoofStructure, setEditRoofStructure] = useState(false);
+  // State Management
+  const [editStates, setEditStates] = useState({
+    structuralInfo: false,
+    attachment: false,
+    racking: false,
+    roofStructure: false,
+  });
   const [selectedValues, setSelectedValues] = useState<
     Record<string, string | number>
   >({});
@@ -176,148 +171,257 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
   >({});
   const [uploadedImages, setUploadedImages] = useState<any[]>([]);
   const [viewerImage, setViewerImage] = useState<string>('');
-  const [structuralInfoStates, setStructuralInfoStates] = useState<string[]>([
-    'MP1',
-  ]);
-  const [activeStructuralState, setActiveStructuralState] = useState<string>(
-    'MP1'
+  const [structuralInfoStates, setStructuralInfoStates] = useState<string[]>(
+    []
   );
+  const [activeStructuralState, setActiveStructuralState] =
+    useState<string>('');
+  const [mpData, setMpData] = useState<Record<string, any>>({});
   const [isUploading, setIsUploading] = useState(false);
 
-  const getChangedValues = (
-    oldValues: Record<string, string | number>,
-    newValues: Record<string, string | number>
+  useEffect(() => {
+    const initializeData = () => {
+      dispatch(getStructuralInfo({ project_id: currentGeneralId }));
+      dispatch(
+        getDropdownList({
+          drop_down_list: [
+            ...Object.keys(selectFieldsBySection.structuralInfo),
+            ...Object.keys(selectFieldsBySection.attachment),
+            ...Object.keys(selectFieldsBySection.racking),
+          ],
+        })
+      );
+    };
+
+    initializeData();
+  }, [currentGeneralId, dispatch]);
+
+  useEffect(() => {
+    if (structuralData?.structural_info) {
+      const mpKeys = Object.keys(structuralData.structural_info);
+      setStructuralInfoStates(mpKeys);
+      setActiveStructuralState(mpKeys[0]);
+      setMpData(structuralData.structural_info);
+
+      const initialMpData = structuralData.structural_info[mpKeys[0]];
+      setSelectedValues({
+        ...initialMpData,
+        quantity: structuralData.quantity,
+        pitch: structuralData.pitch,
+        area_sqft: structuralData.area_sqft,
+      });
+    }
+  }, [structuralData]);
+
+  const handleUpdate = async (
+    section: string,
+    newValues: Record<string, any>
   ) => {
-    const changedValues: Record<
-      string,
-      { old: string | number; new: string | number }
-    > = {};
-
-    Object.keys(newValues).forEach((key) => {
-      if (newValues[key] !== oldValues[key]) {
-        changedValues[key] = {
-          old: oldValues[key],
-          new: newValues[key],
+    try {
+      let payload: Record<string, any> = {
+        project_id: currentGeneralId,
+      };
+  
+      // Validate the data
+      if (section === 'structural_info') {
+        if (!mpData[activeStructuralState]) {
+          toast.error('Invalid structural state data.');
+          return false;
+        }
+  
+        const modifiedFields = Object.keys(newValues).reduce((acc, key) => {
+          if (newValues[key] !== mpData[activeStructuralState]?.[key]) {
+            acc[key] = newValues[key];
+          }
+          return acc;
+        }, {} as Record<string, any>);
+  
+        if (Object.keys(modifiedFields).length === 0) {
+          toast.error('No changes detected for structural info.');
+          return false;
+        }
+  
+        payload = {
+          project_id: currentGeneralId,
+          structural_state: activeStructuralState.toLowerCase(),
+          structural_info: modifiedFields,
         };
+      } else {
+        payload[section.toLowerCase()] = newValues;
       }
-    });
-
-    return changedValues;
-  };
-
-  const getOptionsFromDropdownData = (key: string): Option[] => {
-    if (!dropdownListData || !dropdownListData[key]) {
-      return [{ value: '0', label: 'Select' }];
+  
+      const response = await dispatch(updateDatTool(payload));
+  
+      if (response?.payload?.status === 200) {
+        toast.success(`${section} Updated Successfully`);
+        return true;
+      }
+  
+      toast.error(response?.payload?.message || `Failed to update ${section}`);
+      console.error('Response:', response);
+      return false;
+    } catch (error) {
+      console.error('Update error:', error);
+      toast.error(`Failed to update ${section}`);
+      return false;
     }
-
-    return [
-      { value: '0', label: 'Select' },
-      ...dropdownListData[key].map((item) => ({
-        value: item,
-        label: item,
-      })),
-    ];
-  };
-
-
-  const toggleEditStructuralInfo = (save: boolean = false) => {
-    if (save) {
-      const changedValues = getChangedValues(
-        selectedValues,
-        tempSelectedValues
-      );
-      console.log('Structural Info Changes:', changedValues);
-      setSelectedValues({ ...selectedValues, ...tempSelectedValues });
-    } else {
-      setTempSelectedValues({ ...selectedValues });
-    }
-    setEditStructuralInfo(!editStructuralInfo);
   };
   
-  const toggleEditAttachment = (save: boolean = false) => {
-    if (save) {
-      const changedValues = getChangedValues(
-        selectedValues,
-        tempSelectedValues
-      );
-      console.log('Attachment Changes:', changedValues);
-      setSelectedValues({ ...selectedValues, ...tempSelectedValues });
-    } else {
-      setTempSelectedValues({ ...selectedValues });
-    }
-    setEditAttachment(!editAttachment);
-  };
   
-  const toggleEditRacking = (save: boolean = false) => {
+  const toggleEditState = async (
+    stateName: keyof typeof editStates,
+    save: boolean = false
+  ) => {
     if (save) {
-      const changedValues = getChangedValues(
-        selectedValues,
-        tempSelectedValues
-      );
-      console.log('Racking Changes:', changedValues);
-      setSelectedValues({ ...selectedValues, ...tempSelectedValues });
-    } else {
-      setTempSelectedValues({ ...selectedValues });
-    }
-    setEditRacking(!editRacking);
-  };
+      let success = false;
+      const updates = { ...tempSelectedValues };
+      
+      switch (stateName) {
+        case 'structuralInfo':
+          // Map field names appropriately and convert types
+          const modifiedFields = Object.keys(updates).reduce((acc, key) => {
+            // Skip if value hasn't changed
+            if (updates[key] === mpData[activeStructuralState]?.[key]) {
+              return acc;
+            }
+            
+            // Special field name mapping
+            if (key === 'roof_material') {
+              acc['structural_roof_material'] = updates[key];
+            } 
+            // Handle framing_spacing conversion to integer
+            else if (key === 'framing_spacing') {
+              const spacing = typeof updates[key] === 'string' 
+                ? parseInt(updates[key] as string, 10) 
+                : Number(updates[key]);
+              
+              if (!isNaN(spacing)) {
+                acc[key] = spacing;
+              }
+            }
+            else {
+              acc[key] = updates[key];
+            }
+            
+            return acc;
+          }, {} as Record<string, any>);
+        
+          if (Object.keys(modifiedFields).length > 0) {
+            success = await handleUpdate('structural_info', modifiedFields);
+            if (success) {
+              setMpData(prev => {
+                // Create a copy of the current MP data
+                const prevMpData = prev[activeStructuralState] || {};
+                
+                // Build updated MP data with proper field mapping
+                const updatedMpData = { ...prevMpData };
+                
+                // Handle special case for roof material
+                if ('structural_roof_material' in modifiedFields) {
+                  updatedMpData.structural_roof_material = modifiedFields.structural_roof_material;
+                }
+                
+                // Add all other modified fields
+                Object.entries(modifiedFields)
+                  .filter(([k]) => k !== 'structural_roof_material')
+                  .forEach(([k, v]) => {
+                    updatedMpData[k] = v;
+                  });
+                
+                return {
+                  ...prev,
+                  [activeStructuralState]: updatedMpData
+                };
+              });
+            }
+          } else {
+            success = true;
+          }
+          break;
   
-  const toggleEditRoofStructure = (save: boolean = false) => {
-    if (save) {
-      const changedValues = getChangedValues(
-        selectedValues,
-        tempSelectedValues
-      );
-      console.log('Roof Structure Changes:', changedValues);
-      setSelectedValues({ ...selectedValues, ...tempSelectedValues });
-    } else {
-      setTempSelectedValues({ ...selectedValues });
+        case 'attachment':
+          success = await handleUpdate('attachment', {
+            attachment_spacing: updates.attachment_spacing,
+            attachment_type: updates.attachmentType,
+            attachment_pattern: updates.attachmentPattern,
+            attachment_quantity: Number(updates.attachmentQuantity) || 0,
+          });
+          if (success) {
+            setSelectedValues(prev => ({ ...prev, ...updates }));
+          }
+          break;
+  
+        case 'racking':
+          success = await handleUpdate('racking', {
+            racking_type: updates.rackingType,
+            racking_mount_type: updates.racking_mount_type,
+            racking_title_info: updates.tiltInfo,
+            racking_max_rail_cantilever: updates.racking_max_rail_cantilever
+          });
+          if (success) {
+            setSelectedValues(prev => ({ ...prev, ...updates }));
+          }
+          break;
+  
+        case 'roofStructure':
+          success = await handleUpdate('roof_structure', {
+            roof_framing_type: updates.roofFramingType,
+            roof_size: updates.roofSize,
+            roof_spacing: updates.roofSpacing,
+            roof_sheathing_type: updates.roofSheathingType,
+            roof_material: updates.roofMaterial,
+            roof_structural_upgrade: updates.structuralUpgrades
+          });
+          if (success) {
+            setSelectedValues(prev => ({ ...prev, ...updates }));
+          }
+          break;
+      }
+  
+      if (!success) {
+        return;
+      }
     }
-    setEditRoofStructure(!editRoofStructure);
+  
+    setTempSelectedValues(
+      stateName === 'structuralInfo' 
+        ? mpData[activeStructuralState] || {} 
+        : { ...selectedValues }
+    );
+    
+    setEditStates(prev => ({
+      ...prev,
+      [stateName]: !prev[stateName]
+    }));
   };
 
   const handleSelectChange = (key: string, value: string | number) => {
-    // console.log(`Field "${key}" changed to:`, value);
-    setTempSelectedValues({ ...tempSelectedValues, [key]: value });
+    setTempSelectedValues((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Image Handling Functions
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setIsUploading(true);
     const files = event.target.files ? Array.from(event.target.files) : [];
-
     if (files.length + uploadedImages.length > 3) {
       toast.error('You can only upload up to 3 images.');
       return;
     }
 
+    setIsUploading(true);
     try {
-      const newImages: UploadedImage[] = [];
       const s3Client = s3Upload('/datTool-images');
-
-      for (const file of files) {
-        try {
+      const newImages = await Promise.all(
+        files.map(async (file) => {
           const timestamp = new Date().getTime();
           const uniqueFileName = `${timestamp}-${file.name}`;
+          const response = await s3Client.uploadFile(file, uniqueFileName);
+          return { file, url: response.location };
+        })
+      );
 
-          const response = (await s3Client.uploadFile(
-            file,
-            uniqueFileName
-          )) as S3Response;
-          newImages.push({
-            file,
-            url: response.location,
-          });
-        } catch (error) {
-          console.error(`Failed to upload ${file.name}:`, error);
-         toast.error(`Failed to upload ${file.name}`);
-        }
-      }
-
-      if (newImages.length > 0) {
-        setUploadedImages((prevImages) => [...prevImages, ...newImages]);
-      }
+      setUploadedImages((prev) => [...prev, ...newImages]);
     } catch (error) {
       console.error('Upload failed:', error);
       toast.error('Failed to upload images');
@@ -329,20 +433,44 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
   const handleImageRemove = async (index: number) => {
     try {
       const imageToRemove = uploadedImages[index];
-      const s3Client = s3Upload('/datTool-images'); 
-  
-      const keyToDelete = imageToRemove.url.split('/datTool-images/')[1]; 
-        await s3Client.deleteFile(keyToDelete);
-  
-      setUploadedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+      const s3Client = s3Upload('/datTool-images');
+      const keyToDelete = imageToRemove.url.split('/datTool-images/')[1];
+      await s3Client.deleteFile(keyToDelete);
+      setUploadedImages((prev) => prev.filter((_, i) => i !== index));
     } catch (error) {
       console.error('Failed to remove image:', error);
       toast.error('Failed to remove image');
     }
   };
-  
 
+  // Structural State Management
+  const addNewStructuralState = () => {
+    const lastState = structuralInfoStates[structuralInfoStates.length - 1];
+    const newStateNumber = parseInt(lastState.replace('MP', '')) + 1;
+    const newState = `MP${newStateNumber}`;
+    setStructuralInfoStates((prev) => [...prev, newState]);
+    setActiveStructuralState(newState);
+    setEditStates((prev) => ({ ...prev, structuralInfo: true }));
+  };
 
+  const handleDeleteState = (stateToDelete: string) => {
+    if (structuralInfoStates.length <= 1) return;
+
+    const updatedStates = structuralInfoStates.filter(
+      (state) => state !== stateToDelete
+    );
+    setStructuralInfoStates(updatedStates);
+
+    if (activeStructuralState === stateToDelete) {
+      setActiveStructuralState(updatedStates[updatedStates.length - 1]);
+    }
+
+    if (editStates.structuralInfo) {
+      toggleEditState('structuralInfo', false);
+    }
+  };
+
+  // Render Helper Function
   const renderComponent = (
     key: string,
     label: string,
@@ -350,11 +478,15 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     isEditable: boolean,
     type: 'select' | 'input' = 'select'
   ) => {
+    const currentMpData = mpData[activeStructuralState] || {};
+    const isMpSpecificField = Object.keys(currentMpData).includes(key);
     const currentValue = isEditable
-      ? tempSelectedValues[key] !== undefined
-        ? tempSelectedValues[key]
-        : selectedValues[key] || defaultValue
-      : selectedValues[key] || defaultValue;
+      ? (tempSelectedValues[key] ??
+        (isMpSpecificField ? currentMpData[key] : selectedValues[key]) ??
+        defaultValue)
+      : isMpSpecificField
+        ? currentMpData[key]
+        : (selectedValues[key] ?? defaultValue);
 
     if (type === 'input') {
       return isEditable ? (
@@ -371,7 +503,13 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     return isEditable ? (
       <Select
         label={label}
-        options={getOptionsFromDropdownData(key)}
+        options={[
+          { value: '0', label: 'Select' },
+          ...(dropdownListData[key] || []).map((item) => ({
+            value: item,
+            label: item,
+          })),
+        ]}
         value={currentValue}
         onChange={(value) => handleSelectChange(key, value)}
       />
@@ -379,31 +517,12 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       <DisplaySelect label={label} value={currentValue} />
     );
   };
-  const addNewStructuralState = () => {
-    const lastState = structuralInfoStates[structuralInfoStates.length - 1];
-    const newStateNumber = parseInt(lastState.replace('MP', '')) + 1;
-    const newState = `MP${newStateNumber}`;
-    setStructuralInfoStates([...structuralInfoStates, newState]);
-    setActiveStructuralState(newState);
-    setEditStructuralInfo(true);
-  };
 
-  const handleDeleteState = (stateToDelete: string) => {
-    if (structuralInfoStates.length <= 1) return;
-
-    const updatedStates = structuralInfoStates.filter(
-      (state) => state !== stateToDelete
-    );
-
-    setStructuralInfoStates(updatedStates);
-
-    if (activeStructuralState === stateToDelete) {
-      setActiveStructuralState(updatedStates[updatedStates.length - 1]);
+  const getCurrentStructuralInfo = () => {
+    if (!mpData || !activeStructuralState) {
+      return null;
     }
-
-    if (editStructuralInfo) {
-      toggleEditStructuralInfo(false);
-    }
+    return mpData[activeStructuralState];
   };
   return (
     <div>
@@ -440,8 +559,9 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                   </div>
                   <div className={styles.headingIcon}>
                     {structuralInfoStates.map((state, index) =>
-                      (editStructuralInfo && activeStructuralState === state) ||
-                      !editStructuralInfo ? (
+                      (editStates.structuralInfo &&
+                        activeStructuralState === state) ||
+                      !editStates.structuralInfo ? (
                         <div
                           key={index}
                           className={`${
@@ -459,7 +579,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                     <div
                       className={styles.iconContainer}
                       onClick={() => {
-                        if (editStructuralInfo) {
+                        if (editStates.structuralInfo) {
                           if (
                             activeStructuralState ===
                             structuralInfoStates[
@@ -472,32 +592,31 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                               newStates[newStates.length - 1]
                             );
                           }
-                          toggleEditStructuralInfo(false);
+                          toggleEditState('structuralInfo', false); // updated function call
                         } else {
                           addNewStructuralState();
                         }
                       }}
                     >
-                      {editStructuralInfo ? <HiMiniXMark /> : <IoMdAdd />}
+                      {editStates.structuralInfo ? (
+                        <HiMiniXMark />
+                      ) : (
+                        <IoMdAdd />
+                      )}
                     </div>
 
                     <div
-                      className={`${
-                        editStructuralInfo
-                          ? styles.active
-                          : styles.iconContainer
-                      }`}
-                      onClick={() =>
-                        editStructuralInfo
-                          ? toggleEditStructuralInfo(true)
-                          : toggleEditStructuralInfo()
-                      }
-                      style={{ cursor: 'pointer' }}
+                      className={`${editStates.structuralInfo ? styles.active : styles.iconContainer}`}
+                      onClick={() => {
+                        if (editStates.structuralInfo) {
+                          toggleEditState('structuralInfo', true);
+                        } else {
+                          toggleEditState('structuralInfo');
+                        }
+                      }}
                     >
-                      {editStructuralInfo ? (
-                        <IoMdCheckmark
-                          onClick={() => toggleEditStructuralInfo(true)}
-                        />
+                      {editStates.structuralInfo ? (
+                        <IoMdCheckmark />
                       ) : (
                         <AiOutlineEdit />
                       )}
@@ -519,55 +638,47 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                   {renderComponent(
                     'structure',
                     'Structure',
-                    structuralData?.structure || 'N/A',
-                    editStructuralInfo
+                    getCurrentStructuralInfo()?.structure || 'N/A',
+                    editStates.structuralInfo // updated here
                   )}
 
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(2, 1fr)',
-                      gridTemplateRows: 'repeat(3, auto)',
-                      columnGap: '15px',
-                      rowGap: '15px',
-                      marginTop: '15px',
-                    }}
-                  >
+                  <div className={styles.structuralGrid}>
                     {renderComponent(
                       'roof_type',
                       'Roof Type',
-                      structuralData?.roof_type || 'N/A',
-                      editStructuralInfo
+                      getCurrentStructuralInfo()?.roof_type || 'N/A',
+                      editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
-                      'framing_type_1',
+                      'roof_material',
                       'Roof Material',
-                      structuralData?.roof_material || 'N/A',
-                      editStructuralInfo
+                      getCurrentStructuralInfo()?.structural_roof_material ||
+                        'N/A',
+                      editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'sheathing_type',
-                      'Sheating Type',
-                      structuralData?.sheathing_type || 'N/A',
-                      editStructuralInfo
+                      'Sheathing Type',
+                      getCurrentStructuralInfo()?.sheathing_type || 'N/A',
+                      editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
-                      'framing_type_2',
+                      'framing_type',
                       'Framing Type',
-                      structuralData?.framing_type_2 || 'N/A',
-                      editStructuralInfo
+                      getCurrentStructuralInfo()?.framing_type || 'N/A',
+                      editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'framing_size',
                       'Framing Size',
-                      structuralData?.framing_size || 'N/A',
-                      editStructuralInfo
+                      getCurrentStructuralInfo()?.framing_size || 'N/A',
+                      editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'framing_spacing',
                       'Framing Spacing',
-                      structuralData?.framing_spacing || 'N/A',
-                      editStructuralInfo
+                      getCurrentStructuralInfo()?.framing_spacing || 'N/A',
+                      editStates.structuralInfo // updated here
                     )}
                   </div>
                 </div>
@@ -578,54 +689,48 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                     {renderComponent(
                       'attachment',
                       'Attachment',
-                      structuralData?.attachment || 'N/A',
-                      editStructuralInfo
+                      getCurrentStructuralInfo()?.attachment || 'N/A',
+                      editStates.structuralInfo // updated here
                     )}
+
                     {renderComponent(
                       'racking',
                       'Racking',
-                      structuralData?.racking || 'N/A',
-                      editStructuralInfo
+                      getCurrentStructuralInfo()?.racking || 'N/A',
+                      editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'pattern',
                       'Pattern',
-                      structuralData?.pattern || 'N/A',
-                      editStructuralInfo
+                      getCurrentStructuralInfo()?.pattern || 'N/A',
+                      editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'mount',
                       'Mount',
-                      structuralData?.mount || 'N/A',
-                      editStructuralInfo
+                      getCurrentStructuralInfo()?.mount || 'N/A',
+                      editStates.structuralInfo // updated here
                     )}
                   </div>
                 </div>
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(2, 1fr)',
-                    gridTemplateRows: 'repeat(3, auto)',
-                    gap: '15px',
-                  }}
-                >
+                <div className={styles.structuralGridLast}>
                   {renderComponent(
                     'structural_upgrades',
                     'Structural Upgrades',
-                    structuralData?.structural_upgrades || 'N/A',
-                    editStructuralInfo
+                    getCurrentStructuralInfo()?.structural_upgrades || 'N/A',
+                    editStates.structuralInfo // updated here
                   )}
                   {renderComponent(
                     'reroof_required',
                     'Reroof Required',
-                    structuralData?.reroof_required || 'N/A',
-                    editStructuralInfo
+                    getCurrentStructuralInfo()?.reroof_required || 'N/A',
+                    editStates.structuralInfo // updated here
                   )}
                   {renderComponent(
                     'gm_support_type',
                     'Gm Support Type',
-                    structuralData?.gm_support_type || 'N/A',
-                    editStructuralInfo
+                    getCurrentStructuralInfo()?.gm_support_type || 'N/A',
+                    editStates.structuralInfo // updated here
                   )}
                 </div>
               </div>
@@ -693,27 +798,26 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                   <div className={styles.attachmentHeader}>
                     <p>Attachment</p>
                     <div className={styles.buttonContainer}>
-                      {editAttachment ? (
+                      {editStates.attachment ? (
                         <div
-                          onClick={() => toggleEditAttachment(false)}
+                          onClick={() => toggleEditState('attachment', false)} // updated function call
                           className={styles.iconContainer}
                         >
                           <HiMiniXMark />
                         </div>
                       ) : null}
                       <div
-                        className={` ${editAttachment ? styles.active : styles.iconContainer}`}
-                        onClick={() =>
-                          editAttachment
-                            ? toggleEditAttachment(true)
-                            : toggleEditAttachment()
-                        }
-                        style={{ cursor: 'pointer' }}
+                        className={`${editStates.attachment ? styles.active : styles.iconContainer}`}
+                        onClick={() => {
+                          if (editStates.attachment) {
+                            toggleEditState('attachment', true);
+                          } else {
+                            toggleEditState('attachment');
+                          }
+                        }}
                       >
-                        {editAttachment ? (
-                          <IoMdCheckmark
-                            onClick={() => toggleEditAttachment(true)}
-                          />
+                        {editStates.attachment ? (
+                          <IoMdCheckmark />
                         ) : (
                           <AiOutlineEdit />
                         )}
@@ -726,28 +830,28 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                         'attachmentType',
                         'Type',
                         structuralData?.attachment_type || 'N/A',
-                        editAttachment,
+                        editStates.attachment, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'attachmentPattern',
                         'Pattern',
                         structuralData?.attachment_pattern || 'N/A',
-                        editAttachment,
+                        editStates.attachment, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'attachmentQuantity',
                         'Quantity',
                         structuralData?.attachment_quantity || 'N/A',
-                        editAttachment,
+                        editStates.attachment, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'attachment_spacing',
                         'Spacing',
                         structuralData?.attachment_spacing || 'N/A',
-                        editAttachment
+                        editStates.attachment // updated here
                       )}
                     </div>
                   </div>
@@ -756,26 +860,25 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                   <div className={styles.attachmentHeader}>
                     <p>Racking</p>
                     <div className={styles.buttonContainer}>
-                      {editRacking ? (
+                      {editStates.racking ? (
                         <div className={styles.iconContainer}>
                           <HiMiniXMark
-                            onClick={() => toggleEditRacking(false)}
+                            onClick={() => toggleEditState('racking', false)} // updated function call
                           />
                         </div>
                       ) : null}
                       <div
-                        className={` ${editRacking ? styles.active : styles.iconContainer}`}
-                        onClick={() =>
-                          editRacking
-                            ? toggleEditRacking(true)
-                            : toggleEditRacking()
-                        }
-                        style={{ cursor: 'pointer' }}
+                        className={`${editStates.racking ? styles.active : styles.iconContainer}`}
+                        onClick={() => {
+                          if (editStates.racking) {
+                            toggleEditState('racking', true);
+                          } else {
+                            toggleEditState('racking');
+                          }
+                        }}
                       >
-                        {editRacking ? (
-                          <IoMdCheckmark
-                            onClick={() => toggleEditRacking(true)}
-                          />
+                        {editStates.racking ? (
+                          <IoMdCheckmark />
                         ) : (
                           <AiOutlineEdit />
                         )}
@@ -788,27 +891,27 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                         'rackingType',
                         'Type',
                         structuralData?.racking_type || 'N/A',
-                        editRacking,
+                        editStates.racking, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'racking_mount_type',
                         'Mount',
                         structuralData?.racking_mount_type || 'N/A',
-                        editRacking
+                        editStates.racking // updated here
                       )}
                       {renderComponent(
                         'tiltInfo',
                         'Tilt Info',
                         structuralData?.racking_title_info || 'N/A',
-                        editRacking,
+                        editStates.racking, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'racking_max_rail_cantilever',
                         'Max Rail Cantilever',
                         structuralData?.racking_max_rail_cantilever || 'N/A',
-                        editRacking
+                        editStates.racking // updated here
                       )}
                     </div>
                   </div>
@@ -817,26 +920,27 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                   <div className={styles.attachmentHeader}>
                     <p>Roof Structure</p>
                     <div className={styles.buttonContainer}>
-                      {editRoofStructure ? (
+                      {editStates.roofStructure ? (
                         <div className={styles.iconContainer}>
                           <HiMiniXMark
-                            onClick={() => toggleEditRoofStructure(false)}
+                            onClick={() =>
+                              toggleEditState('roofStructure', false)
+                            } // updated function call
                           />
                         </div>
                       ) : null}
                       <div
-                        className={` ${editRoofStructure ? styles.active : styles.iconContainer}`}
-                        onClick={() =>
-                          editRoofStructure
-                            ? toggleEditRoofStructure(true)
-                            : toggleEditRoofStructure()
-                        }
-                        style={{ cursor: 'pointer' }}
+                        className={`${editStates.roofStructure ? styles.active : styles.iconContainer}`}
+                        onClick={() => {
+                          if (editStates.roofStructure) {
+                            toggleEditState('roofStructure', true);
+                          } else {
+                            toggleEditState('roofStructure');
+                          }
+                        }}
                       >
-                        {editRoofStructure ? (
-                          <IoMdCheckmark
-                            onClick={() => toggleEditRoofStructure(true)}
-                          />
+                        {editStates.roofStructure ? (
+                          <IoMdCheckmark />
                         ) : (
                           <AiOutlineEdit />
                         )}
@@ -849,42 +953,42 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                         'roofFramingType',
                         'Framing Type',
                         structuralData?.roof_framing_type || 'N/A',
-                        editRoofStructure,
+                        editStates.roofStructure, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'roofSize',
                         'Size',
                         structuralData?.roof_size || 'N/A',
-                        editRoofStructure,
+                        editStates.roofStructure, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'roofSpacing',
                         'Spacing',
                         structuralData?.roof_spacing || 'N/A',
-                        editRoofStructure,
+                        editStates.roofStructure, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'roofSheathingType',
                         'Sheathing type',
                         structuralData?.roof_sheathing_type || 'N/A',
-                        editRoofStructure,
+                        editStates.roofStructure, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'roofMaterial',
                         'Roof Material',
                         structuralData?.roof_material || 'N/A',
-                        editRoofStructure,
+                        editStates.roofStructure, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'structuralUpgrades',
                         'Structural upgrades',
                         structuralData?.roof_structural_upgrade || 'N/A',
-                        editRoofStructure,
+                        editStates.roofStructure, // updated here
                         'input'
                       )}
                     </div>
@@ -977,7 +1081,9 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
           </div>
         </div>
       ) : (
-        <div style={{ display: 'flex', justifyContent: 'center',height:"70vh"  }}>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', height: '70vh' }}
+        >
           <DataNotFound />
         </div>
       )}
