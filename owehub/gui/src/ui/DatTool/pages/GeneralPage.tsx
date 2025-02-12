@@ -152,10 +152,10 @@ const GeneralPage: React.FC<generalProps> = ({ generalData, loading, currentGene
         datDesignVersion: datRightFields[0].value,
         datDesignerName:datRightFields[1].value,
         datAuroraID: datRightFields[2].value,
-        datSystemSizeAc: "",
-        datSystemSizeDc: "",
+        datSystemSizeAC: "---",
+        datSystemSizeDC: "---",
         datChanges: "",
-        datChangeOrderRequired: datRightFields[4].value
+        datChangeOrderRequired: datRightFields[4].value,
   });
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, label: string) => {
     const { value } = e.target;
@@ -186,17 +186,19 @@ const GeneralPage: React.FC<generalProps> = ({ generalData, loading, currentGene
         case 'Aurora ID':
           updatedState.datAuroraID = value;
           break;
-        // case 'System Size AC':
-        //   updatedState.datSystemSizeAc = value;
-        //   break;
-        // case 'System Size DC':
-        //   updatedState.datSystemSizeDc = value;
-        //   break;
+        case 'AC':
+          updatedState.datSystemSizeAC = value;
+          console.log(updatedState.datSystemSizeAC,"updatedState.datSystemSizeAC..........")
+          break;
+        case 'DC':
+          updatedState.datSystemSizeDC = value;
+          break;
         // case 'Changes':
         //   updatedState.datChanges = value;
         //   break;
-        case 'Change Order':
+        case 'Change Order Required':
           updatedState.datChangeOrderRequired = value;
+          console.log(updatedState.datChangeOrderRequired,"dat change order")
           break;
         default:
           return prevState;
@@ -208,9 +210,9 @@ const GeneralPage: React.FC<generalProps> = ({ generalData, loading, currentGene
     });
   };
   
-  useEffect(() => {
-    console.log(generalDatInfo, "generalDatInfo updated");
-  }, [generalDatInfo]); // This will run every time generalDatInfo changes
+  // useEffect(() => {
+  //   console.log(generalDatInfo, "generalDatInfo updated");
+  // }, [generalDatInfo]); // This will run every time generalDatInfo changes
   
  const handleDatSave = async(): Promise<void> => {setIsDatEditing(false);
 
@@ -224,8 +226,8 @@ const GeneralPage: React.FC<generalProps> = ({ generalData, loading, currentGene
           dat_design_version: generalDatInfo.datDesignVersion,
           dat_designer_name:generalDatInfo.datDesignerName,
           dat_aurora_id: generalDatInfo.datAuroraID,
-          dat_system_size_ac: generalDatInfo.datSystemSizeAc,
-          dat_system_size_dc: generalDatInfo.datSystemSizeDc,
+          dat_system_size_ac: generalDatInfo.datSystemSizeAC,
+          dat_system_size_dc: generalDatInfo.datSystemSizeDC,
           dat_changes: generalDatInfo.datChanges,
           dat_change_order: generalDatInfo.datChangeOrderRequired
         }
@@ -306,9 +308,10 @@ const GeneralPage: React.FC<generalProps> = ({ generalData, loading, currentGene
                     <div key={label} className={styles.acdcInp}>
                       <input
                         type="text"
-                        defaultValue="---"
+                        value={generalDatInfo[`datSystemSize${label}` as GeneralDatInfoKeys]}
                         className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
                         disabled={!isDatEditing}
+                        onChange={(e:ChangeEvent<HTMLInputElement>) => handleInputChange(e, label)}
                       />
                       <label style={{ fontWeight: 500 }}>{label}</label>
                     </div>
@@ -340,7 +343,7 @@ const GeneralPage: React.FC<generalProps> = ({ generalData, loading, currentGene
                     <div key={label} className={styles.acdcInp}>
                       <input
                         type="text"
-                        defaultValue="---"
+                        value={generalDatInfo[`dat${label.replace(' ', '')}` as GeneralDatInfoKeys]}
                         className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
                         disabled={!isDatEditing}
                         onChange={(e:ChangeEvent<HTMLInputElement>) => handleInputChange(e, label)}
