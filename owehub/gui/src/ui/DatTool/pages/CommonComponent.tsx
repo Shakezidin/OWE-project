@@ -77,7 +77,7 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
     setAddress(generalData?.project_address);
     setPhoneNumber(generalData?.phone_number);
     setEmailId(generalData?.email_id);
-  },[]);
+  },[generalData]);
   const handleCancel = (): void => setIsEditing(false);
 
   
