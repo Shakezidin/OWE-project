@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ChangeEvent } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { FiArrowRight } from 'react-icons/fi';
 import { MdClose, MdDone } from 'react-icons/md';
@@ -76,6 +76,7 @@ interface InputFieldProps {
   type?: string;
   isEditing: boolean;
   className?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
  
 const InputField: React.FC<InputFieldProps> = ({
@@ -84,19 +85,22 @@ const InputField: React.FC<InputFieldProps> = ({
   type = 'text',
   isEditing,
   className,
+  onChange,
 }) => (
   <div>
     <label>{label}</label>
     <input
       type={type}
-      defaultValue={value}
+      value={value}
       className={`${styles.inputFieldDat} ${isEditing ? styles.editable : ''}`}
       disabled={!isEditing} // Disable input when not editing
+      onChange={onChange}
     />
   </div>
 );
  
-const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneralId}) => {
+const GeneralPage: React.FC<generalProps> = ({ generalData, loading, currentGeneralId }) => {
+  type GeneralDatInfoKeys = keyof typeof generalDatInfo;
   // State variables for controlling editing and active tabs
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDatEditing, setIsDatEditing] = useState<boolean>(false);
@@ -107,28 +111,10 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
   // Handlers for DAT editing
   const handleDatEdit = (): void => setIsDatEditing(true);
   const handleDatCancel = (): void => setIsDatEditing(false);
-  const handleDatSave = async(): Promise<void> => {setIsDatEditing(false);
-
-    await dispatch(updateDatTool(
-      {
-        project_id: currentGeneralId,
-        general_dat_information: {
-          dat_module_qty: datFields[0].value,
-          dat_module_type: datFields[1].value,
-          dat_design_version: datRightFields[0].value,
-          dat_designer_name:datRightFields[1].value,
-          dat_aurora_id: datRightFields[2].value,
-          dat_system_size_ac: "",
-          dat_system_size_dc: "",
-          dat_changes: "",
-          dat_change_order: datRightFields[4].value
-        }
-      }
-    ));
-    
-  };
+  
+  
  
-
+  
  
   
   const contractInfo = [
@@ -156,12 +142,97 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
   const datRightFields = [
     { label: 'Design Version', value: generalData?.dat_design_version || 0, type: 'number' }, 
     { label: 'Designer Name', value: generalData?.dat_designer_name || "N/A" }, 
-    { label: 'Aurora ID.', value: generalData?.dat_aurora_id || "N/A" }, 
+    { label: 'Aurora ID', value: generalData?.dat_aurora_id || "N/A" }, 
     { label: 'Site Capture URL', value: generalData?.site_capture_url || "N/A", type: 'url' }, 
     { label: 'Change Order Required', value: generalData?.dat_change_order || "N/A" }, 
   ];
+  const [generalDatInfo,setGeneralDatInfo]=useState({
+        datModuleQTY: datFields[0].value,
+        datModuleType: datFields[1].value,
+        datDesignVersion: datRightFields[0].value,
+        datDesignerName:datRightFields[1].value,
+        datAuroraID: datRightFields[2].value,
+        datSystemSizeAc: "",
+        datSystemSizeDc: "",
+        datChanges: "",
+        datChangeOrderRequired: datRightFields[4].value
+  });
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, label: string) => {
+    const { value } = e.target;
+    console.log(value, "Typed value");
   
- 
+    setGeneralDatInfo((prevState) => {
+      console.log(prevState, "Original Value");
+  
+      // Make sure the value is being updated correctly
+      const updatedState = { ...prevState };
+  
+      switch (label) {
+        case 'Module QTY':
+          updatedState.datModuleQTY = Number(value);
+          break;
+        case 'Module Type':
+          updatedState.datModuleType = value;
+          break;
+        case 'Design Version':
+          updatedState.datDesignVersion = Number(value);
+          break;
+        case 'Designer Name':
+          updatedState.datDesignerName = value;
+          break;
+        // case 'Inverter Type':
+        //   updatedState.datModuleQty = value;
+        //   break;
+        case 'Aurora ID':
+          updatedState.datAuroraID = value;
+          break;
+        // case 'System Size AC':
+        //   updatedState.datSystemSizeAc = value;
+        //   break;
+        // case 'System Size DC':
+        //   updatedState.datSystemSizeDc = value;
+        //   break;
+        // case 'Changes':
+        //   updatedState.datChanges = value;
+        //   break;
+        case 'Change Order':
+          updatedState.datChangeOrderRequired = value;
+          break;
+        default:
+          return prevState;
+      }
+  
+      console.log(updatedState, "Updated State");  // Log the new state
+  
+      return updatedState;
+    });
+  };
+  
+  useEffect(() => {
+    console.log(generalDatInfo, "generalDatInfo updated");
+  }, [generalDatInfo]); // This will run every time generalDatInfo changes
+  
+ const handleDatSave = async(): Promise<void> => {setIsDatEditing(false);
+
+    
+    await dispatch(updateDatTool(
+      {
+        project_id: currentGeneralId,
+        general_dat_information: {
+          dat_module_qty: generalDatInfo.datModuleQTY,
+          dat_module_type: generalDatInfo.datModuleType,
+          dat_design_version: generalDatInfo.datDesignVersion,
+          dat_designer_name:generalDatInfo.datDesignerName,
+          dat_aurora_id: generalDatInfo.datAuroraID,
+          dat_system_size_ac: generalDatInfo.datSystemSizeAc,
+          dat_system_size_dc: generalDatInfo.datSystemSizeDc,
+          dat_changes: generalDatInfo.datChanges,
+          dat_change_order: generalDatInfo.datChangeOrderRequired
+        }
+      }
+    ));
+    
+  };
   return (
     <div className={styles.genMain}>
       {/* First Left Section */}
@@ -220,8 +291,10 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
                 <InputField
                   key={index}
                   label={field.label}
-                  value={field.value}
+                  value={generalDatInfo[`dat${field.label.replace(' ', '')}` as GeneralDatInfoKeys]}
+                  // value={generalDatInfo[`dat${field.label.replace(' ', '')}`]}
                   type={field.type}
+                  onChange={(e:ChangeEvent<HTMLInputElement>) => handleInputChange(e, field.label)}
                   className={`${styles.inputField} ${isDatEditing ? styles.editable : ''}`}
                   isEditing={isDatEditing}
                 />
@@ -254,9 +327,10 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
                 <InputField
                   key={index}
                   label={field.label}
-                  value={field.value}
+                  value={generalDatInfo[`dat${field.label.replace(' ', '')}` as GeneralDatInfoKeys]}
                   type={field.type}
                   isEditing={isDatEditing}
+                  onChange={(e:ChangeEvent<HTMLInputElement>) => handleInputChange(e, field.label)}
                 />
               ))}
               <div>
@@ -269,6 +343,7 @@ const GeneralPage: React.FC <generalProps>= ({generalData,loading,currentGeneral
                         defaultValue="---"
                         className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
                         disabled={!isDatEditing}
+                        onChange={(e:ChangeEvent<HTMLInputElement>) => handleInputChange(e, label)}
                       />
                       <label style={{ fontWeight: 500 }}>{label}</label>
                     </div>

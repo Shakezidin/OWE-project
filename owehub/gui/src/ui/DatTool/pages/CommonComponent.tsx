@@ -66,13 +66,18 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
           {
             project_id: currentGeneralId,
             general_basics: {
-              project_address:generalData?.project_address,
-              phone_number:generalData?.phone_number,
-              email_id:generalData?.email_id,
+              project_address:address,
+              phone_number:phoneNumber,
+              email_id:emailId,
             }
           }
         ));
   };
+  useEffect(()=>{
+    setAddress(generalData?.project_address);
+    setPhoneNumber(generalData?.phone_number);
+    setEmailId(generalData?.email_id);
+  },[]);
   const handleCancel = (): void => setIsEditing(false);
 
   
@@ -121,10 +126,6 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
       setEmailId(value); // Updates email ID
     }
   }
-// useEffect(()=>{
-//   console.log(address," ",phoneNumber," ",emailId," ");
-
-// },[address,emailId,phoneNumber]);
   return (
     <div> {loading ? <div> </div> : generalData ? <div className={`${styles.genOneCont}`}>
     <div className={styles.genOneLeft}>
@@ -164,9 +165,10 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
             <input
               key={index}
               type={input.type}
-              defaultValue={input.value}
+              value={input.value}
               className={`${styles.inputField} ${isEditing ? styles.editable : ''}`}
               disabled={!isEditing}
+              onChange={(e) => input.onChange(e)}
             />
           ))}
         </div>
