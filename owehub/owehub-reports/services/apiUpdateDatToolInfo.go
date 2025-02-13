@@ -587,7 +587,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 			updateFields = append(updateFields, fmt.Sprintf("other = $%d", len(whereEleList)))
 		}
 	}
-	if dataReq.MeasurementConversion != nil {
+	if dataReq.ExistingPvSystemInfo != nil {
 		//////////// ExistingPvInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if dataReq.ExistingPvSystemInfo.ModuleQuantity > 0 {
 			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.ModuleQuantity)
