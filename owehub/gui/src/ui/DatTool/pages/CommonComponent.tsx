@@ -152,6 +152,7 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
               <div
                 className={`${styles.editUser} ${isEditing ? styles.active : ''}`}
                 onClick={handleEdit}
+                style={{display:'none'}}
               >
                 <AiOutlineEdit />
               </div>
