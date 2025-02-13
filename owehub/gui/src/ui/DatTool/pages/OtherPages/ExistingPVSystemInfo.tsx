@@ -5,7 +5,6 @@ import { useAppDispatch } from '../../../../redux/hooks';
 import { toast } from 'react-toastify';
 import { updateDatTool } from '../../../../redux/apiActions/DatToolAction/datToolAction';
 
-
 interface ExistingPVSystemInfoProps {
   fields: {
     'Module Quantity': string;
@@ -20,59 +19,87 @@ interface ExistingPVSystemInfoProps {
     'Inverter 2 Output(A)': string;
     'Backfeed': string;
   };
-  onSave: (fields: {
-    'Module Quantity': string;
-    'Model#': string;
-    'Wattage': string;
-    'Module Area': string;
-    'Inverter 1 Quantity': string;
-    'Inverter 1 Model#': string;
-    'Inverter 1 Output(A)': string;
-    'Inverter 2 Quantity': string;
-    'Inverter 2 Model#': string;
-    'Inverter 2 Output(A)': string;
-    'Backfeed': string;
-  }) => void;
+  onSave: (fields: ExistingPVSystemInfoProps['fields']) => void;
   currentGeneralId: string;
 }
-
 
 const ExistingPVSystemInfo: React.FC<ExistingPVSystemInfoProps> = ({ fields, onSave, currentGeneralId }) => {
   const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editedFields, setEditedFields] = useState(fields);
+  const [modifiedFields, setModifiedFields] = useState<Set<string>>(new Set());
 
   const handleFieldChange = (field: keyof typeof fields, value: string) => {
     setEditedFields(prev => ({ ...prev, [field]: value }));
+    setModifiedFields(prev => new Set(prev).add(field));
   };
-  const handleSave = async () => {
-    try {
-      // Prepare payload according to the required structure
-      const payload = {
-        project_id: currentGeneralId,
-        existing_pv_system_info: {
-          module_quantity: parseInt(editedFields['Module Quantity']) || 0,
-          model_number: editedFields['Model#'] || '',
-          wattage: editedFields['Wattage'] || '',
-          module_area: editedFields['Module Area'] || '',
-          inverter1: {
-            quantity: parseInt(editedFields['Inverter 1 Quantity']) || 0,
-            model_number: editedFields['Inverter 1 Model#'] || '',
-            output_a: editedFields['Inverter 1 Output(A)'] || ''
-          },
-          inverter2: {
-            quantity: parseInt(editedFields['Inverter 2 Quantity']) || 0,
-            model_number: editedFields['Inverter 2 Model#'] || '',
-            output_a: editedFields['Inverter 2 Output(A)'] || ''
-          },
-          existing_calculated_backfeed_without_125: 
-            parseInt(editedFields['Backfeed']) || 0
-        }
-      };
 
+  const createPayload = () => {
+    const payload: any = {
+      project_id: currentGeneralId,
+      existing_pv_system_info: {}
+    };
+
+    // Helper function to convert field names to API format
+    const getApiFieldName = (field: string) => {
+      const mapping: { [key: string]: string } = {
+        'Module Quantity': 'module_quantity',
+        'Model#': 'model_number',
+        'Wattage': 'wattage',
+        'Module Area': 'module_area',
+        'Inverter 1 Quantity': 'inverter1.quantity',
+        'Inverter 1 Model#': 'inverter1.model_number',
+        'Inverter 1 Output(A)': 'inverter1.output_a',
+        'Inverter 2 Quantity': 'inverter2.quantity',
+        'Inverter 2 Model#': 'inverter2.model_number',
+        'Inverter 2 Output(A)': 'inverter2.output_a',
+        'Backfeed': 'existing_calculated_backfeed_without_125'
+      };
+      return mapping[field];
+    };
+
+    // Helper function to set nested object value
+    const setNestedValue = (obj: any, path: string, value: string | number) => {
+      const parts = path.split('.');
+      if (parts.length === 1) {
+        obj[parts[0]] = value;
+      } else {
+        const [first, ...rest] = parts;
+        obj[first] = obj[first] || {};
+        setNestedValue(obj[first], rest.join('.'), value);
+      }
+    };
+
+    modifiedFields.forEach(field => {
+      const apiField = getApiFieldName(field);
+      if (apiField) {
+        const rawValue = editedFields[field as keyof typeof fields];
+        
+        // Convert numeric fields to numbers, keep others as strings
+        let processedValue: string | number = rawValue;
+        if (['Module Quantity', 'Inverter 1 Quantity', 'Inverter 2 Quantity', 'Backfeed'].includes(field)) {
+          processedValue = parseInt(rawValue) || 0;
+        }
+
+        setNestedValue(payload.existing_pv_system_info, apiField, processedValue);
+      }
+    });
+
+    return payload;
+  };
+
+  const handleSave = async () => {
+    if (modifiedFields.size === 0) {
+      setIsEditing(false);
+      return;
+    }
+
+    try {
+      const payload = createPayload();
       await dispatch(updateDatTool(payload)).unwrap();
       onSave(editedFields);
       setIsEditing(false);
+      setModifiedFields(new Set());
       toast.success('Existing PV System Info updated successfully');
     } catch (error) {
       console.error('Error updating Existing PV System Info:', error);
@@ -80,7 +107,7 @@ const ExistingPVSystemInfo: React.FC<ExistingPVSystemInfoProps> = ({ fields, onS
     }
   };
 
-
+  // Rest of the component remains the same...
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
