@@ -389,7 +389,7 @@ const GeneralPage: React.FC<generalProps> = ({
                               `datSystemSize${label}` as GeneralDatInfoKeys
                             ].value
                           }
-                          className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
+                          className={`${styles.inputFieldDatt} ${isDatEditing ? styles.editablee : ''}`}
                           disabled={!isDatEditing}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleInputChange(e, label)
@@ -437,7 +437,7 @@ const GeneralPage: React.FC<generalProps> = ({
                             ].value
                             
                           }
-                          className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
+                          className={`${styles.inputFieldDatt} ${isDatEditing ? styles.editablee : ''}`}
                           disabled={!isDatEditing}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleInputChange(e, label)
