@@ -1614,6 +1614,9 @@ func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) (stri
 		WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' 
 			AND cs.unique_id != ''
 			AND %v
+            ORDER BY cs.unique_id, 
+             (CASE WHEN cs.project_status IS NOT NULL AND cs.project_status != '' THEN 1 ELSE 2 END), 
+             cs.sale_date DESC
 		)
 		SELECT 
 			%v,
@@ -1643,6 +1646,9 @@ func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) (stri
 		WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' 
 			AND cs.unique_id != ''
 			AND %v
+            ORDER BY cs.unique_id, 
+             (CASE WHEN cs.project_status IS NOT NULL AND cs.project_status != '' THEN 1 ELSE 2 END), 
+             cs.sale_date DESC
 		)
 		SELECT 
 			%v,
