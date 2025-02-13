@@ -168,22 +168,22 @@ const GeneralPage: React.FC<generalProps> = ({
     },
   ];
   const [generalDatInfo, setGeneralDatInfo] = useState({
-    datModuleQTY: datFields[0].value,
-    datModuleType: datFields[1].value,
-    datDesignVersion: datRightFields[0].value,
-    datDesignerName: datRightFields[1].value,
-    datAuroraID: datRightFields[2].value,
-    datSystemSizeAC: '---',
-    datSystemSizeDC: '---',
-    datChanges: 'N/A',
-    datChangeOrderRequired: datRightFields[4].value,
-    datInverterType:datFields[2].value,
-    datBatteryType:datFields[3].value,
-    datSiteCaptureURL:datRightFields[3].value,
-    datChangeLayout:"---",
-    datChangeProduction:"---",
+    datModuleQTY: { value: datFields[0].value, changed: false },
+    datModuleType: { value: datFields[1].value, changed: false },
+    datDesignVersion: { value: datRightFields[0].value, changed: false },
+    datDesignerName: { value: datRightFields[1].value, changed: false },
+    datAuroraID: { value: datRightFields[2].value, changed: false },
+    datSystemSizeAC: { value: '---', changed: false },
+    datSystemSizeDC: { value: '---', changed: false },
+    datChanges: { value: 'N/A', changed: false },
+    datChangeOrderRequired: { value: datRightFields[4].value, changed: false },
+    datInverterType: { value: datFields[2].value, changed: false },
+    datBatteryType: { value: datFields[3].value, changed: false },
+    datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
+    datChangeLayout: { value: '---', changed: false },
+    datChangeProduction: { value: '---', changed: false },
+});
 
-  });
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     label: string
@@ -197,53 +197,61 @@ const GeneralPage: React.FC<generalProps> = ({
 
       switch (label) {
         case 'Module QTY':
-          updatedState.datModuleQTY = Number(value);
-          break;
+            updatedState.datModuleQTY.value = value;
+            updatedState.datModuleQTY.changed = true;
+            break;
         case 'Module Type':
-          updatedState.datModuleType = value;
-          break;
+            updatedState.datModuleType.value = value;
+            updatedState.datModuleType.changed = true;
+            break;
         case 'Design Version':
-          updatedState.datDesignVersion = Number(value);
-          break;
+            updatedState.datDesignVersion.value = value;
+            updatedState.datDesignVersion.changed = true;
+            break;
         case 'Designer Name':
-          updatedState.datDesignerName = value;
-          break;
-
+            updatedState.datDesignerName.value = value;
+            updatedState.datDesignerName.changed = true;
+            break;
         case 'Aurora ID':
-          updatedState.datAuroraID = value;
-          break;
+            updatedState.datAuroraID.value = value;
+            updatedState.datAuroraID.changed = true;
+            break;
         case 'AC':
-          updatedState.datSystemSizeAC = value;
-          break;
+            updatedState.datSystemSizeAC.value = value;
+            updatedState.datSystemSizeAC.changed = true;
+            break;
         case 'DC':
-          updatedState.datSystemSizeDC = value;
-          break;
-
+            updatedState.datSystemSizeDC.value = value;
+            updatedState.datSystemSizeDC.changed = true;
+            break;
         case 'Change Order Required':
-          updatedState.datChangeOrderRequired = value;
-          break;
-
-
-
+            updatedState.datChangeOrderRequired.value = value;
+            updatedState.datChangeOrderRequired.changed = true;
+            break;
         case 'Inverter Type':
-          updatedState.datInverterType = value;
-          break;
+            updatedState.datInverterType.value = value;
+            updatedState.datInverterType.changed = true;
+            break;
         case 'Battery Type':
-          updatedState.datBatteryType = value;
-          break;
+            updatedState.datBatteryType.value = value;
+            updatedState.datBatteryType.changed = true;
+            break;
         case 'Site Capture URL':
-          updatedState.datSiteCaptureURL = value;
-          break;
+            updatedState.datSiteCaptureURL.value = value;
+            updatedState.datSiteCaptureURL.changed = true;
+            break;
         case 'Layout':
-          updatedState.datChangeLayout = value;
-          break;
+            updatedState.datChangeLayout.value = value;
+            updatedState.datChangeLayout.changed = true;
+            break;
         case 'Production':
-          updatedState.datChangeProduction = value;
-          break;
-
+            updatedState.datChangeProduction.value = value;
+            updatedState.datChangeProduction.changed = true;
+            break;
         default:
-          return prevState;
-      }
+            return prevState;
+    }
+    
 
       return updatedState;
     });
@@ -258,34 +266,50 @@ const GeneralPage: React.FC<generalProps> = ({
       updateDatTool({
         project_id: currentGeneralId,
         general_dat_information: {
-          dat_module_qty: generalDatInfo.datModuleQTY,
-          dat_module_type: generalDatInfo.datModuleType,
-          dat_design_version: generalDatInfo.datDesignVersion,
-          dat_designer_name: generalDatInfo.datDesignerName,
-          dat_aurora_id: generalDatInfo.datAuroraID,
-          dat_system_size_ac: generalDatInfo.datSystemSizeAC,
-          dat_system_size_dc: generalDatInfo.datSystemSizeDC,
-          dat_change_order: generalDatInfo.datChangeOrderRequired,
-          dat_inverter_type:generalDatInfo.datInverterType,
-          dat_battery_type:generalDatInfo.datBatteryType,
-          dat_site_capture_url:generalDatInfo.datSiteCaptureURL,
-          dat_change_layout:generalDatInfo.datChangeLayout,
-          dat_change_production:generalDatInfo.datChangeProduction
+          ...(generalDatInfo.datModuleQTY.changed && { dat_module_qty: Number(generalDatInfo.datModuleQTY.value) }),
+          ...(generalDatInfo.datModuleType.changed && { dat_module_type: generalDatInfo.datModuleType.value }),
+          ...(generalDatInfo.datDesignVersion.changed && { dat_design_version: Number(generalDatInfo.datDesignVersion.value) }),
+          ...(generalDatInfo.datDesignerName.changed && { dat_designer_name: generalDatInfo.datDesignerName.value }),
+          ...(generalDatInfo.datAuroraID.changed && { dat_aurora_id: generalDatInfo.datAuroraID.value }),
+          ...(generalDatInfo.datSystemSizeAC.changed && { dat_system_size_ac: generalDatInfo.datSystemSizeAC.value }),
+          ...(generalDatInfo.datSystemSizeDC.changed && { dat_system_size_dc: generalDatInfo.datSystemSizeDC.value }),
+          ...(generalDatInfo.datChangeOrderRequired.changed && { dat_change_order_required: generalDatInfo.datChangeOrderRequired.value }),
+          ...(generalDatInfo.datInverterType.changed && { dat_inverter_type: generalDatInfo.datInverterType.value }),
+          ...(generalDatInfo.datBatteryType.changed && { dat_battery_type: generalDatInfo.datBatteryType.value }),
+          ...(generalDatInfo.datSiteCaptureURL.changed && { dat_site_capture_url: generalDatInfo.datSiteCaptureURL.value }),
+          ...(generalDatInfo.datChangeLayout.changed && { dat_change_layout: generalDatInfo.datChangeLayout.value }),
+          ...(generalDatInfo.datChangeProduction.changed && { dat_change_production: generalDatInfo.datChangeProduction.value }),
         },
+        
       })
     );
+    setGeneralDatInfo(prevState => ({
+      ...prevState,
+      datModuleQTY: { ...prevState.datModuleQTY, changed: false },
+      datModuleType: { ...prevState.datModuleType, changed: false },
+      datDesignVersion: { ...prevState.datDesignVersion, changed: false },
+      datDesignerName: { ...prevState.datDesignerName, changed: false },
+      datAuroraID: { ...prevState.datAuroraID, changed: false },
+      datSystemSizeAC: { ...prevState.datSystemSizeAC, changed: false },
+      datSystemSizeDC: { ...prevState.datSystemSizeDC, changed: false },
+      datChangeOrderRequired: { ...prevState.datChangeOrderRequired, changed: false },
+      datInverterType: { ...prevState.datInverterType, changed: false },
+      datBatteryType: { ...prevState.datBatteryType, changed: false },
+      datSiteCaptureURL: { ...prevState.datSiteCaptureURL, changed: false },
+      datChangeLayout: { ...prevState.datChangeLayout, changed: false },
+      datChangeProduction: { ...prevState.datChangeProduction, changed: false },
+    }));
     
   };
   return (
     <div className={styles.genMain}>
       {loading ? (
         <div className={styles.loaderContainer}>
-          {' '}
-          <MicroLoader />{' '}
+          
+          <MicroLoader />
         </div>
       ) : generalData ? (
         <div className={styles.genSecCont}>
-          {}
           <div className={styles.genSecLeft}>
             <div className={styles.genSecLeftHdr}>
               <p>CONTRACT INFORMATION</p>
@@ -304,7 +328,7 @@ const GeneralPage: React.FC<generalProps> = ({
             </div>
           </div>
 
-          {}
+          
           <div className={styles.genSecRight}>
             <div className={styles.genSecRightHdr}>
               <p>DAT Information</p>
@@ -332,10 +356,10 @@ const GeneralPage: React.FC<generalProps> = ({
               </div>
             </div>
 
-            {}
+            
             <div className={styles.genSecRightMain}>
               <div className={styles.genSecRightMainLft}>
-                {}
+                
                 {datFields.map((field, index) => (
                   <InputField
                     key={index}
@@ -343,7 +367,7 @@ const GeneralPage: React.FC<generalProps> = ({
                     value={
                       generalDatInfo[
                         `dat${field.label.replaceAll(' ', '')}` as GeneralDatInfoKeys
-                      ]
+                      ].value
                     }
                     type={field.type}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -363,7 +387,7 @@ const GeneralPage: React.FC<generalProps> = ({
                           value={
                             generalDatInfo[
                               `datSystemSize${label}` as GeneralDatInfoKeys
-                            ]
+                            ].value
                           }
                           className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
                           disabled={!isDatEditing}
@@ -383,7 +407,7 @@ const GeneralPage: React.FC<generalProps> = ({
               </div>
 
               <div className={styles.genSecRightMainRht}>
-                {}
+                
                 {datRightFields.map((field, index) => (
                   <InputField
                     key={index}
@@ -391,7 +415,7 @@ const GeneralPage: React.FC<generalProps> = ({
                     value={
                       generalDatInfo[
                         `dat${field.label.replaceAll(' ', '')}` as GeneralDatInfoKeys
-                      ]
+                      ].value
                     }
                     type={field.type}
                     isEditing={isDatEditing}
@@ -410,7 +434,7 @@ const GeneralPage: React.FC<generalProps> = ({
                           value={
                             generalDatInfo[
                               `datChange${label}` as GeneralDatInfoKeys
-                            ]
+                            ].value
                             
                           }
                           className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
