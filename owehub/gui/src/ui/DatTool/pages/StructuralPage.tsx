@@ -228,7 +228,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       // Validate the data
       if (section === 'structural_info') {
         if (!mpData[activeStructuralState]) {
-          toast.error('Invalid structural state data.');
+          // toast.error('Invalid structural state data.');
           return false;
         }
   
@@ -240,7 +240,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
         }, {} as Record<string, any>);
   
         if (Object.keys(modifiedFields).length === 0) {
-          toast.error('No changes detected for structural info.');
+          // toast.error('No changes detected for structural info.');
           return false;
         }
   
@@ -256,16 +256,16 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       const response = await dispatch(updateDatTool(payload));
   
       if (response?.payload?.status === 200) {
-        toast.success(`${section} Updated Successfully`);
+        // toast.success(`${section} Updated Successfully`);
         return true;
       }
   
-      toast.error(response?.payload?.message || `Failed to update ${section}`);
+      // toast.error(response?.payload?.message || `Failed to update ${section}`);
       console.error('Response:', response);
       return false;
     } catch (error) {
       console.error('Update error:', error);
-      toast.error(`Failed to update ${section}`);
+      // toast.error(`Failed to update ${section}`);
       return false;
     }
   };
