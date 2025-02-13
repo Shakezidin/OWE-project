@@ -352,10 +352,10 @@
 }
  
 .acdc {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 5rem;
+  display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    justify-content: space-between;
 }
  
 .gOneHeaderBtn,
@@ -412,7 +412,25 @@
   font-weight: 500;
   outline: none;
 }
+.inputFieldDatt {
+  width: 100%;
+  padding: 0.3rem 1.2rem 0.5rem 0rem;
+  font-size: 12px;
+  border: 0px;
+  border-radius: 26px;
+  color: var(--input-border-color);
+  background-color: unset;
+  font-weight: 500;
+  outline: none;
+  /* width: 55px; */
+}
  
+.inputFieldDatt.editablee {
+  pointer-events: auto;
+  background-color: #f5f5fd;
+  padding: 7.2px 1rem;
+  margin-top: 0.4rem;
+}
 .inputFieldDat.editable {
   pointer-events: auto;
   background-color: #f5f5fd;
@@ -425,9 +443,12 @@
 } */
  
 .acdcInp {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      align-items: center;
+      gap: 4px;
+      justify-content: space-between;
+
 }
  
 .genSecRightMainTopHeader {
