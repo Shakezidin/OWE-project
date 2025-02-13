@@ -155,7 +155,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 
 	// Prepare the final query string with the dynamically constructed dealer list
 	query = `
-	SELECT
+	SELECT DISTINCT ON (unique_id)
     unique_id AS cancel_unique_id,
     cancel_date,
 	NULL::text AS customers_unique_id,
@@ -169,13 +169,13 @@ FROM
     customers_customers_schema
 WHERE
     dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
-    AND project_status != 'DUPLICATE'
+    AND project_status NOT ILIKE '%%DUPLICATE%%'
     AND cancel_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS')
                         AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS')
 
 UNION ALL
 
-SELECT
+SELECT DISTINCT ON (unique_id)
 	NULL::text AS cancel_unique_id,
 	NULL::timestamp AS cancel_date,
     unique_id AS customers_unique_id,
@@ -189,13 +189,13 @@ FROM
     customers_customers_schema
 WHERE
     dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
-    AND project_status != 'DUPLICATE'
+    AND project_status NOT ILIKE '%%DUPLICATE%%'
     AND sale_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS')
                         AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS')
 
 UNION ALL
 
-SELECT
+SELECT DISTINCT ON (unique_id)
 	NULL::text AS cancel_unique_id,
 	NULL::timestamp AS cancel_date,
     NULL::text AS customers_unique_id,
@@ -209,13 +209,13 @@ FROM
     ntp_ntp_schema
 WHERE
     dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
-    AND project_status != 'DUPLICATE'
+    AND project_status NOT ILIKE '%%DUPLICATE%%' AND app_status NOT ILIKE '%%DUPLICATE%%'
     AND ntp_complete_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS')
                                AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS')
 
 UNION ALL
 
-SELECT
+SELECT DISTINCT ON (pv.customer_unique_id)
         NULL::text AS cancel_unique_id,
         NULL::timestamp AS cancel_date,
         NULL::text AS customers_unique_id,
@@ -230,6 +230,7 @@ SELECT
         ON ns.unique_id = pv.customer_unique_id
     WHERE pv.dealer IN (` + dealerInQuery + `)
     AND pv.project_status NOT ILIKE '%%DUPLICATE%%' AND pv.app_status NOT ILIKE '%%DUPLICATE%%' AND pv.customer_unique_id != ''
+	AND ns.project_status NOT ILIKE '%%DUPLICATE%%' AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
     AND pv.pv_completion_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS')
                                AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS');
 `
@@ -303,7 +304,8 @@ SELECT
 
 	// Prepare a query to fetch detailed customer data based on the unique_ids
 	queryWithUniqueIDs := `
-SELECT DISTINCT cs.unique_id, cs.customer_name AS home_owner, cs.email_address,
+SELECT DISTINCT ON (cs.unique_id)
+	   cs.unique_id, cs.customer_name AS home_owner, cs.email_address,
        cs.phone_number, cs.address, cs.state,
        scs.contracted_system_size_parent,
        ps.pto_granted AS pto_date, cs.primary_sales_rep,
