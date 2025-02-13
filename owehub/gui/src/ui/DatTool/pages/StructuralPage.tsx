@@ -105,7 +105,7 @@ interface DropdownListData {
 }
 
 interface StructuralPageProps {
-  structuralData: StructuralData | null;
+  structuralData: any | null;
   currentGeneralId: string;
   loading: boolean;
 }

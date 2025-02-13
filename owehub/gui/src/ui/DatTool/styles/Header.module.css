@@ -49,7 +49,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+
 }
 
 .iconContainer{
@@ -82,6 +82,7 @@
 }
 .header :global(.select__control:hover .select__placeholder) {
   color: #fff !important;
+  position: absolute;
 }
 
 .header :global(.select__control:hover .select__dropdown-indicator) {

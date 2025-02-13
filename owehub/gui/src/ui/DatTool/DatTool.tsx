@@ -15,6 +15,7 @@ import { useOutletContext } from 'react-router-dom';
 import { getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getStructuralInfo, updateDatTool } from '../../redux/apiActions/DatToolAction/datToolAction';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import useMatchMedia from '../../hooks/useMatchMedia';
+import ResponsiveHeader from './components/ResponsiveHeader';
 
 const DatTool: React.FC = () => {
   const [selectedPage, setSelectedPage] = useState<string>('General');
@@ -86,6 +87,12 @@ const DatTool: React.FC = () => {
       {isMobile &&  <div className={styles.mobileSideContainer}>
       <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isMobile}/>
         </div>}
+
+        {
+          isMobile && <div>
+            <ResponsiveHeader onMenuSelect={() => {}} setOpenRefresh={setOpenRefresh} />
+             </div>
+        }
       <div className={styles.layoutContainer}>
        
         <div className={styles.contentContainer} style={{height: !dbStatus ? "calc(100vh - 115px)" : ""}}>
