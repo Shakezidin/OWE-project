@@ -839,7 +839,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                 </div>
                 <div className={styles.endContainertwo}>
                   <p>Spacing</p>
-                  <div className={styles.endContainerWrapper}>
+                  <div className={styles.spacingWrapper}>
                     <div>
                       <p className={styles.selectedContent}>P</p>
                       <p className={styles.selectedLabel}>
