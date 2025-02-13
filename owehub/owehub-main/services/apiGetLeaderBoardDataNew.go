@@ -376,7 +376,7 @@ func GetDealerCodes(dealerNames []string) (map[string]string, error) {
 }
 
 func shouldIncludeDealerInGroupBy(groupBy string) bool {
-	return groupBy == "primary_sales_rep" || groupBy == "split_part(srs.team_region_untd, '/'::text, 1)" || groupBy == "setter"
+	return groupBy == "primary_sales_rep" || groupBy == "team" || groupBy == "setter"
 }
 
 func combineResults(saleCancelData, installBatteryData, ntpData []map[string]interface{}, role, HighLightDlrName, HighlightName, groupBy string, dealerCoded map[string]string) (combinedResults []models.CombinedResult, totalSale, totalNtp, totalCancel, totalBattery, totalInstall float64) {
