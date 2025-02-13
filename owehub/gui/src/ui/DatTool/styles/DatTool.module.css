@@ -62,3 +62,11 @@
   /* max-height: 665px; */
   height: fit-content;
 }
+
+
+@media (max-width: 480px) {
+
+  .contentContainer::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+  }
+}
