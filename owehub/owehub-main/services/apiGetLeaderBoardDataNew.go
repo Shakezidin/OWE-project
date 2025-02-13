@@ -137,29 +137,17 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	dealerIn = GenerateDealerInClause(dataReq.DealerName)
 
-	// Temporary grouping logic
-	if dataReq.GroupBy == "team" {
-		dataReq.GroupBy = "split_part(srs.team_region_untd, '/'::text, 1)"
-	} else if dataReq.GroupBy == "region" {
-		dataReq.GroupBy = "split_part(srs.team_region_untd, '/'::text, 2)"
-	}
-
-	customergroupBy := getTableAliasForGroupBy(dataReq.GroupBy, "cs.") + dataReq.GroupBy
-	pvInstallgroupBy := getTableAliasForGroupBy(dataReq.GroupBy, "pis.") + dataReq.GroupBy
-	ntpgroupBy := getTableAliasForGroupBy(dataReq.GroupBy, "ns.") + dataReq.GroupBy
+	groupBy := dataReq.GroupBy
 	if shouldIncludeDealerInGroupBy(dataReq.GroupBy) {
-		// Determine the correct table alias for dealer based on the groupBy field
-		customergroupBy = fmt.Sprintf("%s%s, cs.dealer", getTableAliasForGroupBy(dataReq.GroupBy, "cs."), dataReq.GroupBy)
-		pvInstallgroupBy = fmt.Sprintf("%s%s, pis.dealer", getTableAliasForGroupBy(dataReq.GroupBy, "pis."), dataReq.GroupBy)
-		ntpgroupBy = fmt.Sprintf("%s%s, ns.dealer", getTableAliasForGroupBy(dataReq.GroupBy, "ns."), dataReq.GroupBy)
+		groupBy = fmt.Sprintf("%s,dealer", dataReq.GroupBy)
 	}
 
 	dateRange, _ := CreateDateRange(dataReq.StartDate, dataReq.EndDate)
 	resultChan := make(chan ResultChan, LeaderBoardDataCount)
 	hasError := false
-	go fetchLeaderBoardData(models.LeaderBoardSaleCancelData, dateRange, dealerIn, customergroupBy, dataReq.Type, resultChan)
-	go fetchLeaderBoardData(models.LeaderBoardInstallBatteryData, dateRange, dealerIn, pvInstallgroupBy, dataReq.Type, resultChan)
-	go fetchLeaderBoardData(models.LeaderBoardNTPData, dateRange, dealerIn, ntpgroupBy, dataReq.Type, resultChan)
+	go fetchLeaderBoardData(models.LeaderBoardSaleCancelData, dateRange, dealerIn, groupBy, dataReq.Type, resultChan)
+	go fetchLeaderBoardData(models.LeaderBoardInstallBatteryData, dateRange, dealerIn, groupBy, dataReq.Type, resultChan)
+	go fetchLeaderBoardData(models.LeaderBoardNTPData, dateRange, dealerIn, groupBy, dataReq.Type, resultChan)
 
 	// Collect results from goroutines
 	var saleCancelData, installBatteryData, ntpData []map[string]interface{}
@@ -185,7 +173,6 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		fmt.Println("One or more errors occurred while fetching data.")
 		return
 	}
-
 	// Combine the results
 	combinedResults, totalSale, totalNtp, totalCancel, totalBattery, totalInstall = combineResults(saleCancelData, installBatteryData, ntpData, dataReq.Role, HighLightDlrName, HighlightName, dataReq.GroupBy, dealerCodes)
 
@@ -390,20 +377,6 @@ func GetDealerCodes(dealerNames []string) (map[string]string, error) {
 
 func shouldIncludeDealerInGroupBy(groupBy string) bool {
 	return groupBy == "primary_sales_rep" || groupBy == "split_part(srs.team_region_untd, '/'::text, 1)" || groupBy == "setter"
-}
-
-// getTableAliasForGroupBy returns the correct table alias for the groupBy field
-func getTableAliasForGroupBy(groupBy string, tableAlias string) string {
-	switch groupBy {
-	case "primary_sales_rep":
-		return "cs." // customers_customers_schema
-	case "split_part(srs.team_region_untd, '/'::text, 1)", "split_part(srs.team_region_untd, '/'::text, 2)":
-		return "" // sales_rep_dbhub_schema
-	case "setter":
-		return "cs." // pv_install_install_subcontracting_schema
-	default:
-		return tableAlias // default to customers_customers_schema
-	}
 }
 
 func combineResults(saleCancelData, installBatteryData, ntpData []map[string]interface{}, role, HighLightDlrName, HighlightName, groupBy string, dealerCoded map[string]string) (combinedResults []models.CombinedResult, totalSale, totalNtp, totalCancel, totalBattery, totalInstall float64) {
