@@ -187,14 +187,15 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 	var filtersBuilder strings.Builder
 	whereAdded := false
 
+	dealerIn := GenerateDealerInClause(dataFilter.DealerNames)
+
 	if !adminCheck {
 		if !whereAdded {
 			filtersBuilder.WriteString(" WHERE ")
 		} else {
 			filtersBuilder.WriteString(" AND ")
 		}
-		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerNames)
+		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.%v", dealerIn))
 		whereAdded = true
 	}
 
@@ -267,6 +268,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 		filtersBuilder.WriteString(")")
 	}
 
+	dealerIn := GenerateDealerInClause(dataFilter.DealerNames)
 	// Handle the dealer filter
 	if len(dataFilter.DealerNames) != 0 {
 		if whereAdded {
@@ -276,8 +278,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerNames)
+		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.%v", dealerIn))
 	}
 
 	// Add additional conditions that don't depend on external inputs
