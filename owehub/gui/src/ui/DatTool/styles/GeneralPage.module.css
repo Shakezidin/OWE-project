@@ -503,9 +503,14 @@
 
 /* TABLET */
 
-@media (max-width:1024px)
+@media (max-width:450px)
 {
+  .genOneCont{
+    flex-direction: column;
+    margin:0;
+  }
   .genOneLeft{
-    
+    margin:0 auto;
+    width:90%;
   }
 }

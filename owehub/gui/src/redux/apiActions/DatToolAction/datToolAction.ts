@@ -1,6 +1,7 @@
 // get_dlr_oth_data
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller, reportingCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
 
 
 
@@ -116,8 +117,16 @@ export const updateDatTool = createAsyncThunk(
   async (param: any, { rejectWithValue }) => {
     try {
       const response = await reportingCaller('update_dat_tool_info', param);
-      console.log(response,"my response..............");
+      if(response.status===200)
+      {
+        toast.success("Data Updated Successfully.");
+      }
+      else if(response.status>201)
+      {
+        return rejectWithValue(response.message);
+      }
       return response;
+      
     } catch (error) {
       return rejectWithValue('Failed to fetch updateDatTool');
     }

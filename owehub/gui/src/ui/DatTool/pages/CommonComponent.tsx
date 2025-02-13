@@ -53,9 +53,9 @@ interface commonComponentProps {
 const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,currentGeneralId}) => {
       
   const handleClick = (index: number): void => setActiveIndex(index);
-  const [address,setAddress]=useState(generalData?.project_address);
-  const [phoneNumber,setPhoneNumber]=useState(generalData?.phone_number);
-  const [emailId,setEmailId]=useState(generalData?.email_id);
+  const [address,setAddress]=useState({value:generalData?.project_address,changed:false});
+  const [phoneNumber,setPhoneNumber]=useState({value:generalData?.phone_number,changed:false});
+  const [emailId,setEmailId]=useState({value:generalData?.email_id,changed:false});
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState<number>(0);
  
@@ -66,17 +66,20 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
           {
             project_id: currentGeneralId,
             general_basics: {
-              project_address:address,
-              phone_number:phoneNumber,
-              email_id:emailId,
+              ...(address.changed && { project_address: address.value }),
+              ...(phoneNumber.changed && {phone_number: phoneNumber.value}),
+              ...(emailId.changed && {email_id: emailId.value}),
             }
           }
         ));
+        setAddress(prevState=>({...prevState,changed:false}))
+        setPhoneNumber(prevState=>({...prevState,changed:false}))
+        setEmailId(prevState=>({...prevState,changed:false}))
   };
   useEffect(()=>{
-    setAddress(generalData?.project_address);
-    setPhoneNumber(generalData?.phone_number);
-    setEmailId(generalData?.email_id);
+    setAddress({ value: generalData?.project_address, changed: false });
+    setPhoneNumber({ value: generalData?.phone_number, changed: false });
+    setEmailId({ value: generalData?.email_id, changed: false });
   },[generalData]);
   const handleCancel = (): void => setIsEditing(false);
 
@@ -117,13 +120,13 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
     const value = e.target.value; // Get the new value from the input
   
     if (fieldType === 'text') {
-      setAddress(value); // Assuming setAddress updates the address with the new value
+      setAddress({ value, changed: true }); // Assuming setAddress updates the address with the new value
     }
     else if (fieldType === 'tel') {
-      setPhoneNumber(value); // Updates phone number
+      setPhoneNumber({ value, changed: true }); // Updates phone number
     }
     else if (fieldType === 'email') {
-      setEmailId(value); // Updates email ID
+      setEmailId({ value, changed: true }); // Updates email ID
     }
   }
   return (
@@ -165,7 +168,7 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
             <input
               key={index}
               type={input.type}
-              value={input.value}
+              value={input.value.value}
               className={`${styles.inputField} ${isEditing ? styles.editable : ''}`}
               disabled={!isEditing}
               onChange={(e) => input.onChange(e)}
