@@ -201,10 +201,12 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     if (structuralData?.structural_info) {
       const mpKeys = Object.keys(structuralData.structural_info);
       setStructuralInfoStates(mpKeys);
-      setActiveStructuralState(mpKeys[0]);
+      // Update: Select the last MP state instead of the first one
+      setActiveStructuralState(mpKeys[mpKeys.length - 1]);
       setMpData(structuralData.structural_info);
 
-      const initialMpData = structuralData.structural_info[mpKeys[0]];
+      // Update: Use the last MP state's data for initial values
+      const initialMpData = structuralData.structural_info[mpKeys[mpKeys.length - 1]];
       setSelectedValues({
         ...initialMpData,
         quantity: structuralData.quantity,
