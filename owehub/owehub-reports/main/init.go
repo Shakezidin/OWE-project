@@ -8,6 +8,7 @@
 package main
 
 import (
+	auroraclient "OWEApp/owehub-reports/auroraclients"
 	apiHandler "OWEApp/owehub-reports/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/types"
@@ -34,6 +35,7 @@ type CfgFilePaths struct {
 	HTTPConfJsonPath    string
 	DbConfJsonPath      string
 	OfficeMapJsonPath   string
+	AuroraConfJsonPath  string
 }
 
 var (
@@ -259,6 +261,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/delete_dat_state",
+		apiHandler.HandleDeleteDatStateRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************
@@ -446,6 +455,12 @@ func InitConfigFromFiles() (err error) {
 		return err
 	}
 
+	/* Read and Initialize aurora Mapping from cfg */
+	if err := FetchAuroraCfg(); err != nil {
+		log.ConfErrorTrace(0, "FetchAuroraConfig failed %+v", err)
+		return err
+	}
+
 	/* Set HTTP Callback paths*/
 	InitHttpCallbackPath()
 
@@ -468,6 +483,7 @@ func InitCfgPaths() {
 	gCfgFilePaths.DbConfJsonPath = gCfgFilePaths.CfgJsonDir + "sqlDbConfig.json"
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
 	gCfgFilePaths.OfficeMapJsonPath = gCfgFilePaths.CfgJsonDir + "officeMapping.json"
+	gCfgFilePaths.AuroraConfJsonPath = gCfgFilePaths.CfgJsonDir + "auroraConfig.json"
 
 	log.ExitFn(0, "InitCfgPaths", nil)
 }
@@ -705,4 +721,34 @@ func HandleDynamicHttpConf(resp http.ResponseWriter, req *http.Request) models.H
 		resp.WriteHeader(http.StatusBadRequest)
 	}
 	return httpCfg
+}
+
+/******************************************************************************
+ * FUNCTION:        FetchAuroraCfg
+ *
+ * DESCRIPTION:   function is used to get the Aurora configuration
+ * INPUT:        service name to be initialized
+ * RETURNS:      error
+ ******************************************************************************/
+func FetchAuroraCfg() (err error) {
+	log.EnterFn(0, "FetchAuroraCfg")
+	defer func() { log.ExitFn(0, "FetchAuroraCfg", err) }()
+
+	var auroraCfg auroraclient.AuroraConfig
+	log.ConfDebugTrace(0, "Reading Aurora Config from: %+v", gCfgFilePaths.AuroraConfJsonPath)
+	file, err := os.Open(gCfgFilePaths.AuroraConfJsonPath)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.AuroraConfJsonPath, err)
+		panic(err)
+	}
+	bVal, _ := ioutil.ReadAll(file)
+	err = json.Unmarshal(bVal, &auroraCfg)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.AuroraConfJsonPath, err)
+		panic(err)
+	}
+	auroraclient.AuroraCfg = auroraCfg
+	log.ConfDebugTrace(0, "Aurora Configurations: %+v", auroraCfg)
+
+	return err
 }

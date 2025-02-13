@@ -6,6 +6,7 @@ import { disableFilter } from '../../../redux/apiSlice/filterSlice/filterSlice';
 import { useLocation } from 'react-router-dom';
 
 interface Column {
+  filter?:string;
   name: string;
   displayName: string;
   type: string;
@@ -18,6 +19,7 @@ interface TableProps {
   page_size: number;
   fetchFunction: (req: any) => void;
   resetOnChange: boolean;
+  isNew?: boolean;
 }
 const FilterHoc = ({ isOpen = false, ...rest }: TableProps) => {
   const dispatch = useAppDispatch();

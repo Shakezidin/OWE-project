@@ -51,6 +51,8 @@ const RadialChart = ({
         return '#ABDB42';
       case 'mW Installed':
         return '#4ECF54';
+      case 'ntp':
+        return '#007ACC';
       default:
         return '#000000';
     }
@@ -60,25 +62,25 @@ const RadialChart = ({
 
   const apiData = radData
     ? Object.entries(radData).map(([key, value]) => {
-        let displayPercentage;
-        if (value.target === 0 && value.achieved > 0) {
-          displayPercentage = 100;
-        } else if (value.target === 0 && value.achieved === 0) {
-          displayPercentage = 0;
-        } else {
-          const percentage = (value.achieved / value.target) * 100;
-          displayPercentage = percentage >= 100 ? 100 : percentage.toFixed(2);
-        }
+      let displayPercentage;
+      if (value.target === 0 && value.achieved > 0) {
+        displayPercentage = 100;
+      } else if (value.target === 0 && value.achieved === 0) {
+        displayPercentage = 0;
+      } else {
+        const percentage = (value.achieved / value.target) * 100;
+        displayPercentage = percentage >= 100 ? 100 : percentage.toFixed(2);
+      }
 
-        return {
-          name: key,
-          Target: value.target,
-          Achieved: value.achieved,
-          DisplayPercentage: displayPercentage,
-          fill: getColorByKey(key),
-          tooltip: true,
-        };
-      })
+      return {
+        name: key,
+        Target: value.target,
+        Achieved: value.achieved,
+        DisplayPercentage: displayPercentage,
+        fill: getColorByKey(key),
+        tooltip: true,
+      };
+    })
     : [];
 
   const dummyData = [
@@ -177,8 +179,8 @@ const RadialChart = ({
       <RadialBarChart
         cx="50%"
         cy={isMobile ? '48%' : isTablet ? '52%' : '70%'}
-        innerRadius={isTablet || isMobile ? '26%' : '30%'}
-        outerRadius={isTablet || isMobile ? '120%' : '140%'}
+        innerRadius={isTablet || isMobile ? '6%' : '30%'}
+        outerRadius={isTablet || isMobile ? '140%' : '140%'}
         barSize={15}
         data={data}
         startAngle={180}
@@ -220,7 +222,7 @@ const RadialChart = ({
                 style={{
                   display: 'flex',
                   justifyContent: 'center',
-                  gap: '19px',
+                  gap: isMobile ? '8px' : '19px',
                   marginBottom: '20px',
                 }}
               >

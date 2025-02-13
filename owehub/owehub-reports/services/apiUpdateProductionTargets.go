@@ -90,6 +90,7 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 			item.InstallCt,
 			item.MwInstalled,
 			item.BatteriesCt,
+			item.NTP,
 		)
 
 		for i := prevWhereLen; i < len(whereEleList); i++ {
@@ -100,14 +101,15 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	query = fmt.Sprintf(`
-		INSERT INTO %s (month, year, target_percentage, user_id, state, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct)
+		INSERT INTO %s (month, year, target_percentage, user_id, state, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct, ntp)
 		VALUES %s
 		ON CONFLICT (month, year, target_percentage, user_id, state) DO UPDATE SET
 			projects_sold = EXCLUDED.projects_sold,
 			mw_sold = EXCLUDED.mw_sold,
 			install_ct = EXCLUDED.install_ct,
 			mw_installed = EXCLUDED.mw_installed,
-			batteries_ct = EXCLUDED.batteries_ct
+			batteries_ct = EXCLUDED.batteries_ct,
+			ntp = EXCLUDED.ntp
 	`, db.TableName_ProductionTargets, strings.Join(valuesPlaceholders, ", "))
 
 	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)

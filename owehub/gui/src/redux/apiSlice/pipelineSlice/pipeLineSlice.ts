@@ -11,6 +11,7 @@ interface ReportingState {
         data: any,
         loading: boolean,
         error: string | null;
+        list:any[];
     };
     loading: boolean;
     error: string | null;
@@ -24,6 +25,7 @@ const initialState: ReportingState = {
         data: null,
         loading: true,
         error: null,
+        list:[],
     },
     loading: false,
     error: null
@@ -38,27 +40,27 @@ const pipelineSlice = createSlice({
             state.pipelineData = {
                 data: null,
                 loading: false,
-                error: null
+                error: null,
+                list:[]
             };
         }
     },
     extraReducers: (builder) => {
         builder
-           
-              .addCase(getPipeLineData.pending, (state) => {
-                state.pipelineData.loading = true;
-                state.pipelineData.error = null;
-              })
-              .addCase(getPipeLineData.fulfilled, (state, action) => {
-                state.pipelineData.loading = false;
-                state.pipelineData.data = action.payload;
-              })
-              .addCase(getPipeLineData.rejected, (state, action) => {
-                state.pipelineData.loading = false;
-                state.pipelineData.error = action.payload as string;
-                toast.error(action.payload as string);
-              });
-    }
+          .addCase(getPipeLineData.pending, (state) => {
+            state.pipelineData.loading = true;
+            state.pipelineData.error = null;
+          })
+          .addCase(getPipeLineData.fulfilled, (state, action) => {
+            state.pipelineData.loading = false;
+            state.pipelineData.data = action.payload;
+            state.pipelineData.list = action.payload?.list?.data?.pipeline_dealer_data_list;
+          })
+          .addCase(getPipeLineData.rejected, (state, action) => {
+            state.pipelineData.loading = false;
+            state.pipelineData.error = action.payload as string;
+          });
+      }
 });
 
 export const {  clearPipelineData } = pipelineSlice.actions;

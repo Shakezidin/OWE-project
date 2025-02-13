@@ -58,3 +58,8 @@ type AuroraUpdateProjectRequest struct {
 	EmailId       string `json:"email_id"`
 	StreetAddress string `json:"street_address"`
 }
+
+// models for dat tool
+// type AuroraRetrieveDesignSummaryRequest struct {
+// 	Id string `json:"id"`
+// }

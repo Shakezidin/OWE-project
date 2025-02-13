@@ -249,8 +249,19 @@ const LeadTable = ({
       handleGenerateWebProposal(leadId);
       setSelectedType('');
     } else if (selectedType === 'download') {
-      downloadProposalWithSSE(leadId);
+      downloadProposalWithSSE(
+        leadId,
+        (isLoading) => {
+          if (isLoading) {
+            setDownloadingLeadId(leadId);
+          } else {
+            setDownloadingLeadId(null);
+          }
+        },
+        setDownloadProgress
+      );
       setSelectedType('');
+      setDownloadingLeadId(leadId); // Show loader
     } else if (selectedType === 'signature') {
       OpenSignDocument();
       setSelectedType('');

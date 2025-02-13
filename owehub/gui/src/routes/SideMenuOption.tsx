@@ -103,13 +103,13 @@ const mob = {
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
-    {
-      path: ROUTES.REPORTING,
-      sidebarProps: {
-        displayText: 'Reports',
-        icon: <TbReportSearch size={18} style={{ flexShrink: '0' }} />,
-      },
-    },
+    // {
+    //   path: ROUTES.REPORTING,
+    //   sidebarProps: {
+    //     displayText: 'Reports',
+    //     icon: <TbReportSearch size={18} style={{ flexShrink: '0' }} />,
+    //   },
+    // },
     {
       path: ROUTES.LEAD_MANAGEMENT,
       sidebarProps: {

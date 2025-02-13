@@ -19,6 +19,10 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
   loading,
 }) => {
 
+  const getArrow = (percent: number) => {
+    return percent >= 0 ? <IoArrowUp /> : <IoArrowDown />;
+  };
+
   const data1 = [
     {
       doller: tileData ? '$' + tileData?.amount_prepaid?.toFixed(2) : '',
@@ -28,8 +32,8 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
       key: 'amount_prepaid',
       color: '#0493CE',
       bgColor: '#E3F3FC',
-      percent: '+12',
-      arrow: <IoArrowUp />,
+      percent: tileData ? tileData?.amount_prepaid_per?.toFixed(2) : '',
+      arrow: getArrow(tileData?.amount_prepaid_per),
     },
     {
       doller: tileData ? '$' + tileData?.pipeline_remaining?.toFixed(2) : '',
@@ -39,8 +43,8 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
       key: 'pipeline_remaining',
       color: '#9DD428',
       bgColor: '#EBF4DA',
-      percent: '-9',
-      arrow: <IoArrowDown />,
+      percent: tileData ? tileData?.pipeline_remaining_per?.toFixed(2) : '',
+      arrow: getArrow(tileData?.pipeline_remaining_per),
     },
     {
       doller: tileData ? '$' + tileData['current_Due ']?.toFixed(2) : '',
@@ -50,8 +54,8 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({
       key: 'current_due',
       color: '#2DC278',
       bgColor: '#E1F6EB',
-      percent: '+12',
-      arrow: <IoArrowUp />,
+      percent: tileData ? tileData['current_due_per ']?.toFixed(2) : '',
+      arrow: getArrow(tileData['current_due_per ']),
     },
   ];
 
