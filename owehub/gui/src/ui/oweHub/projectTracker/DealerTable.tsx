@@ -272,7 +272,7 @@ const DealerTablePipeline = () => {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'report.csv');
+            link.setAttribute('download', 'detailed_pipeline.csv');
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -311,7 +311,7 @@ const DealerTablePipeline = () => {
                         }}
                             onClick={handleClick}
                         />
-                        <h2>All Status</h2>
+                        <h2>Pipeline</h2>
                     </div>
                     <div className='newp-filInp'>
                         <div className='inp-cont'>
@@ -363,7 +363,6 @@ const DealerTablePipeline = () => {
                                     id="dealer-filter"
                                     place="top"
                                     content="Filter"
-                                    delayShow={200}
                                     className="pagination-tooltip"
                                 />
                                 {formattedFilters && (formattedFilters.length > 0) && (
@@ -399,7 +398,7 @@ const DealerTablePipeline = () => {
                                         color="white"
                                     />
                                 ) : (
-                                    <FaUpload size={12} color="white" />
+                                     <LuImport size={20} color='white'/>
                                 )}
                             </div>
                             {!isExporting &&
@@ -413,7 +412,6 @@ const DealerTablePipeline = () => {
                                         fontWeight: '400',
                                     }}
                                     offset={8}
-                                    delayShow={800}
                                     id="export"
                                     place="bottom"
                                     content="Export"
