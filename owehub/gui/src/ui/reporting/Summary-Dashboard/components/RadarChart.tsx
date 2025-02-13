@@ -12,12 +12,12 @@ import useWindowWidth from '../../../../hooks/useWindowWidth';
 
 
 const RadarChartComponenet = ({ radData }: any) => {
-  
+
   const data = radData
     ? Object.entries(radData).map(([key, value]) => {
       const target = (value as { target: number }).target;
       const achieved = (value as { achieved: number }).achieved;
-      
+
       let percentAchieved: number;
 
       if (target === 0 && achieved > 0) {
@@ -28,7 +28,7 @@ const RadarChartComponenet = ({ radData }: any) => {
         percentAchieved = (achieved / target) * 100;
         percentAchieved = percentAchieved;
       }
-      
+
       let norm: number;
 
       if (target === 0 && achieved > 0) {
@@ -58,20 +58,20 @@ const RadarChartComponenet = ({ radData }: any) => {
 
   const CustomTick = ({ payload, x, y, textAnchor, index }: any) => {
     const entry = data.find((item) => item.subject === payload.value);
-    
+
     if (entry) {
       const percentage = entry.Percent_Achieve;
       const formattedPercentage = percentage % 1 === 0 ? percentage.toFixed(0) : percentage.toFixed(2);
-  
+
       // Calculate angle-based offset
       const angleInDegrees = (360 / data.length) * index;
       const angleInRadians = (Math.PI / 180) * angleInDegrees;
-      
+
       // Adjust offset distance
-      const offset = 16; // Increase this to push ticks further
+      const offset = 1; // Increase this to push ticks further
       const offsetX = offset * Math.cos(angleInRadians);
       const offsetY = offset * Math.sin(angleInRadians);
-  
+
       return (
         <g>
           <text
@@ -99,8 +99,8 @@ const RadarChartComponenet = ({ radData }: any) => {
     }
     return null;
   };
-  
-  
+
+
 
   const width = useWindowWidth();
   const isMobile = width <= 767;
@@ -120,7 +120,8 @@ const RadarChartComponenet = ({ radData }: any) => {
         <PolarAngleAxis
           dataKey="subject"
           tick={<CustomTick />}
-          
+          tickSize={15}
+          tickLine={false}
         />
         <Radar name="Lily" dataKey="B" stroke="#D5E4FF" fill="#fff" fillOpacity={0} />
         <Radar
