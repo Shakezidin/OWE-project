@@ -147,13 +147,13 @@ const StringInverterConfig: React.FC<StringInverterProps> = ({
       });
   
       setIsEditing(false);
-      toast.success('String inverter configuration updated successfully');
+      // toast.success('String inverter configuration updated successfully');
       
       // Update initial config after successful save
       setInitialConfig(JSON.parse(JSON.stringify(editedConfig)));
     } catch (error) {
       console.error('Failed to update string inverter configuration:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to update configuration');
+      // toast.error(error instanceof Error ? error.message : 'Failed to update configuration');
     }
   };
   const handleCancel = () => {

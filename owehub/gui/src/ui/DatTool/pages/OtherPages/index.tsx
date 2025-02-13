@@ -108,14 +108,14 @@ const Card: React.FC<CardProps> = ({
       const response = await dispatch(updateDatTool(payload)).unwrap();
       
       if (response) {
-        toast.success('Data updated successfully!');
+        // toast.success('Data updated successfully!');
         onSave(editedFields);
         setModifiedFields({});
         setIsEditing(false);
       }
     } catch (error) {
       console.error('Error updating fields:', error);
-      toast.error('Failed to update data. Please try again.');
+      // toast.error('Failed to update data. Please try again.');
     }
   };
 
