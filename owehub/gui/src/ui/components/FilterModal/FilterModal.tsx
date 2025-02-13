@@ -19,7 +19,7 @@ interface Column {
   filter?: string;
   displayName: string;
   type: string;
-  isNotFilter?:boolean
+  isNotFilter?: boolean
 }
 interface TableProps {
   handleClose: () => void;
@@ -72,11 +72,11 @@ const FilterModal: React.FC<TableProps> = ({
   ]);
   const [errors, setErrors] = useState<ErrorState>({});
   const options: Option[] = columns
-  .filter((column) => !column.isNotFilter)
-  .map((column) => ({
-    value: column.filter ? column.filter : column.name,
-    label: column.displayName,
-  }));
+    .filter((column) => !column.isNotFilter)
+    .map((column) => ({
+      value: column.filter ? column.filter : column.name,
+      label: column.displayName,
+    }));
 
   const { pathname } = useLocation();
   const init = useRef(true);
@@ -153,8 +153,34 @@ const FilterModal: React.FC<TableProps> = ({
 
   const handleRemoveRow = (index: number) => {
     if (filters.length === 1) {
-      // Close the modal if only one row is present
-      handleClose();
+      if (true) {
+        const resetFilters = filters
+          .filter((_, ind) => ind === 0)
+          .map((filter) => ({
+            ...filter,
+            Column: '',
+            Operation: '',
+            Data: '',
+            start_date: '',
+            end_date: ''
+          }));
+        setFilters(resetFilters);
+        setApplyFilters(resetFilters);
+        if (
+          filters.some(
+            (filter) => filter.Operation || filter.Data || filter.Column
+          )
+        ) {
+          const req = {
+            page_number: page_number,
+            page_size: page_size,
+          };
+          fetchFunction(req);
+        }
+        handleClose();
+        dispatch(disableFilter({ name: pathname }));
+        setErrors({});
+      }
       return;
     }
     const updatedFilters = [...filters];
@@ -323,10 +349,10 @@ const FilterModal: React.FC<TableProps> = ({
                         width: isMobile
                           ? '100%'
                           : (type === 'date' && isNew === true)
-                          ? '25%'
-                          : '',
+                            ? '25%'
+                            : '',
                       }}
-                      
+
                     >
                       <label
                         className="inputLabel-select"
@@ -361,10 +387,10 @@ const FilterModal: React.FC<TableProps> = ({
                         width: isMobile
                           ? '100%'
                           : (type === 'date' && isNew === true)
-                          ? '25%'
-                          : '',
+                            ? '25%'
+                            : '',
                       }}
-                      
+
                     >
                       <label
                         className="inputLabel-select"
@@ -524,7 +550,7 @@ const FilterModal: React.FC<TableProps> = ({
                         </span>
                       )}
                     </div>
-                    {index !== 0 && (
+                    {true && (
                       <div
                         className="fildelb-btn"
                         onClick={() => handleRemoveRow(index)}
