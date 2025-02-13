@@ -22,6 +22,8 @@ interface InputState {
   mwInstalled?: number;
   showbatteriesCT: boolean;
   batteriesCT?: number;
+  showntp: boolean;
+  ntp?: number
 }
 
 const EditModal = ({
@@ -45,6 +47,7 @@ const EditModal = ({
       install_ct: 0,
       mw_installed: 0,
       batteries_ct: 0,
+      ntp: 0
     },
   ]);
 
@@ -97,6 +100,7 @@ const EditModal = ({
     installCT: item.install_ct,
     mwInstalled: item.mw_installed,
     batteriesCT: item.batteries_ct,
+    ntp: item.ntp,
   }));
 
   const [showInput, setShowInput] = useState<Record<string, InputState>>({});
@@ -114,11 +118,15 @@ const EditModal = ({
       batteriesCT:
         totals.batteriesCT +
         (showInput[row.month]?.batteriesCT ?? row.batteriesCT),
+      ntp:
+        totals.ntp +
+        (showInput[row.month]?.ntp ?? row.ntp),
     }),
-    { projectSold: 0, mwSold: 0, installCT: 0, mwInstalled: 0, batteriesCT: 0 }
+    { projectSold: 0, mwSold: 0, installCT: 0, mwInstalled: 0, batteriesCT: 0, ntp:0 }
   );
 
   const handleShow = (month: string, key: keyof InputState, value: number) => {
+    console.log(showInput, "show")
     setShowInput((prevState) => {
       const currentMonthState = prevState[month] || {};
       return {
@@ -130,6 +138,7 @@ const EditModal = ({
         },
       };
     });
+    console.log(showInput, "show")
   };
 
   const handleHide = (month: string, key: keyof InputState) => {
@@ -148,7 +157,7 @@ const EditModal = ({
 
   const convertData = () => {
     const convertedData = Object.entries(showInput).map(([month, data]) => {
-      const { projectSold, mwSold, installCT, mwInstalled, batteriesCT } = data;
+      const { projectSold, mwSold, installCT, mwInstalled, batteriesCT,ntp } = data;
 
       const monthNumber = new Date(Date.parse(month + ' 1')).getMonth() + 1;
 
@@ -160,6 +169,7 @@ const EditModal = ({
         install_ct: installCT,
         mw_installed: mwInstalled,
         batteries_ct: batteriesCT,
+        ntp:ntp
       };
 
       const importantKeys = [
@@ -168,6 +178,7 @@ const EditModal = ({
         'install_ct',
         'mw_installed',
         'batteries_ct',
+        'ntp'
       ];
 
       const cleanedResult = Object.fromEntries(
@@ -186,7 +197,7 @@ const EditModal = ({
 
   const convertData2 = () => {
     const convertedData = Object.entries(showInputTest).map(([month, data]) => {
-      const { projectSold, mwSold, installCT, mwInstalled, batteriesCT } = data;
+      const { projectSold, mwSold, installCT, mwInstalled, batteriesCT,ntp } = data;
 
       const monthNumber = new Date(Date.parse(month + ' 1')).getMonth() + 1;
 
@@ -198,6 +209,7 @@ const EditModal = ({
         install_ct: installCT,
         mw_installed: mwInstalled,
         batteries_ct: batteriesCT,
+        ntp:ntp
       };
 
       const importantKeys = [
@@ -206,6 +218,7 @@ const EditModal = ({
         'install_ct',
         'mw_installed',
         'batteries_ct',
+        'ntp'
       ];
 
       const cleanedResult = Object.fromEntries(
@@ -222,12 +235,7 @@ const EditModal = ({
     return convertedData;
   };
 
-  const mergeArraysByIndex = (data1: any[], data2: any[]) => {
-    return data1.map((item, index) => ({
-      ...item,
-      ...(data2[index] || {}), // Merge if index exists in data2
-    }));
-  };
+ 
 
   const dataTarget = convertData();
   const dataTarget2 = convertData2();
@@ -336,6 +344,7 @@ const EditModal = ({
                       <th>Install CT</th>
                       <th>mw Installed</th>
                       <th>Batteries Installed</th>
+                      <th>ntp</th>
                     </tr>
                   </thead>
                   {loadinged ? (
@@ -393,9 +402,9 @@ const EditModal = ({
                                     style={{
                                       cursor:
                                         isPastMonth ||
-                                        prevYear ||
-                                        isOther ||
-                                        isAllSelected
+                                          prevYear ||
+                                          isOther ||
+                                          isAllSelected
                                           ? ''
                                           : 'pointer',
                                     }}
@@ -435,7 +444,7 @@ const EditModal = ({
                                       }}
                                       value={
                                         showInput[row.month]?.projectSold !==
-                                        undefined
+                                          undefined
                                           ? showInput[row.month]?.projectSold
                                           : row.projectSold
                                       }
@@ -449,6 +458,7 @@ const EditModal = ({
                                             mwInstalled: row.mwInstalled,
                                             batteriesCT: row.batteriesCT,
                                             installCT: row.installCT,
+                                            ntp:row.ntp
                                           },
                                         }));
                                         const value = e.target.value;
@@ -492,9 +502,9 @@ const EditModal = ({
                                     style={{
                                       cursor:
                                         isPastMonth ||
-                                        prevYear ||
-                                        isOther ||
-                                        isAllSelected
+                                          prevYear ||
+                                          isOther ||
+                                          isAllSelected
                                           ? ''
                                           : 'pointer',
                                     }}
@@ -534,7 +544,7 @@ const EditModal = ({
                                       }}
                                       value={
                                         showInput[row.month]?.mwSold !==
-                                        undefined
+                                          undefined
                                           ? showInput[row.month]?.mwSold
                                           : row.mwSold
                                       }
@@ -548,6 +558,7 @@ const EditModal = ({
                                             mwInstalled: row.mwInstalled,
                                             batteriesCT: row.batteriesCT,
                                             installCT: row.installCT,
+                                            ntp:row.ntp
                                           },
                                         }));
                                         const value = e.target.value;
@@ -591,9 +602,9 @@ const EditModal = ({
                                     style={{
                                       cursor:
                                         isPastMonth ||
-                                        prevYear ||
-                                        isOther ||
-                                        isAllSelected
+                                          prevYear ||
+                                          isOther ||
+                                          isAllSelected
                                           ? ''
                                           : 'pointer',
                                     }}
@@ -633,7 +644,7 @@ const EditModal = ({
                                       }}
                                       value={
                                         showInput[row.month]?.installCT !==
-                                        undefined
+                                          undefined
                                           ? showInput[row.month]?.installCT
                                           : row.installCT
                                       }
@@ -647,6 +658,7 @@ const EditModal = ({
                                             mwInstalled: row.mwInstalled,
                                             batteriesCT: row.batteriesCT,
                                             installCT: row.installCT,
+                                            ntp:row.ntp
                                           },
                                         }));
                                         const value = e.target.value;
@@ -690,9 +702,9 @@ const EditModal = ({
                                     style={{
                                       cursor:
                                         isPastMonth ||
-                                        prevYear ||
-                                        isOther ||
-                                        isAllSelected
+                                          prevYear ||
+                                          isOther ||
+                                          isAllSelected
                                           ? ''
                                           : 'pointer',
                                     }}
@@ -726,7 +738,7 @@ const EditModal = ({
                                       min={0}
                                       value={
                                         showInput[row.month]?.mwInstalled !==
-                                        undefined
+                                          undefined
                                           ? showInput[row.month]?.mwInstalled
                                           : row.mwInstalled
                                       }
@@ -745,6 +757,7 @@ const EditModal = ({
                                             mwInstalled: row.mwInstalled,
                                             batteriesCT: row.batteriesCT,
                                             installCT: row.installCT,
+                                            ntp:row.ntp
                                           },
                                         }));
                                         const value = e.target.value;
@@ -788,9 +801,9 @@ const EditModal = ({
                                     style={{
                                       cursor:
                                         isPastMonth ||
-                                        prevYear ||
-                                        isOther ||
-                                        isAllSelected
+                                          prevYear ||
+                                          isOther ||
+                                          isAllSelected
                                           ? ''
                                           : 'pointer',
                                     }}
@@ -830,7 +843,7 @@ const EditModal = ({
                                       maxLength={6}
                                       value={
                                         showInput[row.month]?.batteriesCT !==
-                                        undefined
+                                          undefined
                                           ? showInput[row.month]?.batteriesCT
                                           : row.batteriesCT
                                       }
@@ -844,6 +857,7 @@ const EditModal = ({
                                             mwInstalled: row.mwInstalled,
                                             batteriesCT: row.batteriesCT,
                                             installCT: row.installCT,
+                                            ntp:row.ntp
                                           },
                                         }));
                                         const value = e.target.value;
@@ -878,6 +892,106 @@ const EditModal = ({
                                   </div>
                                 )}
                               </td>
+
+                              <td
+                                className={`${isPastMonth || prevYear ? 'viraj' : ''}`}
+                              >
+                                {!showInput[row.month]?.showntp && (
+                                  <div
+                                    style={{
+                                      cursor:
+                                        isPastMonth ||
+                                          prevYear ||
+                                          isOther ||
+                                          isAllSelected
+                                          ? ''
+                                          : 'pointer',
+                                    }}
+                                    onClick={() => {
+                                      if (
+                                        !(
+                                          isPastMonth ||
+                                          prevYear ||
+                                          isOther ||
+                                          isAllSelected
+                                        )
+                                      ) {
+                                        handleShow(
+                                          row.month,
+                                          'ntp',
+                                          row.ntp
+                                        );
+                                      }
+                                    }}
+                                  >
+                                    {showInput[row.month]?.ntp ??
+                                      (row.ntp % 1 !== 0
+                                        ? row.ntp.toFixed(2)
+                                        : row.ntp)}
+                                  </div>
+                                )}
+                                {showInput[row.month]?.showntp && (
+                                  <div className="edit_input">
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      onKeyDown={(e) => {
+                                        if (e.key === '-') {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                      maxLength={6}
+                                      value={
+                                        showInput[row.month]?.ntp !==
+                                          undefined
+                                          ? showInput[row.month]?.ntp
+                                          : row.ntp
+                                      }
+                                      onChange={(e) => {
+                                        setShowInputTest((prevState) => ({
+                                          ...prevState,
+                                          [row.month]: {
+                                            ...prevState[row.month],
+                                            projectSold: row.projectSold,
+                                            mwSold: row.mwSold,
+                                            mwInstalled: row.mwInstalled,
+                                            batteriesCT: row.batteriesCT,
+                                            installCT: row.installCT,
+                                            ntp:row.ntp
+                                          },
+                                        }));
+                                        const value = e.target.value;
+                                        const [beforeDecimal, afterDecimal] =
+                                          value.split('.');
+                                        if (
+                                          beforeDecimal.length <= 8 &&
+                                          (!afterDecimal ||
+                                            afterDecimal.length <= 2)
+                                        ) {
+                                          setShowInput((prevState) => ({
+                                            ...prevState,
+                                            [row.month]: {
+                                              ...prevState[row.month],
+                                              ntp: Number(value),
+                                            },
+                                          }));
+                                        }
+                                      }}
+                                    />
+                                    <TiTick
+                                      onClick={() =>
+                                        handleHide(row.month, 'ntp')
+                                      }
+                                      size={25}
+                                      style={{
+                                        height: '20px',
+                                        width: '20px',
+                                        cursor: 'pointer',
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </td>
                             </tr>
                           );
                         })}
@@ -890,6 +1004,7 @@ const EditModal = ({
                           <th>{grandTotal.installCT.toFixed(2)}</th>
                           <th>{grandTotal.mwInstalled.toFixed(2)}</th>
                           <th>{grandTotal.batteriesCT.toFixed(2)}</th>
+                          <th>{grandTotal.ntp.toFixed(2)}</th>
                         </tr>
                       </tfoot>
                     </>

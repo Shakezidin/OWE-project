@@ -41,15 +41,19 @@ type GeneralBasics struct {
 	EmailID        string `json:"email_id"`
 }
 type GeneralDatInformation struct {
-	DATModuleQty     int64  `json:"dat_module_qty"`
-	DATModuleType    string `json:"dat_module_type"`
-	DATDesignVersion int64  `json:"dat_design_version"`
-	DATDesignerName  string `json:"dat_designer_name"`
-	DATAuroraId      string `json:"dat_aurora_id"`
-	DATSysteSizeAC   string `json:"dat_system_size_ac"`
-	DATSysteSizeDC   string `json:"dat_system_size_dc"`
-	DATChanges       string `json:"dat_changes"`
-	DATChangeOrder   string `json:"dat_change_order"`
+	DATModuleQty           int64  `json:"dat_module_qty"`
+	DATModuleType          string `json:"dat_module_type"`
+	DATDesignVersion       int64  `json:"dat_design_version"`
+	DATDesignerName        string `json:"dat_designer_name"`
+	DATAuroraId            string `json:"dat_aurora_id"`
+	DATSysteSizeAC         string `json:"dat_system_size_ac"`
+	DATSysteSizeDC         string `json:"dat_system_size_dc"`
+	DATInverterType        string `json:"dat_inverter_type"`
+	DATBatteryType         string `json:"dat_battery_type"`
+	DATSiteCaptureUrl      string `json:"dat_site_capture_url"`
+	DATChangeLayout        string `json:"dat_change_layout"`
+	DATChangeProduction    string `json:"dat_change_production"`
+	DATChangeOrderRequired string `json:"dat_change_order_required"`
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +100,10 @@ type RoofStructure struct {
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // for adder tab
 type AdderUpdateQuantityRequest struct {
-	CategoryTitle string `json:"category_title"`
+	CategoryTitle    string            `json:"category_title"`
+	ComponentUpdates []ComponentUpdate `json:"component_updates"`
+}
+type ComponentUpdate struct {
 	ComponentName string `json:"component_name"`
 	NewQuantity   int64  `json:"new_quantity"`
 }

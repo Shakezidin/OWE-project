@@ -1616,11 +1616,11 @@ func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) (stri
 		    FROM customers_customers_schema cs
 			LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
 			AND ns.app_status NOT ILIKE '%%DUPLICATE%%' AND ns.project_status NOT ILIKE '%%DUPLICATE%%'
-			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
-			AND pis.app_status NOT ILIKE '%%DUPLICATE%%' AND pis.project_status NOT ILIKE '%%DUPLICATE%%'
+			-- LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+			--AND pis.app_status NOT ILIKE '%%DUPLICATE%%' AND pis.project_status NOT ILIKE '%%DUPLICATE%%'
 			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
-			LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
-			AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
+			-- LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
+			-- AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
 			WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' AND cs.unique_id != ''
 		    AND %v
             %v
@@ -1635,8 +1635,8 @@ func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) (stri
 		    FROM customers_customers_schema cs
 			LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
 			AND ns.app_status NOT ILIKE '%%DUPLICATE%%' AND ns.project_status NOT ILIKE '%%DUPLICATE%%'
-			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
-			AND pis.app_status NOT ILIKE '%%DUPLICATE%%' AND pis.project_status NOT ILIKE '%%DUPLICATE%%'
+			--LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+			--AND pis.app_status NOT ILIKE '%%DUPLICATE%%' AND pis.project_status NOT ILIKE '%%DUPLICATE%%'
 			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
 			LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
 			AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
@@ -1695,8 +1695,8 @@ func LeaderBoardInstallBatteryData(dateRange, dealers, groupBy, chosen string) (
 			LEFT JOIN  customers_customers_schema cs ON cs.unique_id = pis.customer_unique_id
 			AND cs.project_status NOT ILIKE '%%DUPLICATE%%' 
 			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
-			LEFT JOIN system_customers_schema scs ON scs.customer_id = pis.customer_unique_id
-			AND scs.project_status NOT ILIKE '%%DUPLICATE%%' 
+			-- LEFT JOIN system_customers_schema scs ON scs.customer_id = pis.customer_unique_id
+			-- AND scs.project_status NOT ILIKE '%%DUPLICATE%%' 
 			WHERE pis.project_status NOT ILIKE '%%DUPLICATE%%' AND pis.app_status NOT ILIKE '%%DUPLICATE%%' AND pis.customer_unique_id != ''
 		    AND %v
             %v
@@ -1754,17 +1754,17 @@ func LeaderBoardNTPData(dateRange, dealers, groupBy, chosen string) (string, str
 	var query string
 	if chosen == "count" {
 		query = fmt.Sprintf(`
-		SELECT
+		SELECT 
 			%v,
 			COUNT(CASE WHEN ns.ntp_complete_date %v THEN 1 ELSE NULL END) AS ntp
 		    FROM ntp_ntp_schema ns
 			LEFT JOIN customers_customers_schema cs ON cs.unique_id = ns.unique_id
 			AND cs.project_status NOT ILIKE '%%DUPLICATE%%'
-			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = ns.unique_id
-			AND pis.app_status NOT ILIKE '%%DUPLICATE%%' AND pis.project_status NOT ILIKE '%%DUPLICATE%%'
+			--LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = ns.unique_id
+			--AND pis.app_status NOT ILIKE '%%DUPLICATE%%' AND pis.project_status NOT ILIKE '%%DUPLICATE%%'
 			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
-			LEFT JOIN system_customers_schema scs ON scs.customer_id = ns.unique_id
-			AND scs.project_status NOT ILIKE '%%DUPLICATE%%' 
+			-- LEFT JOIN system_customers_schema scs ON scs.customer_id = ns.unique_id
+			-- AND scs.project_status NOT ILIKE '%%DUPLICATE%%' 
 			WHERE ns.project_status NOT ILIKE '%%DUPLICATE%%' AND ns.app_status NOT ILIKE '%%DUPLICATE%%' AND ns.unique_id != ''
 		    AND %v
             %v
@@ -1778,8 +1778,8 @@ func LeaderBoardNTPData(dateRange, dealers, groupBy, chosen string) (string, str
 		    FROM ntp_ntp_schema ns
 			LEFT JOIN customers_customers_schema cs ON cs.unique_id = ns.unique_id
 			AND cs.project_status NOT ILIKE '%%DUPLICATE%%'
-			LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = ns.unique_id
-			AND pis.app_status NOT ILIKE '%%DUPLICATE%%' AND pis.project_status NOT ILIKE '%%DUPLICATE%%'
+			--LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = ns.unique_id
+			--AND pis.app_status NOT ILIKE '%%DUPLICATE%%' AND pis.project_status NOT ILIKE '%%DUPLICATE%%'
 			LEFT JOIN sales_rep_dbhub_schema srs ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
 			LEFT JOIN system_customers_schema scs ON scs.customer_id = ns.unique_id
 			AND scs.project_status NOT ILIKE '%%DUPLICATE%%' 

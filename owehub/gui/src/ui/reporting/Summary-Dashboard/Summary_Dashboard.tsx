@@ -52,90 +52,9 @@ interface MonthlyStatsItem {
 const Summary_Dashboard = () => {
   const { authData, getUpdatedAuthData } = useAuth();
   const role = authData?.role;
-
-  const tableData = {
-    tableNames: ['states', 'account_manager', 'available_states'],
-  };
-
-  const [newFormData, setNewFormData] = useState<any>([]);
-
-  // hardcoded list of states
-  const stateOptions = [
-    {
-      label: 'All States',
-      value: 'All',
-    },
-    ...['Colorado', 'Arizona', 'Texas', 'New Mexico', 'Nevada'].map(
-      (state) => ({
-        label: state,
-        value: state,
-      })
-    ),
-  ];
-
-  // hardcoded list of ams'
-  const amOptions = [
-    {
-      label: 'OWE',
-      value: 'All',
-    },
-    ...['Taylor Ramsthel', 'Josh Morton', 'Adam Doty'].map((am) => ({
-      label: am,
-      value: am,
-    })),
-  ];
-
-  const [am, setAM] = useState<Option[]>([]);
-
-  const isShowDropdown = role === 'Admin';
-
-  useEffect(() => {
-    if (role === 'Admin' || isShowDropdown) {
-      getNewFormData();
-    }
-  }, [role]);
   const [drop, setDrop] = useState(false);
-  const getNewFormData = async () => {
-    setDrop(true);
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    if (res.status > 200) {
-      setDrop(false);
-      return;
-    }
-    setNewFormData(res.data);
-
-    const statesData: Option[] = [
-      { label: 'All States', value: 'All' },
-      ...(res?.data?.available_states as string[])
-        .filter((state) => state !== '')
-        .map((state) => ({
-          label: state,
-          value: state,
-        })),
-    ];
-    const amData: Option[] = res?.data?.account_manager
-      ? [
-          { label: 'OWE', value: 'All' },
-          ...(res.data.account_manager as string[]).map((state) => ({
-            label: state,
-            value: state,
-          })),
-        ]
-      : [{ label: 'OWE', value: 'All' }];
-    setAM(amData);
-    setDrop(false);
-  };
-
-  const [selectedState, setSelectedState] = useState<Option>({
-    label: 'All States',
-    value: 'All',
-  });
-
-  const [selectedAM, setSelectedAm] = useState<Option>({
-    label: 'OWE',
-    value: 'All',
-  });
-
+  const [newFormData, setNewFormData] = useState<any>([]);
+  const [am, setAM] = useState<Option[]>([]);
   const [reportType, setReportType] = useState<Option>({
     label: 'January',
     value: 'January',
@@ -212,11 +131,42 @@ const Summary_Dashboard = () => {
       value: 'December',
     },
   ];
-  const stylesGraph = {
-    width: '100%',
-    height: '463px',
-    padding: '1rem',
-    borderRight: '1px dotted #D7D9DC',
+  const [selectedState, setSelectedState] = useState<Option>({
+    label: 'All States',
+    value: 'All',
+  });
+
+  const [selectedAM, setSelectedAm] = useState<Option>({
+    label: 'OWE',
+    value: 'All',
+  });
+   // hardcoded list of states
+   const stateOptions = [
+    {
+      label: 'All States',
+      value: 'All',
+    },
+    ...['Colorado', 'Arizona', 'Texas', 'New Mexico', 'Nevada'].map(
+      (state) => ({
+        label: state,
+        value: state,
+      })
+    ),
+  ];
+  // hardcoded list of ams'
+  const amOptions = [
+    {
+      label: 'OWE',
+      value: 'All',
+    },
+    ...['Taylor Ramsthel', 'Josh Morton', 'Adam Doty'].map((am) => ({
+      label: am,
+      value: am,
+    })),
+  ];
+  const isShowDropdown = role === 'Admin';
+  const tableData = {
+    tableNames: ['states', 'account_manager', 'available_states'],
   };
   const stylesGraph2 = {
     width: '100%',
@@ -252,28 +202,76 @@ const Summary_Dashboard = () => {
       label: 'Batteries Installed',
       value: 'batteries_ct',
     },
+    {
+      label: 'NTP',
+      value: 'ntp',
+    },
   ];
   const [datas, setDatas] = useState<Option>({
     label: 'Projects Sold',
     value: 'projects_sold',
   });
-
   const [activeButton, setActiveButton] = useState('projects_sold');
+  const [line, setLine] = useState(false);
+  const [activePerc, setActivePerc] = useState('100');
+  const [open, setOpen] = useState(false);
+  const [refre, setRefre] = useState(0);
+  const [summaryDataState, setSummaryDataState] = useState<DynamicSummaryData>(
+    {}
+  );
+  const [progressData, setProgressData] = useState<ProgressData>({});
+  const [monthlyOverviewData, setMonthlyOverviewData] = useState<
+    MonthlyOverviewItem[]
+  >([]);
+  const [monthlyStatsData, setMonthlyStatsData] = useState<MonthlyStatsItem[]>(
+    []
+  );
 
+ 
+  useEffect(() => {
+    if (role === 'Admin' || isShowDropdown) {
+      getNewFormData();
+    }
+  }, [role]);
+  const getNewFormData = async () => {
+    setDrop(true);
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    if (res.status > 200) {
+      setDrop(false);
+      return;
+    }
+    setNewFormData(res.data);
+
+
+    const amData: Option[] = res?.data?.account_manager
+      ? [
+        { label: 'OWE', value: 'All' },
+        ...(res.data.account_manager as string[]).map((state) => ({
+          label: state,
+          value: state,
+        })),
+      ]
+      : [{ label: 'OWE', value: 'All' }];
+    setAM(amData);
+    setDrop(false);
+  };
+  
+
+ 
   const handleButtonClick = (buttonName: any) => {
     setActiveButton(buttonName);
   };
-  const [line, setLine] = useState(false);
+ 
   const handleChartClick = () => {
     setLine(!line);
   };
 
-  const [activePerc, setActivePerc] = useState('100');
+  
   const handlePercButtonClick = (buttonName: any) => {
     setActivePerc(buttonName);
   };
 
-  const [open, setOpen] = useState(false);
+  
   const handleOpen = () => {
     setOpen(true);
   };
@@ -284,7 +282,7 @@ const Summary_Dashboard = () => {
   //Api Integration
   const dispatch = useAppDispatch();
 
-  const [refre, setRefre] = useState(0);
+  
 
   useEffect(() => {
     dispatch(
@@ -302,16 +300,7 @@ const Summary_Dashboard = () => {
   const { summaryData, loading } = useAppSelector(
     (state) => state.reportingSlice
   );
-  const [summaryDataState, setSummaryDataState] = useState<DynamicSummaryData>(
-    {}
-  );
-  const [progressData, setProgressData] = useState<ProgressData>({});
-  const [monthlyOverviewData, setMonthlyOverviewData] = useState<
-    MonthlyOverviewItem[]
-  >([]);
-  const [monthlyStatsData, setMonthlyStatsData] = useState<MonthlyStatsItem[]>(
-    []
-  );
+  
 
   useEffect(() => {
     setSummaryDataState(summaryData?.data?.data?.summary);
@@ -328,6 +317,7 @@ const Summary_Dashboard = () => {
     'Install Ct',
     'mW Installed',
     'Batteries Installed',
+    'ntp'
   ];
 
   return (
@@ -642,13 +632,19 @@ const Summary_Dashboard = () => {
                     </div>
                     <div
                       className={`${classes.bottom_box_button} ${activeButton === 'batteries_ct' ? classes.active : ''}`}
+                      onClick={() => handleButtonClick('batteries_ct')}
+                    >
+                      Batteries Installed
+                    </div>
+                    <div
+                      className={`${classes.bottom_box_button} ${activeButton === 'ntp' ? classes.active : ''}`}
                       style={{
                         borderBottomRightRadius: '10px',
                         borderTopRightRadius: '10px',
                       }}
-                      onClick={() => handleButtonClick('batteries_ct')}
+                      onClick={() => handleButtonClick('ntp')}
                     >
-                      Batteries Installed
+                      NTP
                     </div>
                   </div>
                 ) : (

@@ -105,7 +105,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			return
 		}
 
-		dataReq.DealerNames = append(dataReq.DealerNames, dealerName)
+		dataReq.DealerNames = []string{dealerName}
 	}
 
 	if dataReq.Role == string(types.RoleAccountManager) || dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleProjectManager) {
@@ -163,7 +163,8 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
     NULL::timestamp AS ntp_complete_date,  -- Cast to text
     NULL::text AS ntp_unique_id,
     NULL::timestamp AS pv_completion_date,  -- Cast to text
-    NULL::text AS pv_unique_id
+    NULL::text AS pv_unique_id,
+	NULL::int AS battery_count
 FROM
     customers_customers_schema
 WHERE
@@ -182,7 +183,8 @@ SELECT
     NULL::timestamp AS ntp_complete_date,
     NULL::text AS ntp_unique_id,
     NULL::timestamp AS pv_completion_date,
-    NULL::text AS pv_unique_id
+    NULL::text AS pv_unique_id,
+	NULL::int AS battery_count
 FROM
     customers_customers_schema
 WHERE
@@ -201,7 +203,8 @@ SELECT
     ntp_complete_date AS ntp_complete_date,
     unique_id::text AS ntp_unique_id,
     NULL::timestamp AS pv_completion_date,
-    NULL::text AS pv_unique_id
+    NULL::text AS pv_unique_id,
+	NULL::int AS battery_count
 FROM
     ntp_ntp_schema
 WHERE
@@ -213,20 +216,21 @@ WHERE
 UNION ALL
 
 SELECT
-	NULL::text AS cancel_unique_id,
-	NULL::timestamp AS cancel_date,
-    NULL::text AS customers_unique_id,
-    NULL::timestamp AS sale_date,
-    NULL::timestamp AS ntp_complete_date,
-    NULL::text AS ntp_unique_id,
-    pv_completion_date AS pv_completion_date,
-    customer_unique_id::text AS pv_unique_id
-FROM
-    pv_install_install_subcontracting_schema
-WHERE
-    dealer IN (` + dealerInQuery + `)  -- Use ANY to match any dealer in the array
-    AND project_status != 'DUPLICATE'
-    AND pv_completion_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS')
+        NULL::text AS cancel_unique_id,
+        NULL::timestamp AS cancel_date,
+        NULL::text AS customers_unique_id,
+        NULL::timestamp AS sale_date,
+        NULL::timestamp AS ntp_complete_date,
+        NULL::text AS ntp_unique_id,
+        pv.pv_completion_date AS pv_completion_date,
+        pv.customer_unique_id::text AS pv_unique_id,
+        ns.battery_count AS battery_count
+    FROM pv_install_install_subcontracting_schema pv
+    LEFT JOIN ntp_ntp_schema ns 
+        ON ns.unique_id = pv.customer_unique_id
+    WHERE pv.dealer IN (` + dealerInQuery + `)
+    AND pv.project_status NOT ILIKE '%%DUPLICATE%%' AND pv.app_status NOT ILIKE '%%DUPLICATE%%' AND pv.customer_unique_id != ''
+    AND pv.pv_completion_date BETWEEN TO_TIMESTAMP($1, 'DD-MM-YYYY HH24:MI:SS')
                                AND TO_TIMESTAMP($2, 'DD-MM-YYYY HH24:MI:SS');
 `
 
@@ -275,6 +279,12 @@ WHERE
 			if pvCompletionDate, ok := item["pv_completion_date"].(time.Time); ok {
 				uniqueIDs[pvUniqueID] = append(uniqueIDs[pvUniqueID], map[string]interface{}{"pv_completion_date": pvCompletionDate})
 			}
+
+			batteryCount := getNumber(item, "battery_count")
+			if batteryCount != 0 {
+				uniqueIDs[pvUniqueID] = append(uniqueIDs[pvUniqueID], map[string]interface{}{"battery_count": batteryCount})
+			}
+
 		}
 
 		if cancelUniqueID, ok := item["cancel_unique_id"].(string); ok && cancelUniqueID != "" {
@@ -351,6 +361,10 @@ WHERE cs.unique_id IN (`
 					if pvCompletionDate, ok := queryResult["pv_completion_date"].(time.Time); ok {
 						item["pv_completion_date"] = pvCompletionDate
 					}
+
+					if batteryCount, ok := queryResult["battery_count"].(float64); ok {
+						item["battery_count"] = batteryCount
+					}
 				}
 			} else {
 				log.FuncErrorTrace(0, "No data found for unique_id: %s", uniqueID)
@@ -411,4 +425,21 @@ func FetchLeaderBoardDealerForAmAe(dataReq models.GetCsvDownload, userRole inter
 	}
 
 	return items, nil
+}
+
+func getNumber(m map[string]interface{}, key string) float64 {
+	val, ok := m[key]
+	if !ok {
+		return 0
+	}
+	switch v := val.(type) {
+	case float64:
+		return v
+	case int64:
+		return float64(v)
+	case int:
+		return float64(v)
+	default:
+		return 0
+	}
 }

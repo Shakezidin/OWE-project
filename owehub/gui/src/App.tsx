@@ -47,7 +47,7 @@ import RecycleBin from './ui/Library/RecycleBin/RecycleBin';
 import FinanceTypes from './ui/oweHub/configure/financeTypes/FinanceTypes';
 import SsOnboarding from './ui/oweHub/configure/SS-Onboarding/SsOnboarding';
 import LoanCalculator from './ui/oweHub/calculator/Calculator';
-import TotalCount from './ui/TotalCount/TotalCount';
+// import TotalCount from './ui/TotalCount/TotalCount';
 import Production from './ui/reporting/Production/Production';
 import Quality from './ui/reporting/Quality';
 import SpeedOverall from './ui/reporting/SpeedOverall';
@@ -61,11 +61,11 @@ import NoPto from './ui/reporting/NoPto';
 import Timelines from './ui/reporting/pvInstall/timelines';
 import OverAll from './ui/reporting/Overall/OverAll';
 import Dashboard from './ui/reporting/Dashboard';
-import InstalltoFin from './ui/reporting/InstallToFIN';
+// import InstalltoFin from './ui/reporting/InstallToFIN';
 import Ahj from './ui/reporting/Ahj/Ahj';
 import PermitRedLine from './ui/reporting/Permit_Redline/PermitRedLine';
 import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
-import DynDashboard from './ui/reporting/DynamicReports/DynDashboard';
+// import DynDashboard from './ui/reporting/DynamicReports/DynDashboard';
 import Summary_Dashboard from './ui/reporting/Summary-Dashboard/Summary_Dashboard';
 import DatTool from './ui/DatTool/DatTool';
 import DealerTablePipeline from './ui/oweHub/projectTracker/DealerTable';
@@ -162,7 +162,7 @@ function App() {
           <Route path={ROUTES.CALCULATOR} element={<LoanCalculator />} />
 
           {/* reporting */}
-          <Route path={ROUTES.REPORTING} element={<ReportingLayout />}>
+          {/* <Route path={ROUTES.REPORTING} element={<ReportingLayout />}>
             <Route path={''} element={<Dashboard />} />
             <Route
               path={ROUTES.REPORTING_PRODUCTION}
@@ -205,8 +205,7 @@ function App() {
             <Route path={ROUTES.TOTAL_COUNT} element={<TotalCount />} />
             <Route path={ROUTES.NO_PTO} element={<NoPto />} />
             <Route path={ROUTES.TIMELINES} element={<Timelines />} />
-
-            {/* TODO: Component need to change, ADDING ROUTES AND DEFAULT components */}
+ 
             <Route path={ROUTES.SITE_COMPLETION} element={<Timelines />} />
             <Route path={ROUTES.SITE_OUTSIDE_SLA} element={<Timelines />} />
             <Route path={ROUTES.SITE_TIMELINES} element={<Timelines />} />
@@ -221,7 +220,7 @@ function App() {
             <Route path={ROUTES.INSTALL_TO_FIN} element={<InstalltoFin />} />
 
             <Route path={ROUTES.AHJ} element={<Ahj />} />
-          </Route>
+          </Route> */}
 
           {ManageRoutesWithRole(role_name!)}
 
