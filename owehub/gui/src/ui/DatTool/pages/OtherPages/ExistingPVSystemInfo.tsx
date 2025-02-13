@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { AiOutlineEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 import styles from '../../styles/ExistingPVSystemInfo.module.css';
+import { useAppDispatch } from '../../../../redux/hooks';
+import { toast } from 'react-toastify';
+import { updateDatTool } from '../../../../redux/apiActions/DatToolAction/datToolAction';
 
 
 interface ExistingPVSystemInfoProps {
@@ -30,16 +33,53 @@ interface ExistingPVSystemInfoProps {
     'Inverter 2 Output(A)': string;
     'Backfeed': string;
   }) => void;
+  currentGeneralId: string;
 }
 
 
-const ExistingPVSystemInfo: React.FC<ExistingPVSystemInfoProps> = ({ fields, onSave }) => {
+const ExistingPVSystemInfo: React.FC<ExistingPVSystemInfoProps> = ({ fields, onSave, currentGeneralId }) => {
+  const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editedFields, setEditedFields] = useState(fields);
 
   const handleFieldChange = (field: keyof typeof fields, value: string) => {
     setEditedFields(prev => ({ ...prev, [field]: value }));
   };
+  const handleSave = async () => {
+    try {
+      // Prepare payload according to the required structure
+      const payload = {
+        project_id: currentGeneralId,
+        existing_pv_system_info: {
+          module_quantity: parseInt(editedFields['Module Quantity']) || 0,
+          model_number: editedFields['Model#'] || '',
+          wattage: editedFields['Wattage'] || '',
+          module_area: editedFields['Module Area'] || '',
+          inverter1: {
+            quantity: parseInt(editedFields['Inverter 1 Quantity']) || 0,
+            model_number: editedFields['Inverter 1 Model#'] || '',
+            output_a: editedFields['Inverter 1 Output(A)'] || ''
+          },
+          inverter2: {
+            quantity: parseInt(editedFields['Inverter 2 Quantity']) || 0,
+            model_number: editedFields['Inverter 2 Model#'] || '',
+            output_a: editedFields['Inverter 2 Output(A)'] || ''
+          },
+          existing_calculated_backfeed_without_125: 
+            parseInt(editedFields['Backfeed']) || 0
+        }
+      };
+
+      await dispatch(updateDatTool(payload)).unwrap();
+      onSave(editedFields);
+      setIsEditing(false);
+      toast.success('Existing PV System Info updated successfully');
+    } catch (error) {
+      console.error('Error updating Existing PV System Info:', error);
+      toast.error('Failed to update Existing PV System Info');
+    }
+  };
+
 
   return (
     <div className={styles.card}>
@@ -50,7 +90,7 @@ const ExistingPVSystemInfo: React.FC<ExistingPVSystemInfoProps> = ({ fields, onS
             <button onClick={() => setIsEditing(false)} className={styles.cancelButton}>
               <AiOutlineClose />
             </button>
-            <button onClick={() => { onSave(editedFields); setIsEditing(false); }} className={styles.saveButton}>
+            <button onClick={handleSave} className={styles.saveButton}>
               <AiOutlineCheck />
             </button>
           </div>

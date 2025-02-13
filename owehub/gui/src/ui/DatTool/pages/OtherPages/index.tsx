@@ -6,16 +6,23 @@ import Select from '../../components/Select';
 import styles from '../../styles/OtherPage.module.css';
 import { InverterConfigParent, MpptKey, MpptConfig } from './types';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { getDropdownList, getOtherInfo } from '../../../../redux/apiActions/DatToolAction/datToolAction';
+import { getDropdownList, getOtherInfo, updateDatTool } from '../../../../redux/apiActions/DatToolAction/datToolAction';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import style2 from '../../styles/AdderssPage.module.css'
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { toast } from 'react-toastify';
 
 interface CardProps {
   title: string;
   fields: Record<string, string>;
   onSave: (fields: Record<string, string>) => void;
-  options?: Partial<Record<string, string[]>>;  // Changed to Partial
+  options?: Partial<Record<string, string[]>>;
+  currentGeneralId: string;
+  sectionKey: string; // Changed from SectionKeys to string
+}
+
+interface ModifiedFields {
+  [key: string]: string | number;
 }
 
 interface StringInverterProps {
@@ -25,19 +32,94 @@ interface StringInverterProps {
   inverterOptions?: string[];  // Add this line
 }
 
-const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedFields, setEditedFields] = useState(fields);
+type SectionKeys = 'electrical_equipment_info' | 'site_info' | 'existing_pv_system_info';
+
+// Configuration for integer fields
+const INTEGER_FIELDS: Record<string, string[]> = {
+  electrical_equipment_info: ['busbar_rating', 'main_breaker_rating', 'available_backfeed'],
+  site_info: ['number_of_stories', 'points_of_interconnection'],
+  existing_pv_system_info: ['module_quantity', 'inverter1.quantity', 'inverter2.quantity', 'existing_calculated_backfeed_without_125']
+};
+
+const convertToApiFormat = (field: string): string => {
+  return field.toLowerCase().replace(/ /g, '_');
+};
+
+const convertValueType = (value: string, fieldName: string, sectionKey: string): string | number => {
+  // Type guard to check if sectionKey exists in INTEGER_FIELDS
+  if (sectionKey in INTEGER_FIELDS) {
+    const integerFields = INTEGER_FIELDS[sectionKey];
+    const shouldBeInteger = integerFields.includes(fieldName);
+    if (shouldBeInteger) {
+      const numValue = parseInt(value, 10);
+      return isNaN(numValue) ? 0 : numValue;
+    }
+  }
+  return value;
+};
+
+const Card: React.FC<CardProps> = ({ 
+  title, 
+  fields, 
+  onSave, 
+  options, 
+  currentGeneralId,
+  sectionKey 
+}) => {
+  const dispatch = useAppDispatch();
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editedFields, setEditedFields] = useState<Record<string, string>>(fields);
+  const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({});
 
   useEffect(() => {
     setEditedFields(fields);
+    setModifiedFields({});
   }, [fields]);
 
-  const handleFieldChange = (field: string, value: string) => {
-    setEditedFields((prev) => ({ ...prev, [field]: value }));
+  const handleFieldChange = (field: string, value: string): void => {
+    setEditedFields(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  
+    const apiFieldName = convertToApiFormat(field);
+    // Now TypeScript knows sectionKey is a valid key
+    const convertedValue = convertValueType(value, apiFieldName, sectionKey);
+    
+    setModifiedFields(prev => ({
+      ...prev,
+      [apiFieldName]: convertedValue
+    }));
   };
 
-  const getOptionsForField = (key: string): { label: string; value: string; }[] => {
+  const handleSave = async (): Promise<void> => {
+    if (Object.keys(modifiedFields).length === 0) {
+      setIsEditing(false);
+      return;
+    }
+  
+    try {
+      // Type assertion to ensure the payload is correctly typed
+      const payload = {
+        project_id: currentGeneralId,
+        [sectionKey]: modifiedFields
+      };
+  
+      const response = await dispatch(updateDatTool(payload)).unwrap();
+      
+      if (response) {
+        toast.success('Data updated successfully!');
+        onSave(editedFields);
+        setModifiedFields({});
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error('Error updating fields:', error);
+      toast.error('Failed to update data. Please try again.');
+    }
+  };
+
+  const getOptionsForField = (key: string): Array<{ label: string; value: string }> => {
     const fieldOptions = options?.[key];
     if (!fieldOptions) return [];
     return fieldOptions.map((opt) => ({
@@ -46,8 +128,6 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
     }));
   };
 
-  
-
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
@@ -55,17 +135,18 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
         {isEditing ? (
           <div className={styles.actions}>
             <button
-              className={`${styles.cancelButton}`}
-              onClick={() => setIsEditing(false)}
+              className={styles.cancelButton}
+              onClick={() => {
+                setIsEditing(false);
+                setEditedFields(fields);
+                setModifiedFields({});
+              }}
             >
               <AiOutlineClose />
             </button>
             <button
               className={styles.saveButton}
-              onClick={() => {
-                onSave(editedFields);
-                setIsEditing(false);
-              }}
+              onClick={handleSave}
             >
               <AiOutlineCheck />
             </button>
@@ -87,9 +168,9 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
             {isEditing ? (
               options?.[key] ? (
                 <Select
-                options={getOptionsForField(key)}
+                  options={getOptionsForField(key)}
                   value={editedFields[key]}
-                  onChange={(selectedValue) =>
+                  onChange={(selectedValue: string | number) =>
                     handleFieldChange(key, selectedValue.toString())
                   }
                 />
@@ -109,6 +190,7 @@ const Card: React.FC<CardProps> = ({ title, fields, onSave, options }) => {
     </div>
   );
 };
+
 
 interface OtherInfoPageProps {
   currentGeneralId: string;
@@ -421,42 +503,63 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
       ) : othersData ? (
         <div className={styles.container}>
           <div className={styles.column}>
-            <Card
-              title="Electrical Equipment Info"
-              fields={equipment}
-              onSave={(fields) => setEquipment(fields as typeof equipment)}
-              options={getOptionsForCard('equipment')}
-            />
+          <Card
+  title="Electrical Equipment Info"
+  fields={equipment}
+  onSave={(fields) => {
+    setEquipment(fields as typeof equipment);
+  }}
+  options={getOptionsForCard('equipment')}
+  currentGeneralId={currentGeneralId}
+  sectionKey="electrical_equipment_info"
+/>
             <Card
               title="Electrical System Info"
               fields={system}
-              onSave={(fields) => setSystem(fields as typeof system)}
+              onSave={(fields) => {
+                // console.log('electrical_system_info:', fields);
+                setSystem(fields as typeof system)
+              }}
+              currentGeneralId={currentGeneralId}
+              sectionKey="electrical_system_info"
               options={getOptionsForCard('system')}
             />
             <Card
-              title="Site Info"
+              title="site_info"
               fields={siteInfo}
-              onSave={(fields) => setSiteInfo(fields as typeof siteInfo)}
+              onSave={(fields) => {
+                setSiteInfo(fields as typeof siteInfo)
+
+              }}
+             currentGeneralId={currentGeneralId}
+              sectionKey="site_Info"
               options={getOptionsForCard('siteInfo')}
             />
             <Card
               title="PV only Interconnection"
               fields={pvInterconnection}
-              onSave={(fields) =>
+              currentGeneralId={currentGeneralId}
+              sectionKey="pv_only_interconnection"
+              onSave={(fields) =>{
+                // console.log('pv_only_interconnection:', fields);
                 setPvInterconnection(fields as typeof pvInterconnection)
-              }
+              }}
             />
             <Card
               title="ESS Interconnection"
               fields={essInterconnection}
-              onSave={(fields) =>
+                            currentGeneralId={currentGeneralId}
+              sectionKey="ess_interconnection"
+              onSave={(fields) =>{
+                // console.log('ess_interconnection:', fields);
                 setEssInterconnection(fields as typeof essInterconnection)
-              }
+              }}
             />
           </div>
 
           <div className={styles.column}>
           <StringInverterConfig
+              currentGeneralId={currentGeneralId}
               parentConfig={inverterConfigParent}
               onParentChange={(field, value) =>
                 setInverterConfigParent((prev) => ({
@@ -478,14 +581,24 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
             <Card
               title="Roof Coverage Calculator"
               fields={roofCoverage}
-              onSave={(fields) => setRoofCoverage(fields as typeof roofCoverage)}
+              currentGeneralId={currentGeneralId}
+              sectionKey="roof_coverage_calculator"
+              onSave={(fields) =>{
+                // console.log('roof_coverage_calculator:', fields);
+                 setRoofCoverage(fields as typeof roofCoverage)
+              }}
             />
             <Card
               title="Measurement Conversion"
               fields={measurement}
-              onSave={(fields) => setMeasurement(fields as typeof measurement)}
+                            currentGeneralId={currentGeneralId}
+              sectionKey="measurement_conversion"
+              onSave={(fields) => {
+                console.log('measurement_conversion:', fields);
+                setMeasurement(fields as typeof measurement)
+              }}
             />
-            <ExistingPVSystemInfo fields={existingPV} onSave={setExistingPV} />
+            <ExistingPVSystemInfo currentGeneralId={currentGeneralId} fields={existingPV} onSave={setExistingPV} />
           </div>
         </div>
       ): <div style={{ display: 'flex', justifyContent: 'center',height:"70vh" }}>
