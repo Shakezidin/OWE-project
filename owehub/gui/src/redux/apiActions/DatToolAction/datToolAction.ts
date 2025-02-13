@@ -124,3 +124,25 @@ export const updateDatTool = createAsyncThunk(
   }
 );
 
+export const deleteDatState = createAsyncThunk(
+  'dataTool/deleteDatState',
+  async (payload: { project_id: string; state: string }, { rejectWithValue }) => {
+    try {
+      const response = await reportingCaller('delete_dat_state', {
+        project_id: payload.project_id,
+        state: payload.state,
+      });
+      
+      return response;
+    } catch (error) {
+      // Extract message from error for serialization
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Failed to delete DAT state';
+      
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+

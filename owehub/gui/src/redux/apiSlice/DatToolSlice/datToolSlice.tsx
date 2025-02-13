@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import {getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getDropdownList, getNotesInfo, getOtherInfo, getStructuralInfo, updateDatTool} from '../../apiActions/DatToolAction/datToolAction'
+import {deleteDatState, getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getDropdownList, getNotesInfo, getOtherInfo, getStructuralInfo, updateDatTool} from '../../apiActions/DatToolAction/datToolAction'
 import { toast } from 'react-toastify';
 
 
@@ -491,6 +491,23 @@ const datSlice = createSlice({
       state.error = action.payload as string;
       toast.error(action.payload as string);
     });
+
+
+    builder.addCase(deleteDatState.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteDatState.fulfilled, (state, action) => {
+      state.loading = false;
+      state.projectData = action.payload;
+    });
+    builder.addCase(deleteDatState.rejected, (state, action) => {
+      state.loading = false;
+      state.error = typeof action.payload === 'string' 
+        ? action.payload 
+        : 'An unknown error occurred';
+      toast.error(state.error);
+    });
+    
  
   },
 });

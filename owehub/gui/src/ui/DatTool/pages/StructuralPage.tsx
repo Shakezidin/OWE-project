@@ -10,6 +10,7 @@ import DisplaySelect from '../components/DisplaySelect';
 import CustomInput from '../components/Input';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
+  deleteDatState,
   getDropdownList,
   getStructuralInfo,
   updateDatTool,
@@ -105,7 +106,7 @@ interface DropdownListData {
 }
 
 interface StructuralPageProps {
-  structuralData: StructuralData | null;
+  structuralData: any | null;
   currentGeneralId: string;
   loading: boolean;
 }
@@ -453,22 +454,83 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     setEditStates((prev) => ({ ...prev, structuralInfo: true }));
   };
 
-  const handleDeleteState = (stateToDelete: string) => {
-    if (structuralInfoStates.length <= 1) return;
-
-    const updatedStates = structuralInfoStates.filter(
-      (state) => state !== stateToDelete
-    );
-    setStructuralInfoStates(updatedStates);
-
-    if (activeStructuralState === stateToDelete) {
-      setActiveStructuralState(updatedStates[updatedStates.length - 1]);
+  const handleDeleteState = async (stateToDelete: string) => {
+    if (structuralInfoStates.length <= 1) {
+      toast.error('Cannot delete the only remaining state');
+      return;
     }
-
-    if (editStates.structuralInfo) {
-      toggleEditState('structuralInfo', false);
+  
+    try {
+      const response = await dispatch(
+        deleteDatState({
+          project_id: currentGeneralId,
+          state: stateToDelete.toLowerCase(),
+        })
+      );
+  
+      if (response.meta.requestStatus === 'fulfilled') {
+        const updatedStates = structuralInfoStates.filter(
+          (state) => state !== stateToDelete
+        );
+        setStructuralInfoStates(updatedStates);
+  
+        if (activeStructuralState === stateToDelete) {
+          setActiveStructuralState(updatedStates[updatedStates.length - 1]);
+        }
+  
+        if (editStates.structuralInfo) {
+          toggleEditState('structuralInfo', false);
+        }
+        
+        toast.success(`State ${stateToDelete} deleted successfully`);
+      } else {
+        const errorMessage = typeof response.payload === 'string' 
+          ? response.payload 
+          : 'Failed to delete state';
+        toast.error(errorMessage);
+      }
+    } catch (error) {
+      console.error('Error deleting state:', error);
+      toast.error('Failed to delete state');
     }
   };
+  // const handleDeleteState = async (stateToDelete: string) => {
+  //   if (structuralInfoStates.length <= 1) {
+  //     toast.error('Cannot delete the only remaining state');
+  //     return;
+  //   }
+  
+  //   try {
+  //     const response = await dispatch(
+  //       deleteDatState({
+  //         project_id: currentGeneralId,
+  //         state: stateToDelete.toLowerCase(),
+  //       })
+  //     );
+  
+  //     if (response.payload?.status === 200) {
+  //       const updatedStates = structuralInfoStates.filter(
+  //         (state) => state !== stateToDelete
+  //       );
+  //       setStructuralInfoStates(updatedStates);
+  
+  //       if (activeStructuralState === stateToDelete) {
+  //         setActiveStructuralState(updatedStates[updatedStates.length - 1]);
+  //       }
+  
+  //       if (editStates.structuralInfo) {
+  //         toggleEditState('structuralInfo', false);
+  //       }
+        
+  //       toast.success(`State ${stateToDelete} deleted successfully`);
+  //     } else {
+  //       toast.error(response.payload?.message || 'Failed to delete state');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting state:', error);
+  //     toast.error('Failed to delete state');
+  //   }
+  // };
 
   // Render Helper Function
   const renderComponent = (
