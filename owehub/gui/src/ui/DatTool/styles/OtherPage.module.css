@@ -1,7 +1,7 @@
 .container {
     display: flex;
     gap: 20px;
-    margin-right: 1.2rem;
+    /* margin-right: 1.2rem; */
   }
 
   .wrapper{
@@ -187,4 +187,17 @@
   
   .wrapper::-webkit-scrollbar-corner {
     background-color: transparent;
+  }
+
+  @media (max-width: 480px) {
+    .container{
+      flex-direction: column;
+      margin-right: 20px;
+    }
+    .column{
+      max-width: 100%;
+    }
+    .grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
   }
