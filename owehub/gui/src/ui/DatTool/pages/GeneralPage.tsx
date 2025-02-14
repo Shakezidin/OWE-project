@@ -162,10 +162,10 @@ const GeneralPage: React.FC<generalProps> = ({
       value: (generalData?.site_capture_url) || 'N/A',
       type: 'url',
     },
-    {
-      label: 'Change Order Required',
-      value: generalData?.dat_change_order || 'N/A',
-    },
+    // {
+    //   label: 'Change Order Required',
+    //   value: generalData?.dat_change_order || 'N/A',
+    // },
   ];
   const [generalDatInfo, setGeneralDatInfo] = useState({
     datModuleQTY: { value: datFields[0].value, changed: false },
@@ -173,15 +173,15 @@ const GeneralPage: React.FC<generalProps> = ({
     datDesignVersion: { value: datRightFields[0].value, changed: false },
     datDesignerName: { value: datRightFields[1].value, changed: false },
     datAuroraID: { value: datRightFields[2].value, changed: false },
-    datSystemSizeAC: { value: '---', changed: false },
-    datSystemSizeDC: { value: '---', changed: false },
+    datSystemSizeAC: { value: '', changed: false },
+    datSystemSizeDC: { value: '', changed: false },
     datChanges: { value: 'N/A', changed: false },
-    datChangeOrderRequired: { value: datRightFields[4].value, changed: false },
+    datChangeOrderRequired: { value: 'N/A', changed: false },
     datInverterType: { value: datFields[2].value, changed: false },
     datBatteryType: { value: datFields[3].value, changed: false },
     datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
-    datChangeLayout: { value: '---', changed: false },
-    datChangeProduction: { value: '---', changed: false },
+    datChangeLayout: { value: '', changed: false },
+    datChangeProduction: { value: '', changed: false },
 });
 
   const handleInputChange = (
@@ -381,15 +381,17 @@ const GeneralPage: React.FC<generalProps> = ({
                   <label>System Size</label>
                   <div className={styles.acdc}>
                     {['AC', 'DC'].map((label) => (
-                      <div key={label} className={styles.acdcInp}>
+                      <div key={label} className={styles.acdcInp} style={{backgroundColor:isDatEditing? "#f5f5fd" : "",
+                        borderRadius: isDatEditing? "28px" : ""}}>
                         <input
                           type="text"
+                          placeholder="---"
                           value={
                             generalDatInfo[
                               `datSystemSize${label}` as GeneralDatInfoKeys
                             ].value
                           }
-                          className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
+                          className={`${styles.inputFieldDatt} ${isDatEditing ? styles.editablee : ''}`}
                           disabled={!isDatEditing}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleInputChange(e, label)
@@ -428,16 +430,18 @@ const GeneralPage: React.FC<generalProps> = ({
                   <label>Changes</label>
                   <div className={styles.acdc}>
                     {['Layout', 'Production'].map((label) => (
-                      <div key={label} className={styles.acdcInp}>
+                      <div key={label} className={styles.acdcInp} style={{backgroundColor:isDatEditing? "#f5f5fd" : "",
+                        borderRadius: isDatEditing? "28px" : "",paddingTop:isDatEditing?"0px":"", paddingBottom:isDatEditing?"0px":"",}}>
                         <input
                           type="text"
+                          placeholder='---'
                           value={
                             generalDatInfo[
                               `datChange${label}` as GeneralDatInfoKeys
                             ].value
                             
                           }
-                          className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
+                          className={`${styles.inputFieldDatt} ${isDatEditing ? styles.editablee : ''}`}
                           disabled={!isDatEditing}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleInputChange(e, label)
@@ -445,9 +449,38 @@ const GeneralPage: React.FC<generalProps> = ({
                           }
                           
                         />
-                        <label style={{ fontWeight: 500 }}>{label}</label>
+                        <label style={{ fontWeight: 500 , paddingRight:"0.8rem"}}>{label}</label>
                       </div>
                     ))}
+                  </div>
+                </div>
+
+
+
+
+                <div>
+                  <label> change Order Required</label>
+                  <div className={styles.genSecRightMainRht}>
+                   
+                     
+                        <input
+                          type="text"
+                          placeholder='---'
+                          value={
+                            generalDatInfo[
+                              `datChangeOrderRequired` as GeneralDatInfoKeys
+                            ].value
+                            
+                          }
+                          className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
+                          disabled={!isDatEditing}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            handleInputChange(e, "Change Order Required")
+                            
+                          }
+                          
+                        />
+                    
                   </div>
                 </div>
               </div>
