@@ -71,21 +71,21 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	/////////// GENERAL VALUES ///////////////////////////////////////////////////////////////////////////////////
-	if dataReq.GeneraBasics != nil {
+	// if dataReq.GeneraBasics != nil {
 
-		if len(dataReq.GeneraBasics.ProjectAddress) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneraBasics.ProjectAddress)
-			updateFields = append(updateFields, fmt.Sprintf("project_address = $%d", len(whereEleList)))
-		}
-		if len(dataReq.GeneraBasics.PhoneNumber) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneraBasics.PhoneNumber)
-			updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d", len(whereEleList)))
-		}
-		if len(dataReq.GeneraBasics.EmailID) > 0 {
-			whereEleList = append(whereEleList, dataReq.GeneraBasics.EmailID)
-			updateFields = append(updateFields, fmt.Sprintf("email_id = $%d", len(whereEleList)))
-		}
-	}
+	// 	if len(dataReq.GeneraBasics.ProjectAddress) > 0 {
+	// 		whereEleList = append(whereEleList, dataReq.GeneraBasics.ProjectAddress)
+	// 		updateFields = append(updateFields, fmt.Sprintf("project_address = $%d", len(whereEleList)))
+	// 	}
+	// 	if len(dataReq.GeneraBasics.PhoneNumber) > 0 {
+	// 		whereEleList = append(whereEleList, dataReq.GeneraBasics.PhoneNumber)
+	// 		updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d", len(whereEleList)))
+	// 	}
+	// 	if len(dataReq.GeneraBasics.EmailID) > 0 {
+	// 		whereEleList = append(whereEleList, dataReq.GeneraBasics.EmailID)
+	// 		updateFields = append(updateFields, fmt.Sprintf("email_id = $%d", len(whereEleList)))
+	// 	}
+	// }
 	if dataReq.GeneralDatInformation != nil {
 		if dataReq.GeneralDatInformation.DATModuleQty > 0 {
 			whereEleList = append(whereEleList, dataReq.GeneralDatInformation.DATModuleQty)
