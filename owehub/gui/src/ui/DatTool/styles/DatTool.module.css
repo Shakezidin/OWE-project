@@ -69,4 +69,14 @@
   .contentContainer::-webkit-scrollbar {
     display: none; /* Hide the scrollbar */
   }
+  .mainContainer{
+    margin:0;
+  }
+  .mobileSideContainer{
+    padding:20px;
+  }
+  .contentContainer{
+    margin: 0;
+    padding:20px 20px 0 20px;
+  }
 }

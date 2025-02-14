@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './styles/DatTool.module.css';
-
-import Header from './components/Header';
 import GeneralPage from './pages/GeneralPage';
 import StructuralPage from './pages/StructuralPage';
 import AddressPage from './pages/AdderssPage';
@@ -96,7 +94,7 @@ const DatTool: React.FC = () => {
       <div className={styles.layoutContainer}>
        
         <div className={styles.contentContainer} style={{height: !dbStatus ? "calc(100vh - 115px)" : ""}}>
-          <CommonComponent generalData={generalData} loading={loading} currentGeneralId={currentGeneralId}/>
+          <CommonComponent generalData={generalData} loading={loading} currentGeneralId={currentGeneralId} isMobile={isMobile}/>
           {renderPage()}
         </div>
 

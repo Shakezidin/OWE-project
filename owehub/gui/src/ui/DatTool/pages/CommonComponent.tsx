@@ -9,6 +9,8 @@ import { current } from '@reduxjs/toolkit';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { useAppDispatch } from '../../../redux/hooks';
 import { updateDatTool } from '../../../redux/apiActions/DatToolAction/datToolAction';
+import openDropDown from '../assets/dropOpen.png';
+import closeDropDown from '../assets/dropClose.png';
 interface GeneralData {
   project_name: string;
   project_id: string;
@@ -49,8 +51,9 @@ interface commonComponentProps {
   generalData:GeneralData| null;
   loading:boolean;
   currentGeneralId:string;
+  isMobile:boolean;
 }
-const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,currentGeneralId}) => {
+const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,currentGeneralId,isMobile}) => {
       
   const handleClick = (index: number): void => setActiveIndex(index);
   const [address,setAddress]=useState({value:generalData?.project_address,changed:false});
@@ -58,6 +61,7 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
   const [emailId,setEmailId]=useState({value:generalData?.email_id,changed:false});
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [openTab,setOpenTab]=useState(false);
  
   const dispatch = useAppDispatch();
   const handleEdit = (): void => setIsEditing(true);
@@ -159,7 +163,7 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
             )}
           </div>
         </div>
-        <div className={styles.gOneHeaderDesc}>
+        <div className={styles.gOneHeaderDesc} >
           {[
            
               { type: 'text', value: address, onChange: (e: React.ChangeEvent<HTMLInputElement>) => valueChangeHandler(e, 'text') },
@@ -177,7 +181,7 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
           ))}
         </div>
 
-        <div className={styles.gOneLeftInfo}>
+       { isMobile ? openTab  &&  <div className={styles.gOneLeftInfo}>
           <div className={styles.gOneLeftInfoTxt}>
             {systemSpecs.map((spec:any, index:any) => (
               <div key={index}>
@@ -195,11 +199,36 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
               </div>
             ))}
           </div>
-        </div>
+        </div> : <div className={styles.gOneLeftInfo}>
+          <div className={styles.gOneLeftInfoTxt}>
+            {systemSpecs.map((spec:any, index:any) => (
+              <div key={index}>
+                <p>{spec.title}</p>
+                <p>{spec.subtitle}</p>
+              </div>
+            ))}
+          </div>
+          <div className={styles.verticalBorder}></div>
+          <div className={styles.gOneLeftInfoTxt}>
+            {systemMetrics.map((metric:any, index:any) => (
+              <div key={index}>
+                <p>{metric.value}</p>
+                <p>{metric.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>}
       </div>
+
+
+      {isMobile && <div className={styles.dropDownImage} style={{bottom:openTab?"-6%":"-12%"}}> 
+      <img src={!openTab ? openDropDown : closeDropDown} alt="" onClick={()=>setOpenTab(prev=>!prev)}/>
+      </div>}
     </div>
 
-    {}
+    
+
+
     <div className={styles.genOneRight}>
       <div className={styles.gOneRightTop}>
         {rightSideInfo.map((info:any, index:any) => (
