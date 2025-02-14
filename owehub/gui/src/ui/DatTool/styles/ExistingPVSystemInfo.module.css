@@ -121,4 +121,20 @@
     align-items: center;
     gap: 5px;
   }
+
+  @media (max-width: 480px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .inverterGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .backfeedInput{
+      display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    gap: 15px;
+    }
+  }
   

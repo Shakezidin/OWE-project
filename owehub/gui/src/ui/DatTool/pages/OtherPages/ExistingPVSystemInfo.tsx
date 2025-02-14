@@ -267,7 +267,7 @@ const ExistingPVSystemInfo: React.FC<ExistingPVSystemInfoProps> = ({ fields, onS
         <div>
           <label className={styles.label}>Existing Calculated Backfeed(w/o 125%)</label>
           <div className={styles.backfeedGrid}>
-            <div>
+            <div className={styles.backfeedInput} >
               <label className={styles.label}>Backfeed</label>
               {isEditing ? (
                 <input

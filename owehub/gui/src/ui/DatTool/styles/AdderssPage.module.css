@@ -231,3 +231,23 @@
   line-height: 24px;
   color: #2A2626;
 }
+
+@media (max-width: 480px) {
+  .adderssPageMainPart{
+    flex-direction: column;
+  }
+  .adderssPageMainPart_left{
+    width: 100%;
+  }
+  .adderssPageMainPart_Right{
+    width: 100%;
+  }
+  /* .adderssPageMainPart_rightBarContainer{
+    flex-direction: column;
+  } */
+  /* .wrapper{
+    margin: 0px 20px;
+    margin-right: 20px !important;
+  } */
+
+}
