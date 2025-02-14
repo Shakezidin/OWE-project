@@ -24,7 +24,7 @@ type GetProjectListResponse struct {
 // models for tab general info
 type GetTabGeneralInfoRequest struct {
 	ProjectId string `json:"project_id"`
-	//Id        string `json:"id"`
+	Id        string `json:"id"`
 }
 
 type GetTabGeneralInfoResponse struct {
@@ -58,13 +58,13 @@ type GetTabGeneralInfoResponse struct {
 	//aurora link remaining
 
 	// Contract Information
-	ContractDate    string  `json:"contract_date"`
-	ModuleQty       int64   `json:"module_qty"`
-	ModuleType      int64   `json:"module_type"`
-	InverterType    string  `json:"inverter_type"`
-	BatteryType     string  `json:"battery_type"`
-	AcDcSystemSize  string  `json:"ac_dc_system_size"`
-	TotalProduction float64 `json:"total_production"` // annual production
+	ContractDate    string      `json:"contract_date"`
+	ModuleQty       int64       `json:"module_qty"`
+	ModuleType      int64       `json:"module_type"`
+	InverterType    string      `json:"inverter_type"`
+	BatteryType     string      `json:"battery_type"`
+	AcDcSystemSize  string      `json:"ac_dc_system_size"`
+	TotalProduction interface{} `json:"total_production"` // annual production
 	// ac to dc size remaining.
 
 	// DAT Information
