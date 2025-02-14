@@ -344,7 +344,7 @@ const EditModal = ({
                       <th>Install CT</th>
                       <th>mw Installed</th>
                       <th>Batteries Installed</th>
-                      <th>ntp</th>
+                      <th>NTP</th>
                     </tr>
                   </thead>
                   {loadinged ? (
