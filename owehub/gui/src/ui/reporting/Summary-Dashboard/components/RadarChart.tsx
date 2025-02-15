@@ -87,12 +87,12 @@ const RadarChartComponenet = ({ radData }: any) => {
           </text>
           <text
             x={x + offsetX}
-            y={y + offsetY + 7}
+            y={y + offsetY + 10}
             textAnchor={textAnchor}
             fill="#767676"
             style={{ fontSize: '10px', fontWeight: '400' }}
           >
-            {payload.value}
+            {payload.value === "ntp" ? "NTP" : payload.value}
           </text>
         </g>
       );

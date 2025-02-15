@@ -8,6 +8,7 @@
 package services
 
 import (
+	auroraclient "OWEApp/owehub-reports/auroraclients"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -34,7 +35,7 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		query       string
 		whereClause string
 		//dataReqAurora models.AuroraRetrieveDesignSummaryRequest
-		//auroraApiResp interface{}
+		auroraApiResp interface{}
 	)
 
 	log.EnterFn(0, "HandleGetTabGeneralInfoRequest")
@@ -69,46 +70,54 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	// get aurora retrieve design summary
-	// retrieveAuroraDesignSummaryApi := auroraclient.RetrieveDesignSummaryApi{
-	// 	Id: dataReq.Id,
-	// }
+	//get aurora retrieve design summary
+	retrieveAuroraDesignSummaryApi := auroraclient.RetrieveDesignSummaryApi{
+		Id: dataReq.Id,
+	}
 
-	// auroraApiResp, err = retrieveAuroraDesignSummaryApi.Call()
+	auroraApiResp, err = retrieveAuroraDesignSummaryApi.Call()
 
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to retrieve aurora design summary err %v", err)
-	// 	appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
-	// 	return
-	// }
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to retrieve aurora design summary err %v", err)
+		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+		return
+	}
 
-	// // Convert auroraApiResp to JSON for easier manipulation
-	// auroraRespBytes, err := json.Marshal(auroraApiResp)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to marshal aurora response err %v", err)
-	// 	appserver.FormAndSendHttpResp(resp, "Failed to process aurora response", http.StatusInternalServerError, nil)
-	// 	return
-	// }
+	// Convert auroraApiResp to JSON for easier manipulation
+	auroraRespBytes, err := json.Marshal(auroraApiResp)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to marshal aurora response err %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to process aurora response", http.StatusInternalServerError, nil)
+		return
+	}
 
-	// // Convert JSON to map for easy access
-	// var auroraRespMap map[string]interface{}
-	// err = json.Unmarshal(auroraRespBytes, &auroraRespMap)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to parse aurora response err %v", err)
-	// 	appserver.FormAndSendHttpResp(resp, "Failed to parse aurora response", http.StatusInternalServerError, nil)
-	// 	return
-	// }
+	// Convert JSON to map for easy access
+	var auroraRespMap map[string]interface{}
+	err = json.Unmarshal(auroraRespBytes, &auroraRespMap)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse aurora response err %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to parse aurora response", http.StatusInternalServerError, nil)
+		return
+	}
 
-	// // Extract only annual production from aurora
-	// var extractedData map[string]interface{}
-	// if design, ok := auroraRespMap["design"].(map[string]interface{}); ok {
-	// 	extractedData = map[string]interface{}{
-	// 		"annual": design["energy_production"],
-	// 	}
-	// }
+	// Extract only annual production from aurora
+	//var extractedData map[string]interface{}
+	var pTotalProduction interface{}
 
-	// // Return only extracted fields
-	// appserver.FormAndSendHttpResp(resp, "Extracted Data", http.StatusOK, extractedData)
+	if design, ok := auroraRespMap["design"].(map[string]interface{}); ok {
+		if energyProduction, exists := design["energy_production"].(map[string]interface{}); exists {
+			if annual, found := energyProduction["annual"]; found {
+				// extractedData = map[string]interface{}{
+				// 	"annual": annual,
+				// }
+				if annualValue, ok := annual.(float64); ok {
+					pTotalProduction = annualValue
+				} else if annualValue, ok := annual.(int); ok {
+					pTotalProduction = float64(annualValue) // ✅ Convert int to float64
+				}
+			}
+		}
+	}
 
 	whereClause = fmt.Sprintf("WHERE (c.unique_id = '%s')", dataReq.ProjectId)
 
@@ -288,10 +297,10 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get ac dc system size from db: %+v\n", data)
 	}
-	pTotalProduction, ok := data[0]["annual_estimated_production"].(float64)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get total production from db: %+v\n", data)
-	}
+	// pTotalProduction, ok := data[0]["annual_estimated_production"].(float64)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get total production from db: %+v\n", data)
+	// }
 
 	///////////////////////////////////
 	pDATModuleQty, ok := data[0]["dat_module_qty"].(int64)
