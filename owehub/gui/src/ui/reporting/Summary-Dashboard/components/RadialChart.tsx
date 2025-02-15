@@ -124,7 +124,7 @@ const RadialChart = ({
                 marginRight: '-10px',
               }}
             >
-              {data.name}
+              {data.name === "ntp" ? "NTP" : data.name}
             </p>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <svg width="12" height="12" style={{ marginRight: '5px' }}>
@@ -284,7 +284,7 @@ const RadialChart = ({
                           fontSize: isMobile ? '10px' : '12px',
                         }}
                       >
-                        {item.name}
+                        {item.name === "ntp" ? "NTP" : item.name}
                       </span>
                     )}
                   </div>

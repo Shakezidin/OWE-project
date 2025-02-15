@@ -44,6 +44,7 @@ import { FaUpload } from 'react-icons/fa';
 import { MdDownloading } from 'react-icons/md';
 import Papa from 'papaparse';
 import { format } from 'date-fns';
+import { LuImport } from 'react-icons/lu';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -611,7 +612,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     </div>
                   ) : (
                     <div className="dealer-export">
-                      <FaUpload size={12} className="dealer-mob-upload" />
+                      <LuImport size={16} className="dealer-mob-upload" />
                       <span className="dealer-export-mob">Export</span>
                     </div>
                   )}

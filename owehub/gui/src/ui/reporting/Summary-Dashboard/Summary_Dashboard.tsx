@@ -140,8 +140,8 @@ const Summary_Dashboard = () => {
     label: 'OWE',
     value: 'All',
   });
-   // hardcoded list of states
-   const stateOptions = [
+  // hardcoded list of states
+  const stateOptions = [
     {
       label: 'All States',
       value: 'All',
@@ -227,7 +227,7 @@ const Summary_Dashboard = () => {
     []
   );
 
- 
+
   useEffect(() => {
     if (role === 'Admin' || isShowDropdown) {
       getNewFormData();
@@ -255,23 +255,23 @@ const Summary_Dashboard = () => {
     setAM(amData);
     setDrop(false);
   };
-  
 
- 
+
+
   const handleButtonClick = (buttonName: any) => {
     setActiveButton(buttonName);
   };
- 
+
   const handleChartClick = () => {
     setLine(!line);
   };
 
-  
+
   const handlePercButtonClick = (buttonName: any) => {
     setActivePerc(buttonName);
   };
 
-  
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -282,7 +282,7 @@ const Summary_Dashboard = () => {
   //Api Integration
   const dispatch = useAppDispatch();
 
-  
+
 
   useEffect(() => {
     dispatch(
@@ -300,7 +300,7 @@ const Summary_Dashboard = () => {
   const { summaryData, loading } = useAppSelector(
     (state) => state.reportingSlice
   );
-  
+
 
   useEffect(() => {
     setSummaryDataState(summaryData?.data?.data?.summary);
@@ -476,7 +476,7 @@ const Summary_Dashboard = () => {
                         <div className={classes.top_box_box} key={key}>
                           <div className={classes.top_box_top}>
                             <div className={classes.top_box_head}>
-                              <p>{key}</p>
+                              <p>{key === "ntp" ? "NTP" : key}</p>
                             </div>
                             {data && (
                               <>

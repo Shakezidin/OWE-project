@@ -210,54 +210,54 @@ const DealerTablePipeline = () => {
                 return;
             }
             const csvData = response.data.pipeline_dealer_data_list?.map?.((item: any) => [
-                item.unique_id || 'N/A',
-                item.home_owner || 'N/A',
-                item.finance_company || 'N/A',
-                item.type || 'N/A',
-                item.loan_type || 'N/A',
-                item.street_address || 'N/A',
-                item.state || 'N/A',
-                item.email || 'N/A',
-                item.phone_number || 'N/A',
-                item.rep_1 || 'N/A',
-                item.partner_dealer || 'N/A',
+                item.unique_id || '-',
+                item.home_owner || '-',
+                item.finance_company || '-',
+                item.type || '-',
+                item.loan_type || '-',
+                item.street_address || '-',
+                item.state || '-',
+                item.email || '-',
+                item.phone_number || '-',
+                item.rep_1 || '-',
+                item.partner_dealer || '-',
                 item.system_size || '0',
                 `${item.contract_amount || '0'}`,
-                // item.created_date || 'N/A',
+                // item.created_date || '-',
                 item.contract_date
                     ? format(parseISO(item.contract_date), 'dd-MM-yyyy')
-                    : 'N/A',
+                    : '-',
                 item.survey_final_completion_date
                     ? format(parseISO(item.survey_final_completion_date), 'dd-MM-yyyy')
-                    : 'N/A',
+                    : '-',
                 item.ntp_complete_date
                     ? format(parseISO(item.ntp_complete_date), 'dd-MM-yyyy')
-                    : 'N/A',
+                    : '-',
                 item.permit_submit_date
                     ? format(parseISO(item.permit_submit_date), 'dd-MM-yyyy')
-                    : 'N/A',
+                    : '-',
                 item.permit_approval_date
                     ? format(parseISO(item.permit_approval_date), 'dd-MM-yyyy')
-                    : 'N/A',
+                    : '-',
                 item.ic_submit_date
                     ? format(parseISO(item.ic_submit_date), 'dd-MM-yyyy')
-                    : 'N/A',
+                    : '-',
                 item.ic_approval_date
                     ? format(parseISO(item.ic_approval_date), 'dd-MM-yyyy')
-                    : 'N/A',
-                item.rep_2 || 'N/A',
+                    : '-',
+                item.rep_2 || '-',
                 item.cancel_date
                     ? format(parseISO(item.cancel_date), 'dd-MM-yyyy')
-                    : 'N/A',
+                    : '-',
                 item.pv_install_date
                     ? format(parseISO(item.pv_install_date), 'dd-MM-yyyy')
-                    : 'N/A',
+                    : '-',
                 item.pto_date
                     ? format(parseISO(item.pto_date), 'dd-MM-yyyy')
-                    : 'N/A',
+                    : '-',
                 item.fin_complete_date
                     ? format(parseISO(item.fin_complete_date), 'dd-MM-yyyy')
-                    : 'N/A',
+                    : '-',
                 item.jeopardy_date === undefined || item.jeopardy_date === null
                     ? "N/A"
                     : item.jeopardy_date === true
@@ -471,76 +471,76 @@ const DealerTablePipeline = () => {
 
                                 {cuurentPageData && cuurentPageData.map((item: any, index: any) => (
                                     <tr key={index}>
-                                        <td>{item.unique_id || 'N/A'}</td>
-                                        <td>{item.home_owner || 'N/A'}</td>
-                                        <td>{item.finance_company || 'N/A'}</td>
-                                        <td>{item.type || 'N/A'}</td>
-                                        <td>{item.loan_type || 'N/A'}</td>
+                                        <td>{item.unique_id || '-'}</td>
+                                        <td>{item.home_owner || '-'}</td>
+                                        <td>{item.finance_company || '-'}</td>
+                                        <td>{item.type || '-'}</td>
+                                        <td>{item.loan_type || '-'}</td>
 
-                                        <td>{item.street_address || 'N/A'}</td>
+                                        <td>{item.street_address || '-'}</td>
 
-                                        <td>{item.state || 'N/A'}</td>
+                                        <td>{item.state || '-'}</td>
 
-                                        <td>{item.email || 'N/A'}</td>
-                                        <td>{item.phone_number || 'N/A'}</td>
+                                        <td>{item.email || '-'}</td>
+                                        <td>{item.phone_number || '-'}</td>
 
-                                        <td>{item.rep_1 || 'N/A'}</td>
-                                        <td>{item.partner_dealer || 'N/A'}</td>
+                                        <td>{item.rep_1 || '-'}</td>
+                                        <td>{item.partner_dealer || '-'}</td>
                                         <td>{item.system_size || '0'}</td>
                                         <td>{item.contract_amount || '0'}</td>
                                         <td>
                                             {item.contract_date
                                                 ? format(parseISO(item.contract_date), 'dd-MM-yyyy')
-                                                : 'N/A'}
+                                                : '-'}
                                         </td>
                                         <td>{item.survey_final_completion_date
                                             ? format(parseISO(item.survey_final_completion_date), 'dd-MM-yyyy')
-                                            : 'N/A'}</td>
+                                            : '-'}</td>
                                         <td>
                                             {item.ntp_complete_date
                                                 ? format(parseISO(item.ntp_complete_date), 'dd-MM-yyyy')
-                                                : 'N/A'}
+                                                : '-'}
                                         </td>
                                         <td>
                                             {item.permit_submit_date
                                                 ? format(parseISO(item.permit_submit_date), 'dd-MM-yyyy')
-                                                : 'N/A'}
+                                                : '-'}
                                         </td>
                                         <td>
                                             {item.permit_approval_date
                                                 ? format(parseISO(item.permit_approval_date), 'dd-MM-yyyy')
-                                                : 'N/A'}
+                                                : '-'}
                                         </td>
                                         <td>
                                             {item.ic_submit_date
                                                 ? format(parseISO(item.ic_submit_date), 'dd-MM-yyyy')
-                                                : 'N/A'}
+                                                : '-'}
                                         </td>
                                         <td>
                                             {item.ic_approval_date
                                                 ? format(parseISO(item.ic_approval_date), 'dd-MM-yyyy')
-                                                : 'N/A'}
+                                                : '-'}
                                         </td>
-                                        <td>{item.rep_2 || 'N/A'}</td>
+                                        <td>{item.rep_2 || '-'}</td>
                                         <td>
                                             {item.cancel_date
                                                 ? format(parseISO(item.cancel_date), 'dd-MM-yyyy')
-                                                : 'N/A'}
+                                                : '-'}
                                         </td>
                                         <td>
                                             {item.pv_install_date
                                                 ? format(parseISO(item.pv_install_date), 'dd-MM-yyyy')
-                                                : 'N/A'}
+                                                : '-'}
                                         </td>
                                         <td>
                                             {item.pto_date
                                                 ? format(parseISO(item.pto_date), 'dd-MM-yyyy')
-                                                : 'N/A'}
+                                                : '-'}
                                         </td>
                                         <td>
                                             {item.fin_complete_date
                                                 ? format(parseISO(item.fin_complete_date), 'dd-MM-yyyy')
-                                                : 'N/A'}
+                                                : '-'}
                                         </td>
 
                                         <td>

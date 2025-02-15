@@ -36,7 +36,8 @@ const DatTool: React.FC = () => {
   
  const isMobile = useMatchMedia('(max-width: 480px)');
   useEffect(() => {
-    dispatch(getDatGeneralInfo({ project_id: currentGeneralId }));
+    dispatch(getDatGeneralInfo({ project_id: currentGeneralId,id :"0633f086-6c83-422a-80da-97b51a404c43" 
+    }));
   }, [currentGeneralId]);
   
 
