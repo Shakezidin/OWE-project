@@ -37,7 +37,7 @@ func HandleGetDropDownListRequest(resp http.ResponseWriter, req *http.Request) {
 		// recordCount      int64
 		// paginationClause string
 		// sortValue        string
-		filteredData map[string][]string
+		filteredData map[string][]interface{}
 	)
 
 	log.EnterFn(0, "HandleGetDropDownListRequest")
@@ -68,14 +68,15 @@ func HandleGetDropDownListRequest(resp http.ResponseWriter, req *http.Request) {
 	// apiResponse = models.DropdownResponse{
 	// 	Data: map[string][]string{
 	// Predefined dropdown data
-	allDropdowns := map[string][]string{
+	allDropdowns := map[string][]interface{}{
+		//structural dropdowns
 		"structure":       {"Main Home", "Detached 1", "Detached 2", "Detached 3", "GM 1", "GM 2", "GM 3"},
 		"roof_type":       {"Flat", "Pitched"},
 		"roof_material":   {"Comp Shingle", "S-Tile", "Flat Tile", "Trapezoidal Metal", "Standing Seam Metal", "Corrugated Metal", "Rolled Comp", "Mod Bitumen", "Tar and Gravel", "TPO/EPDM"},
 		"sheathing_type":  {"OSB", "Plywood", "Horizontal Purlins", "Skip Sheathing", "Tongue and groove"},
 		"framing_type":    {"Mfg. Truss", "Rafters", "TJI Rafter", "Metal Truss"},
 		"framing_size":    {"2x4", "2x6", "2x8", "2x10", "2x12", "4x4", "4x12"},
-		"framing_spacing": {"12", "16", "24", "32", "36", "48"},
+		"framing_spacing": {12, 16, 24, 32, 36, 48},
 		"attachment": {"K2 Flex Foot", "K2 Splice Foot XL", "K2 Splice Foot X",
 			"K2 Big Foot 6\" w/ 3\" E-Curb", "K2 Tile Hook", "S-5! ProteaBracket", "S-5! SolarFoot",
 			"S-5! CorruBracket", "S-5! CorruBracket 100T", "S-5! S-5-S Clamp", "S-5! S-5-U Clamp",
@@ -89,36 +90,38 @@ func HandleGetDropDownListRequest(resp http.ResponseWriter, req *http.Request) {
 		"gm_support_type":     {"Ground Screws", "Concrete Piers"},
 		"reroof_required":     {"Yes", "No"},
 		///////////////////// above is real data //////////////////////////////////
-		"attachment_type":             {"Lag Screws", "Structural Screws"},
-		"attachment_pattern":          {"Standard", "Custom"},
-		"attachment_spacing":          {"12", "16", "24"},
+		//for attachment section
+		"attachment_spacing": {"portrait", "landscape"},
+		//for racking section
 		"racking_mount_type":          {"Top-Clamp", "Mid-Clamp"},
-		"racking_max_rail_cantilever": {"24", "36", "48"},
-		"new_or_existing":             {"New", "Existing"},
-		"panel_brand":                 {"LG", "SunPower", "Panasonic"},
-		"busbar_rating":               {"100", "200", "225"},
-		"main_breaker_rating":         {"100", "150", "200"},
-		"system_phase":                {"Single", "Three"},
-		"system_voltage":              {"120V", "240V", "480V"},
-		"service_entrance":            {"Overhead", "Underground"},
-		"service_rating":              {"100A", "200A", "400A"},
-		"meter_enclosure_type":        {"NEMA 3R", "NEMA 4"},
-		"pv_conduct_run":              {"EMT", "PVC", "Direct Burial"},
-		"drywall_cut_needed":          {"Yes", "No"},
-		"number_of_stories":           {"1", "2", "3+"},
-		"trenching_required":          {"Yes", "No"},
-		"points_of_interconnection":   {"1", "2", "3+"},
-		"inverter":                    {"String", "Micro", "Hybrid"},
+		"racking_max_rail_cantilever": {"top", "bottom"},
+		// other tab
+		"new_or_existing":           {"New", "Existing"},
+		"panel_brand":               {"LG", "SunPower", "Panasonic"},
+		"busbar_rating":             {100, 200, 225},
+		"main_breaker_rating":       {100, 150, 200},
+		"system_phase":              {"Single", "Three"},
+		"system_voltage":            {"120V", "240V", "480V"},
+		"service_entrance":          {"Overhead", "Underground"},
+		"service_rating":            {"100A", "200A", "400A"},
+		"meter_enclosure_type":      {"NEMA 3R", "NEMA 4"},
+		"pv_conduct_run":            {"EMT", "PVC", "Direct Burial"},
+		"drywall_cut_needed":        {"Yes", "No"},
+		"number_of_stories":         {1, 2, 3},
+		"trenching_required":        {"Yes", "No"},
+		"points_of_interconnection": {1, 2, 3},
+		"inverter":                  {"String", "Micro", "Hybrid"},
 	}
 
-	// Filter response based on requested fields
-	filteredData = make(map[string][]string)
+	// Create filtered response
+	filteredData = make(map[string][]interface{})
 	for _, field := range dataReq.DropDownList {
 		if values, exists := allDropdowns[field]; exists {
 			filteredData[field] = values
 		}
 	}
 
+	// Prepare JSON response
 	apiResponse = models.DropdownResponse{
 		Data: filteredData,
 	}

@@ -9,7 +9,9 @@ package models
 type UpdateDatToolInfo struct {
 	ProjectId string `json:"project_id"`
 	// general tab
-	GeneraBasics          *GeneralBasics         `json:"general_basics,omitempty"`
+	//GeneraBasics          *GeneralBasics         `json:"general_basics,omitempty"`
+	//****************************************************************************************************//
+
 	GeneralDatInformation *GeneralDatInformation `json:"general_dat_information,omitempty"`
 	// structural tab
 	StructuralState string          `json:"structural_state"`
@@ -35,11 +37,12 @@ type UpdateDatToolInfo struct {
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // for general tab
-type GeneralBasics struct {
-	ProjectAddress string `json:"project_address"`
-	PhoneNumber    string `json:"phone_number"`
-	EmailID        string `json:"email_id"`
-}
+//
+//	type GeneralBasics struct {
+//		ProjectAddress string `json:"project_address"`
+//		PhoneNumber    string `json:"phone_number"`
+//		EmailID        string `json:"email_id"`
+//	}
 type GeneralDatInformation struct {
 	DATModuleQty           int64  `json:"dat_module_qty"`
 	DATModuleType          string `json:"dat_module_type"`

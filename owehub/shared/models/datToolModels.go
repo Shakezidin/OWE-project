@@ -24,7 +24,7 @@ type GetProjectListResponse struct {
 // models for tab general info
 type GetTabGeneralInfoRequest struct {
 	ProjectId string `json:"project_id"`
-	//Id        string `json:"id"`
+	Id        string `json:"id"`
 }
 
 type GetTabGeneralInfoResponse struct {
@@ -58,13 +58,13 @@ type GetTabGeneralInfoResponse struct {
 	//aurora link remaining
 
 	// Contract Information
-	ContractDate    string  `json:"contract_date"`
-	ModuleQty       int64   `json:"module_qty"`
-	ModuleType      int64   `json:"module_type"`
-	InverterType    string  `json:"inverter_type"`
-	BatteryType     string  `json:"battery_type"`
-	AcDcSystemSize  string  `json:"ac_dc_system_size"`
-	TotalProduction float64 `json:"total_production"` // annual production
+	ContractDate    string      `json:"contract_date"`
+	ModuleQty       int64       `json:"module_qty"`
+	ModuleType      int64       `json:"module_type"`
+	InverterType    string      `json:"inverter_type"`
+	BatteryType     string      `json:"battery_type"`
+	AcDcSystemSize  string      `json:"ac_dc_system_size"`
+	TotalProduction interface{} `json:"total_production"` // annual production
 	// ac to dc size remaining.
 
 	// DAT Information
@@ -267,30 +267,12 @@ type ExistingPvInfo struct {
 	ExistingCalculatedBackfeedWithout125 int64        `json:"existing_calculated_backfeed_without_125"`
 }
 
-// Update struct
-/**************************************************************************
- **************************************************************************/
-// type UpdateDatToolInfo struct {
-// 	// ProjectId        string                        `json:"project_id"`
-// 	// GeneralValues    *GetTabGeneralInfoResponse    `json:"general_values,omitempty"`
-// 	// StructuralValues *GetTabStructuralInfoResponse `json:"structural_values,omitempty"`
-// 	// AdderValues      *AdderUpdateQuantityRequest   `json:"adder_values,omitempty"`
-// 	// OtherValues      *GetTabOtherInfoResponse      `json:"other_values,omitempty"`
-// 	// NotesValues      *GetTabNotesInfoResponse      `json:"notes_values,omitempty"`
-// }
-
-// type AdderUpdateQuantityRequest struct {
-// 	CategoryTitle string `json:"category_title"`
-// 	ComponentName string `json:"component_name"`
-// 	NewQuantity   int64  `json:"new_quantity"`
-// }
-
 // //////// DROP DOWN Request RESPONSE STRUCTURE ///////////////////////////////////////////////
 type DropdownRequest struct {
 	DropDownList []string `json:"drop_down_list"`
 }
 type DropdownResponse struct {
-	Data map[string][]string `json:"data"`
+	Data map[string][]interface{} `json:"data"`
 }
 
 // //////// Delete State in structural tab Request STRUCTURE ///////////////////////////////////////////////
