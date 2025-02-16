@@ -15,28 +15,27 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
   const isMobile = width <= 767;
 
   const formatLargeNumber = (value: number | undefined) => {
-    if (typeof value === 'number') {
-      if (isMobile) {
-        if (value >= 1000000) {
-          return (value / 1000000).toFixed(1) + 'M';
-        } else if (value >= 1000) {
-          return (value / 1000).toFixed(1) + 'K';
-        } else {
-          return value % 1 !== 0 ? value.toFixed(0) : value.toString();
-        }
+    if (typeof value !== 'number') return '';
+  
+    if (isMobile) {
+      if (value >= 1000000) {
+        return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      } else if (value >= 1000) {
+        return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
       } else {
-        if (value >= 1000000) {
-          return Math.round(value / 1000000) + 'M';
-        } else if (value >= 1000) {
-          return Math.round(value / 1000) + 'K';
-        } else {
-          return value.toString();
-        }
+        return value % 1 !== 0 ? value.toFixed(0) : value.toString();
       }
     } else {
-      return '';
+      if (value >= 1000000) {
+        return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      } else if (value >= 1000) {
+        return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+      } else {
+        return value.toString();
+      }
     }
   };
+  
 
   return (
     <ResponsiveContainer width="100%" height={400}>
