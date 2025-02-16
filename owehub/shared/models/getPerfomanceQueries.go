@@ -1686,7 +1686,7 @@ func LeaderBoardInstallBatteryData(dateRange, dealers, groupBy, chosen string) (
 		WITH distinct_installs AS (
 		SELECT DISTINCT ON (pis.customer_unique_id)
 			pis.customer_unique_id, pis.pv_completion_date,
-			ns.battery_count, cs.primary_sales_rep, cs.state,cs.setter,pis.dealer,
+			ns.battery_count, cs.primary_sales_rep, pis.state,cs.setter,pis.dealer,
 			split_part(srs.team_region_untd, '/'::text, 1) AS team,
 			split_part(srs.team_region_untd, '/'::text, 2) AS region
 		FROM pv_install_install_subcontracting_schema pis
@@ -1716,7 +1716,7 @@ func LeaderBoardInstallBatteryData(dateRange, dealers, groupBy, chosen string) (
 		WITH distinct_installs AS (
 		SELECT DISTINCT ON (pis.customer_unique_id)
 			pis.customer_unique_id, pis.pv_completion_date,
-			ns.battery_count, cs.primary_sales_rep, cs.state,cs.setter,
+			ns.battery_count, cs.primary_sales_rep, pis.state,cs.setter,
 			split_part(srs.team_region_untd, '/'::text, 1) AS team,
 			split_part(srs.team_region_untd, '/'::text, 2) AS region,pis.dealer,
 			scs.contracted_system_size_parent
@@ -1776,7 +1776,7 @@ func LeaderBoardNTPData(dateRange, dealers, groupBy, chosen string) (string, str
         ns.ntp_complete_date,
         cs.primary_sales_rep,
         cs.setter,
-        cs.state,
+        ns.state,
         split_part(srs.team_region_untd, '/'::text, 1) AS team,
         split_part(srs.team_region_untd, '/'::text, 2) AS region
     FROM ntp_ntp_schema ns
@@ -1810,7 +1810,7 @@ GROUP BY %v
         ns.ntp_complete_date,
         cs.primary_sales_rep,
         cs.setter,
-        cs.state,
+        ns.state,
         split_part(srs.team_region_untd, '/'::text, 1) AS team,
         split_part(srs.team_region_untd, '/'::text, 2) AS region,
         scs.contracted_system_size_parent

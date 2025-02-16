@@ -500,6 +500,7 @@
 }
 .flexContainer{
   flex-direction: column;
+  margin-right: 0px;
 }
 .leftWrapper{
   /* margin: 20px; */
