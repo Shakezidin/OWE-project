@@ -89,7 +89,7 @@ const DatTool: React.FC = () => {
 
         {
           isMobile && <div>
-            <ResponsiveHeader onMenuSelect={() => {}} setOpenRefresh={setOpenRefresh} />
+            <ResponsiveHeader onMenuSelect={() => {}} setOpenRefresh={setRefreshDat} />
              </div>
         }
       <div className={styles.layoutContainer}>
