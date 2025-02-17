@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS leads_info;
+DROP TABLE IF EXISTS leads_status;
+
 DELETE FROM leads_info; -- TODO: find a way to preserve data
 
 ALTER TABLE leads_info ALTER COLUMN zipcode TYPE INT;
