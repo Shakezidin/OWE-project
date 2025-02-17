@@ -19,8 +19,6 @@ import s3Upload from '../../../utiles/s3Upload';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { toast } from 'react-toastify';
-import useMatchMedia from '../../../hooks/useMatchMedia';
-import downKey from '../assets/downKey.svg'
 
 // Types remain the same as in your original code...
 type Option = {
@@ -149,7 +147,6 @@ const selectFieldsBySection: SelectFieldsSections = {
   },
 };
 
-
 const StructuralPage: React.FC<StructuralPageProps> = ({
   structuralData,
   currentGeneralId,
@@ -273,8 +270,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     }
   };
   
-  const isSmMobile = useMatchMedia('(max-width: 480px)');
-  const [openInfoStates,setOpenInfoStates]=useState<boolean>(false);
+  
   const toggleEditState = async (
     stateName: keyof typeof editStates,
     save: boolean = false
@@ -626,7 +622,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                     <p>Structural Info</p>
                   </div>
                   <div className={styles.headingIcon}>
-                    { !isSmMobile ? structuralInfoStates.map((state, index) =>
+                    {structuralInfoStates.map((state, index) =>
                       (editStates.structuralInfo &&
                         activeStructuralState === state) ||
                       !editStates.structuralInfo ? (
@@ -642,39 +638,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                           {state}
                         </div>
                       ) : null
-                    ) : <div className={styles.infoStateContainer} onClick={()=>{setOpenInfoStates(prev=>!prev)}}> 
-                    <p  className={styles.infoStateContainer_currentState}>{activeStructuralState}</p>
-                    <img src={downKey} alt="" style={{transform:openInfoStates ? "rotate(180deg)":""}}/>
-                    {
-                      openInfoStates && 
-                      <div className={styles.dropDownForInfoStates}> 
-                      {
-                        structuralInfoStates.map((state, index) =>
-                          (editStates.structuralInfo &&
-                            activeStructuralState === state) ||
-                          !editStates.structuralInfo ? (
-                            <div
-                              key={index}
-                              // className={`${
-                              //   activeStructuralState === state
-                              //     ? styles.activeState
-                              //     : styles.wordContainer
-                              // }`}
-                              
-                              className={styles.infoStateOption}
-                              style={{backgroundColor:state===activeStructuralState? "#377CF6":"", color:state===activeStructuralState?"#F3F0F9":""}}
-                              onClick={() => setActiveStructuralState(state)}
-                            >
-                              {state}
-                            </div>
-                          ) : null
-                        ) 
-                      }
-                      </div>
-
-                    }
-                    </div>
-}
+                    )}
 
                     <div
                       className={styles.iconContainer}
