@@ -70,3 +70,10 @@
     border: 1px solid #377CF6;
     transform: scale(1.05);
 }
+
+@media (max-width:480px)
+{
+    .openRefresh_page{
+        width: 85%;
+    }
+}

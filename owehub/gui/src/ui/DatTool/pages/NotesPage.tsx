@@ -36,7 +36,7 @@ const NotePage = ({ currentGeneralId }: any) => {
   const [notes, setNotes] = useState<Note[]>([
     {
       category: 'Structural',
-      text: 'Flat Roof (per watt): Additional cost for structural reinforcements required...',
+      text: notesData ?? 'Flat Roof (per watt): Additional cost for structural reinforcements required...',
     },
     {
       category: 'Electrical',
@@ -59,6 +59,9 @@ const NotePage = ({ currentGeneralId }: any) => {
       text: 'Important details and guidelines for installers to follow...',
     },
   ]);
+  const[myNotes,setMyNotes]=useState<Note[]>([]);
+ 
+  
   const [newNote, setNewNote] = useState<string>('');
 
   useEffect(() => {
@@ -88,14 +91,19 @@ const NotePage = ({ currentGeneralId }: any) => {
     if (newNote.trim()) {
       const now = new Date();
       const formattedTime = new Date().toISOString();
-      setNotes([
-        ...notes,
-        {
-          category: selectedCategory,
-          text: newNote,
-          timestamp: formattedTime
-        }
-      ]);
+      // setMyNotes([
+      //   ...myNotes,
+      //   {
+      //     category: selectedCategory,
+      //     text: newNote,
+      //     timestamp: formattedTime
+      //   }
+      // ]);
+      setMyNotes(myNotes.map((note: any) => 
+        note.title === selectedCategory 
+          ? { ...note, description: [...note.description, { note: newNote, created_at: formattedTime }] } 
+          : note
+      ));
       await dispatch(updateDatTool(
               {project_id: currentGeneralId,notes_values : {title:selectedCategory,description: [{note:newNote,created_at:formattedTime}]}  }
             ));
@@ -105,7 +113,12 @@ const NotePage = ({ currentGeneralId }: any) => {
   };
 
 
-
+  useEffect(()=>{
+    setMyNotes(notesData);
+    console.log(myNotes,"My Notes data");
+    console.log(notesData,"My notes data");
+  },[notesData])
+  console.log("testttt")
   return (
     <div className={styles.genMain}>
       {loading ? (
@@ -160,20 +173,25 @@ const NotePage = ({ currentGeneralId }: any) => {
                 <div className={styles.notes_head} style={{ position: "sticky", top: "0" }}>
                   Notes
                 </div>
-                {notesData
-                  .filter((note: any) => note.title === selectedCategory)
-                  .map((note: any) => (
-                    <div key={note.title} className={styles.multinotes}>
-                      {note.description.map((desc: any, index: any) => (
-                        <div key={index} className={styles.note}>
-                          {desc.note}
-                          <div className={styles.notes_currTime}>
-                            {format(desc.created_at, 'dd MMM yyyy hh:mm a')}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
+                {myNotes.length > 0 ? (
+  myNotes
+    .filter((note: any) => note.title === selectedCategory)
+    .map((note: any) => (
+      <div key={note.title} className={styles.multinotes}>
+        {note.description.map((desc: any, index: any) => (
+          <div key={index} className={styles.note}>
+            {desc.note}
+            <div className={styles.notes_currTime}>
+              {format(desc.created_at, 'dd MMM yyyy hh:mm a')}
+            </div>
+          </div>
+        ))}
+      </div>
+    ))
+) : (
+  <div className={styles.noNotesMessage}>No notes available for this category.</div>
+)}
+
               </div>
               <div className={styles.addNote}>
                 <textarea
