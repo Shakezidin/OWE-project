@@ -252,5 +252,20 @@
     margin: 0px 20px;
     margin-right: 20px !important;
   } */
+   .adderssPageTopPart{
+    padding:2rem;
+   }
+   .adderssPageTopPart_leftText_text{
+    width: 95%;
+   }
+   .adderssPageTopPart_rightText_amount{
+    white-space: nowrap;
+   }
+   .adderssPageMainPart_price{
+    white-space: nowrap;
+   }
+   .adderssPageMainPart_rightContainer{
+    gap:6px;
+   }
 
 }

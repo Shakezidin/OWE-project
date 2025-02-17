@@ -130,3 +130,18 @@
   bottom: -5px;
   cursor: pointer;
 }
+
+
+@media (max-width:480px) {
+  .popUp{
+    width: 85%;
+    overflow-x: hidden;
+  }
+  .popUp_Header{
+    width: 100%;
+  }
+  .popUp_cross{
+    left: 44px;
+    bottom: 8px;
+  }
+}
