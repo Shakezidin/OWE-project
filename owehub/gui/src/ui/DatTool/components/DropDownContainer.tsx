@@ -27,7 +27,7 @@ const DropDownContainer: React.FC<DropDownContainerProps>  = ({loading,mappedDat
     <div>
         {showMore ? <DropDownOpen showMore={showMore} setShowMore={setShowMore} mappedDataList={mappedDataList} currentGeneralId={currentGeneralId} setSearchPara={setSearchPara}/> :<DropDownClosed showMore={showMore} setShowMore={setShowMore} mappedDataList={mappedDataList} currentGeneralId={currentGeneralId} />}
         
-        {showMore && <div className={style2.container2} style={{    padding: "0.6rem 0rem 1.6rem 1.4rem"}}> 
+        {showMore && <div className={style2.container2} style={{    padding: "0.6rem 0rem 1.6rem 0rem"}}> 
     {
         (loading ? (
           <div className={styles.microLoaderContainer}><MicroLoader /></div>

@@ -14,6 +14,7 @@ import { getDatAddersInfo, getDatGeneralInfo, getDatProjectList, getStructuralIn
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import ResponsiveHeader from './components/ResponsiveHeader';
+import { MdRefresh } from 'react-icons/md';
 
 const DatTool: React.FC = () => {
   const [selectedPage, setSelectedPage] = useState<string>('General');
@@ -83,8 +84,16 @@ const DatTool: React.FC = () => {
       {
         refreshDat && <RefreshPopUp setOpenRefresh={setRefreshDat} />
       }
-      {isMobile &&  <div className={styles.mobileSideContainer}>
-      <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isMobile}/>
+      {isMobile &&  <div className={styles.mobileSideContainer} style={{display:"flex"}}>
+     <div style={{width:"90%"}}> 
+     <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isMobile}/>
+     </div>
+      <div
+          className={styles.iconContainer}
+          onClick={() =>{ setRefreshDat(true)}}
+        >
+          <MdRefresh size={24} style={{transform:"scaleX(-1)"}}/>
+        </div>
         </div>}
 
         {
