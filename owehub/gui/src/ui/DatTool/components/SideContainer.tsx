@@ -119,8 +119,8 @@ const SideContainer: React.FC<SideContainerProps> = ({
   //STATES FOR MOBILE VIEW
   const [showMore,setShowMore]=useState<boolean>(false);
   return (
-    <div>
-      {!isMobile && showMenu?<div className={styles.container} style={{ height: !dbStatus ? "calc(100vh - 133px)" : "" }}>
+    <div style={{position:"relative"}}>
+      {!isMobile && showMenu?<div className={styles.container} style={{ height: !dbStatus ? "calc(100vh - 133px)" : ""}}>
       <div className={styles.headerWrapper}>
         <div className={styles.heading}>
           <div className={styles.headingName}>Project List</div>

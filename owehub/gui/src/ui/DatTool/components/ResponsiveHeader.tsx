@@ -182,12 +182,7 @@ const ResponsiveHeader: React.FC<HeaderProps> = ({
             }
           />
         </div> */}
-        <div
-          className={styles.iconContainer}
-          onClick={() =>{ setOpenRefresh(true)}}
-        >
-          <MdRefresh size={18} />
-        </div>
+        
       </div>
     </div>
   );

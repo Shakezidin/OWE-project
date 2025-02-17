@@ -115,8 +115,6 @@ const NotePage = ({ currentGeneralId }: any) => {
 
   useEffect(()=>{
     setMyNotes(notesData);
-    console.log(myNotes,"My Notes data");
-    console.log(notesData,"My notes data");
   },[notesData])
   console.log("testttt")
   return (
@@ -173,7 +171,7 @@ const NotePage = ({ currentGeneralId }: any) => {
                 <div className={styles.notes_head} style={{ position: "sticky", top: "0" }}>
                   Notes
                 </div>
-                {myNotes.length > 0 ? (
+                {myNotes?.length > 0 ? (
   myNotes
     .filter((note: any) => note.title === selectedCategory)
     .map((note: any) => (

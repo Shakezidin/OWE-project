@@ -74,9 +74,22 @@
   }
   .mobileSideContainer{
     padding:20px;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    gap:0.8rem;
   }
   .contentContainer{
     margin: 0;
     padding:20px 20px 0 20px;
+  }
+  .iconContainer{
+    padding:0.6rem;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+
   }
 }

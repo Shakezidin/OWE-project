@@ -18,6 +18,8 @@
 .wrapperBox::-webkit-scrollbar-thumb {
   background-color: #377cf6;
   border-radius: 28px;
+  min-height: 10px;
+  
 }
 
 .wrapperBox::-webkit-scrollbar-button {
@@ -122,6 +124,7 @@
   height: calc(100vh - 240px);
   overflow: hidden;
   overflow-y: scroll;
+  
 }
 
 .microLoaderContainer{
@@ -166,3 +169,14 @@
 
 
 /* RESPONSIVE CODE FOR MOBILE VIEW */
+
+@media (max-width:480px) {
+  .wrapperBox{
+    position: absolute;
+    z-index: 1;
+    background-color: #2A2626;
+    padding:0 0 1rem 1.4rem;
+    border-bottom-right-radius: 28px;
+    border-bottom-left-radius: 28px;
+  }
+}

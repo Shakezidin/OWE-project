@@ -92,3 +92,9 @@
 .header :global(.select__control:hover .select__single-value) {
   color: #fff !important;
 }
+
+@media (max-width:765px) {
+  .iconContainer{
+    display: none;
+  }
+}
