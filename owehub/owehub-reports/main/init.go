@@ -9,7 +9,6 @@ package main
 
 import (
 	auroraclient "OWEApp/owehub-reports/auroraclients"
-	"OWEApp/owehub-reports/services"
 	apiHandler "OWEApp/owehub-reports/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/types"
@@ -272,7 +271,7 @@ var apiRoutes = appserver.ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-reports-service/v1/get_goals_form_data",
-		services.GetGoalsFormData,
+		apiHandler.GetGoalsFormData,
 		false,
 		[]types.UserGroup{types.GroupAdmin},
 	},
