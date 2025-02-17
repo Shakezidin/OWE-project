@@ -660,6 +660,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                               //     ? styles.activeState
                               //     : styles.wordContainer
                               // }`}
+                              
                               className={styles.infoStateOption}
                               style={{backgroundColor:state===activeStructuralState? "#377CF6":"", color:state===activeStructuralState?"#F3F0F9":""}}
                               onClick={() => setActiveStructuralState(state)}
