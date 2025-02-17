@@ -172,8 +172,8 @@
 
 @media (max-width:480px) {
   .wrapperBox{
-    position: absolute;
-    z-index: 1;
+    /* position: absolute;
+    z-index: 1; */
     background-color: #2A2626;
     padding:0 0 1rem 1.4rem;
     border-bottom-right-radius: 28px;
