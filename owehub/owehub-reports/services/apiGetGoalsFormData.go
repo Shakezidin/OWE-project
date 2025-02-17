@@ -11,6 +11,7 @@ func GetGoalsFormData(resp http.ResponseWriter, req *http.Request) {
 	amdData, err := getGoalAMs()
 	if err != nil {
 		appserver.FormAndSendHttpResp(resp, "Error retrieving AMs data", http.StatusInternalServerError, nil)
+		return
 	}
 	responseData["am"] = amdData
 	appserver.FormAndSendHttpResp(resp, "States And AMs data retrieved", http.StatusOK, responseData)
