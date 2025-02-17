@@ -19,6 +19,7 @@ import s3Upload from '../../../utiles/s3Upload';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { toast } from 'react-toastify';
+import StructuralStateNav from '../components/StructuralStateNav';
 
 // Types remain the same as in your original code...
 type Option = {
@@ -206,7 +207,8 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       setMpData(structuralData.structural_info);
 
       // Update: Use the last MP state's data for initial values
-      const initialMpData = structuralData.structural_info[mpKeys[mpKeys.length - 1]];
+      const initialMpData =
+        structuralData.structural_info[mpKeys[mpKeys.length - 1]];
       setSelectedValues({
         ...initialMpData,
         quantity: structuralData.quantity,
@@ -224,26 +226,29 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       let payload: Record<string, any> = {
         project_id: currentGeneralId,
       };
-  
+
       // Validate the data
       if (section === 'structural_info') {
         if (!mpData[activeStructuralState]) {
           // toast.error('Invalid structural state data.');
           return false;
         }
-  
-        const modifiedFields = Object.keys(newValues).reduce((acc, key) => {
-          if (newValues[key] !== mpData[activeStructuralState]?.[key]) {
-            acc[key] = newValues[key];
-          }
-          return acc;
-        }, {} as Record<string, any>);
-  
+
+        const modifiedFields = Object.keys(newValues).reduce(
+          (acc, key) => {
+            if (newValues[key] !== mpData[activeStructuralState]?.[key]) {
+              acc[key] = newValues[key];
+            }
+            return acc;
+          },
+          {} as Record<string, any>
+        );
+
         if (Object.keys(modifiedFields).length === 0) {
           // toast.error('No changes detected for structural info.');
           return false;
         }
-  
+
         payload = {
           project_id: currentGeneralId,
           structural_state: activeStructuralState.toLowerCase(),
@@ -252,14 +257,14 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       } else {
         payload[section.toLowerCase()] = newValues;
       }
-  
+
       const response = await dispatch(updateDatTool(payload));
-  
+
       if (response?.payload?.status === 200) {
         // toast.success(`${section} Updated Successfully`);
         return true;
       }
-  
+
       // toast.error(response?.payload?.message || `Failed to update ${section}`);
       console.error('Response:', response);
       return false;
@@ -269,8 +274,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       return false;
     }
   };
-  
-  
+
   const toggleEditState = async (
     stateName: keyof typeof editStates,
     save: boolean = false
@@ -278,62 +282,66 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     if (save) {
       let success = false;
       const updates = { ...tempSelectedValues };
-      
+
       switch (stateName) {
         case 'structuralInfo':
           // Map field names appropriately and convert types
-          const modifiedFields = Object.keys(updates).reduce((acc, key) => {
-            // Skip if value hasn't changed
-            if (updates[key] === mpData[activeStructuralState]?.[key]) {
-              return acc;
-            }
-            
-            // Special field name mapping
-            if (key === 'roof_material') {
-              acc['structural_roof_material'] = updates[key];
-            } 
-            // Handle framing_spacing conversion to integer
-            else if (key === 'framing_spacing') {
-              const spacing = typeof updates[key] === 'string' 
-                ? parseInt(updates[key] as string, 10) 
-                : Number(updates[key]);
-              
-              if (!isNaN(spacing)) {
-                acc[key] = spacing;
+          const modifiedFields = Object.keys(updates).reduce(
+            (acc, key) => {
+              // Skip if value hasn't changed
+              if (updates[key] === mpData[activeStructuralState]?.[key]) {
+                return acc;
               }
-            }
-            else {
-              acc[key] = updates[key];
-            }
-            
-            return acc;
-          }, {} as Record<string, any>);
-        
+
+              // Special field name mapping
+              if (key === 'roof_material') {
+                acc['structural_roof_material'] = updates[key];
+              }
+              // Handle framing_spacing conversion to integer
+              else if (key === 'framing_spacing') {
+                const spacing =
+                  typeof updates[key] === 'string'
+                    ? parseInt(updates[key] as string, 10)
+                    : Number(updates[key]);
+
+                if (!isNaN(spacing)) {
+                  acc[key] = spacing;
+                }
+              } else {
+                acc[key] = updates[key];
+              }
+
+              return acc;
+            },
+            {} as Record<string, any>
+          );
+
           if (Object.keys(modifiedFields).length > 0) {
             success = await handleUpdate('structural_info', modifiedFields);
             if (success) {
-              setMpData(prev => {
+              setMpData((prev) => {
                 // Create a copy of the current MP data
                 const prevMpData = prev[activeStructuralState] || {};
-                
+
                 // Build updated MP data with proper field mapping
                 const updatedMpData = { ...prevMpData };
-                
+
                 // Handle special case for roof material
                 if ('structural_roof_material' in modifiedFields) {
-                  updatedMpData.structural_roof_material = modifiedFields.structural_roof_material;
+                  updatedMpData.structural_roof_material =
+                    modifiedFields.structural_roof_material;
                 }
-                
+
                 // Add all other modified fields
                 Object.entries(modifiedFields)
                   .filter(([k]) => k !== 'structural_roof_material')
                   .forEach(([k, v]) => {
                     updatedMpData[k] = v;
                   });
-                
+
                 return {
                   ...prev,
-                  [activeStructuralState]: updatedMpData
+                  [activeStructuralState]: updatedMpData,
                 };
               });
             }
@@ -341,7 +349,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
             success = true;
           }
           break;
-  
+
         case 'attachment':
           success = await handleUpdate('attachment', {
             attachment_spacing: updates.attachment_spacing,
@@ -350,22 +358,22 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
             attachment_quantity: Number(updates.attachmentQuantity) || 0,
           });
           if (success) {
-            setSelectedValues(prev => ({ ...prev, ...updates }));
+            setSelectedValues((prev) => ({ ...prev, ...updates }));
           }
           break;
-  
+
         case 'racking':
           success = await handleUpdate('racking', {
             racking_type: updates.rackingType,
             racking_mount_type: updates.racking_mount_type,
             racking_title_info: updates.tiltInfo,
-            racking_max_rail_cantilever: updates.racking_max_rail_cantilever
+            racking_max_rail_cantilever: updates.racking_max_rail_cantilever,
           });
           if (success) {
-            setSelectedValues(prev => ({ ...prev, ...updates }));
+            setSelectedValues((prev) => ({ ...prev, ...updates }));
           }
           break;
-  
+
         case 'roofStructure':
           success = await handleUpdate('roof_structure', {
             roof_framing_type: updates.roofFramingType,
@@ -373,28 +381,28 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
             roof_spacing: updates.roofSpacing,
             roof_sheathing_type: updates.roofSheathingType,
             roof_material: updates.roofMaterial,
-            roof_structural_upgrade: updates.structuralUpgrades
+            roof_structural_upgrade: updates.structuralUpgrades,
           });
           if (success) {
-            setSelectedValues(prev => ({ ...prev, ...updates }));
+            setSelectedValues((prev) => ({ ...prev, ...updates }));
           }
           break;
       }
-  
+
       if (!success) {
         return;
       }
     }
-  
+
     setTempSelectedValues(
-      stateName === 'structuralInfo' 
-        ? mpData[activeStructuralState] || {} 
+      stateName === 'structuralInfo'
+        ? mpData[activeStructuralState] || {}
         : { ...selectedValues }
     );
-    
-    setEditStates(prev => ({
+
+    setEditStates((prev) => ({
       ...prev,
-      [stateName]: !prev[stateName]
+      [stateName]: !prev[stateName],
     }));
   };
 
@@ -461,7 +469,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       toast.error('Cannot delete the only remaining state');
       return;
     }
-  
+
     try {
       const response = await dispatch(
         deleteDatState({
@@ -469,26 +477,27 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
           state: stateToDelete.toLowerCase(),
         })
       );
-  
+
       if (response.meta.requestStatus === 'fulfilled') {
         const updatedStates = structuralInfoStates.filter(
           (state) => state !== stateToDelete
         );
         setStructuralInfoStates(updatedStates);
-  
+
         if (activeStructuralState === stateToDelete) {
           setActiveStructuralState(updatedStates[updatedStates.length - 1]);
         }
-  
+
         if (editStates.structuralInfo) {
           toggleEditState('structuralInfo', false);
         }
-        
+
         toast.success(`State ${stateToDelete} deleted successfully`);
       } else {
-        const errorMessage = typeof response.payload === 'string' 
-          ? response.payload 
-          : 'Failed to delete state';
+        const errorMessage =
+          typeof response.payload === 'string'
+            ? response.payload
+            : 'Failed to delete state';
         toast.error(errorMessage);
       }
     } catch (error) {
@@ -496,44 +505,6 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       toast.error('Failed to delete state');
     }
   };
-  // const handleDeleteState = async (stateToDelete: string) => {
-  //   if (structuralInfoStates.length <= 1) {
-  //     toast.error('Cannot delete the only remaining state');
-  //     return;
-  //   }
-  
-  //   try {
-  //     const response = await dispatch(
-  //       deleteDatState({
-  //         project_id: currentGeneralId,
-  //         state: stateToDelete.toLowerCase(),
-  //       })
-  //     );
-  
-  //     if (response.payload?.status === 200) {
-  //       const updatedStates = structuralInfoStates.filter(
-  //         (state) => state !== stateToDelete
-  //       );
-  //       setStructuralInfoStates(updatedStates);
-  
-  //       if (activeStructuralState === stateToDelete) {
-  //         setActiveStructuralState(updatedStates[updatedStates.length - 1]);
-  //       }
-  
-  //       if (editStates.structuralInfo) {
-  //         toggleEditState('structuralInfo', false);
-  //       }
-        
-  //       toast.success(`State ${stateToDelete} deleted successfully`);
-  //     } else {
-  //       toast.error(response.payload?.message || 'Failed to delete state');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error deleting state:', error);
-  //     toast.error('Failed to delete state');
-  //   }
-  // };
-
   // Render Helper Function
   const renderComponent = (
     key: string,
@@ -622,54 +593,36 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                     <p>Structural Info</p>
                   </div>
                   <div className={styles.headingIcon}>
-                    {structuralInfoStates.map((state, index) =>
-                      (editStates.structuralInfo &&
-                        activeStructuralState === state) ||
-                      !editStates.structuralInfo ? (
-                        <div
-                          key={index}
-                          className={`${
-                            activeStructuralState === state
-                              ? styles.activeState
-                              : styles.wordContainer
-                          }`}
-                          onClick={() => setActiveStructuralState(state)}
-                        >
-                          {state}
-                        </div>
-                      ) : null
-                    )}
+    <StructuralStateNav 
+      states={structuralInfoStates}
+      activeState={activeStructuralState}
+      onStateChange={setActiveStructuralState}
+      isEditing={editStates.structuralInfo}
+      onAddState={addNewStructuralState}
+      onDeleteState={handleDeleteState}
+    />
 
-                    <div
-                      className={styles.iconContainer}
-                      onClick={() => {
-                        if (editStates.structuralInfo) {
-                          if (
-                            activeStructuralState ===
-                            structuralInfoStates[
-                              structuralInfoStates.length - 1
-                            ]
-                          ) {
-                            const newStates = structuralInfoStates.slice(0, -1);
-                            setStructuralInfoStates(newStates);
-                            setActiveStructuralState(
-                              newStates[newStates.length - 1]
-                            );
-                          }
-                          toggleEditState('structuralInfo', false); // updated function call
-                        } else {
-                          addNewStructuralState();
-                        }
-                      }}
-                    >
-                      {editStates.structuralInfo ? (
-                        <HiMiniXMark />
-                      ) : (
-                        <IoMdAdd />
-                      )}
-                    </div>
-
-                    <div
+    <div
+      className={styles.iconContainer}
+      onClick={() => {
+        if (editStates.structuralInfo) {
+          if (
+            activeStructuralState ===
+            structuralInfoStates[structuralInfoStates.length - 1]
+          ) {
+            const newStates = structuralInfoStates.slice(0, -1);
+            setStructuralInfoStates(newStates);
+            setActiveStructuralState(newStates[newStates.length - 1]);
+          }
+          toggleEditState('structuralInfo', false);
+        } else {
+          addNewStructuralState();
+        }
+      }}
+    >
+      {editStates.structuralInfo ? <HiMiniXMark /> : <IoMdAdd />}
+    </div>
+    <div
                       className={`${editStates.structuralInfo ? styles.active : styles.iconContainer}`}
                       onClick={() => {
                         if (editStates.structuralInfo) {
@@ -685,7 +638,6 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                         <AiOutlineEdit />
                       )}
                     </div>
-
                     {activeStructuralState !==
                       structuralInfoStates[structuralInfoStates.length - 1] && (
                       <div
