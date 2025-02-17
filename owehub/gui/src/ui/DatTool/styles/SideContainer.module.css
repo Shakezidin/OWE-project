@@ -161,7 +161,7 @@
   }
 
   .dataBoxWrapper {
-    height: calc(100vh - 212px);
+    height: calc(100vh - 279px);
     overflow-y: auto;
   }
 
