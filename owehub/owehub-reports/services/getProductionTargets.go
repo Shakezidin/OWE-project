@@ -24,6 +24,7 @@
 	* INPUT:			resp, req
 	* RETURNS:    		void
 	******************************************************************************/
+
  func HandleGetProductionTargets(resp http.ResponseWriter, req *http.Request) {
 	 var (
 		 err            error
@@ -39,7 +40,6 @@
 	 log.EnterFn(0, "HandleGetProductionTargets")
 	 defer func() { log.ExitFn(0, "HandleGetProductionTargets", err) }()
 
-	 // Check if request body is null
 	 if req.Body == nil {
 		 err = fmt.Errorf("HTTP Request body is null")
 		 log.FuncErrorTrace(0, "%v", err)
@@ -47,7 +47,6 @@
 		 return
 	 }
 
-	 // Read request body
 	 reqBody, err := ioutil.ReadAll(req.Body)
 	 if err != nil {
 		 log.FuncErrorTrace(0, "Failed to read HTTP Request Body err: %v", err)
@@ -55,7 +54,6 @@
 		 return
 	 }
 
-	 // Unmarshal the request body into the dataReq struct
 	 err = json.Unmarshal(reqBody, &dataReq)
 	 if err != nil {
 		 log.FuncErrorTrace(0, "Failed to unmarshal HTTP Request Body err: %v", err)
@@ -65,7 +63,8 @@
 
 
  var intMonth int
-	 // Convert month name to integer
+	 // Convert month name to integer (frontend -> "jan" -> 1)
+	 //need to implement new logic for this 📍
 	 if dataReq.GroupBy == "month" {
 		 intMonth = MonthNameToInt(dataReq.Month)
 		 if intMonth == 0 {
@@ -76,20 +75,12 @@
 		 }
 	 }
 
-	 //remove this hardcoded value //
-
-	 targetUserId = 2;
-
-	 /*
 		 targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
 	 if err != nil {
 		 log.FuncErrorTrace(0, "Failed to get user id for %s, err: %v", dataReq.AccountManager, err)
 		 appserver.FormAndSendHttpResp(resp, "Failed to get user id for %s", http.StatusBadRequest, nil)
 		 return
 	 }
-	 */
-
-
 
 	 switch strings.ToLower(dataReq.GroupBy) {
 	 case "month":
@@ -136,7 +127,7 @@
 	 case "state":
 		 query = `
 						 SELECT
-								 p.user_id,
+								state,
 								 COALESCE(SUM(p.projects_sold), 0) AS projects_sold,
 								 COALESCE(SUM(p.mw_sold), 0) AS mw_sold,
 								 COALESCE(SUM(p.install_ct), 0) AS install_ct,
@@ -145,7 +136,7 @@
 								 COALESCE(SUM(p.ntp), 0) AS ntp
 						 FROM production_targets p
 						 WHERE p.user_id = 1  AND p.target_percentage = $1 AND p.year = $2 AND p.month = $3 AND LOWER(p.state) != 'all'
-						 GROUP BY p.user_id
+						 GROUP BY state
 				 `
 		 whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year, intMonth}
 
@@ -156,7 +147,7 @@
 		 return
 	 }
 
-	 // Retrieve production target data
+	 // fetching data from db
 	 data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	 if err != nil {
 		 log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
@@ -164,7 +155,7 @@
 		 return
 	 }
 
-	 // Populate the response items.
+	 // prepare response data
 	 for _, item := range data {
 		 var respItem models.ProductionTargetsRespItem
 		 if dataReq.GroupBy == "month" {
@@ -191,10 +182,9 @@
 
 
 
- /******************************************************************************/
+ /***************************--helper functions --***************************************************/
 
- func
- MonthNameToInt(month string) int {
+ func MonthNameToInt(month string) int {
 	 switch strings.ToLower(month) {
 	 case "january":
 		 return 1
