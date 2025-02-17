@@ -525,7 +525,7 @@
 
 /* TABLET */
 
-@media (max-width:450px)
+@media (max-width:480px)
 {
   .genOneCont{
     flex-direction: column;
@@ -565,6 +565,7 @@
   }
   .genSecRight{
     width: 100%;
+    margin-bottom: 20px;
   }
   .gOneHeaderDesc{
     display: grid;
