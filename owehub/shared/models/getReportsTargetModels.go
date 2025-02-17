@@ -117,7 +117,7 @@ type UpdateProductionTargetsReq struct {
 type ProductionTargetsReq struct {
 	TargetPercentage int    `json:"target_percentage"`
 	Year             int    `json:"year"`
-	Month            int    `json:"month"`
+	Month            string    `json:"month"`
 	State            string `json:"state"`
 	AccountManager   string `json:"account_manager"`
 	GroupBy          string `json:"group_by"`
@@ -134,8 +134,6 @@ type ProductionTargetsRespItem struct {
 	BatteriesCt  float64 `json:"batteries_ct"`
 	NTP          float64 `json:"ntp"`
 }
-
-
 
 
 
