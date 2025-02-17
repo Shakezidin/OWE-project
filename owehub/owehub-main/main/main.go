@@ -8,12 +8,13 @@
 package main
 
 import (
-	appserver "OWEApp/shared/appserver"
-	log "OWEApp/shared/logger"
 	"OWEApp/shared/types"
 	"fmt"
 	"os"
 	"os/signal"
+
+	appserver "OWEApp/shared/appserver"
+	log "OWEApp/shared/logger"
 )
 
 /******************************************************************************
@@ -25,28 +26,21 @@ import (
  ******************************************************************************/
 func main() {
 	log.EnterFn(0, "main")
-
-	// Force local testing port when running locally
-	os.Setenv("local", "true")
-
-	//var apiRoutes = appserver.ApiRoutes{
-	//	{
-	//		strings.ToUpper("POST"),
-	//		"/owe-main-service/v1/get_perfomance_leaderboard_data",
-	//		apiHandler.HandleGetLeaderBoardRequest,
-	//		true,
-	//		[]types.UserGroup{types.GroupEveryOne},
-	//	},
-	//}
 	router := appserver.CreateApiRouter(apiRoutes)
-	fmt.Println("Starting HTTP server on http://localhost:8080")
 
 	/* Start HTTP Server */
-	appserver.StartServiceServer("HTTP", true, router)
-
+	if types.CommGlbCfg.SvcSrvCfg.OpenStdHTTPPort {
+		appserver.StartServiceServer("HTTP", true, router)
+	} else {
+		appserver.StartServiceServer("HTTP", false, router)
+	}
 	/* Start HTTPS Server */
 	if types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.HttpsSupport == "YES" {
-		appserver.StartServiceServer("HTTPS", true, router)
+		if types.CommGlbCfg.SvcSrvCfg.OpenStdHTTPPort {
+			appserver.StartServiceServer("HTTPS", true, router)
+		} else {
+			appserver.StartServiceServer("HTTPS", false, router)
+		}
 	}
 
 	/* Spawn signal handler routine*/

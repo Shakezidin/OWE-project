@@ -12,7 +12,6 @@ import (
 	"crypto/x509"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"time"
 
 	log "OWEApp/shared/logger"
@@ -57,39 +56,29 @@ func StartServiceServer(httpSrvType string, isStandardAddr bool, router *mux.Rou
 		IdleTimeout:       time.Duration(types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.IdleTimeout) * time.Second,
 		MaxHeaderBytes:    types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.MaxHeaderBytes,
 	}
-
-	// Set local testing port
-	if os.Getenv("local") == "true" {
-		server.Addr = ":8080"
-	} else {
-		// Use configured address
+	go func() {
 		if httpSrvType == "HTTP" {
 			if isStandardAddr {
 				server.Addr = types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.AddrStd
 			} else {
 				server.Addr = types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.Addr
 			}
+			err = server.ListenAndServe()
+			log.FuncInfoTrace(0, "Spawning HTTP service on %s ...", server.Addr)
+			types.ExitChan <- err
 		} else {
 			if isStandardAddr {
 				server.Addr = types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.SslAddrStd
 			} else {
 				server.Addr = types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.SslAddr
 			}
-		}
-	}
-
-	go func() {
-		log.FuncInfoTrace(0, "Starting %s service on %s ...", httpSrvType, server.Addr)
-		if httpSrvType == "HTTP" {
-			err = server.ListenAndServe()
-		} else {
+			log.FuncInfoTrace(0, "Spawning HTTPS service on %s ...", server.Addr)
 			_ = configureTLS(server)
 			err = server.ListenAndServeTLS(types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ServerCertFile, types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ServerKeyFile)
 			types.ExitChan <- err
 		}
 		if err != http.ErrServerClosed {
 			log.FuncErrorTrace(0, "%v-HTTP Server is down: %v", httpSrvType, err)
-			types.ExitChan <- err
 		}
 	}()
 	time.Sleep(1 * time.Second)
