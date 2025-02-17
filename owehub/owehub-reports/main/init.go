@@ -9,6 +9,7 @@ package main
 
 import (
 	auroraclient "OWEApp/owehub-reports/auroraclients"
+	"OWEApp/owehub-reports/services"
 	apiHandler "OWEApp/owehub-reports/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/types"
@@ -266,6 +267,13 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-reports-service/v1/delete_dat_state",
 		apiHandler.HandleDeleteDatStateRequest,
 		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_goals_form_data",
+		services.GetGoalsFormData,
+		false,
 		[]types.UserGroup{types.GroupAdmin},
 	},
 }
