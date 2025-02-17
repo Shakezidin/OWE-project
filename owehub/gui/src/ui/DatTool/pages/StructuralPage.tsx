@@ -20,6 +20,8 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { toast } from 'react-toastify';
 import StructuralStateNav from '../components/StructuralStateNav';
+import useMatchMedia from '../../../hooks/useMatchMedia';
+
 
 // Types remain the same as in your original code...
 type Option = {
@@ -180,6 +182,8 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     useState<string>('');
   const [mpData, setMpData] = useState<Record<string, any>>({});
   const [isUploading, setIsUploading] = useState(false);
+  const isTablet = useMatchMedia('(max-width: 1024px)');
+
 
   useEffect(() => {
     const initializeData = () => {
@@ -752,31 +756,31 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
               </div>
               <div className={styles.endContainerWrapper}>
                 <div className={styles.endContainerOne}>
-                  <div style={{ borderRight: '1px dashed #DADAFF' }}>
+                  <div style={{paddingBottom: isTablet ? '10px' : ''}} className={styles.dashed}>
                     <p className={styles.selectedContent}>Quantity</p>{' '}
                     <p className={styles.selectedLabel}>
                       {structuralData?.quantity || 'N/A'}
                     </p>
                   </div>
-                  <div>
+                  <div className={isTablet ? styles.dashed : ''}>
                     <p className={styles.selectedContent}>Azim</p>{' '}
                     <p className={styles.selectedLabel}>
                       {structuralData?.azimuth || 'N/A'}
                     </p>
                   </div>
-                  <div style={{ borderRight: '1px dashed #DADAFF' }}>
+                  <div className={isTablet ? '' : styles.dashed}>
                     <p className={styles.selectedContent}>Pitch</p>{' '}
                     <p className={styles.selectedLabel}>
                       {structuralData?.pitch || 'N/A'}
                     </p>
                   </div>
-                  <div>
+                  <div className={isTablet ? styles.dashed : ''}>
                     <p className={styles.selectedContent}>TSRF</p>{' '}
                     <p className={styles.selectedLabel}>
                       {structuralData?.tsrf || 'N/A'}
                     </p>
                   </div>
-                  <div style={{ borderRight: '1px dashed #DADAFF' }}>
+                  <div className={styles.dashed}>
                     <p className={styles.selectedContent}>Area (sqft)</p>{' '}
                     <p className={styles.selectedLabel}>
                       {structuralData?.area_sqft || 'N/A'}

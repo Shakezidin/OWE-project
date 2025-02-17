@@ -63,6 +63,13 @@
   height: fit-content;
 }
 
+@media (max-width: 1024px) {
+  .contentContainer{
+    overflow-y: unset;
+    overflow-x: unset;
+  }
+  }
+
 
 @media (max-width: 480px) {
 

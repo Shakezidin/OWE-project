@@ -241,6 +241,8 @@
   }
   .adderssPageMainPart_Right{
     width: 100%;
+    margin-bottom: 20px;
+
   }
   .wrapper{
     margin-right: 0px;
@@ -267,5 +269,7 @@
    .adderssPageMainPart_rightContainer{
     gap:6px;
    }
+
+
 
 }

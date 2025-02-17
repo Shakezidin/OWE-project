@@ -498,6 +498,10 @@
   gap: 15px;
 }
 
+.dashed{
+  border-right: 1px dashed #DADAFF;
+}
+
 @media (max-width: 480px) {
 .structuralGrid{
   grid-template-columns: repeat(1, 1fr);
@@ -578,4 +582,38 @@
   color: #000;
   text-transform: uppercase;
   padding: 0.5rem 1.2rem;
+}
+
+@media (max-width: 1024px) {
+  .endContainerWrapper{
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .leftWrapper{
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .endContainerWrapper{
+    gap: 10px;
+  }
+  .boxTwoWrap{
+    gap: 10px;
+  }
+  .endContainerOne{
+    column-gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 0px;
+  }
+  .endContainertwo{
+    gap: 10px;
+  }
+  .structuralGridLast{
+    gap: 10px;
+  }
+  .structuralGrid{
+    row-gap: 10px;
+  }
+  .hardwareWrapper{
+    gap: 10px;
+  }
 }
