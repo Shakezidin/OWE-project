@@ -763,14 +763,18 @@ func InitConfigFromFiles() (err error) {
 func InitCfgPaths() {
 	log.EnterFn(0, "InitCfgPaths")
 
-	/*set config file paths*/
-	gCfgFilePaths.CfgJsonDir = types.UtilsGetString("SELF_CFG_PATH", "json/")
-	gCfgFilePaths.LoggingConfJsonPath = gCfgFilePaths.CfgJsonDir + "logConfig.json"
-	gCfgFilePaths.DbConfJsonPath = gCfgFilePaths.CfgJsonDir + "sqlDbConfig.json"
-	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
-	gCfgFilePaths.PodioConfJsonPath = gCfgFilePaths.CfgJsonDir + "podioConfig.json"
-	gCfgFilePaths.PodioAppConfJsonPath = gCfgFilePaths.CfgJsonDir + "podioAppConfig.json"
+	// Hardcoded base directory for local testing
+	localBasePath := "D:/owe/OweAppPlatform/owehub/owehub-main/json/"
 
+	// Set config file paths
+	gCfgFilePaths.CfgJsonDir = localBasePath
+	gCfgFilePaths.LoggingConfJsonPath = localBasePath + "logConfig.json"
+	gCfgFilePaths.DbConfJsonPath = localBasePath + "sqlDbConfig.json"
+	gCfgFilePaths.HTTPConfJsonPath = localBasePath + "httpConfig.json"
+	gCfgFilePaths.PodioConfJsonPath = localBasePath + "podioConfig.json"
+	gCfgFilePaths.PodioAppConfJsonPath = localBasePath + "podioAppConfig.json"
+
+	log.ConfDebugTrace(0, "Using Hardcoded Config Paths: %+v", gCfgFilePaths)
 	log.ExitFn(0, "InitCfgPaths", nil)
 }
 

@@ -104,10 +104,17 @@ func InitDBConnection() (err error) {
 	log.EnterFn(0, "InitDBConnection")
 	defer func() { log.ExitFn(0, "InitDBConnection", err) }()
 
-	for _, dbConfig := range types.CommGlbCfg.DbConfList.DBConfigs {
+	for _ = range types.CommGlbCfg.DbConfList.DBConfigs {
+		host := "66.42.100.177:5432"
+		//port := 5432
+		username := "OwePostgres"
+		password := "OwePostgres"
+		dbname := OWEDB
 
 		connStr := fmt.Sprintf("postgres://%v:%v@%v/%v?sslmode=disable",
-			dbConfig.Username, dbConfig.Password, dbConfig.HostName, OWEDB)
+			username, password, host, dbname)
+		//connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%v?sslmode=disable",
+		//	username, password, host, port, dbname)
 
 		log.FuncInfoTrace(0, "Connection String is %s", connStr)
 		var retry int = 1
