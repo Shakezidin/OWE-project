@@ -164,7 +164,7 @@ const ResponsiveHeader: React.FC<HeaderProps> = ({
       </nav>
 
       <div className={styles.headerLast}>
-        <div className='dropDownAndSelect'>
+        {/* <div className='dropDownAndSelect'>
           <Select
           className={styles2.selectContainer}
             value={selectedOption}
@@ -181,10 +181,10 @@ const ResponsiveHeader: React.FC<HeaderProps> = ({
               context === 'value' ? `Rev.No: ${option.label}` : option.label
             }
           />
-        </div>
+        </div> */}
         <div
           className={styles.iconContainer}
-          onClick={() => setOpenRefresh(true)}
+          onClick={() =>{ setOpenRefresh(true)}}
         >
           <MdRefresh size={18} />
         </div>

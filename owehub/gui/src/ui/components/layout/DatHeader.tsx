@@ -21,7 +21,7 @@ import useAuth from '../../../hooks/useAuth';
 import useWindowWidth from '../../../hooks/useWindowWidth';
 import styles from './datheader.module.css';
 import Select from 'react-select';
-
+import oweLogo from '../../DatTool/assets/oweLogo.svg'
 interface OptionType {
     value: string;
     label: string;
@@ -54,6 +54,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
     const currentDate = new Date();
     const dayOfMonth = currentDate.getDate();
     const isStaging = process.env.REACT_APP_ENV;
+    const isSmMobile = useMatchMedia('(max-width: 480px)');
 
     const handleLogout = () => {
         dispatch(logout());
@@ -305,20 +306,20 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
                     <></>
                 </div>
                 <img
-                    src={ICONS.VersionLogo}
+                    src={oweLogo}
                     alt=""
                     style={{
-                        height: 45,
+                        height: 35,
                         alignSelf: 'center',
                         display: isTablet ? 'flex' : 'none',
                         alignItems: 'center',
-                        paddingLeft: '1rem',
+                        // paddingLeft: '1rem',
                     }}
                 />
             </div>
 
 
-            <div className={styles.midElements}>
+            {!isSmMobile && <div className={styles.midElements}>
                 <nav className={styles.menuContainer}>
                     <ul className={styles.menuItems}>
                         <li
@@ -353,7 +354,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
                         </li>
                     </ul>
                 </nav>
-            </div>
+            </div>}
 
 
 
@@ -361,8 +362,8 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
 
 
 
-            {!isMobile && (
-                <div className="dat-search-container">
+            { (
+                <div className="dat-search-container" style={{marginLeft: isMobile ? "3rem":""}}>
 
                     <div className={styles.midElements}>
                         <div className={styles.headerLast}>
@@ -380,17 +381,17 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
                                     isSearchable={false}
                                     getOptionLabel={(option) => option.label}
                                     formatOptionLabel={(option, { context }) =>
-                                        context === 'value' ? `Rev.No: ${option.label}` : option.label
+                                        context === 'value' ? !isSmMobile ? `Rev.No: ${option.label}` : ` ${option.label}` : option.label
                                     }
                                 />
                             </div>
-                            <div className={styles.iconContainer} onClick={() => { setRefreshDat(true) }}>
+                            {!isSmMobile && <div className={styles.iconContainer} onClick={() => { setRefreshDat(true) }}>
                                 <MdRefresh size={18} />
-                            </div>
+                            </div>}
                         </div>
                     </div>
 
-                    <div
+                    {!isSmMobile && <div
                         className="dat-user-container relative"
                         ref={dropdownRef}
                         onClick={() => setOPenIcon(!openIcon)}
@@ -447,7 +448,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
                                 </div>
                             </div>
                         )}
-                    </div>
+                    </div>}
                 </div>
             )}
 
