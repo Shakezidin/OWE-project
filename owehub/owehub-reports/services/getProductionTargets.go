@@ -65,12 +65,14 @@
    // Convert month name to integer (frontend -> "jan" -> 1)
    //need to implement new logic for this 📍
 
-     intMonth = MonthNameToInt(dataReq.Month)
-     if intMonth == 0 {
-       err = fmt.Errorf("invalid month name")
-       log.FuncErrorTrace(0, "%v", err)
-       appserver.FormAndSendHttpResp(resp, "invalid month name", http.StatusBadRequest, nil)
-       return
+     if dataReq.GroupBy == "am" || dataReq.GroupBy == "state" {
+       intMonth = MonthNameToInt(dataReq.Month)
+       if intMonth == 0 {
+         err = fmt.Errorf("invalid month name")
+         log.FuncErrorTrace(0, "%v", err)
+         appserver.FormAndSendHttpResp(resp, "invalid month name", http.StatusBadRequest, nil)
+         return
+       }
      }
 
 
@@ -211,6 +213,6 @@
    case "december":
      return 12
    default:
-     return 0 // invalid month name
+     return 0 //// invalid month name
    }
  }
