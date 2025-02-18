@@ -24,7 +24,7 @@
   border: 2px solid #fff;
   overflow-y: scroll;
 }
-/* .popUp::-webkit-scrollbar {
+ .popUp::-webkit-scrollbar {
   width: 7px;
   height: 10px;
 }
@@ -47,7 +47,7 @@
 }
 .popUp::-webkit-scrollbar-corner {
   background-color: transparent;
-} */
+} 
 .popUp_Header {
   display: flex;
   justify-content: space-between;
