@@ -168,7 +168,8 @@
        respItem.UserName, _ = item["name"].(string)
        respItem.UserID, _ = item["user_id"].(int64)
      } else if dataReq.GroupBy == "state" {
-       respItem.UserID, _ = item["user_id"].(int64)
+       //respItem.UserID, _ = item["user_id"].(int64)
+       respItem.State, _ = item["state"].(string)
      }
      respItem.ProjectsSold, _ = item["projects_sold"].(float64)
      respItem.MwSold, _ = item["mw_sold"].(float64)
