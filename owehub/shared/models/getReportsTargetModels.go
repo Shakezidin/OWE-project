@@ -127,6 +127,7 @@ type ProductionTargetsRespItem struct {
 	Month        string  `json:"month,omitempty"`
 	UserName     string  `json:"user_name,omitempty"`
 	UserID       int64   `json:"user_id,omitempty"`
+	State 			 string  `json:"state,omitempty"`
 	ProjectsSold float64 `json:"projects_sold"`
 	MwSold       float64 `json:"mw_sold"`
 	InstallCt    float64 `json:"install_ct"`
