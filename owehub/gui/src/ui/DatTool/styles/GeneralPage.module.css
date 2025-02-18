@@ -577,11 +577,19 @@
     grid-column: span 2; /* First div takes up both columns */
 }
 .dropDownImage{
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: #2A2626;
+  color: white;
   position: absolute;
   bottom:-5%;
-    left: 50%;
-    transform: translate(-50%);
-    transition: all 0.4ms;
+  left: 50%;
+  transform: translate(-50%);
+  transition: all 0.4ms;
 }
 .genSecRightMain{
   flex-direction: column;
