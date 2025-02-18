@@ -3,7 +3,8 @@ import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import styles from '../styles/StructuralPage.module.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-
+import useMatchMedia from '../../../hooks/useMatchMedia';
+import downKey from '../assets/downKey.svg'
 interface StructuralStateNavProps {
   states: string[];
   activeState: string;
@@ -24,7 +25,8 @@ const StructuralStateNav: React.FC<StructuralStateNavProps> = ({
   const [startIndex, setStartIndex] = useState<number>(0);
   const displayCount: number = 3;
   const needsCarousel: boolean = states.length > displayCount;
-
+  const isSmMobile = useMatchMedia('(max-width: 480px)');
+  const [openInfoStates,setOpenInfoStates]=useState<boolean>(false);
   // Ensure the active state is visible in the carousel
   useEffect(() => {
     const activeStateIndex = states.indexOf(activeState);
@@ -54,7 +56,7 @@ const StructuralStateNav: React.FC<StructuralStateNavProps> = ({
 
   return (
     <div className={styles.carouselContainer}>
-      {needsCarousel && startIndex > 0 && (
+      { !isSmMobile && needsCarousel && startIndex > 0 && (
         <div
           onClick={() => moveCarousel('prev')}
           className={styles.iconContainer}
@@ -64,7 +66,7 @@ const StructuralStateNav: React.FC<StructuralStateNavProps> = ({
         </div>
       )}
 
-      <div className={styles.stateContainer}>
+     {!isSmMobile? <div className={styles.stateContainer}>
         {visibleStates.map((state: string) => (
           (!isEditing || activeState === state) && (
             <div
@@ -80,7 +82,38 @@ const StructuralStateNav: React.FC<StructuralStateNavProps> = ({
             </div>
           )
         ))}
+      </div>:
+      <div className={styles.infoStateContainer} onClick={()=>{setOpenInfoStates(prev=>!prev)}}> 
+      <p  className={styles.infoStateContainer_currentState}>{activeState}</p>
+      <img src={downKey} alt="" style={{transform:openInfoStates ? "rotate(180deg)":""}}/>
+      {
+        openInfoStates && 
+        <div className={styles.dropDownForInfoStates}> 
+        {
+          states.map((state, index) =>
+            (isEditing &&
+              activeState === state) ||
+              !isEditing ? (
+              <div
+                key={index}
+                // className={`${
+                //   activeStructuralState === state
+                //     ? styles.activeState
+                //     : styles.wordContainer
+                // }`}
+                className={styles.infoStateOption}
+                style={{backgroundColor:state===activeState? "#377CF6":"", color:state===activeState?"#F3F0F9":""}}
+                onClick={() => onStateChange(state)}
+              >
+                {state}
+              </div>
+            ) : null
+          ) 
+        }
+        </div>
+      }
       </div>
+      }
 
       {needsCarousel && startIndex < states.length - displayCount && (
         <div

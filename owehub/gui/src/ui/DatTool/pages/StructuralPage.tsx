@@ -183,8 +183,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
   const [mpData, setMpData] = useState<Record<string, any>>({});
   const [isUploading, setIsUploading] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
-
-
+  const isSmMobile = useMatchMedia('(max-width: 480px)');
   useEffect(() => {
     const initializeData = () => {
       dispatch(getStructuralInfo({ project_id: currentGeneralId }));
@@ -607,7 +606,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     />
 
     <div
-      className={styles.iconContainer}
+      className={styles.iconContainer} style={{padding:isSmMobile?"10px":"8px"}}
       onClick={() => {
         if (editStates.structuralInfo) {
           if (
@@ -628,6 +627,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     </div>
     <div
                       className={`${editStates.structuralInfo ? styles.active : styles.iconContainer}`}
+                      style={{padding:isSmMobile?"10px":"8px"}}
                       onClick={() => {
                         if (editStates.structuralInfo) {
                           toggleEditState('structuralInfo', true);
@@ -646,6 +646,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                       structuralInfoStates[structuralInfoStates.length - 1] && (
                       <div
                         className={styles.iconContainer}
+                        style={{padding:isSmMobile?"10px":"8px"}}
                         onClick={() => handleDeleteState(activeStructuralState)}
                       >
                         <RiDeleteBin6Line />

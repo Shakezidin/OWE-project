@@ -104,12 +104,12 @@ const DatTool: React.FC = () => {
       <div className={styles.layoutContainer}>
        
         <div className={styles.contentContainer} style={{height: !dbStatus ? "calc(100vh - 115px)" : ""}}>
-          <CommonComponent generalData={generalData} loading={loading} currentGeneralId={currentGeneralId} isMobile={isMobile}/>
+          <CommonComponent generalData={generalData} loading={loading} currentGeneralId={currentGeneralId} isMobile={isSmallDevice}/>
           {renderPage()}
         </div>
 
         {!isMobile && <div className={showMenu ? styles.sidebar: styles.closedSideBar}>
-          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isSmallDevice}/>
+          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isMobile}/>
         </div>}
 
       </div>

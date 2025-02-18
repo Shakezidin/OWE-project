@@ -64,6 +64,39 @@
   gap: 10px;
 }
 
+.dataBoxWrapper {
+  height: calc(100vh - 279px);
+  overflow-y: auto;
+}
+
+.dataBoxWrapper::-webkit-scrollbar {
+  width: 7px;
+  height: 10px;
+}
+
+.dataBoxWrapper::-webkit-scrollbar {
+  display: initial;
+}
+
+.dataBoxWrapper::-webkit-scrollbar-thumb {
+  background-color: #377cf6;
+  border-radius: 28px;
+  min-height: 10px;
+
+}
+
+.dataBoxWrapper::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.dataBoxWrapper::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+
+.dataBoxWrapper::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
 .dataBox {
   color: #bbbb;
   background-color: #39393f;
