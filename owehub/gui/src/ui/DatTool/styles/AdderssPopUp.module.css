@@ -24,7 +24,7 @@
   border: 2px solid #fff;
   overflow-y: scroll;
 }
-.popUp::-webkit-scrollbar {
+/* .popUp::-webkit-scrollbar {
   width: 7px;
   height: 10px;
 }
@@ -47,7 +47,7 @@
 }
 .popUp::-webkit-scrollbar-corner {
   background-color: transparent;
-}
+} */
 .popUp_Header {
   display: flex;
   justify-content: space-between;
@@ -144,4 +144,44 @@
     left: 44px;
     bottom: 8px;
   }
+  .popUp_dummyData_rowDiv{
+    padding:0.5rem 0;
+    width: 95%;
+  }
+  .popUp_adderData{
+    width:70%;
+  }
+   .popUp::-webkit-scrollbar {
+    width: 7px;
+    height: 10px;
+  }
+  
+  .popUp::-webkit-scrollbar {
+    display: initial;
+  }
+  
+  .popUp::-webkit-scrollbar-thumb {
+    background-color: #377cf6;
+    border-radius: 28px;
+    min-height: 10px;
+    background-clip: content-box;
+    border-top:2rem transparent solid;
+    border-bottom:2rem transparent solid;
+  }
+  
+  .popUp::-webkit-scrollbar-button {
+    display: initial;
+  }
+  
+  .popUp::-webkit-scrollbar {
+     -ms-overflow-style: initial; 
+    scrollbar-width: thin;
+  }
+  .popUp::-webkit-scrollbar-corner {
+    background-color: transparent;
+  } 
+  .popUp_costData{
+    white-space: nowrap;
+  }
 }
+

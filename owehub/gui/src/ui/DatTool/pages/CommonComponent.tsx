@@ -11,6 +11,7 @@ import { useAppDispatch } from '../../../redux/hooks';
 import { updateDatTool } from '../../../redux/apiActions/DatToolAction/datToolAction';
 import openDropDown from '../assets/dropOpen.png';
 import closeDropDown from '../assets/dropClose.png';
+import { FaChevronDown,FaChevronUp } from "react-icons/fa";
 interface GeneralData {
   project_name: string;
   project_id: string;
@@ -221,8 +222,8 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
       </div>
 
 
-      {isMobile && <div className={styles.dropDownImage} style={{bottom:openTab?"-6%":"-12%"}}> 
-      <img src={!openTab ? openDropDown : closeDropDown} alt="" onClick={()=>setOpenTab(prev=>!prev)}/>
+      {isMobile && <div className={styles.dropDownImage} style={{bottom:openTab?"-4%":"-12%"}}> 
+      {openTab? <FaChevronUp onClick={()=>setOpenTab(prev=>!prev)}/> : <FaChevronDown onClick={()=>setOpenTab(prev=>!prev)}/>}
       </div>}
     </div>
 
