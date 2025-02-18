@@ -103,7 +103,7 @@
 }
 
 .headingContainer p {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 24px;
 }
@@ -542,7 +542,7 @@
 
 
 .infoStateContainer{
-  padding:0.5rem 0.6rem;
+  padding:0.4rem 0.5rem;
   background-color: #377CF6;
   display: flex;
   justify-content: center;
