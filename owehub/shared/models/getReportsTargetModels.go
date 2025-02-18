@@ -119,7 +119,7 @@ type ProductionTargetsReq struct {
 	Year             int    `json:"year"`
 	Month            string    `json:"month"`
 	State            string `json:"state"`
-	AccountManager   string `json:"account_manager"`
+	//AccountManager   string `json:"account_manager"`
 	GroupBy          string `json:"group_by"`
 }
 

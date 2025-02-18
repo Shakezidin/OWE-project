@@ -33,8 +33,8 @@
 		 apiResp        []models.ProductionTargetsRespItem
 		 data           []map[string]interface{}
 		 whereEleList   []interface{}
-		 targetUserId   int64
-		 targetStateCnd string
+		//  targetUserId   int64
+		//  targetStateCnd string
 	 )
 
 	 log.EnterFn(0, "HandleGetProductionTargets")
@@ -68,27 +68,27 @@
 	 if dataReq.GroupBy == "month" {
 		 intMonth = MonthNameToInt(dataReq.Month)
 		 if intMonth == 0 {
-			 err = fmt.Errorf("Invalid month name")
+			 err = fmt.Errorf("invalid month name")
 			 log.FuncErrorTrace(0, "%v", err)
-			 appserver.FormAndSendHttpResp(resp, "Invalid month name", http.StatusBadRequest, nil)
+			 appserver.FormAndSendHttpResp(resp, "invalid month name", http.StatusBadRequest, nil)
 			 return
 		 }
 	 }
 
-		 targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
-	 if err != nil {
-		 log.FuncErrorTrace(0, "Failed to get user id for %s, err: %v", dataReq.AccountManager, err)
-		 appserver.FormAndSendHttpResp(resp, "Failed to get user id for %s", http.StatusBadRequest, nil)
-		 return
-	 }
+	// 	 targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
+	//  if err != nil {
+	// 	 log.FuncErrorTrace(0, "Failed to get user id for %s, err: %v", dataReq.AccountManager, err)
+	// 	 appserver.FormAndSendHttpResp(resp, "Failed to get user id for %s", http.StatusBadRequest, nil)
+	// 	 return
+	//  }
 
 	 switch strings.ToLower(dataReq.GroupBy) {
 	 case "month":
-		 targetStateCnd = "p.state = $4"
-		 if targetUserId == 1 && strings.ToLower(dataReq.AccountManager) == "all" && strings.ToLower(dataReq.State) == "all" {
-			 targetStateCnd = "$4 = $4" // TRUE; no need to check state
-		 }
-		 query = fmt.Sprintf(`
+		 //targetStateCnd = "p.state = $4"
+		//  if targetUserId == 1 && strings.ToLower(dataReq.AccountManager) == "all" && strings.ToLower(dataReq.State) == "all" {
+		// 	 targetStateCnd = "$4 = $4" // TRUE; no need to check state
+		//  }
+		 query = `
 						 WITH months(n) AS (SELECT generate_series(1, 12))
 						 SELECT
 								 TRIM(TO_CHAR(TO_DATE(months.n::TEXT, 'MM'), 'Month')) AS month,
@@ -100,11 +100,11 @@
 								 COALESCE(SUM(p.ntp), 0) AS ntp
 						 FROM months
 						 LEFT JOIN production_targets p
-						 ON months.n = p.month AND p.target_percentage = $1 AND p.year = $2 AND p.user_id = $3 AND %s
+						 ON months.n = p.month AND p.target_percentage = $1 AND p.year = $2 AND p.user_id = 1
 						 GROUP BY months.n
 						 ORDER BY months.n
-				 `, targetStateCnd)
-		 whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year, targetUserId, dataReq.State}
+				 `
+		 whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year}
 
 	 case "am":
 		 query = `
@@ -141,7 +141,7 @@
 		 whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year, intMonth}
 
 	 default:
-		 err = fmt.Errorf("Invalid group_by value")
+		 err = fmt.Errorf("invalid group_by value")
 		 log.FuncErrorTrace(0, "%v", err)
 		 appserver.FormAndSendHttpResp(resp, "Invalid group_by value", http.StatusBadRequest, nil)
 		 return
