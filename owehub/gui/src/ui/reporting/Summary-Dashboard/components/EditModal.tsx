@@ -341,10 +341,10 @@ const EditModal = ({
                       <th>Months</th>
                       <th>Project Sold</th>
                       <th>mw Sold</th>
+                      <th>NTP</th>
                       <th>Install CT</th>
                       <th>mw Installed</th>
                       <th>Batteries Installed</th>
-                      <th>NTP</th>
                     </tr>
                   </thead>
                   {loadinged ? (
@@ -582,6 +582,106 @@ const EditModal = ({
                                     <TiTick
                                       onClick={() =>
                                         handleHide(row.month, 'mwSold')
+                                      }
+                                      size={25}
+                                      style={{
+                                        height: '20px',
+                                        width: '20px',
+                                        cursor: 'pointer',
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </td>
+
+                              <td
+                                className={`${isPastMonth || prevYear ? 'viraj' : ''}`}
+                              >
+                                {!showInput[row.month]?.showntp && (
+                                  <div
+                                    style={{
+                                      cursor:
+                                        isPastMonth ||
+                                          prevYear ||
+                                          isOther ||
+                                          isAllSelected
+                                          ? ''
+                                          : 'pointer',
+                                    }}
+                                    onClick={() => {
+                                      if (
+                                        !(
+                                          isPastMonth ||
+                                          prevYear ||
+                                          isOther ||
+                                          isAllSelected
+                                        )
+                                      ) {
+                                        handleShow(
+                                          row.month,
+                                          'ntp',
+                                          row.ntp
+                                        );
+                                      }
+                                    }}
+                                  >
+                                    {showInput[row.month]?.ntp ??
+                                      (row.ntp % 1 !== 0
+                                        ? row.ntp.toFixed(2)
+                                        : row.ntp)}
+                                  </div>
+                                )}
+                                {showInput[row.month]?.showntp && (
+                                  <div className="edit_input">
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      onKeyDown={(e) => {
+                                        if (e.key === '-') {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                      maxLength={6}
+                                      value={
+                                        showInput[row.month]?.ntp !==
+                                          undefined
+                                          ? showInput[row.month]?.ntp
+                                          : row.ntp
+                                      }
+                                      onChange={(e) => {
+                                        setShowInputTest((prevState) => ({
+                                          ...prevState,
+                                          [row.month]: {
+                                            ...prevState[row.month],
+                                            projectSold: row.projectSold,
+                                            mwSold: row.mwSold,
+                                            mwInstalled: row.mwInstalled,
+                                            batteriesCT: row.batteriesCT,
+                                            installCT: row.installCT,
+                                            ntp:row.ntp
+                                          },
+                                        }));
+                                        const value = e.target.value;
+                                        const [beforeDecimal, afterDecimal] =
+                                          value.split('.');
+                                        if (
+                                          beforeDecimal.length <= 8 &&
+                                          (!afterDecimal ||
+                                            afterDecimal.length <= 2)
+                                        ) {
+                                          setShowInput((prevState) => ({
+                                            ...prevState,
+                                            [row.month]: {
+                                              ...prevState[row.month],
+                                              ntp: Number(value),
+                                            },
+                                          }));
+                                        }
+                                      }}
+                                    />
+                                    <TiTick
+                                      onClick={() =>
+                                        handleHide(row.month, 'ntp')
                                       }
                                       size={25}
                                       style={{
@@ -893,105 +993,7 @@ const EditModal = ({
                                 )}
                               </td>
 
-                              <td
-                                className={`${isPastMonth || prevYear ? 'viraj' : ''}`}
-                              >
-                                {!showInput[row.month]?.showntp && (
-                                  <div
-                                    style={{
-                                      cursor:
-                                        isPastMonth ||
-                                          prevYear ||
-                                          isOther ||
-                                          isAllSelected
-                                          ? ''
-                                          : 'pointer',
-                                    }}
-                                    onClick={() => {
-                                      if (
-                                        !(
-                                          isPastMonth ||
-                                          prevYear ||
-                                          isOther ||
-                                          isAllSelected
-                                        )
-                                      ) {
-                                        handleShow(
-                                          row.month,
-                                          'ntp',
-                                          row.ntp
-                                        );
-                                      }
-                                    }}
-                                  >
-                                    {showInput[row.month]?.ntp ??
-                                      (row.ntp % 1 !== 0
-                                        ? row.ntp.toFixed(2)
-                                        : row.ntp)}
-                                  </div>
-                                )}
-                                {showInput[row.month]?.showntp && (
-                                  <div className="edit_input">
-                                    <input
-                                      type="number"
-                                      min={0}
-                                      onKeyDown={(e) => {
-                                        if (e.key === '-') {
-                                          e.preventDefault();
-                                        }
-                                      }}
-                                      maxLength={6}
-                                      value={
-                                        showInput[row.month]?.ntp !==
-                                          undefined
-                                          ? showInput[row.month]?.ntp
-                                          : row.ntp
-                                      }
-                                      onChange={(e) => {
-                                        setShowInputTest((prevState) => ({
-                                          ...prevState,
-                                          [row.month]: {
-                                            ...prevState[row.month],
-                                            projectSold: row.projectSold,
-                                            mwSold: row.mwSold,
-                                            mwInstalled: row.mwInstalled,
-                                            batteriesCT: row.batteriesCT,
-                                            installCT: row.installCT,
-                                            ntp:row.ntp
-                                          },
-                                        }));
-                                        const value = e.target.value;
-                                        const [beforeDecimal, afterDecimal] =
-                                          value.split('.');
-                                        if (
-                                          beforeDecimal.length <= 8 &&
-                                          (!afterDecimal ||
-                                            afterDecimal.length <= 2)
-                                        ) {
-                                          setShowInput((prevState) => ({
-                                            ...prevState,
-                                            [row.month]: {
-                                              ...prevState[row.month],
-                                              ntp: Number(value),
-                                            },
-                                          }));
-                                        }
-                                      }}
-                                    />
-                                    <TiTick
-                                      onClick={() =>
-                                        handleHide(row.month, 'ntp')
-                                      }
-                                      size={25}
-                                      style={{
-                                        height: '20px',
-                                        width: '20px',
-                                        cursor: 'pointer',
-                                      }}
-                                    />
-                                  </div>
-                                )}
-                              </td>
+                           
                             </tr>
                           );
                         })}
@@ -1001,10 +1003,10 @@ const EditModal = ({
                           <th>Total</th>
                           <th>{grandTotal.projectSold.toFixed(2)}</th>
                           <th>{grandTotal.mwSold.toFixed(2)}</th>
+                          <th>{grandTotal.ntp.toFixed(2)}</th>
                           <th>{grandTotal.installCT.toFixed(2)}</th>
                           <th>{grandTotal.mwInstalled.toFixed(2)}</th>
                           <th>{grandTotal.batteriesCT.toFixed(2)}</th>
-                          <th>{grandTotal.ntp.toFixed(2)}</th>
                         </tr>
                       </tfoot>
                     </>

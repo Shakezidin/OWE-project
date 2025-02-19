@@ -108,6 +108,37 @@ type UpdateProductionTargetsReq struct {
 	AccountManager   string                           `json:"account_manager"`
 }
 
+
+
+
+/********************* ✍✍✍ Get production target model ✍✍✍ ********************/
+
+
+type ProductionTargetsReq struct {
+	TargetPercentage int    `json:"target_percentage"`
+	Year             int    `json:"year"`
+	Month            string    `json:"month"`
+	State            string `json:"state"`
+	//AccountManager   string `json:"account_manager"`
+	GroupBy          string `json:"group_by"`
+}
+
+type ProductionTargetsRespItem struct {
+	Month        string  `json:"month,omitempty"`
+	UserName     string  `json:"user_name,omitempty"`
+	UserID       int64   `json:"user_id,omitempty"`
+	State 			 string  `json:"state,omitempty"`
+	ProjectsSold float64 `json:"projects_sold"`
+	MwSold       float64 `json:"mw_sold"`
+	InstallCt    float64 `json:"install_ct"`
+	MwInstalled  float64 `json:"mw_installed"`
+	BatteriesCt  float64 `json:"batteries_ct"`
+	NTP          float64 `json:"ntp"`
+}
+
+
+
+
 // type MonthlyData struct {
 // 	Month          string `json:"name"`                       // Name of the month
 // 	Target         int    `json:"Target"`                     // Target value

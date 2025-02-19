@@ -169,7 +169,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		SELECT
 			DATE_PART('MONTH', C.SALE_DATE) AS month,
 			COUNT(DISTINCT C.UNIQUE_ID) AS projects_sold,
-			SUM(COALESCE(NULLIF(C.CONTRACTED_SYSTEM_SIZE, '')::FLOAT, 0)) AS kw_sold
+            SUM(COALESCE(NULLIF(C.CONTRACTED_SYSTEM_SIZE, '')::FLOAT, 0)) / 1000 AS mw_sold 
 		FROM CUSTOMERS_CUSTOMERS_SCHEMA C
 		WHERE DATE_PART('YEAR', C.SALE_DATE) = $3
 		   AND C.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
@@ -183,7 +183,7 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		SELECT
 			DATE_PART('MONTH', P.PV_COMPLETION_DATE) AS month,
 			COUNT(*) AS install_ct,
-			SUM(COALESCE(NULLIF(P.SYSTEM_SIZE, '')::FLOAT, 0)) AS kw_installed
+            SUM(COALESCE(NULLIF(P.SYSTEM_SIZE, '')::FLOAT, 0)) / 1000 AS mw_installed  
 		FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
 		WHERE DATE_PART('YEAR', P.PV_COMPLETION_DATE) = $3
 		   AND P.APP_STATUS NOT ILIKE '%DUPLICATE%'
@@ -236,9 +236,9 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 		SELECT
 			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
 			COALESCE(CUSTOMERS.projects_sold, 0)::FLOAT AS projects_sold,
-			COALESCE(CUSTOMERS.kw_sold, 0) / 1000 AS mw_sold,
+            COALESCE(CUSTOMERS.mw_sold, 0) AS mw_sold, 
 			COALESCE(PV.install_ct, 0)::FLOAT AS install_ct,
-			COALESCE(PV.kw_installed, 0) / 1000 AS mw_installed,
+            COALESCE(PV.mw_installed, 0) AS mw_installed,  
 			COALESCE(NTP.batteries_ct, 0)::FLOAT AS batteries_ct,
 			COALESCE(NTP_NEW.ntp_ct, 0)::FLOAT AS ntp
 		FROM MONTHS

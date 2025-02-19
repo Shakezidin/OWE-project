@@ -254,11 +254,11 @@ function App() {
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
           />
-          <Route
+          {/* <Route
             path={ROUTES.SUMMARY_DASBOARD}
             element={<Summary_Dashboard />}
           />
-          <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} />
+          <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} /> */}
           <Route path={ROUTES.DAT_TOOL} element={<DatTool />} />
           <Route path={ROUTES.DEALERDATA_PIPELINE} element={<DealerTablePipeline />} />
  
