@@ -191,6 +191,10 @@ const Summary_Dashboard = () => {
       value: 'mw_sold',
     },
     {
+      label: 'NTP',
+      value: 'ntp',
+    },
+    {
       label: 'Install Count',
       value: 'install_ct',
     },
@@ -201,11 +205,7 @@ const Summary_Dashboard = () => {
     {
       label: 'Batteries Installed',
       value: 'batteries_ct',
-    },
-    {
-      label: 'NTP',
-      value: 'ntp',
-    },
+    }, 
   ];
   const [datas, setDatas] = useState<Option>({
     label: 'Projects Sold',
