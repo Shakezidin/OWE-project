@@ -4,7 +4,7 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { IoMdAdd, IoMdCheckmark } from 'react-icons/io';
 import { HiMiniXMark } from 'react-icons/hi2';
 import { FaXmark } from 'react-icons/fa6';
-import { RiDeleteBin6Line } from 'react-icons/ri';
+import { RiDeleteBin6Line, RiDownloadCloudLine } from 'react-icons/ri';
 import Select from '../components/Select';
 import DisplaySelect from '../components/DisplaySelect';
 import CustomInput from '../components/Input';
@@ -21,7 +21,7 @@ import DataNotFound from '../../components/loader/DataNotFound';
 import { toast } from 'react-toastify';
 import StructuralStateNav from '../components/StructuralStateNav';
 import useMatchMedia from '../../../hooks/useMatchMedia';
-
+import ImageSection, { ImageViewer } from '../components/ImageSection';
 
 // Types remain the same as in your original code...
 type Option = {
@@ -29,10 +29,10 @@ type Option = {
   label: string;
 };
 
-type UploadedImage = {
-  file: File;
-  url: string;
-};
+// type UploadedImage = {
+//   file: File;
+//   url: string;
+// };
 
 type S3Response = {
   bucket: string;
@@ -40,6 +40,16 @@ type S3Response = {
   location: string;
   status: number;
 };
+
+interface UploadedImage {
+  file: File;
+  url: string;
+}
+
+interface ViewerImageInfo {
+  mainUrl: string;
+  allImages: UploadedImage[];
+}
 
 interface MPStructuralInfo {
   structure: string;
@@ -173,17 +183,22 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
   const [tempSelectedValues, setTempSelectedValues] = useState<
     Record<string, string | number>
   >({});
-  const [uploadedImages, setUploadedImages] = useState<any[]>([]);
-  const [viewerImage, setViewerImage] = useState<string>('');
+  const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
+  const [viewerImageInfo, setViewerImageInfo] = useState<ViewerImageInfo | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [structuralInfoStates, setStructuralInfoStates] = useState<string[]>(
     []
   );
   const [activeStructuralState, setActiveStructuralState] =
     useState<string>('');
   const [mpData, setMpData] = useState<Record<string, any>>({});
-  const [isUploading, setIsUploading] = useState(false);
+  // const [isUploading, setIsUploading] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
   const isSmMobile = useMatchMedia('(max-width: 480px)');
+  // const [viewerImageInfo, setViewerImageInfo] = useState<{
+  //   mainUrl: string;
+  //   allImages: Array<{ url: string; file: File }>;
+  // } | null>(null);
   useEffect(() => {
     const initializeData = () => {
       dispatch(getStructuralInfo({ project_id: currentGeneralId }));
@@ -418,10 +433,6 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const files = event.target.files ? Array.from(event.target.files) : [];
-    if (files.length + uploadedImages.length > 3) {
-      toast.error('You can only upload up to 3 images.');
-      return;
-    }
 
     setIsUploading(true);
     try {
@@ -443,6 +454,40 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       setIsUploading(false);
     }
   };
+  
+
+  const onImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files ? Array.from(event.target.files) : [];
+    if (files.length === 0) return;
+
+    setIsUploading(true);
+    try {
+      const s3Client = s3Upload('/datTool-images');
+      const newImages = await Promise.all(
+        files.map(async (file) => {
+          const timestamp = new Date().getTime();
+          const uniqueFileName = `${timestamp}-${file.name}`;
+          const response = await s3Client.uploadFile(file, uniqueFileName);
+          return { file, url: response.location };
+        })
+      );
+
+      setUploadedImages((prevImages) => [...prevImages, ...newImages]);
+      
+      // If viewer is open, update its images too
+      if (viewerImageInfo) {
+        setViewerImageInfo(prev => prev ? {
+          ...prev,
+          allImages: [...prev.allImages, ...newImages]
+        } : null);
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+      toast.error('Failed to upload images');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleImageRemove = async (index: number) => {
     try {
@@ -450,12 +495,28 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       const s3Client = s3Upload('/datTool-images');
       const keyToDelete = imageToRemove.url.split('/datTool-images/')[1];
       await s3Client.deleteFile(keyToDelete);
-      setUploadedImages((prev) => prev.filter((_, i) => i !== index));
+      
+      setUploadedImages(prev => prev.filter((_, i) => i !== index));
+      
+      // If viewer is open, update its images too
+      if (viewerImageInfo) {
+        setViewerImageInfo(prev => {
+          if (!prev) return null;
+          const newImages = prev.allImages.filter((_, i) => i !== index);
+          return newImages.length > 0 ? {
+            ...prev,
+            mainUrl: newImages[0].url,
+            allImages: newImages
+          } : null;
+        });
+      }
     } catch (error) {
       console.error('Failed to remove image:', error);
       toast.error('Failed to remove image');
     }
   };
+
+  /////////////////
 
   // Structural State Management
   const addNewStructuralState = () => {
@@ -562,24 +623,27 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     }
     return mpData[activeStructuralState];
   };
+
+  const handleViewImage = (mainUrl: string) => {
+    setViewerImageInfo({
+      mainUrl,
+      allImages: uploadedImages
+    });
+  };
+
+  const closeViewer = () => {
+    setViewerImageInfo(null);
+  };
+
   return (
     <div>
-      {viewerImage && (
-        <div className={styles.imageViewerContainer}>
-          <div className={styles.imageViewer}>
-            <img
-              className={styles.viewerImage}
-              src={viewerImage}
-              alt="Enlarged view"
-            />
-            <button
-              className={styles.imageViewerButton}
-              onClick={() => setViewerImage('')}
-            >
-              <FaXmark />
-            </button>
-          </div>
-        </div>
+{viewerImageInfo && (
+        <ImageViewer
+          viewerImageInfo={viewerImageInfo}
+          onClose={closeViewer}
+          onRemove={handleImageRemove}
+          onImageUpload={onImageUpload}
+        />
       )}
       {loading ? (
         <div className={styles.microLoaderContainer}>
@@ -596,38 +660,47 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                     <p>Structural Info</p>
                   </div>
                   <div className={styles.headingIcon}>
-    <StructuralStateNav 
-      states={structuralInfoStates}
-      activeState={activeStructuralState}
-      onStateChange={setActiveStructuralState}
-      isEditing={editStates.structuralInfo}
-      onAddState={addNewStructuralState}
-      onDeleteState={handleDeleteState}
-    />
+                    <StructuralStateNav
+                      states={structuralInfoStates}
+                      activeState={activeStructuralState}
+                      onStateChange={setActiveStructuralState}
+                      isEditing={editStates.structuralInfo}
+                      onAddState={addNewStructuralState}
+                      onDeleteState={handleDeleteState}
+                    />
 
-    <div
-      className={styles.iconContainer} style={{padding:isSmMobile?"10px":"8px"}}
-      onClick={() => {
-        if (editStates.structuralInfo) {
-          if (
-            activeStructuralState ===
-            structuralInfoStates[structuralInfoStates.length - 1]
-          ) {
-            const newStates = structuralInfoStates.slice(0, -1);
-            setStructuralInfoStates(newStates);
-            setActiveStructuralState(newStates[newStates.length - 1]);
-          }
-          toggleEditState('structuralInfo', false);
-        } else {
-          addNewStructuralState();
-        }
-      }}
-    >
-      {editStates.structuralInfo ? <HiMiniXMark /> : <IoMdAdd />}
-    </div>
-    <div
+                    <div
+                      className={styles.iconContainer}
+                      style={{ padding: isSmMobile ? '10px' : '8px' }}
+                      onClick={() => {
+                        if (editStates.structuralInfo) {
+                          if (
+                            activeStructuralState ===
+                            structuralInfoStates[
+                              structuralInfoStates.length - 1
+                            ]
+                          ) {
+                            const newStates = structuralInfoStates.slice(0, -1);
+                            setStructuralInfoStates(newStates);
+                            setActiveStructuralState(
+                              newStates[newStates.length - 1]
+                            );
+                          }
+                          toggleEditState('structuralInfo', false);
+                        } else {
+                          addNewStructuralState();
+                        }
+                      }}
+                    >
+                      {editStates.structuralInfo ? (
+                        <HiMiniXMark />
+                      ) : (
+                        <IoMdAdd />
+                      )}
+                    </div>
+                    <div
                       className={`${editStates.structuralInfo ? styles.active : styles.iconContainer}`}
-                      style={{padding:isSmMobile?"10px":"8px"}}
+                      style={{ padding: isSmMobile ? '10px' : '8px' }}
                       onClick={() => {
                         if (editStates.structuralInfo) {
                           toggleEditState('structuralInfo', true);
@@ -646,7 +719,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                       structuralInfoStates[structuralInfoStates.length - 1] && (
                       <div
                         className={styles.iconContainer}
-                        style={{padding:isSmMobile?"10px":"8px"}}
+                        style={{ padding: isSmMobile ? '10px' : '8px' }}
                         onClick={() => handleDeleteState(activeStructuralState)}
                       >
                         <RiDeleteBin6Line />
@@ -757,7 +830,10 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
               </div>
               <div className={styles.endContainerWrapper}>
                 <div className={styles.endContainerOne}>
-                  <div style={{paddingBottom: isTablet ? '10px' : ''}} className={styles.dashed}>
+                  <div
+                    style={{ paddingBottom: isTablet ? '10px' : '' }}
+                    className={styles.dashed}
+                  >
                     <p className={styles.selectedContent}>Quantity</p>{' '}
                     <p className={styles.selectedLabel}>
                       {structuralData?.quantity || 'N/A'}
@@ -1015,88 +1091,15 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                     </div>
                   </div>
                 </div>
-                <div
-                  className={
-                    uploadedImages.length === 3
-                      ? styles.uploadImageThree
-                      : uploadedImages.length === 2 ||
-                          uploadedImages.length === 1
-                        ? styles.uploadImageTwo
-                        : styles.uploadImage
-                  }
-                >
-                  <div className={styles.imagePreviewContainer}>
-                    {uploadedImages.map((image, index) => (
-                      <div key={index} className={styles.imagePreview}>
-                        <button
-                          className={styles.removeImageButton}
-                          onClick={() => handleImageRemove(index)}
-                        >
-                          <FaXmark />
-                        </button>
-                        {image.url ? (
-                          <img
-                            src={image.url}
-                            alt={`Upload ${index + 1}`}
-                            className={styles.previewImage}
-                            onError={(e) => {
-                              console.error('Image failed to load:', image.url);
-                              e.currentTarget.alt = 'Failed to load image';
-                            }}
-                          />
-                        ) : (
-                          <div className={styles.previewError}>
-                            Failed to load image
-                          </div>
-                        )}
-                        <p
-                          className={styles.imageView}
-                          onClick={() => setViewerImage(image.url)}
-                        >
-                          View
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {isUploading ? (
-                    <div>
-                      <MicroLoader />
-                    </div>
-                  ) : (
-                    uploadedImages.length < 3 && (
-                      <div>
-                        <label
-                          htmlFor="imageUpload"
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <div className={styles.UploadIcon}>
-                            <IoMdAdd />
-                          </div>
-                        </label>
-                        <input
-                          id="imageUpload"
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          style={{ display: 'none' }}
-                          onChange={handleImageUpload}
-                        />
-                      </div>
-                    )
-                  )}
-
-                  {uploadedImages.length === 0 ? (
-                    <div className={styles.UploadIconContent}>
-                      <p className={styles.UploadHeading}>Upload Image</p>
-                      <p className={styles.UploadParagraph}>
-                        You can select up to 3 files
-                      </p>
-                    </div>
-                  ) : (
-                    ''
-                  )}
-                </div>
+                {/* <div className={styles.uploadContainer}> */}
+                <ImageSection
+                  images={uploadedImages}
+                  onRemove={handleImageRemove}
+                  onView={handleViewImage} // No change needed here, but make sure it's passed correctly
+                  isUploading={isUploading}
+                  onImageUpload={handleImageUpload}
+                />
+                {/* </div> */}
               </div>
             </div>
           </div>
