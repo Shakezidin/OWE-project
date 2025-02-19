@@ -243,3 +243,9 @@
   }
 }
 
+@media (min-height:1080px)
+{
+  .wrapperBox{
+    height: calc(60vh - 240px);
+  }
+}
