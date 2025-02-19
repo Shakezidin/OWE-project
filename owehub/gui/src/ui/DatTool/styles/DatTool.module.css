@@ -63,7 +63,7 @@
   height: fit-content;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1130px) {
   .contentContainer{
     overflow-y: unset;
     overflow-x: unset;
@@ -73,8 +73,7 @@
     justify-content: space-between;
   }
   .iconContainer{
-    height: 50px;
-    width: 50px;
+    padding:1rem;
     background-color: #fff;
     display: flex;
     justify-content: center;
@@ -84,6 +83,14 @@
     top: -50%;
     transform: translate(0, 5%);
   }
+  }
+
+  @media (min-width:480px) and (max-width:840px)
+  {
+    .iconContainer{
+      height: 50px;
+      width: 50px;
+    }
   }
 
 
