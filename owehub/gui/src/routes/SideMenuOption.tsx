@@ -1,7 +1,7 @@
 import { ROUTES } from './routes';
 import { BiDollar, BiSupport } from 'react-icons/bi';
 import { RiUserSettingsLine } from 'react-icons/ri';
-import { MdPendingActions } from 'react-icons/md';
+import { MdOutlinePendingActions, MdPendingActions } from 'react-icons/md';
 import { GrDocumentConfig, GrSchedule } from 'react-icons/gr';
 import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject, AiOutlineTeam } from 'react-icons/ai';
@@ -21,7 +21,7 @@ const mob = {
       path: ROUTES.PEINDING_QUEUE,
       sidebarProps: {
         displayText: 'Pending Actions ',
-        icon: <MdPendingActions size={20} style={{ marginLeft: "2px" }} color="black" /> as JSX.Element
+        icon: <MdOutlinePendingActions size={20} style={{ marginLeft: "2px" }} color="black" /> as JSX.Element
       },
     },
     {
