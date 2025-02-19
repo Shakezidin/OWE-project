@@ -21,7 +21,7 @@ const mob = {
       path: ROUTES.PEINDING_QUEUE,
       sidebarProps: {
         displayText: 'Pending Actions ',
-        icon: <MdOutlinePendingActions size={20} style={{ marginLeft: "2px" }} color="black" /> as JSX.Element
+        icon:  <ImStatsBars2 size={18} style={{ flexShrink: '0' }} />,
       },
     },
     {
