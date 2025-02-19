@@ -596,3 +596,10 @@
   gap: 0.4rem;
 }
 }
+
+@media (max-width:1024px)
+{
+  .genSecCont{
+    padding-bottom: 1.4rem;
+  }
+}
