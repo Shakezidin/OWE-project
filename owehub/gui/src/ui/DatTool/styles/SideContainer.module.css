@@ -183,12 +183,27 @@
 
 /* RESPONSIVE CODE FOR MOBILE VIEW */
 
+
+@media (max-width:1024px)
+{
+  .dataBoxWrapper{
+    height:100%;
+    padding-left:1.4rem;
+  }
+}
+
+@media (min-width:480px) and (max-width:840px)
+{
+  .wrapperBox{
+    height: calc(70vh - 240px);
+  }
+}
+
 @media (max-width:480px) {
   .wrapperBox {
     position: absolute;
     z-index: 2;
     background-color: #2A2626;
-    padding: 0 0 1rem 1.4rem;
     border-bottom-right-radius: 28px;
     border-bottom-left-radius: 28px;
   }
@@ -227,3 +242,4 @@
     background-color: transparent;
   }
 }
+

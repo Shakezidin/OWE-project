@@ -48,6 +48,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
     const navigate = useNavigate();
     const [scrolled, setScrolled] = useState(false);
     const isTablet = useMatchMedia('(max-width: 1024px)');
+    const isIpad = useMatchMedia('(max-width: 830px)');
 
     const width = useWindowWidth();
     const isMobile = width < 768;
@@ -385,13 +386,13 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
                                     }
                                 />
                             </div>
-                            {!isSmMobile && <div className={styles.iconContainer} onClick={() => { setRefreshDat(true) }}>
+                            {!isIpad && <div className={styles.iconContainer} onClick={() => { setRefreshDat(true) }}>
                                 <MdRefresh size={18} />
                             </div>}
                         </div>
                     </div>
 
-                    {!isSmMobile && <div
+                    {!isIpad && <div
                         className="dat-user-container relative"
                         ref={dropdownRef}
                         onClick={() => setOPenIcon(!openIcon)}
@@ -452,7 +453,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
                 </div>
             )}
 
-            {isMobile && (
+            {isIpad && (
                 <div className="search-container">
 
                     <div

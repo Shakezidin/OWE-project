@@ -42,10 +42,11 @@
 }
 .container2{
     width: 100%;
-    max-height: 665px;
     background-color: #2A2626;
     border-radius:0 0 28px 28px;
     padding:0.6rem 2rem;
+    position: absolute;
+        z-index: 1;
 }
 .containerOpen{
     width: 100%;

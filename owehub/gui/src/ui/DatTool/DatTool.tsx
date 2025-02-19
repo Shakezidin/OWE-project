@@ -51,7 +51,7 @@ const DatTool: React.FC = () => {
   
  const [showMenu,setShowMenu]=useState<boolean>(true);
   
- const isMobile = useMatchMedia('(max-width: 1024px)');
+ const isMobile = useMatchMedia('(max-width: 1130px)');
  const isSmallDevice = useMatchMedia('(max-width: 480px)');  useEffect(() => {
     dispatch(getDatGeneralInfo({ project_id: currentGeneralId,id :"0633f086-6c83-422a-80da-97b51a404c43" 
     }));
