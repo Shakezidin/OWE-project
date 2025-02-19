@@ -247,5 +247,6 @@
 {
   .wrapperBox{
     height: calc(60vh - 240px);
+    padding-left: 1rem;
   }
 }

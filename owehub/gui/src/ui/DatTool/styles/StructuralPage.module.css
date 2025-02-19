@@ -110,7 +110,6 @@
 .stateContainer {
   display: flex;
   gap: 10px;
-
 }
 
 .carouselContainer {
@@ -118,7 +117,6 @@
   gap: 10px;
   align-items: center;
   justify-content: center;
-
 }
 
 .flexContainer {
@@ -219,7 +217,7 @@
   /* height: fit-content; */
 }
 
-.endContainertwo p{
+.endContainertwo p {
   font-size: 14px;
   font-weight: 500;
   line-height: 21px;
@@ -273,10 +271,20 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 50px;
   gap: 18px;
   padding: 48px 20px;
   border-radius: 18px;
+  background-color: #ffffff;
+  width: 100%;
+}
+
+.uploadImageWithImages {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+  padding: 9px 20px 18px 20px;
+  border-radius: 14px;
   background-color: #ffffff;
   width: 100%;
 }
@@ -337,6 +345,21 @@
   cursor: pointer;
 }
 
+.stackCount {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  color: white;
+  padding: 3px 5px 3px 4px;
+  border-radius: 50px;
+  position: absolute;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+}
+
 .imagePreviewContainer {
   display: flex;
   gap: 18px;
@@ -349,6 +372,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  position: relative;
 }
 
 .buttonContainer {
@@ -366,55 +390,23 @@
 }
 
 .imageViewer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
-  padding: 8px;
-  margin: 20px auto;
-  width: max-content;
-  border-radius: 28px;
-  background-color: #fff;
+  display: flex;
+  position: relative;
+  width: 60vw;
+  height: 60vh;
+  background: white;
+  padding: 10px 10px 4px 10px;
+  border-radius: 30px;
 }
 
 .imageViewer img {
-  max-width: 100%;
-  max-height: 100%;
+  /* max-width: 100%;
+  max-height: 100%; */
   border-radius: 18px;
   /* object-fit: contain; */
 }
 
-.imageViewerButton {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #ffff;
-  padding: 4px;
-  border-radius: 50px;
-  position: absolute;
-  /* right: 25px;
-    bottom: 280px; */
-  border: none;
-  cursor: pointer;
-  right: 18px;
-  top: 18px;
-}
-
 .imageViewerContainer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .UploadIcon:hover {
@@ -462,7 +454,6 @@
   width: 100%;
 }
 
-
 .uploadImageTwo {
   display: flex;
   flex-direction: row;
@@ -474,7 +465,7 @@
   width: 100%;
 }
 
-.microLoaderContainer{
+.microLoaderContainer {
   width: 100%;
   height: 80vh;
   display: flex;
@@ -482,7 +473,7 @@
   align-items: center;
 }
 
-.structuralGrid{
+.structuralGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(3, auto);
@@ -491,92 +482,89 @@
   margin-top: 15px;
 }
 
-.structuralGridLast{
+.structuralGridLast {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(3, auto);
   gap: 15px;
 }
 
-.dashed{
-  border-right: 1px dashed #DADAFF;
+.dashed {
+  border-right: 1px dashed #dadaff;
 }
 
 @media (max-width: 480px) {
-.structuralGrid{
-  grid-template-columns: repeat(1, 1fr);
-}
-.hardwareWrapper{
-  grid-template-columns: repeat(1, 1fr);
-}
-.structuralGridLast{
-  grid-template-columns: repeat(1, 1fr);
-}
-.endContainerWrapper{
-  grid-template-columns: repeat(1, 1fr);
-  /* margin: 0px 20px; */
-}
-.spacingWrapper{
-  grid-template-columns: repeat(2, 1fr);
-}
-.flexContainer{
-  flex-direction: column;
-  margin-right: 0px;
-}
-.leftWrapper{
-  /* margin: 20px; */
-  padding-bottom: 20px;
-}
-.boxTwoWrap{
-  /* margin: 0px 20px; */
-}
-.uploadImage{
-  margin-bottom: 20px;
-
-}
-.pvContainer{
-  padding-bottom: 20px;
-}
-
+  .structuralGrid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .hardwareWrapper {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .structuralGridLast {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .endContainerWrapper {
+    grid-template-columns: repeat(1, 1fr);
+    /* margin: 0px 20px; */
+  }
+  .spacingWrapper {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .flexContainer {
+    flex-direction: column;
+    margin-right: 0px;
+  }
+  .leftWrapper {
+    /* margin: 20px; */
+    padding-bottom: 20px;
+  }
+  .boxTwoWrap {
+    /* margin: 0px 20px; */
+  }
+  .uploadImage {
+    margin-bottom: 20px;
+  }
+  .pvContainer {
+    padding-bottom: 20px;
+  }
 }
 
-
-.infoStateContainer{
-  padding:0.4rem 0.5rem;
-  background-color: #377CF6;
+.infoStateContainer {
+  padding: 0.4rem 0.5rem;
+  background-color: #377cf6;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap:6px;
+  gap: 6px;
   border-radius: 24px;
   position: relative;
   transition: all 0.6s;
 }
-.infoStateContainer_currentState{
-  font-family: 'Poppins',sans-serif;
+.infoStateContainer_currentState {
+  font-family: 'Poppins', sans-serif;
   font-weight: 500;
   font-size: 12px;
-  color: #F3F0F9;
+  color: #f3f0f9;
   text-transform: uppercase;
 }
-.dropDownForInfoStates{
+.dropDownForInfoStates {
   position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
   gap: 0.4rem;
-  padding:0.5rem 0.8rem;
+  padding: 0.5rem 0.8rem;
   background-color: #fff;
-  top:3rem;
+  top: 3rem;
   box-shadow: 2px 3px 8px 1px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   right: 0;
   max-height: 218px;
   overflow-y: scroll;
 }
-.infoStateOption{
-  font-family: 'Poppins',sans-serif;
+.infoStateOption {
+  font-family: 'Poppins', sans-serif;
   font-weight: 500;
   font-size: 12px;
   color: #000;
@@ -585,38 +573,152 @@
 }
 
 @media (max-width: 1024px) {
-  .endContainerWrapper{
+  .endContainerWrapper {
     grid-template-columns: repeat(1, 1fr);
   }
 
-  .leftWrapper{
+  .leftWrapper {
     gap: 10px;
     margin-bottom: 10px;
   }
-  .endContainerWrapper{
+  .endContainerWrapper {
     gap: 10px;
   }
-  .boxTwoWrap{
+  .boxTwoWrap {
     gap: 10px;
   }
-  .endContainerOne{
+  .endContainerOne {
     column-gap: 10px;
     grid-template-columns: repeat(3, 1fr);
     row-gap: 0px;
   }
-  .endContainertwo{
+  .endContainertwo {
     gap: 10px;
   }
-  .structuralGridLast{
+  .structuralGridLast {
     gap: 10px;
   }
-  .structuralGrid{
+  .structuralGrid {
     row-gap: 10px;
   }
-  .hardwareWrapper{
+  .hardwareWrapper {
     gap: 10px;
   }
 }
+
+.imageViewerContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  gap: 10px;
+}
+
+/* .imageViewer {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+} */
+
+.viewerImage {
+  max-width: 100%;
+  max-height: calc(90vh - 120px);
+  object-fit: contain;
+}
+
+.imageViewerButton {
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: black;
+  font-size: 15px;
+}
+
+.imageViewerButtons {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.thumbnailsRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* overflow-x: auto; */
+  padding: 10px 0;
+  /* margin-top: 20px; */
+  justify-content: center;
+  width: 100%;
+}
+
+.thumbnail {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 2px solid transparent;
+}
+
+.thumbnail img.activeThumbnail {
+  border-color: #007bff;
+}
+
+.thumbnailRemoveButton {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 12px;
+  z-index: 1;
+}
+
+.UploadIconThumbnail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #d9d9d9;
+  font-size: 30px;
+  padding: 8px;
+  border-radius: 8px;
+}
+
 
 @media (min-width:480px) and (max-width:840px)
 {
