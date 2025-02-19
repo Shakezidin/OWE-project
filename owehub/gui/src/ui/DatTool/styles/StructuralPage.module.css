@@ -617,3 +617,11 @@
     gap: 10px;
   }
 }
+
+@media (min-width:480px) and (max-width:840px)
+{
+  .flexContainer{
+    margin-right:0;
+    padding:0 0.8rem 0.8rem 0.8rem;
+  }
+}
