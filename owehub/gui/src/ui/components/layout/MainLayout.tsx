@@ -171,7 +171,7 @@ const MainLayout = () => {
           }}
         >
           <div className={`${!dbStatus ? 'dbdown-children-container' : ''} children-container`}>
-            <Outlet context={{dbStatus,refreshDat,setRefreshDat, activeMenu }} />
+            <Outlet context={{dbStatus,refreshDat,setRefreshDat, activeMenu, setActiveMenu }} />
           </div>
         </div>
         {isOpenChangePassword && (

@@ -352,10 +352,11 @@
 }
  
 .acdc {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 5rem;
+  display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
  
 .gOneHeaderBtn,
@@ -412,7 +413,25 @@
   font-weight: 500;
   outline: none;
 }
+.inputFieldDatt {
+  width: 100%;
+  padding: 0.3rem 1.2rem 0.5rem 0rem;
+  font-size: 12px;
+  border: 0px;
+  border-radius: 26px;
+  color: var(--input-border-color);
+  background-color: unset;
+  font-weight: 500;
+  outline: none;
+  /* width: 55px; */
+}
  
+.inputFieldDatt.editablee {
+  pointer-events: auto;
+  background-color: #f5f5fd;
+  padding: 7.2px 1rem;
+  
+}
 .inputFieldDat.editable {
   pointer-events: auto;
   background-color: #f5f5fd;
@@ -425,9 +444,12 @@
 } */
  
 .acdcInp {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+      align-items: center;
+      justify-content: space-between;
+      width:100%;
+      margin-top: 0.4rem;
 }
  
 .genSecRightMainTopHeader {
@@ -485,4 +507,111 @@
 
 .genMain::-webkit-scrollbar-corner {
   background-color: transparent;
+}
+.loaderContainer{
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+/* RESPONSIVE CODE STARTS FROM HERE */
+
+
+/* RESPONSIVE FOR COMMON COMPONENT */
+
+/* TABLET */
+
+@media (max-width:480px)
+{
+  .genOneCont{
+    flex-direction: column;
+    gap: 20px;
+    margin:0;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.4rem;
+  }
+  .genOneLeft{
+    width:100%;
+    margin: 0;
+    position: relative;
+  }
+  .genOneRight{
+    width: 100%;
+    gap:20px;
+  }
+  .gOneRightTop{
+    margin:0;
+  }
+  .contentContainer{
+    overflow-y: hidden;
+    margin:0;
+  }
+  .gOneRightBottom{
+    padding:0;
+  }
+  .genSecCont{
+    flex-direction: column;
+    margin: 0;
+    align-items: center;
+    margin-bottom: 1.4rem;
+  }
+  .genSecLeft{
+    width: 100%;
+  }
+  .genSecRight{
+    width: 100%;
+  }
+  .gOneHeaderDesc{
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    grid-template-rows: auto; /* Rows adjust to the content */
+    gap: 2px;
+  }
+  .gOneHeaderDesc > div:first-child {
+    grid-column: span 2; /* First div takes up both columns */
+}
+.dropDownImage{
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: #2A2626;
+  color: white;
+  position: absolute;
+  bottom:-5%;
+  left: 50%;
+  transform: translate(-50%);
+  transition: all 0.4ms;
+}
+.genSecRightMain{
+  flex-direction: column;
+  gap: 0.4rem;
+}
+}
+
+@media (max-width:840px ) and (min-width:480px)
+{
+  .genOneCont{
+    margin-right:0;
+    padding:0 0.8rem;
+  }
+  .genSecCont{
+    margin-right:0;
+    padding:0 0.8rem;
+  }
+
+}
+
+@media (max-width:1130px)
+{
+  .genSecCont{
+    padding-bottom: 1.4rem;
+  }
 }
