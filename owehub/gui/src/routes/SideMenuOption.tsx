@@ -2,11 +2,11 @@ import { ROUTES } from './routes';
 import { BiDollar, BiSupport } from 'react-icons/bi';
 import { RiUserSettingsLine } from 'react-icons/ri';
 import { MdPendingActions } from 'react-icons/md';
-import { GrDocumentConfig } from 'react-icons/gr';
+import { GrDocumentConfig, GrSchedule } from 'react-icons/gr';
 import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject, AiOutlineTeam } from 'react-icons/ai';
 import { ImStatsBars2 } from 'react-icons/im';
-import { RiCalendarScheduleLine } from 'react-icons/ri';
+// import { RiCalendarScheduleLine } from 'react-icons/ri';
 import { IoCloudUploadOutline, IoListSharp } from 'react-icons/io5';
 import { PiMapPin } from 'react-icons/pi';
 import { MdOutlinePermMedia } from 'react-icons/md';
@@ -156,7 +156,7 @@ const mob = {
       path: ROUTES.SALES_REP_SCHEDULER,
       sidebarProps: {
         displayText: 'Scheduler',
-        icon: <RiCalendarScheduleLine size={20} style={{ flexShrink: '0' }} />,
+        icon: <GrSchedule size={20} style={{ flexShrink: '0' }} />,
       },
     },
     {
