@@ -68,6 +68,8 @@ const BarChartComp = ({ monthlyStatsData }: any) => {
           tickSize={10}
           tickLine={{ stroke: 'black', strokeWidth: 1 }}
           tickFormatter={formatLargeNumber}
+          domain= {['auto','auto']}
+          interval={0}
         />
         <Tooltip
           cursor={{ fill: '#F5F8FF' }}

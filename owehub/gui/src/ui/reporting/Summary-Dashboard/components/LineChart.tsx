@@ -49,6 +49,8 @@ const LineChartComp = ({ monthData }: any) => {
                     tickSize={10}
                     tick={{ fontSize: 12, fontWeight: 500, fill: '#818181' }}
                     tickFormatter={(value) => `${value}`}
+                    domain={['auto', 'auto']}
+                    interval={0}
                 />
                 <Tooltip
                     contentStyle={tooltipStyle}
