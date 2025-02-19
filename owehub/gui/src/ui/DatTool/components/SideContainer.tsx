@@ -37,6 +37,9 @@ interface SideContainerProps {
   showMenu:Boolean;
   numFlagRef: any;
   isMobile:boolean;
+  showMore: boolean;
+  setShowMore: React.Dispatch<React.SetStateAction<boolean>>;
+  dropdownRef: React.RefObject<HTMLDivElement>;
 }
 
 const SideContainer: React.FC<SideContainerProps> = ({
@@ -51,7 +54,10 @@ const SideContainer: React.FC<SideContainerProps> = ({
   showMenu,
   setShowMenu,
   numFlagRef,
-  isMobile
+  isMobile,
+  showMore,
+  setShowMore,
+  dropdownRef,
 
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -117,9 +123,9 @@ const SideContainer: React.FC<SideContainerProps> = ({
 
 
   //STATES FOR MOBILE VIEW
-  const [showMore,setShowMore]=useState<boolean>(false);
+  
   return (
-    <div style={{position:"relative"}}>
+    <div style={{position:"relative"}} ref={dropdownRef}>
       {!isMobile && showMenu?<div className={styles.container} style={{ height: !dbStatus ? "calc(100vh - 133px)" : ""}}>
       <div className={styles.headerWrapper}>
         <div className={styles.heading}>

@@ -23,6 +23,22 @@ const DatTool: React.FC = () => {
   const { activeMenu } = useOutletContext<{ activeMenu: string }>();
   const { refreshDat } = useOutletContext<{ refreshDat: boolean }>();
   const { setRefreshDat } = useOutletContext<{ setRefreshDat: React.Dispatch<React.SetStateAction<boolean>> }>();
+  const [showMore,setShowMore]=useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setShowMore(false);
+    }
+  };
+
+  // Set up event listener on mount and clean it up on unmount
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   useEffect(() => {
     setSelectedPage(activeMenu);
   }, [activeMenu])
@@ -86,7 +102,7 @@ const DatTool: React.FC = () => {
       }
       {isMobile &&  <div className={styles.mobileSideContainer} style={{display:"flex"}}>
      <div style={{width:"90%"}}> 
-     <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isMobile}/>
+     <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isMobile} showMore={showMore} setShowMore={setShowMore} dropdownRef={dropdownRef}/>
      </div>
       <div
           className={styles.iconContainer}
@@ -109,7 +125,7 @@ const DatTool: React.FC = () => {
         </div>
 
         {!isMobile && <div className={showMenu ? styles.sidebar: styles.closedSideBar}>
-          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isMobile}/>
+          <SideContainer sort={sort} pageSize={pageSize} setPageSize={setPageSize} setSort={setSort} data={data} setSearchPara={setSearchPara} loading={sideLoading} setCurrentGeneralId={setCurrentGeneralId} currentGeneralId={currentGeneralId} setShowMenu={setShowMenu} showMenu={showMenu} numFlagRef={numFlagRef} isMobile={isMobile}  showMore={showMore} setShowMore={setShowMore} dropdownRef={dropdownRef}/>
         </div>}
 
       </div>
