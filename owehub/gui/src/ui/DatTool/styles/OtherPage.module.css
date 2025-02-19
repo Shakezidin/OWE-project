@@ -190,6 +190,13 @@
     background-color: transparent;
   }
 
+  @media (min-width:480px) and (max-width:840px)
+  {
+    .wrapper{
+      padding:0 0.8rem;
+    }
+  }
+
   @media (max-width: 480px) {
     .container{
       flex-direction: column;
@@ -205,3 +212,4 @@
       padding-right: 0px;
     }
   }
+

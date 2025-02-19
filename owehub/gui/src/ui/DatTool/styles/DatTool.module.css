@@ -91,6 +91,12 @@
       height: 50px;
       width: 50px;
     }
+    .contentContainer{
+      margin-left:0;
+    }
+    .mainContainer{
+      margin:0;
+    }
   }
 
 

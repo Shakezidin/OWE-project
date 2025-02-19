@@ -48,7 +48,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
     const navigate = useNavigate();
     const [scrolled, setScrolled] = useState(false);
     const isTablet = useMatchMedia('(max-width: 1024px)');
-    const isIpad = useMatchMedia('(max-width: 830px)');
+    const isIpad = useMatchMedia('(max-width: 900px)');
 
     const width = useWindowWidth();
     const isMobile = width < 768;
