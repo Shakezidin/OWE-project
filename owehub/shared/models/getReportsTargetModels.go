@@ -88,6 +88,7 @@ type ProductionTargetsByYearRespItem struct {
 	MwInstalled  float64 `json:"mw_installed"`
 	BatteriesCt  float64 `json:"batteries_ct"`
 	NTP          float64 `json:"ntp"`
+	MwNtp        float64 `json:"mw_ntp"`
 }
 
 // Update production targets models
@@ -101,6 +102,7 @@ type UpdateProductionTargetsReqItem struct {
 	MwInstalled  float64 `json:"mw_installed"`
 	BatteriesCt  float64 `json:"batteries_ct"`
 	NTP          float64 `json:"ntp"`
+	MwNtp        float64 `json:"mw_ntp"`
 }
 
 type UpdateProductionTargetsReq struct {

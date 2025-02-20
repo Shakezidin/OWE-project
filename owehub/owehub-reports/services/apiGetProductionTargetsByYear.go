@@ -87,7 +87,8 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			COALESCE(SUM(p.install_ct), 0) AS install_ct,
 			COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
 			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct,
-			COALESCE(SUM(p.ntp), 0) AS ntp
+			COALESCE(SUM(p.ntp), 0) AS ntp,
+			COALESCE(SUM(p.mw_ntp), 0) AS mw_ntp
 		FROM months
 		LEFT JOIN production_targets p
 		ON months.n = p.month AND p.target_percentage = $1 AND p.year = $2 AND p.user_id = $3 AND %s
@@ -143,6 +144,11 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			log.FuncErrorTrace(0, "Failed to get 'ntp' Item: %+v\n", item)
 		}
 
+		mwNtp, ok := item["mw_ntp"].(float64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get 'mw_ntp' Item: %+v\n", item)
+		}
+
 		// Append the response item
 		apiResp = append(apiResp, models.ProductionTargetsByYearRespItem{
 			Month:        month,
@@ -152,6 +158,7 @@ func HandleGetProductionTargetsByYearRequest(resp http.ResponseWriter, req *http
 			MwInstalled:  mwInstalled,
 			BatteriesCt:  batteriesCt,
 			NTP:          ntp,
+			MwNtp:        mwNtp,
 		})
 	}
 
