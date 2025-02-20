@@ -12,6 +12,7 @@ import {
   updateDatTool,
 } from '../../../redux/apiActions/DatToolAction/datToolAction';
 import DataNotFound from '../../components/loader/DataNotFound';
+import { toast } from 'react-toastify';
 
 interface GeneralData {
   project_name: string;
@@ -258,9 +259,6 @@ const GeneralPage: React.FC<generalProps> = ({
       return updatedState;
     });
   };
-  useEffect(()=>{
-    console.log(generalDatInfo,"generalDatInfo values.....");
-  },[generalDatInfo]);
   const handleDatSave = async (): Promise<void> => {
     setIsDatEditing(false);
 
@@ -284,7 +282,9 @@ const GeneralPage: React.FC<generalProps> = ({
         },
         
       })
-    );
+    ).then(()=>{
+      toast.success('Data Updated Successfully');
+    });
     setGeneralDatInfo(prevState => ({
       ...prevState,
       datModuleQTY: { ...prevState.datModuleQTY, changed: false },
