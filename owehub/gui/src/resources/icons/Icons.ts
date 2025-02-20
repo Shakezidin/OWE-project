@@ -185,6 +185,7 @@ import DatTape from '../../resources/assets/dat_tape.svg';
 import Whats_Send from '../../resources/assets/Whats_Send.svg';
 import sky from '../../resources/assets/sky.svg';
 import skyfilter from '../../resources/assets/skyfilter.svg';
+import pendingAction from '../../resources/assets/pending action.svg';
 
 
 
@@ -193,6 +194,7 @@ export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
   videoPlayerIcon,
   LOGO: logo,
+  pendingAction:pendingAction,
   MENU_1: require('../../resources/assets/menu_1.png'),
   sidebarLogo: require('../../resources/assets/comissionlogo.png'),
   sidebarLogoSquare: require('../../resources/assets/comissionlogoSquare.png'),
