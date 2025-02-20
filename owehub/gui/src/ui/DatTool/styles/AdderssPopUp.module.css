@@ -130,7 +130,68 @@
   bottom: -5px;
   cursor: pointer;
 }
+@media (min-width:1024px) and (max-width:1280px){
+  .popUp::-webkit-scrollbar-thumb {
+    background-color: #377cf6;
+    border-radius: 28px;
+    min-height: 10px;
+    background-clip: content-box;
+    border-top:1.5rem transparent solid;
+    border-bottom:1.5rem transparent solid;
+  }
+}
+@media (min-width:912px) and (max-width:1024px){
+  .popUp::-webkit-scrollbar-thumb {
+    background-color: #377cf6;
+    border-radius: 28px;
+    min-height: 10px;
+    background-clip: content-box;
+    border-top:1.5rem transparent solid;
+    border-bottom:1.5rem transparent solid;
+  }
+}
+@media (min-width:768px) and (max-width:912px){
+  .popUp::-webkit-scrollbar-thumb {
+    background-color: #377cf6;
+    border-radius: 28px;
+    min-height: 10px;
+    background-clip: content-box;
+    border-top:1.5rem transparent solid;
+    border-bottom:1.5rem transparent solid;
+  }
+}
+@media (min-width:540px) and (max-width:768px){
+  .popUp::-webkit-scrollbar-thumb {
+    background-color: #377cf6;
+    border-radius: 28px;
+    min-height: 10px;
+    background-clip: content-box;
+    border-top:1.5rem transparent solid;
+    border-bottom:1.5rem transparent solid;
+  }
+}
 
+@media (min-width:480px) and (max-width:540px)
+{
+  .popUp{
+    width: 90%;
+    overflow-x: hidden;
+  }
+  .popUp_cross{
+    left: 65px;
+  }
+  .popUp::-webkit-scrollbar-thumb {
+    background-color: #377cf6;
+    border-radius: 28px;
+    min-height: 10px;
+    background-clip: content-box;
+    border-top:2rem transparent solid;
+    border-bottom:2rem transparent solid;
+  }
+  .popUp_Header{
+    width:93.5%;
+  }
+}
 
 @media (max-width:480px) {
   .popUp{

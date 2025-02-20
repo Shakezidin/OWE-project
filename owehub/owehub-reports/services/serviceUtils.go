@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 func getString(item map[string]interface{}, key string) string {
@@ -107,4 +109,43 @@ func getProdTargetUserId(reqCtx context.Context, username string) (int64, error)
 	}
 
 	return userId, nil
+}
+
+// get states for owe goals
+func getGoalStates() []string {
+	states := []string{"Colorado", "Arizona", "Texas", "New Mexico", "Nevada"}
+	return states
+}
+func getGoalAMs() ([]string, error) {
+	var whereEleList []interface{}
+	var responseData []string
+
+	names := []string{"Taylor Ramsthel", "Josh Morton", "Adam Doty"}
+	query := `SELECT name FROM USER_DETAILS WHERE name = ANY($1)`
+
+	whereEleList = append(whereEleList, pq.Array(names))
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+
+	if err != nil {
+		log.FuncErrorTrace(0, "failed to get name of AMs, err: %v", err)
+		return nil, fmt.Errorf("failed to get AM data from DB")
+	}
+
+	if len(data) == 0 {
+		return nil, fmt.Errorf("no AM data found")
+	}
+
+	for _, val := range data {
+		if name, ok := val["name"].(string); ok {
+			responseData = append(responseData, name)
+		} else {
+			log.FuncErrorTrace(0, "name of AM is not string")
+			continue
+		}
+	}
+
+	log.FuncDebugTrace(0, "data of am is %v", data)
+
+	return responseData, nil
+
 }
