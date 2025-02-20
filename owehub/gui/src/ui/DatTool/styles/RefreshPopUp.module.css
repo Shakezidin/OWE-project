@@ -105,6 +105,12 @@
         width:45%;
     }
 }
+@media(min-width:480px) and (max-width:540px)
+{
+    .openRefresh_page{
+        width: 65%;
+    }
+}
 @media (max-width:480px)
 {
     .openRefresh_page{

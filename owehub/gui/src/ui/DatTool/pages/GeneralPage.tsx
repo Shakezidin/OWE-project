@@ -12,6 +12,7 @@ import {
   updateDatTool,
 } from '../../../redux/apiActions/DatToolAction/datToolAction';
 import DataNotFound from '../../components/loader/DataNotFound';
+import { toast } from 'react-toastify';
 
 interface GeneralData {
   project_name: string;
@@ -76,6 +77,7 @@ interface InputFieldProps {
   type?: string;
   isEditing: boolean;
   className?: string;
+  placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -95,6 +97,7 @@ const InputField: React.FC<InputFieldProps> = ({
       className={`${styles.inputFieldDat} ${isEditing ? styles.editable : ''}`}
       disabled={!isEditing}
       onChange={onChange}
+      placeholder={value === '' ? '---' : ''}
     />
   </div>
 );
@@ -117,17 +120,17 @@ const GeneralPage: React.FC<generalProps> = ({
   const contractInfo = [
     {
       label: 'Module QTY',
-      value: generalData?.module_qty?.toString() || 'N/A',
+      value: generalData?.module_qty?.toString() || '',
     },
     {
       label: 'Module Type',
-      value: generalData?.module_type?.toString() || 'N/A',
+      value: generalData?.module_type?.toString() || '',
     },
-    { label: 'Inverter Type', value: generalData?.inverter_type || 'N/A' },
-    { label: 'Battery Type', value: generalData?.battery_type || 'N/A' },
+    { label: 'Inverter Type', value: generalData?.inverter_type || '---' },
+    { label: 'Battery Type', value: generalData?.battery_type || '---' },
     {
       label: 'AC/DC System Size',
-      value: generalData?.ac_dc_system_size || 'N/A',
+      value: generalData?.ac_dc_system_size || '---',
     },
     {
       label: 'Total Production',
@@ -143,10 +146,10 @@ const GeneralPage: React.FC<generalProps> = ({
     },
     {
       label: 'Module Type',
-      value: generalData?.dat_module_type || 'N/A',
+      value: generalData?.dat_module_type || '',
     },
-    { label: 'Inverter Type', value: generalData?.inverter_type || 'N/A' },
-    { label: 'Battery Type', value: generalData?.battery_type || 'N/A' },
+    { label: 'Inverter Type', value: generalData?.inverter_type || '' },
+    { label: 'Battery Type', value: generalData?.battery_type || '' },
   ];
 
   const datRightFields = [
@@ -155,11 +158,11 @@ const GeneralPage: React.FC<generalProps> = ({
       value: generalData?.dat_design_version || 0,
       type: 'number',
     },
-    { label: 'Designer Name', value: generalData?.dat_designer_name || 'N/A' },
-    { label: 'Aurora ID', value: generalData?.dat_aurora_id || 'N/A' },
+    { label: 'Designer Name', value: generalData?.dat_designer_name || '' },
+    { label: 'Aurora ID', value: generalData?.dat_aurora_id || '' },
     {
       label: 'Site Capture URL',
-      value: (generalData?.site_capture_url) || 'N/A',
+      value: (generalData?.site_capture_url) || '',
       type: 'url',
     },
     // {
@@ -175,8 +178,8 @@ const GeneralPage: React.FC<generalProps> = ({
     datAuroraID: { value: datRightFields[2].value, changed: false },
     datSystemSizeAC: { value: '', changed: false },
     datSystemSizeDC: { value: '', changed: false },
-    datChanges: { value: 'N/A', changed: false },
-    datChangeOrderRequired: { value: 'N/A', changed: false },
+    datChanges: { value: '', changed: false },
+    datChangeOrderRequired: { value: '', changed: false },
     datInverterType: { value: datFields[2].value, changed: false },
     datBatteryType: { value: datFields[3].value, changed: false },
     datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
@@ -256,9 +259,6 @@ const GeneralPage: React.FC<generalProps> = ({
       return updatedState;
     });
   };
-  useEffect(()=>{
-    console.log(generalDatInfo,"generalDatInfo values.....");
-  },[generalDatInfo]);
   const handleDatSave = async (): Promise<void> => {
     setIsDatEditing(false);
 
@@ -282,7 +282,9 @@ const GeneralPage: React.FC<generalProps> = ({
         },
         
       })
-    );
+    ).then(()=>{
+      toast.success('Data Updated Successfully');
+    });
     setGeneralDatInfo(prevState => ({
       ...prevState,
       datModuleQTY: { ...prevState.datModuleQTY, changed: false },
@@ -364,6 +366,7 @@ const GeneralPage: React.FC<generalProps> = ({
                   <InputField
                     key={index}
                     label={field.label}
+                    
                     value={
                       generalDatInfo[
                         `dat${field.label.replaceAll(' ', '')}` as GeneralDatInfoKeys
@@ -414,6 +417,7 @@ const GeneralPage: React.FC<generalProps> = ({
                   <InputField
                     key={index}
                     label={field.label}
+                    placeholder='---'
                     value={
                       generalDatInfo[
                         `dat${field.label.replaceAll(' ', '')}` as GeneralDatInfoKeys

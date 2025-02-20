@@ -281,6 +281,25 @@
   }
 }
 
+@media (min-width:480px) and (max-width:540px)
+{
+  .adderssPageMainPart{
+    flex-direction: column;
+  }
+  .adderssPageMainPart_left{
+    width: 100%;
+  }
+  .adderssPageMainPart_Right{
+    width: 100%;
+  }
+  .adderssPageTopPart_leftText_text{
+    width: 66%;
+  }
+  .adderssPageTopPart_rightText_amount{
+    white-space: nowrap;
+  }
+}
+
 @media (min-width:480px) and (max-width:840px)
 {
   .wrapper{
