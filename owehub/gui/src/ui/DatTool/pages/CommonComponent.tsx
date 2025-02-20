@@ -93,27 +93,27 @@ const CommonComponent: React.FC<commonComponentProps> = ({generalData,loading,cu
   
   const systemSpecs = [
     {
-      title: generalData?.pv_module || "N/A",
+      title: generalData?.pv_module || "---",
       subtitle: 'PV Modules',
     },
-    { title: generalData?.inverters || "N/A", subtitle: 'Inverters' },
-    { title: generalData?.battery || "N/A", subtitle: 'Battery' },
+    { title: generalData?.inverters || "---", subtitle: 'Inverters' },
+    { title: generalData?.battery || "---", subtitle: 'Battery' },
   ];
   
   const systemMetrics = [
-    { value: generalData?.dc_system_size || "N/A", label: 'DC System Size' },
-    { value: generalData?.ac_system_size || "N/A", label: 'AC System Size' },
-    { value: generalData?.battery_capacity || "N/A", label: 'Battery Capacity' },
+    { value: generalData?.dc_system_size || "---", label: 'DC System Size' },
+    { value: generalData?.ac_system_size || "---", label: 'AC System Size' },
+    { value: generalData?.battery_capacity || "---", label: 'Battery Capacity' },
   ];
   
   const rightSideInfo = [
-    { label: 'AHJ', value: generalData?.ahj || "N/A" },
-    { label: 'Utility', value: generalData?.utility || "N/A" },  
+    { label: 'AHJ', value: generalData?.ahj || "---" },
+    { label: 'Utility', value: generalData?.utility || "---" },  
   ];
   
   const bottomInfo = [
-    { label: 'Branch', value: generalData?.branch || "N/A" },
-    { label: 'Lender', value: generalData?.lender || "N/A" },
+    { label: 'Branch', value: generalData?.branch || "---" },
+    { label: 'Lender', value: generalData?.lender || "---" },
   ];
   
   const integrations = [

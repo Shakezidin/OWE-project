@@ -55,10 +55,10 @@ export const getDatAddersInfo = createAsyncThunk(
 
 export const getStructuralInfo = createAsyncThunk(
   'dataTool/getStructuralInfo',
-  async (payload: { project_id: string; }, { rejectWithValue }) => {
+  async (payload: { project_id: string, id: string}, { rejectWithValue }) => {
     try {
       const response = await reportingCaller('get_tab_structural_info', {
-        project_id: payload.project_id
+        project_id: payload.project_id, id: payload.id
       });
       return response;
     } catch (error) {
@@ -117,11 +117,8 @@ export const updateDatTool = createAsyncThunk(
   async (param: any, { rejectWithValue }) => {
     try {
       const response = await reportingCaller('update_dat_tool_info', param);
-      if(response.status===200)
-      {
-        toast.success("Data Updated Successfully.");
-      }
-      else if(response.status>201)
+  
+      if(response.status>201)
       {
         return rejectWithValue(response.message);
       }

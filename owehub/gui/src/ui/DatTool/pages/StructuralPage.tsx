@@ -201,7 +201,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
   // } | null>(null);
   useEffect(() => {
     const initializeData = () => {
-      dispatch(getStructuralInfo({ project_id: currentGeneralId }));
+      dispatch(getStructuralInfo({ project_id: currentGeneralId,id :"0633f086-6c83-422a-80da-97b51a404c43"}));
       dispatch(
         getDropdownList({
           drop_down_list: [
@@ -248,7 +248,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       // Validate the data
       if (section === 'structural_info') {
         if (!mpData[activeStructuralState]) {
-          // toast.error('Invalid structural state data.');
+          toast.error('Invalid structural state data.');
           return false;
         }
 
@@ -263,7 +263,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
         );
 
         if (Object.keys(modifiedFields).length === 0) {
-          // toast.error('No changes detected for structural info.');
+          toast.error('No changes detected for structural info.');
           return false;
         }
 
@@ -279,16 +279,16 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       const response = await dispatch(updateDatTool(payload));
 
       if (response?.payload?.status === 200) {
-        // toast.success(`${section} Updated Successfully`);
+        toast.success(`Data Updated Successfully`);
         return true;
       }
 
-      // toast.error(response?.payload?.message || `Failed to update ${section}`);
+      toast.error(response?.payload?.message || `Failed to update ${section}`);
       console.error('Response:', response);
       return false;
     } catch (error) {
       console.error('Update error:', error);
-      // toast.error(`Failed to update ${section}`);
+      toast.error(`Failed to update ${section}`);
       return false;
     }
   };
@@ -732,7 +732,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                   {renderComponent(
                     'structure',
                     'Structure',
-                    getCurrentStructuralInfo()?.structure || 'N/A',
+                    getCurrentStructuralInfo()?.structure || '---',
                     editStates.structuralInfo // updated here
                   )}
 
@@ -740,38 +740,38 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                     {renderComponent(
                       'roof_type',
                       'Roof Type',
-                      getCurrentStructuralInfo()?.roof_type || 'N/A',
+                      getCurrentStructuralInfo()?.roof_type || '---',
                       editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'roof_material',
                       'Roof Material',
                       getCurrentStructuralInfo()?.structural_roof_material ||
-                        'N/A',
+                        '---',
                       editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'sheathing_type',
                       'Sheathing Type',
-                      getCurrentStructuralInfo()?.sheathing_type || 'N/A',
+                      getCurrentStructuralInfo()?.sheathing_type || '---',
                       editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'framing_type',
                       'Framing Type',
-                      getCurrentStructuralInfo()?.framing_type || 'N/A',
+                      getCurrentStructuralInfo()?.framing_type || '---',
                       editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'framing_size',
                       'Framing Size',
-                      getCurrentStructuralInfo()?.framing_size || 'N/A',
+                      getCurrentStructuralInfo()?.framing_size || '---',
                       editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'framing_spacing',
                       'Framing Spacing',
-                      getCurrentStructuralInfo()?.framing_spacing || 'N/A',
+                      getCurrentStructuralInfo()?.framing_spacing || '---',
                       editStates.structuralInfo // updated here
                     )}
                   </div>
@@ -783,26 +783,26 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                     {renderComponent(
                       'attachment',
                       'Attachment',
-                      getCurrentStructuralInfo()?.attachment || 'N/A',
+                      getCurrentStructuralInfo()?.attachment || '---',
                       editStates.structuralInfo // updated here
                     )}
 
                     {renderComponent(
                       'racking',
                       'Racking',
-                      getCurrentStructuralInfo()?.racking || 'N/A',
+                      getCurrentStructuralInfo()?.racking || '---',
                       editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'pattern',
                       'Pattern',
-                      getCurrentStructuralInfo()?.pattern || 'N/A',
+                      getCurrentStructuralInfo()?.pattern || '---',
                       editStates.structuralInfo // updated here
                     )}
                     {renderComponent(
                       'mount',
                       'Mount',
-                      getCurrentStructuralInfo()?.mount || 'N/A',
+                      getCurrentStructuralInfo()?.mount || '---',
                       editStates.structuralInfo // updated here
                     )}
                   </div>
@@ -811,19 +811,19 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                   {renderComponent(
                     'structural_upgrades',
                     'Structural Upgrades',
-                    getCurrentStructuralInfo()?.structural_upgrades || 'N/A',
+                    getCurrentStructuralInfo()?.structural_upgrades || '---',
                     editStates.structuralInfo // updated here
                   )}
                   {renderComponent(
                     'reroof_required',
                     'Reroof Required',
-                    getCurrentStructuralInfo()?.reroof_required || 'N/A',
+                    getCurrentStructuralInfo()?.reroof_required || '---',
                     editStates.structuralInfo // updated here
                   )}
                   {renderComponent(
                     'gm_support_type',
                     'Gm Support Type',
-                    getCurrentStructuralInfo()?.gm_support_type || 'N/A',
+                    getCurrentStructuralInfo()?.gm_support_type || '---',
                     editStates.structuralInfo // updated here
                   )}
                 </div>
@@ -836,37 +836,37 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                   >
                     <p className={styles.selectedContent}>Quantity</p>{' '}
                     <p className={styles.selectedLabel}>
-                      {structuralData?.quantity || 'N/A'}
+                      {structuralData?.quantity || '---'}
                     </p>
                   </div>
                   <div className={isTablet ? styles.dashed : ''}>
                     <p className={styles.selectedContent}>Azim</p>{' '}
                     <p className={styles.selectedLabel}>
-                      {structuralData?.azimuth || 'N/A'}
+                      {structuralData?.azimuth || '---'}
                     </p>
                   </div>
                   <div className={isTablet ? '' : styles.dashed}>
                     <p className={styles.selectedContent}>Pitch</p>{' '}
                     <p className={styles.selectedLabel}>
-                      {structuralData?.pitch || 'N/A'}
+                      {structuralData?.pitch || '---'}
                     </p>
                   </div>
                   <div className={isTablet ? styles.dashed : ''}>
                     <p className={styles.selectedContent}>TSRF</p>{' '}
                     <p className={styles.selectedLabel}>
-                      {structuralData?.tsrf || 'N/A'}
+                      {structuralData?.tsrf || '---'}
                     </p>
                   </div>
                   <div className={styles.dashed}>
                     <p className={styles.selectedContent}>Area (sqft)</p>{' '}
                     <p className={styles.selectedLabel}>
-                      {structuralData?.area_sqft || 'N/A'}
+                      {structuralData?.area_sqft || '---'}
                     </p>
                   </div>
                   <div>
                     <p className={styles.selectedContent}>kW DC</p>{' '}
                     <p className={styles.selectedLabel}>
-                      {structuralData?.kw_dc || 'N/A'}
+                      {structuralData?.kw_dc || '---'}
                     </p>
                   </div>
                 </div>
@@ -876,13 +876,13 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                     <div>
                       <p className={styles.selectedContent}>P</p>
                       <p className={styles.selectedLabel}>
-                        {structuralData?.spacing_p || 'N/A'}
+                        {structuralData?.spacing_p || '---'}
                       </p>
                     </div>
                     <div>
                       <p className={styles.selectedContent}>L</p>
                       <p className={styles.selectedLabel}>
-                        {structuralData?.spacing_l || 'N/A'}
+                        {structuralData?.spacing_l || '---'}
                       </p>
                     </div>
                   </div>
@@ -926,28 +926,28 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                       {renderComponent(
                         'attachmentType',
                         'Type',
-                        structuralData?.attachment_type || 'N/A',
+                        structuralData?.attachment_type || '---',
                         editStates.attachment, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'attachmentPattern',
                         'Pattern',
-                        structuralData?.attachment_pattern || 'N/A',
+                        structuralData?.attachment_pattern || '---',
                         editStates.attachment, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'attachmentQuantity',
                         'Quantity',
-                        structuralData?.attachment_quantity || 'N/A',
+                        structuralData?.attachment_quantity || '---',
                         editStates.attachment, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'attachment_spacing',
                         'Spacing',
-                        structuralData?.attachment_spacing || 'N/A',
+                        structuralData?.attachment_spacing || '---',
                         editStates.attachment // updated here
                       )}
                     </div>
@@ -987,27 +987,27 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                       {renderComponent(
                         'rackingType',
                         'Type',
-                        structuralData?.racking_type || 'N/A',
+                        structuralData?.racking_type || '---',
                         editStates.racking, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'racking_mount_type',
                         'Mount',
-                        structuralData?.racking_mount_type || 'N/A',
+                        structuralData?.racking_mount_type || '---',
                         editStates.racking // updated here
                       )}
                       {renderComponent(
                         'tiltInfo',
                         'Tilt Info',
-                        structuralData?.racking_title_info || 'N/A',
+                        structuralData?.racking_title_info || '---',
                         editStates.racking, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'racking_max_rail_cantilever',
                         'Max Rail Cantilever',
-                        structuralData?.racking_max_rail_cantilever || 'N/A',
+                        structuralData?.racking_max_rail_cantilever || '---',
                         editStates.racking // updated here
                       )}
                     </div>
@@ -1049,42 +1049,42 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
                       {renderComponent(
                         'roofFramingType',
                         'Framing Type',
-                        structuralData?.roof_framing_type || 'N/A',
+                        structuralData?.roof_framing_type || '---',
                         editStates.roofStructure, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'roofSize',
                         'Size',
-                        structuralData?.roof_size || 'N/A',
+                        structuralData?.roof_size || '---',
                         editStates.roofStructure, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'roofSpacing',
                         'Spacing',
-                        structuralData?.roof_spacing || 'N/A',
+                        structuralData?.roof_spacing || '---',
                         editStates.roofStructure, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'roofSheathingType',
                         'Sheathing type',
-                        structuralData?.roof_sheathing_type || 'N/A',
+                        structuralData?.roof_sheathing_type || '---',
                         editStates.roofStructure, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'roofMaterial',
                         'Roof Material',
-                        structuralData?.roof_material || 'N/A',
+                        structuralData?.roof_material || '---',
                         editStates.roofStructure, // updated here
                         'input'
                       )}
                       {renderComponent(
                         'structuralUpgrades',
                         'Structural upgrades',
-                        structuralData?.roof_structural_upgrade || 'N/A',
+                        structuralData?.roof_structural_upgrade || '---',
                         editStates.roofStructure, // updated here
                         'input'
                       )}
