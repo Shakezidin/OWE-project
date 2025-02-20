@@ -8,6 +8,7 @@
 package services
 
 import (
+	auroraclient "OWEApp/owehub-reports/auroraclients"
 	"OWEApp/shared/appserver"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -32,6 +33,7 @@ func HandleGetTabStructuralInfoRequest(resp http.ResponseWriter, req *http.Reque
 		// data        []map[string]interface{}
 		// query       string
 		// whereClause string
+		auroraApiResp interface{}
 	)
 
 	log.EnterFn(0, "HandleGetTabStructuralInfoRequest")
@@ -57,6 +59,90 @@ func HandleGetTabStructuralInfoRequest(resp http.ResponseWriter, req *http.Reque
 		log.FuncErrorTrace(0, "Failed to unmarshal get tab structural info request err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get tab structural info Request body", http.StatusInternalServerError, nil)
 		return
+	}
+
+	if len(dataReq.ProjectId) <= 0 {
+		err = fmt.Errorf("invalid project ID %s", dataReq.ProjectId)
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Invalid project ID, update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	//get aurora retrieve design summary
+	retrieveAuroraDesignSummaryApi := auroraclient.RetrieveDesignSummaryApi{
+		Id: dataReq.Id,
+	}
+
+	auroraApiResp, err = retrieveAuroraDesignSummaryApi.Call()
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to retrieve aurora design summary err %v", err)
+		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+		return
+	}
+
+	// Convert auroraApiResp to JSON for easier manipulation
+	auroraRespBytes, err := json.Marshal(auroraApiResp)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to marshal aurora response err %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to process aurora response", http.StatusInternalServerError, nil)
+		return
+	}
+
+	// Convert JSON to map for easy access
+	var auroraRespMap map[string]interface{}
+	err = json.Unmarshal(auroraRespBytes, &auroraRespMap)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse aurora response err %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to parse aurora response", http.StatusInternalServerError, nil)
+		return
+	}
+
+	// Extract aurora
+	var extractedData map[string]interface{} // To store extracted values
+
+	if design, ok := auroraRespMap["design"].(map[string]interface{}); ok {
+		if arrays, exists := design["arrays"].([]interface{}); exists && len(arrays) > 0 {
+			if array, valid := arrays[0].(map[string]interface{}); valid {
+				extractedData = map[string]interface{}{}
+
+				// Extract QTY
+				if module, found := array["module"].(map[string]interface{}); found {
+					if qty, exists := module["count"]; exists {
+						extractedData["qty"] = qty
+					}
+				}
+
+				// Extract AZIM
+				if azim, found := array["azimuth"]; found {
+					extractedData["azim"] = azim
+				}
+
+				// Extract PITCH
+				if pitch, found := array["pitch"]; found {
+					extractedData["pitch"] = pitch
+				}
+
+				// Extract TSRF
+				if shading, found := array["shading"].(map[string]interface{}); found {
+					if tsrf, exists := shading["total_solar_resource_fraction"].(map[string]interface{}); exists {
+						if annual, present := tsrf["annual"]; present {
+							extractedData["tsrf"] = annual
+						}
+					}
+				}
+
+				// Extract AREA (sq ft) - Assuming it maps to "size"
+				if area, found := array["size"]; found {
+					extractedData["area (sq ft)"] = area
+				}
+
+				// Extract kW DC - Assuming it maps to "size" converted to kW
+				if kwDC, found := array["size"].(float64); found {
+					extractedData["kw dc"] = kwDC / 1000 // Convert watts to kW
+				}
+			}
+		}
 	}
 
 	// whereClause = fmt.Sprintf("WHERE (c.unique_id = '%s')", dataReq.ProjectId)
@@ -317,14 +403,14 @@ func HandleGetTabStructuralInfoRequest(resp http.ResponseWriter, req *http.Reque
 		}
 	}
 
-	quantity := 10          // int
-	pitch := 30             // int
-	areaSqft := "1500 sqft" // string
-	azim := 180             // int
-	tsrf := 15              // int
-	kwdc := 200             // int
-	spacingP := 12          // int
-	spacingL := 6           // int
+	// quantity := 10          // int
+	// pitch := 30             // int
+	// areaSqft := "1500 sqft" // string
+	// azim := 180             // int
+	// tsrf := 15              // int
+	// kwdc := 200             // int
+	spacingP := 12 // int
+	spacingL := 6  // int
 
 	attachmentType := "Flush"         // string
 	attachmentPattern := "Horizontal" // string
@@ -345,12 +431,12 @@ func HandleGetTabStructuralInfoRequest(resp http.ResponseWriter, req *http.Reque
 
 	apiResponse = models.GetTabStructuralInfoResponse{
 		StructuralInfo:           structuralData,
-		Quantity:                 int64(quantity),
-		Pitch:                    int64(pitch),
-		AreaSqft:                 areaSqft,
-		Azim:                     int64(azim),
-		TSRF:                     int64(tsrf),
-		KWDC:                     int64(kwdc),
+		Quantity:                 extractedData["qty"],
+		Pitch:                    extractedData["pitch"],
+		AreaSqft:                 extractedData["area (sq ft)"],
+		Azim:                     extractedData["azim"],
+		TSRF:                     extractedData["tsrf"],
+		KWDC:                     extractedData["kw dc"],
 		SpacingP:                 int64(spacingP),
 		SpacingL:                 int64(spacingL),
 		AttachmentType:           attachmentType,

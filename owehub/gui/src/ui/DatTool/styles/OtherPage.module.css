@@ -190,6 +190,19 @@
     background-color: transparent;
   }
 
+  @media (min-width:480px) and (max-width:540px)
+  {
+    .container{
+      flex-direction: column;
+    }
+    .column{
+      max-width:100%;
+    }
+    .card{
+      width:100%
+    }
+  }
+
   @media (min-width:480px) and (max-width:840px)
   {
     .wrapper{
