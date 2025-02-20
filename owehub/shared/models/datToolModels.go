@@ -84,14 +84,14 @@ type GetTabStructuralInfoResponse struct {
 	//// STRUCTURAL INFO
 	StructuralInfo map[string]GetTabStructuralInfo `json:"structural_info"`
 	////////////////////////////////////////////////
-	Quantity int64  `json:"quantity"`
-	Pitch    int64  `json:"pitch"`
-	AreaSqft string `json:"area_sqft"`
-	Azim     int64  `json:"azimuth"`
-	TSRF     int64  `json:"tsrf"`
-	KWDC     int64  `json:"kw_dc"`
-	SpacingP int64  `json:"spacing_p"`
-	SpacingL int64  `json:"spacing_l"`
+	Quantity interface{} `json:"quantity"`
+	Pitch    interface{} `json:"pitch"`
+	AreaSqft interface{} `json:"area_sqft"`
+	Azim     interface{} `json:"azimuth"`
+	TSRF     interface{} `json:"tsrf"`
+	KWDC     interface{} `json:"kw_dc"`
+	SpacingP int64       `json:"spacing_p"`
+	SpacingL int64       `json:"spacing_l"`
 
 	// Attachment Information
 	AttachmentType    string `json:"attachment_type"`

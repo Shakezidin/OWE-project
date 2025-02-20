@@ -29,14 +29,14 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err     error
 		dataReq models.UpdateDatToolInfo
-		//apiResponse      []models.GetProjectListResponse
+		// apiResponse      []models.GetProjectListResponse
 		// data             []map[string]interface{}
 		// query            string
 		whereEleList []interface{}
 		updateFields []string
 		recordCount  int64
-		// paginationClause string
-		// sortValue        string
+	// paginationClause string
+	// sortValue        string
 	)
 
 	log.EnterFn(0, "HandleUpdateDatToolRequest")
@@ -299,7 +299,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 	}
-	/////// ADDER VALUES /////////////////////////////////////////////////////////////////////////////////
+	// ///// ADDER VALUES /////////////////////////////////////////////////////////////////////////////////
 	if dataReq.AdderValues != nil {
 		// Loop through each component update
 		for _, componentUpdate := range dataReq.AdderValues.ComponentUpdates {
@@ -323,9 +323,9 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		// update total adders value in database
 	}
 
-	////////// OTHER VALUES //////////////////////////////////////////////////////////////////////////
+	// //////// OTHER VALUES //////////////////////////////////////////////////////////////////////////
 	if dataReq.ElectricalEquipmentInfo != nil {
-		////////// EQUIPMENT INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		// //////// EQUIPMENT INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.ElectricalEquipmentInfo.NewOrExisting) > 0 {
 			whereEleList = append(whereEleList, dataReq.ElectricalEquipmentInfo.NewOrExisting)
 			updateFields = append(updateFields, fmt.Sprintf("new_or_existing = $%d", len(whereEleList)))
@@ -357,7 +357,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 	if dataReq.ElectricalSystemInfo != nil {
-		///////// SYSTEM INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		// /////// SYSTEM INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.ElectricalSystemInfo.SystemPhase) > 0 {
 			whereEleList = append(whereEleList, dataReq.ElectricalSystemInfo.SystemPhase)
 			updateFields = append(updateFields, fmt.Sprintf("system_phase = $%d", len(whereEleList)))
@@ -384,7 +384,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 	if dataReq.SiteInfoRequest != nil {
-		////////// SiteInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		// //////// SiteInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.SiteInfoRequest.PVConductRun) > 0 {
 			whereEleList = append(whereEleList, dataReq.SiteInfoRequest.PVConductRun)
 			updateFields = append(updateFields, fmt.Sprintf("pv_conduct_run = $%d", len(whereEleList)))
@@ -411,7 +411,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 	if dataReq.PvOnlyInterconnection != nil {
-		////// PV INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		// //// PV INFO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.PvOnlyInterconnection.Type) > 0 {
 			whereEleList = append(whereEleList, dataReq.PvOnlyInterconnection.Type)
 			updateFields = append(updateFields, fmt.Sprintf("type = $%d", len(whereEleList)))
@@ -433,7 +433,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 	if dataReq.EssInterconnection != nil {
-		//////////// EssInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		// ////////// EssInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.EssInterconnection.BackupType) > 0 {
 			whereEleList = append(whereEleList, dataReq.EssInterconnection.BackupType)
 			updateFields = append(updateFields, fmt.Sprintf("backup_type = $%d", len(whereEleList)))
@@ -450,7 +450,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 	if dataReq.StringInverterConfiguration != nil {
-		////////// InverterConfigInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		// //////// InverterConfigInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.StringInverterConfiguration.Inverter) > 0 {
 			whereEleList = append(whereEleList, dataReq.StringInverterConfiguration.Inverter)
 			updateFields = append(updateFields, fmt.Sprintf("inverter = $%d", len(whereEleList)))
@@ -544,7 +544,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 	if dataReq.RoofCoverageCalculator != nil {
-		////////// RoofInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		// //////// RoofInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.RoofCoverageCalculator.TotalRoofArea) > 0 {
 			whereEleList = append(whereEleList, dataReq.RoofCoverageCalculator.TotalRoofArea)
 			updateFields = append(updateFields, fmt.Sprintf("total_roof_area = $%d", len(whereEleList)))
@@ -566,7 +566,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 	if dataReq.MeasurementConversion != nil {
-		////// MeasurementInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		// //// MeasurementInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if len(dataReq.MeasurementConversion.Length) > 0 {
 			whereEleList = append(whereEleList, dataReq.MeasurementConversion.Length)
 			updateFields = append(updateFields, fmt.Sprintf("length = $%d", len(whereEleList)))
@@ -588,7 +588,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 	if dataReq.ExistingPvSystemInfo != nil {
-		//////////// ExistingPvInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		// ////////// ExistingPvInfo >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		if dataReq.ExistingPvSystemInfo.ModuleQuantity > 0 {
 			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.ModuleQuantity)
 			updateFields = append(updateFields, fmt.Sprintf("module_quantity = $%d", len(whereEleList)))
@@ -609,7 +609,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 			updateFields = append(updateFields, fmt.Sprintf("module_area = $%d", len(whereEleList)))
 		}
 
-		//// INVERTER 1 ///////////////////////
+		// // INVERTER 1 ///////////////////////
 		if dataReq.ExistingPvSystemInfo.Inverter1.Quantity > 0 {
 			whereEleList = append(whereEleList, dataReq.ExistingPvSystemInfo.Inverter1.Quantity)
 			updateFields = append(updateFields, fmt.Sprintf("quantity = $%d", len(whereEleList)))
@@ -645,7 +645,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 			updateFields = append(updateFields, fmt.Sprintf("existing_calculated_backfeed_without_125 = $%d", len(whereEleList)))
 		}
 	}
-	//////////// NotesValues ///////////////////////////////////////////////////
+	// ////////// NotesValues ///////////////////////////////////////////////////
 	if dataReq.NotesValues != nil {
 		if len(dataReq.NotesValues.Title) > 0 {
 			whereEleList = append(whereEleList, dataReq.NotesValues.Title)
@@ -672,7 +672,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	whereEleList = append(whereEleList, dataReq.ProjectId)
+	//whereEleList = append(whereEleList, dataReq.ProjectId)
 
 	// query
 	//query = fmt.Sprintf("UPDATE leads_info SET %s WHERE leads_id = $%d", strings.Join(updateFields, ", "), len(whereEleList))

@@ -223,3 +223,43 @@ margin-right: 1.2rem;
 .sidebarContainer::-webkit-scrollbar-corner {
   background-color: transparent;
 }
+
+@media(max-width:1024px){
+  .openRefresh_page{
+    width: 35%;
+  }
+  .appContainer{
+    padding-bottom: 1.4rem;
+  }
+}
+
+@media (min-width:480px) and (max-width:840px)
+{
+  .appContainer{
+    padding:0 0.8rem 0.8rem 0.8rem;
+  }
+  .notesPanel{
+    margin-right:0;
+  }
+  .sidebarContainer{
+    width:40%;
+  }
+}
+
+@media (max-width: 480px) {
+  .appContainer{
+    flex-direction: column;
+    gap: 0px;
+    padding-bottom: 18px;
+  }
+
+  .sidebarContainer{
+    width: 100%;
+    height: auto;
+  }
+
+  .genMain{
+    margin-right: -20px;
+  }
+  
+}

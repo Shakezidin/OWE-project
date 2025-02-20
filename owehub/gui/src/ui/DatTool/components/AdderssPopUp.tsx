@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from '../styles/AdderssPopUp.module.css';
 import { RxCross2 } from 'react-icons/rx';
-const AdderssPopUp = ({ setOpenPopUp }: any) => {
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { getDatAddersInfo, updateDatTool } from '../../../redux/apiActions/DatToolAction/datToolAction';
+
+const AdderssPopUp = ({ setOpenPopUp,currentGeneralId }: any) => {
   const dummyObj = [
     { adderName: 'Supply/Line Side Tap', quantity: 1, cost: 1174 },
     { adderName: 'Load Side Tap', quantity: 1, cost: 812 },
@@ -102,7 +105,12 @@ const AdderssPopUp = ({ setOpenPopUp }: any) => {
     { adderName: 'Enphase IQ8H Microinverters', quantity: 1, cost: 474 },
     { adderName: 'Enphase IQ8A Microinverters', quantity: 1, cost: 1066 },
   ];
-
+  const dispatch = useAppDispatch();
+     const { addersData } = useAppSelector((state) => state.datSlice);
+    useEffect(()=>{
+      dispatch(getDatAddersInfo({ project_id: currentGeneralId }));
+      
+    },[currentGeneralId]);
   return (
     <div className={styles.transparent_model}>
       <div className={styles.popUp}>
@@ -120,10 +128,10 @@ const AdderssPopUp = ({ setOpenPopUp }: any) => {
           </p>
         </div>
         <div className={styles.popUp_dummyData}>
-          {dummyObj.map((item, index) => {
+          {addersData?.view_all_adders.map((item:any, index:number) => {
             return (
               <div className={styles.popUp_dummyData_rowDiv}>
-                <div className={styles.popUp_adderData}>{item.adderName} </div>
+                <div className={styles.popUp_adderData}>{item.name} </div>
                 <div className={styles.popUp_quantityData}>
                   {item.quantity}{' '}
                 </div>
