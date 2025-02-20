@@ -117,11 +117,8 @@ export const updateDatTool = createAsyncThunk(
   async (param: any, { rejectWithValue }) => {
     try {
       const response = await reportingCaller('update_dat_tool_info', param);
-      if(response.status===200)
-      {
-        toast.success("Data Updated Successfully.");
-      }
-      else if(response.status>201)
+  
+      if(response.status>201)
       {
         return rejectWithValue(response.message);
       }
