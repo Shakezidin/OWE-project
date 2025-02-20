@@ -55,10 +55,10 @@ export const getDatAddersInfo = createAsyncThunk(
 
 export const getStructuralInfo = createAsyncThunk(
   'dataTool/getStructuralInfo',
-  async (payload: { project_id: string; }, { rejectWithValue }) => {
+  async (payload: { project_id: string, id: string}, { rejectWithValue }) => {
     try {
       const response = await reportingCaller('get_tab_structural_info', {
-        project_id: payload.project_id
+        project_id: payload.project_id, id: payload.id
       });
       return response;
     } catch (error) {

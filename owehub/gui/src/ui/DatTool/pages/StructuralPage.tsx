@@ -201,7 +201,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
   // } | null>(null);
   useEffect(() => {
     const initializeData = () => {
-      dispatch(getStructuralInfo({ project_id: currentGeneralId }));
+      dispatch(getStructuralInfo({ project_id: currentGeneralId,id :"0633f086-6c83-422a-80da-97b51a404c43"}));
       dispatch(
         getDropdownList({
           drop_down_list: [
