@@ -108,14 +108,14 @@ const Card: React.FC<CardProps> = ({
       const response = await dispatch(updateDatTool(payload)).unwrap();
       
       if (response) {
-        // toast.success('Data updated successfully!');
+        toast.success('Data updated successfully!');
         onSave(editedFields);
         setModifiedFields({});
         setIsEditing(false);
       }
     } catch (error) {
       console.error('Error updating fields:', error);
-      // toast.error('Failed to update data. Please try again.');
+      toast.error('Failed to update data. Please try again.');
     }
   };
 
@@ -250,7 +250,7 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
     const [essInterconnection, setEssInterconnection] = useState({});
     
   const [inverterConfigParent, setInverterConfigParent] = useState<InverterConfigParent>({
-    inverter: othersData?.inverterConfigParent?.inverter ?? 'N/A',
+    inverter: othersData?.inverterConfigParent?.inverter ?? '---',
     max: Number(othersData?.inverterConfigParent?.max) || 0,
     mppt1: {
       s1: '---',
@@ -390,45 +390,45 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
   useEffect(() => {
     if (othersData) {
       setEquipment({
-        'New Or Existing': othersData?.equipment?.new_or_existing ?? 'N/A',
-        'Panel Brand': othersData?.equipment?.panel_brand ?? 'N/A',
-        'Busbar Rating': othersData?.equipment?.busbar_rating?.toString() ?? 'N/A',
-        'Main Breaker Rating': othersData?.equipment?.main_breaker_rating?.toString() ?? 'N/A',
-        'Available Backfeed': othersData?.equipment?.available_backfeed?.toString() ?? 'N/A',
-        'Required Backfeed': othersData?.equipment?.required_backfeed ?? 'N/A',
+        'New Or Existing': othersData?.equipment?.new_or_existing ?? '---',
+        'Panel Brand': othersData?.equipment?.panel_brand ?? '---',
+        'Busbar Rating': othersData?.equipment?.busbar_rating?.toString() ?? '---',
+        'Main Breaker Rating': othersData?.equipment?.main_breaker_rating?.toString() ?? '---',
+        'Available Backfeed': othersData?.equipment?.available_backfeed?.toString() ?? '---',
+        'Required Backfeed': othersData?.equipment?.required_backfeed ?? '---',
       });
   
       setSystem({
-        'System Phase': othersData?.system?.system_phase ?? 'N/A',
-        'System Voltage': othersData?.system?.system_voltage ?? 'N/A',
-        'Service Entrance': othersData?.system?.service_entrance ?? 'N/A',
-        'Service Rating': othersData?.system?.service_rating ?? 'N/A',
-        'Meter Enclosure Type': othersData?.system?.meter_enclosure_type ?? 'N/A',
+        'System Phase': othersData?.system?.system_phase ?? '---',
+        'System Voltage': othersData?.system?.system_voltage ?? '---',
+        'Service Entrance': othersData?.system?.service_entrance ?? '---',
+        'Service Rating': othersData?.system?.service_rating ?? '---',
+        'Meter Enclosure Type': othersData?.system?.meter_enclosure_type ?? '---',
       });
   
       setSiteInfo({
-        'PV Conduit Run': othersData?.siteInfo?.pv_conduct_run ?? 'N/A',
-        'Drywall Cut Needed': othersData?.siteInfo?.drywall_cut_needed ?? 'N/A',
-        'Number of Stories': othersData?.siteInfo?.number_of_stories?.toString() ?? 'N/A',
-        'Trenching Required': othersData?.siteInfo?.trenching_required ?? 'N/A',
-        'Points of Interconnection': othersData?.siteInfo?.points_of_interconnection?.toString() ?? 'N/A',
+        'PV Conduit Run': othersData?.siteInfo?.pv_conduct_run ?? '---',
+        'Drywall Cut Needed': othersData?.siteInfo?.drywall_cut_needed ?? '---',
+        'Number of Stories': othersData?.siteInfo?.number_of_stories?.toString() ?? '---',
+        'Trenching Required': othersData?.siteInfo?.trenching_required ?? '---',
+        'Points of Interconnection': othersData?.siteInfo?.points_of_interconnection?.toString() ?? '---',
       });
   
       setPvInterconnection({
-        Type: othersData?.pvInterconnection?.type ?? 'N/A',
-        'Supply/Load Side': othersData?.pvInterconnection?.supply_load_side ?? 'N/A',
-        Location: othersData?.pvInterconnection?.location ?? 'N/A',
-        'Sub - Location Tap Details': othersData?.pvInterconnection?.sub_location_tap_details ?? 'N/A',
+        Type: othersData?.pvInterconnection?.type ?? '---',
+        'Supply/Load Side': othersData?.pvInterconnection?.supply_load_side ?? '---',
+        Location: othersData?.pvInterconnection?.location ?? '---',
+        'Sub - Location Tap Details': othersData?.pvInterconnection?.sub_location_tap_details ?? '---',
       });
   
       setEssInterconnection({
-        'Backup Type': othersData?.essInterconnection?.backup_type ?? 'N/A',
-        'Transfer Switch': othersData?.essInterconnection?.transfer_switch ?? 'N/A',
-        'Fed By': othersData?.essInterconnection?.fed_by ?? 'N/A',
+        'Backup Type': othersData?.essInterconnection?.backup_type ?? '---',
+        'Transfer Switch': othersData?.essInterconnection?.transfer_switch ?? '---',
+        'Fed By': othersData?.essInterconnection?.fed_by ?? '---',
       });
   
       setInverterConfigParent({
-        inverter: othersData?.inverterConfigParent?.inverter ?? 'N/A',
+        inverter: othersData?.inverterConfigParent?.inverter ?? '---',
         max: Number(othersData?.inverterConfigParent?.max) || 0,
         mppt1: {
           s1: othersData?.inverterConfigParent?.mppt1?.s1 ?? '---',
@@ -465,7 +465,7 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
       });
   
       setRoofCoverage({
-        'Total Roof Area': othersData?.roofCoverage?.total_roof_area ?? 'N/A',
+        'Total Roof Area': othersData?.roofCoverage?.total_roof_area ?? '---',
         'Area of New Modules': othersData?.roofCoverage?.area_of_new_modules ?? '---',
         'Area of EXST Modules': othersData?.roofCoverage?.area_of_exst_modules ?? '---',
         'Coverage Percentage': othersData?.roofCoverage?.coverage_percentage ?? '50%',

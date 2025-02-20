@@ -640,3 +640,10 @@
     padding-bottom: 1.4rem;
   }
 }
+
+@media (max-width: 1390px) {
+.acdc{
+  grid-template-columns: repeat(1, 1fr);
+
+}
+}
