@@ -52,6 +52,15 @@ type PerfomanceTileDataResponse struct {
 	ElectricalCount  int64 `json:"electrical_count"`
 	InspectionCount  int64 `json:"inspection_count"`
 	ActivationCount  int64 `json:"activation_count"`
+
+  SiteSurveyCountPercentage  string `json:"site_survey_count_percentage"`
+  CadDesignCountPercentage   string `json:"cad_design_count_percentage"`
+  PerimittingCountPercentage string `json:"permitting_count_percentage"`
+  RoofingCountPercentage     string `json:"roofing_count_percentage"`
+  InstallCountPercentage     string `json:"isntall_count_percentage"`
+  ElectricalCountPercentage  string `json:"electrical_count_percentage"`
+  InspectionCountPercentage  string `json:"inspection_count_percentage"`
+  ActivationCountPercentage  string `json:"activation_count_percentage"`
 }
 
 type PerfomanceResponse struct {
