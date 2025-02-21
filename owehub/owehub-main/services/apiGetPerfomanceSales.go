@@ -175,11 +175,15 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		}
 	}
 	performanceResponse.SiteSurveyCountPercentage = "+15.9%"
-	performanceResponse.RoofingCountPercentage = "+11.9%"
-	performanceResponse.InstallCountPercentage = "+7.9%"
-	performanceResponse.ActivationCountPercentage = "-9.7%"
 	performanceResponse.CadDesignCountPercentage = "+21.9%"
 	performanceResponse.PerimittingCountPercentage = "+12.7%"
+	performanceResponse.RoofingCountPercentage = "+11.9%"
+	performanceResponse.InstallCountPercentage = "+7.9%"
+	perfomanceResponse.ElectricalCountPercentage = "+5.9%"
+	performanceResponse.InspectionCountPercentage = "+17.9%"
+	performanceResponse.ActivationCountPercentage = "-9.7%"
+
+
 	performanceResponse.InspectionCountPercentage = "+17.9%"
 
 	log.FuncInfoTrace(0, "Performance tile data fetched: %+v", performanceResponse)
