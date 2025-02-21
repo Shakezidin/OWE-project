@@ -1600,7 +1600,7 @@ func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) (stri
 	if chosen == "count" {
 		query = fmt.Sprintf(`
 		WITH distinct_sales AS (
-		SELECT cs.unique_id,
+		SELECT
 			cs.unique_id, cs.sale_date, cs.cancel_date, cs.primary_sales_rep,cs.dealer,
 			cs.setter, cs.state,
 			split_part(srs.team_region_untd, '/'::text, 1) AS team,
@@ -1614,9 +1614,6 @@ func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) (stri
 		WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' 
 			AND cs.unique_id != ''
 			AND %v
-            ORDER BY cs.unique_id, 
-             (CASE WHEN cs.project_status IS NOT NULL AND cs.project_status != '' THEN 1 ELSE 2 END), 
-             cs.sale_date DESC
 		)
 		SELECT 
 			%v,
@@ -1629,7 +1626,7 @@ func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) (stri
 	} else {
 		query = fmt.Sprintf(`
 		WITH distinct_sales AS (
-		SELECT cs.unique_id,
+		SELECT 
 			cs.unique_id, cs.sale_date, cs.cancel_date, cs.primary_sales_rep,cs.dealer,
 			cs.setter, cs.state, scs.contracted_system_size_parent,
 			split_part(srs.team_region_untd, '/'::text, 1) AS team,
@@ -1646,9 +1643,6 @@ func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) (stri
 		WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' 
 			AND cs.unique_id != ''
 			AND %v
-            ORDER BY cs.unique_id, 
-             (CASE WHEN cs.project_status IS NOT NULL AND cs.project_status != '' THEN 1 ELSE 2 END), 
-             cs.sale_date DESC
 		)
 		SELECT 
 			%v,
@@ -1684,7 +1678,7 @@ func LeaderBoardInstallBatteryData(dateRange, dealers, groupBy, chosen string) (
 	if chosen == "count" {
 		query = fmt.Sprintf(`
 		WITH distinct_installs AS (
-		SELECT pis.customer_unique_id,
+		SELECT 
 			pis.customer_unique_id, pis.pv_completion_date,
 			ns.battery_count, cs.primary_sales_rep, pis.state,cs.setter,pis.dealer,
 			split_part(srs.team_region_untd, '/'::text, 1) AS team,
@@ -1714,7 +1708,7 @@ func LeaderBoardInstallBatteryData(dateRange, dealers, groupBy, chosen string) (
 	} else {
 		query = fmt.Sprintf(`
 		WITH distinct_installs AS (
-		SELECT pis.customer_unique_id,
+		SELECT 
 			pis.customer_unique_id, pis.pv_completion_date,
 			ns.battery_count, cs.primary_sales_rep, pis.state,cs.setter,
 			split_part(srs.team_region_untd, '/'::text, 1) AS team,
@@ -1770,7 +1764,7 @@ func LeaderBoardNTPData(dateRange, dealers, groupBy, chosen string) (string, str
 	if chosen == "count" {
 		query = fmt.Sprintf(`
 		WITH distinct_ntp AS (
-    SELECT ns.unique_id, 
+    SELECT 
         ns.unique_id,
         ns.dealer,
         ns.ntp_complete_date,
@@ -1804,7 +1798,7 @@ GROUP BY %v
 	} else {
 		query = fmt.Sprintf(`
 		WITH distinct_ntp AS (
-    SELECT ns.unique_id, 
+    SELECT 
         ns.unique_id,
         ns.dealer,
         ns.ntp_complete_date,

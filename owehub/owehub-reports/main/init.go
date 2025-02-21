@@ -268,6 +268,20 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_production_targets",
+		apiHandler.HandleGetProductionTargets,
+		true,
+    []types.UserGroup{types.GroupAdmin},
+  },
+  {  
+    strings.ToUpper("POST"),
+		"/owe-reports-service/v1/get_goals_form_data",
+		apiHandler.GetGoalsFormData,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************

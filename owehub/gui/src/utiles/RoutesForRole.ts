@@ -12,6 +12,7 @@ import ConfigurePage from '../ui/oweHub/configure/ConfigurePage';
 import TeamTable from '../ui/oweHub/teammanagement/teamtable';
 import Calendar from '../ui/Calendar/PerformanceCalendar';
 import LeadManagementDashboard from '../ui/leadmanagement/LeadManagementDashboard';
+import Summary_Dashboard from '../ui/reporting/Summary-Dashboard/Summary_Dashboard';
 const exceptDB = Object.values(TYPE_OF_USER).filter(
   (item) => item !== 'DB User'
 );
@@ -144,6 +145,15 @@ export default [
     route: ROUTES.TECHNICAL_SUPPORT,
     element: TechnicalSupport,
     available: Object.values(TYPE_OF_USER),
+    stagingOnly: false,
+  },
+
+  {
+    route: ROUTES.SUMMARY_DASBOARD,
+    element: Summary_Dashboard,
+    available: [
+      TYPE_OF_USER.ADMIN,
+    ],
     stagingOnly: false,
   },
 ];

@@ -128,7 +128,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			COALESCE(SUM(p.install_ct), 0) AS install_ct,
 			COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
 			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct,
-			COALESCE(SUM(p.ntp), 0) AS ntp
+			COALESCE(SUM(p.ntp), 0) AS ntp,
+			COALESCE(SUM(p.mw_ntp), 0) AS mw_ntp
 		FROM months
 		LEFT JOIN production_targets p
 		ON months.n = p.month AND p.target_percentage = $3 AND p.year = $4 AND p.user_id = $5 AND %s
@@ -151,100 +152,104 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	acheivedQuery = `
-WITH MONTHS(N) AS (SELECT GENERATE_SERIES($1::INT, $2::INT)),
-     STATES AS (
-        SELECT STATE_ID AS STATES FROM STATES_DB_DATABASE_HUB_SCHEMA
-        WHERE CASE WHEN LOWER($4) = 'all' THEN TRUE
-        ELSE STATE_NAME = $4 END
-        UNION SELECT '' WHERE LOWER($4) = 'all'
-     ),
-     AM AS (
-        SELECT DISTINCT SALES_PARTNER_NAME AS DEALER
-        FROM SALES_PARTNER_DBHUB_SCHEMA
-        WHERE CASE WHEN LOWER($5) = 'all' THEN TRUE
-        ELSE ACCOUNT_MANAGER = $5 END
-        UNION SELECT '' WHERE LOWER($5) = 'all'
-     ),
-     CUSTOMERS AS (
-        SELECT
-            DATE_PART('MONTH', C.SALE_DATE) AS month,
-            COUNT(DISTINCT C.UNIQUE_ID) AS projects_sold,
-            SUM(COALESCE(NULLIF(C.CONTRACTED_SYSTEM_SIZE, '')::FLOAT, 0)) / 1000 AS mw_sold  
-        FROM CUSTOMERS_CUSTOMERS_SCHEMA C
-        WHERE DATE_PART('YEAR', C.SALE_DATE) = $3
-            AND C.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
-            AND C.UNIQUE_ID IS NOT NULL
-            AND C.UNIQUE_ID != ''
-            AND C.DEALER IN (SELECT DEALER FROM AM)
-            AND C.STATE IN (SELECT STATES FROM STATES)
-        GROUP BY month
-     ),
-     PV AS (
-        SELECT
-            DATE_PART('MONTH', P.PV_COMPLETION_DATE) AS month,
-            COUNT(*) AS install_ct,
+ 	WITH MONTHS(N) AS (SELECT GENERATE_SERIES($1::INT, $2::INT)),
+	 STATES AS(
+		SELECT STATE_ID AS STATES FROM STATES_DB_DATABASE_HUB_SCHEMA
+		WHERE CASE WHEN LOWER($4) = 'all' THEN TRUE
+		ELSE STATE_NAME = $4 END
+		UNION SELECT '' WHERE LOWER($4) = 'all' 
+	 ),
+	 AM AS (
+		SELECT DISTINCT SALES_PARTNER_NAME AS DEALER
+		FROM SALES_PARTNER_DBHUB_SCHEMA
+		WHERE CASE WHEN LOWER($5) = 'all' THEN TRUE
+		ELSE ACCOUNT_MANAGER = $5 END
+		UNION SELECT '' WHERE LOWER($5) = 'all' 
+	 ),
+	 CUSTOMERS AS (
+		SELECT
+			DATE_PART('MONTH', C.SALE_DATE) AS month,
+			COUNT(DISTINCT C.UNIQUE_ID) AS projects_sold,
+            SUM(COALESCE(NULLIF(C.CONTRACTED_SYSTEM_SIZE, '')::FLOAT, 0)) / 1000 AS mw_sold 
+		FROM CUSTOMERS_CUSTOMERS_SCHEMA C
+		WHERE DATE_PART('YEAR', C.SALE_DATE) = $3
+		   AND C.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
+		   AND C.UNIQUE_ID IS NOT NULL
+		   AND C.UNIQUE_ID != ''
+		   AND C.DEALER IN (SELECT DEALER FROM AM)
+		   AND C.STATE IN (SELECT STATES FROM STATES )
+		GROUP BY month
+	 ),
+	 PV AS (
+		SELECT
+			DATE_PART('MONTH', P.PV_COMPLETION_DATE) AS month,
+			COUNT(*) AS install_ct,
             SUM(COALESCE(NULLIF(P.SYSTEM_SIZE, '')::FLOAT, 0)) / 1000 AS mw_installed  
-        FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
-        WHERE DATE_PART('YEAR', P.PV_COMPLETION_DATE) = $3
-            AND P.APP_STATUS NOT ILIKE '%DUPLICATE%'
-            AND P.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
-            AND P.CUSTOMER_UNIQUE_ID IS NOT NULL
-            AND P.CUSTOMER_UNIQUE_ID != ''
-            AND P.DEALER IN (SELECT DEALER FROM AM)
-            AND P.STATE IN (SELECT STATES FROM STATES)
-        GROUP BY month
-     ),
-     NTP AS (
-        SELECT
-            DATE_PART('MONTH', P.PV_COMPLETION_DATE) AS month,
-            SUM((LENGTH(adder_breakdown_total) - LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'powerwall', '', 'gi'))) 
-                / LENGTH('powerwall')) 
-            + SUM((LENGTH(adder_breakdown_total) - LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'enphase battery', '', 'gi')))
-                / LENGTH('enphase battery')) AS batteries_ct
-        FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
-        LEFT JOIN NTP_NTP_SCHEMA AS N
-        ON N.UNIQUE_ID = P.CUSTOMER_UNIQUE_ID
-        WHERE DATE_PART('YEAR', P.PV_COMPLETION_DATE) = $3
-            AND P.APP_STATUS NOT ILIKE '%DUPLICATE%'
-            AND P.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
-            AND N.APP_STATUS NOT ILIKE '%DUPLICATE%'
-            AND N.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
-            AND P.CUSTOMER_UNIQUE_ID IS NOT NULL
-            AND P.CUSTOMER_UNIQUE_ID != ''
-            AND P.DEALER IN (SELECT DEALER FROM AM)
-            AND P.STATE IN (SELECT STATES FROM STATES)
-        GROUP BY month
-     ),
-     NTP_NEW AS (
-        SELECT
-            DATE_PART('MONTH', N.ntp_complete_date) AS month,
-            COUNT(N.ntp_complete_date) AS ntp_ct
-        FROM NTP_NTP_SCHEMA AS N
-        WHERE DATE_PART('YEAR', N.ntp_complete_date) = $3
-            AND N.APP_STATUS NOT ILIKE '%DUPLICATE%'
-            AND N.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
-            AND N.UNIQUE_ID IS NOT NULL
-            AND N.UNIQUE_ID != ''
-            AND N.DEALER IN (SELECT DEALER FROM AM)
-            AND N.STATE IN (SELECT STATES FROM STATES)
-        GROUP BY month
-     )
+		FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
+		WHERE DATE_PART('YEAR', P.PV_COMPLETION_DATE) = $3
+		   AND P.APP_STATUS NOT ILIKE '%DUPLICATE%'
+		   AND P.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
+		   AND P.CUSTOMER_UNIQUE_ID IS NOT NULL
+		   AND P.CUSTOMER_UNIQUE_ID != ''
+		   AND P.DEALER IN (SELECT DEALER FROM AM)
+		   AND P.STATE IN (SELECT STATES FROM STATES )
+		GROUP BY month
+	 ),
+	 NTP AS (
+		SELECT
+			DATE_PART('MONTH', P.PV_COMPLETION_DATE) AS month,
+			SUM((LENGTH(adder_breakdown_total) - LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'powerwall', '', 'gi'))) 
+				/ LENGTH('powerwall')) 
+			+ SUM((LENGTH(adder_breakdown_total) - LENGTH(REGEXP_REPLACE(adder_breakdown_total, 'enphase battery', '', 'gi')))
+				/ LENGTH('enphase battery')) AS batteries_ct
+			FROM PV_INSTALL_INSTALL_SUBCONTRACTING_SCHEMA AS P
+		LEFT JOIN
+		NTP_NTP_SCHEMA AS N
+		ON N.UNIQUE_ID = P.CUSTOMER_UNIQUE_ID
+		WHERE
+			DATE_PART('YEAR', P.PV_COMPLETION_DATE) = $3
+			AND P.APP_STATUS NOT ILIKE '%DUPLICATE%'
+			AND P.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
+			AND N.APP_STATUS NOT ILIKE '%DUPLICATE%'
+			AND N.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
+			AND P.CUSTOMER_UNIQUE_ID IS NOT NULL
+			AND P.CUSTOMER_UNIQUE_ID != ''
+			AND P.DEALER IN (SELECT DEALER FROM AM)
+		   	AND P.STATE IN (SELECT STATES FROM STATES)
+		GROUP BY month
+	 ),
+	 NTP_NEW AS (
+     SELECT
+        DATE_PART('MONTH', N.ntp_complete_date) AS month,
+        COUNT(N.ntp_complete_date) AS ntp_ct,  -- Count occurrences of ntp_complete_date
+        SUM(COALESCE(N.contracted_system_size_ntp_new, 0)) / 1000 AS mw_ntp
+     FROM NTP_NTP_SCHEMA AS N
+     WHERE
+        DATE_PART('YEAR', N.ntp_complete_date) = $3  -- Ensure same year
+        AND N.APP_STATUS NOT ILIKE '%DUPLICATE%'
+		AND N.PROJECT_STATUS NOT ILIKE '%DUPLICATE%'
+        AND N.UNIQUE_ID IS NOT NULL
+        AND N.UNIQUE_ID != ''
+        AND N.DEALER IN (SELECT DEALER FROM AM)
+		AND N.STATE IN (SELECT STATES FROM STATES )
+     GROUP BY month
+)
 
-SELECT
-    TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
-    COALESCE(CUSTOMERS.projects_sold, 0)::FLOAT AS projects_sold,
-    COALESCE(CUSTOMERS.mw_sold, 0) AS mw_sold,  
-    COALESCE(PV.install_ct, 0)::FLOAT AS install_ct,
-    COALESCE(PV.mw_installed, 0) AS mw_installed,  
-    COALESCE(NTP.batteries_ct, 0)::FLOAT AS batteries_ct,
-    COALESCE(NTP_NEW.ntp_ct, 0)::FLOAT AS ntp
-FROM MONTHS
-LEFT JOIN CUSTOMERS ON CUSTOMERS.month = MONTHS.n
-LEFT JOIN PV ON PV.month = MONTHS.n
-LEFT JOIN NTP ON NTP.month = MONTHS.n
-LEFT JOIN NTP_NEW ON NTP_NEW.month = MONTHS.n
-ORDER BY MONTHS.n
-
+		SELECT
+			TRIM(TO_CHAR(TO_DATE(MONTHS.n::TEXT, 'MM'), 'Month')) AS month,
+			COALESCE(CUSTOMERS.projects_sold, 0)::FLOAT AS projects_sold,
+            COALESCE(CUSTOMERS.mw_sold, 0) AS mw_sold, 
+			COALESCE(PV.install_ct, 0)::FLOAT AS install_ct,
+            COALESCE(PV.mw_installed, 0) AS mw_installed,  
+			COALESCE(NTP.batteries_ct, 0)::FLOAT AS batteries_ct,
+			COALESCE(NTP_NEW.ntp_ct, 0)::FLOAT AS ntp,
+            COALESCE(NTP_NEW.mw_ntp, 0) AS mw_ntp 
+		FROM MONTHS
+		LEFT JOIN CUSTOMERS ON CUSTOMERS.month = MONTHS.n
+		LEFT JOIN PV ON PV.month = MONTHS.n
+		LEFT JOIN NTP ON NTP.month = MONTHS.n
+		LEFT JOIN NTP_NEW ON NTP_NEW.month = MONTHS.n
+		ORDER BY MONTHS.n
 	 `
 	whereEleList = []interface{}{1, 12, dataReq.Year, dataReq.State, accountManagerName}
 	acheivedData, err = db.ReteriveFromDB(db.RowDataDBIndex, acheivedQuery, whereEleList)
@@ -335,6 +340,11 @@ ORDER BY MONTHS.n
 					Achieved:          acheived.NTP,
 					LastMonthAcheived: lastMonthPct.NTP,
 				},
+				"mW ntp": {
+					Target:            target.MwNtp,
+					Achieved:          acheived.MwNtp,
+					LastMonthAcheived: lastMonthPct.MwNtp,
+				},
 			}
 
 			thisMonthPct = getProductionAchievedPercentage(target, acheived)
@@ -368,6 +378,11 @@ ORDER BY MONTHS.n
 					Target:             target.NTP,
 					Achieved:           acheived.NTP,
 					PercentageAchieved: thisMonthPct.NTP,
+				},
+				"mW ntp": {
+					Target:             target.MwNtp,
+					Achieved:           acheived.MwNtp,
+					PercentageAchieved: thisMonthPct.MwNtp,
 				},
 			}
 		}
@@ -411,8 +426,13 @@ func getProductionTargetOrAchievedItem(rawRecord map[string]interface{}) *models
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to cast ntp from type %T to float64", rawRecord["ntp"])
 	}
+	mwNtp, ok := rawRecord["mw_ntp"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast mw_ntp from type %T to float64", rawRecord["mw_ntp"])
+	}
 
 	item.NTP = ntp
+	item.MwNtp = mwNtp
 	item.ProjectsSold = projectsSold
 	item.MwSold = mwSold
 	item.InstallCt = installCt
@@ -488,6 +508,9 @@ func getProductionAchievedPercentage(target *models.ProductionTargetOrAchievedIt
 
 	if target.NTP > 0 {
 		pct.NTP = acheived.NTP / target.NTP * 100
+	}
+	if target.MwNtp > 0 {
+		pct.MwNtp = acheived.MwNtp / target.MwNtp * 100
 	}
 
 	return &pct

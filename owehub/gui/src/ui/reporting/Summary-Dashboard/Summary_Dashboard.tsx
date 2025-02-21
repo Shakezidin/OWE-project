@@ -187,24 +187,28 @@ const Summary_Dashboard = () => {
       value: 'projects_sold',
     },
     {
-      label: 'MW Sold',
+      label: 'mW Sold',
       value: 'mw_sold',
     },
     {
-      label: 'Install Count',
+      label: 'NTP',
+      value: 'ntp',
+    },
+    {
+      label: 'mW NTP',
+      value: 'mw_ntp',
+    },
+    {
+      label: 'Install Ct',
       value: 'install_ct',
     },
     {
-      label: 'MW Installed',
+      label: 'mW Installed',
       value: 'mw_installed',
     },
     {
       label: 'Batteries Installed',
       value: 'batteries_ct',
-    },
-    {
-      label: 'NTP',
-      value: 'ntp',
     },
   ];
   const [datas, setDatas] = useState<Option>({
@@ -311,13 +315,16 @@ const Summary_Dashboard = () => {
 
   const width = useWindowWidth();
   const isMobile = width <= 767;
+  const isTablet = width <= 1024;
   const desiredOrder = [
     'Projects Sold',
     'mW Sold',
+    'ntp',
+    'mW ntp',
     'Install Ct',
     'mW Installed',
     'Batteries Installed',
-    'ntp'
+    'Install Ct',
   ];
 
   return (
@@ -451,13 +458,13 @@ const Summary_Dashboard = () => {
               </div>
             </div>
           </div>
-          <div className={classes.top_box_boxes}>
+          <div className={`scroll ${classes.top_div}`}>
             {summaryData.loading ? (
               <div
                 style={{
                   display: 'flex',
                   justifyContent: 'center',
-                  paddingBottom: '18px',
+                  paddingTop: '28px',
                 }}
               >
                 <MicroLoader />
@@ -476,7 +483,10 @@ const Summary_Dashboard = () => {
                         <div className={classes.top_box_box} key={key}>
                           <div className={classes.top_box_top}>
                             <div className={classes.top_box_head}>
-                              <p>{key === "ntp" ? "NTP" : key}</p>
+                              <p>
+                                {key === "ntp" ? "NTP" : key === "mW ntp" ? "mW NTP" : key}
+                              </p>
+
                             </div>
                             {data && (
                               <>
@@ -600,52 +610,26 @@ const Summary_Dashboard = () => {
                   place="bottom"
                   content={'Change View'}
                 />
-                {!isMobile ? (
+                {!(isMobile || isTablet) ? (
                   <div className={classes.bottom_box_chart2_head_buttons}>
-                    <div
-                      className={`${classes.bottom_box_button} ${activeButton === 'projects_sold' ? classes.active : ''}`}
-                      style={{
-                        borderBottomLeftRadius: '10px',
-                        borderTopLeftRadius: '10px',
-                      }}
-                      onClick={() => handleButtonClick('projects_sold')}
-                    >
-                      Project Sold
-                    </div>
-                    <div
-                      className={`${classes.bottom_box_button} ${activeButton === 'mw_sold' ? classes.active : ''}`}
-                      onClick={() => handleButtonClick('mw_sold')}
-                    >
-                      mW Sold
-                    </div>
-                    <div
-                      className={`${classes.bottom_box_button} ${activeButton === 'install_ct' ? classes.active : ''}`}
-                      onClick={() => handleButtonClick('install_ct')}
-                    >
-                      Install Ct
-                    </div>
-                    <div
-                      className={`${classes.bottom_box_button} ${activeButton === 'mw_installed' ? classes.active : ''}`}
-                      onClick={() => handleButtonClick('mw_installed')}
-                    >
-                      mW Installed
-                    </div>
-                    <div
-                      className={`${classes.bottom_box_button} ${activeButton === 'batteries_ct' ? classes.active : ''}`}
-                      onClick={() => handleButtonClick('batteries_ct')}
-                    >
-                      Batteries Installed
-                    </div>
-                    <div
-                      className={`${classes.bottom_box_button} ${activeButton === 'ntp' ? classes.active : ''}`}
-                      style={{
-                        borderBottomRightRadius: '10px',
-                        borderTopRightRadius: '10px',
-                      }}
-                      onClick={() => handleButtonClick('ntp')}
-                    >
-                      NTP
-                    </div>
+
+                    {data.map((item) => (
+                      <div
+                        key={item.value}
+                        className={`${classes.bottom_box_button} ${activeButton === item.value ? classes.active : ''}`}
+                        style={{
+                          borderBottomLeftRadius: item.value === "projects_sold" ? "10px" : "0px",
+                          borderTopLeftRadius: item.value === "projects_sold" ? "10px" : "0px",
+                          borderBottomRightRadius: item.value === "batteries_ct" ? "10px" : "0px",
+                          borderTopRightRadius: item.value === "batteries_ct" ? "10px" : "0px",
+                        }}
+                        onClick={() => handleButtonClick(item.value)}
+                      >
+                        {item.label}
+                      </div>
+                    ))}
+
+
                   </div>
                 ) : (
                   <SelectOption
