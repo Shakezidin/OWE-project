@@ -179,7 +179,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 	performanceResponse.PerimittingCountPercentage = "+12.7%"
 	performanceResponse.RoofingCountPercentage = "+11.9%"
 	performanceResponse.InstallCountPercentage = "+7.9%"
-	perfomanceResponse.ElectricalCountPercentage = "+5.9%"
+	performanceResponse.ElectricalCountPercentage = "+5.9%"
 	performanceResponse.InspectionCountPercentage = "+17.9%"
 	performanceResponse.ActivationCountPercentage = "-9.7%"
 
