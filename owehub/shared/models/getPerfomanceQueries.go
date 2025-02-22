@@ -1807,7 +1807,7 @@ GROUP BY %v
         ns.state,
         split_part(srs.team_region_untd, '/'::text, 1) AS team,
         split_part(srs.team_region_untd, '/'::text, 2) AS region,
-        scs.contracted_system_size_parent
+        ns.contracted_system_size_ntp_new
     FROM ntp_ntp_schema ns
     LEFT JOIN customers_customers_schema cs 
         ON cs.unique_id = ns.unique_id
@@ -1826,7 +1826,7 @@ SELECT
     %v,
     SUM(CASE 
         WHEN ntp_complete_date %v 
-        THEN contracted_system_size_parent ELSE 0 END) AS ntp
+        THEN contracted_system_size_ntp_new ELSE 0 END) AS ntp
 FROM distinct_ntp
 WHERE 1=1
 %v
