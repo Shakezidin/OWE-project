@@ -222,7 +222,6 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	LeaderBoardList.TotalCancel = totalCancel
 	LeaderBoardList.TotalInstall = totalInstall
 	LeaderBoardList.TotalNtp = totalNtp
-	LeaderBoardList.TotalNtp = 0
 	LeaderBoardList.TotalSale = totalSale
 	LeaderBoardList.TotalBattery = totalBattery
 
