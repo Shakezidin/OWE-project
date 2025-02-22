@@ -1743,7 +1743,7 @@ func LeaderBoardInstallBatteryData(dateRange, dealers, groupBy, chosen string) (
 	return query, "install"
 }
 
-// LeaderBoardNTPData fetches NTP counts from ntp_ntp_schema
+// LeaderBoardNTPData fetches NTP counts from ntp_ntp_schema.
 func LeaderBoardNTPData(dateRange, dealers, groupBy, chosen string) (string, string) {
 	var groupByFields, additionalCondition, selectFields string
 
