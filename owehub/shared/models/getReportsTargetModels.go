@@ -94,22 +94,22 @@ type ProductionTargetsByYearRespItem struct {
 // Update production targets models
 
 type UpdateProductionTargetsReqItem struct {
-	Year         int     `json:"year"`
-	Month        int     `json:"month"`
-	ProjectsSold float64 `json:"projects_sold"`
-	MwSold       float64 `json:"mw_sold"`
-	InstallCt    float64 `json:"install_ct"`
-	MwInstalled  float64 `json:"mw_installed"`
-	BatteriesCt  float64 `json:"batteries_ct"`
-	NTP          float64 `json:"ntp"`
-	MwNtp        float64 `json:"mw_ntp"`
+	Year             int     `json:"year"`
+	Month            int     `json:"month"`
+	TargetPercentage float64 `json:"target_percentage"`
+	State            string  `json:"state"`
+	AmId             int64   `json:"am_id"`
+	ProjectsSold     float64 `json:"projects_sold"`
+	MwSold           float64 `json:"mw_sold"`
+	InstallCt        float64 `json:"install_ct"`
+	MwInstalled      float64 `json:"mw_installed"`
+	BatteriesCt      float64 `json:"batteries_ct"`
+	NTP              float64 `json:"ntp"`
+	MwNtp            float64 `json:"mw_ntp"`
 }
 
 type UpdateProductionTargetsReq struct {
-	TargetPercentage int                              `json:"target_percentage"`
-	Targets          []UpdateProductionTargetsReqItem `json:"targets"`
-	State            string                           `json:"state"`
-	AccountManager   string                           `json:"account_manager"`
+	Targets []UpdateProductionTargetsReqItem `json:"targets"`
 }
 
 /********************* ✍✍✍ Get production target model ✍✍✍ ********************/

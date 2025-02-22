@@ -31,7 +31,6 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		whereEleList       []interface{}
 		valuesPlaceholders []string
 		query              string
-		targetUserId       int64
 	)
 
 	log.EnterFn(0, "HandleUpdateProductionTargetsRequest")
@@ -58,12 +57,6 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
-	targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
-	if err != nil {
-		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusBadRequest, nil)
-		return
-	}
-
 	// Construct the upsert query
 	// Example:
 	// INSERT INTO production_targets (month, year, target_percentage, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct)
@@ -79,12 +72,22 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		prevWhereLen := len(whereEleList)
 		itemPlaceholders := []string{}
 
+		// default values; am = admin, state from input
+		itemAmId := int64(1)
+		itemState := item.State
+
+		// if am_id is set, use all for state
+		if item.AmId != 0 {
+			itemAmId = item.AmId
+			itemState = "All"
+		}
+
 		whereEleList = append(whereEleList,
 			item.Month,
 			item.Year,
-			dataReq.TargetPercentage,
-			targetUserId,
-			dataReq.State,
+			item.TargetPercentage,
+			itemAmId,
+			itemState,
 			item.ProjectsSold,
 			item.MwSold,
 			item.InstallCt,
