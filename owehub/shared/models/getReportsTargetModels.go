@@ -24,6 +24,7 @@ type ProductionTargetOrAchievedItem struct {
 	MwInstalled  float64 `json:"mw_installed"`
 	BatteriesCt  float64 `json:"batteries_ct"`
 	NTP          float64 `json:"ntp"`
+	MwNtp        float64 `json:"mw_ntp"`
 }
 
 type ProductionTargetOrAchievedPercentage struct {
@@ -33,6 +34,7 @@ type ProductionTargetOrAchievedPercentage struct {
 	MwInstalled  float64 `json:"mw_installed"`
 	BatteriesCt  float64 `json:"batteries_ct"`
 	NTP          float64 `json:"ntp"`
+	MwNtp        float64 `json:"mw_ntp"`
 }
 
 type GetReportsTargetRespSummaryItem struct {
@@ -86,6 +88,7 @@ type ProductionTargetsByYearRespItem struct {
 	MwInstalled  float64 `json:"mw_installed"`
 	BatteriesCt  float64 `json:"batteries_ct"`
 	NTP          float64 `json:"ntp"`
+	MwNtp        float64 `json:"mw_ntp"`
 }
 
 // Update production targets models
@@ -99,6 +102,7 @@ type UpdateProductionTargetsReqItem struct {
 	MwInstalled  float64 `json:"mw_installed"`
 	BatteriesCt  float64 `json:"batteries_ct"`
 	NTP          float64 `json:"ntp"`
+	MwNtp        float64 `json:"mw_ntp"`
 }
 
 type UpdateProductionTargetsReq struct {
@@ -108,26 +112,22 @@ type UpdateProductionTargetsReq struct {
 	AccountManager   string                           `json:"account_manager"`
 }
 
-
-
-
 /********************* ✍✍✍ Get production target model ✍✍✍ ********************/
-
 
 type ProductionTargetsReq struct {
 	TargetPercentage int    `json:"target_percentage"`
 	Year             int    `json:"year"`
-	Month            string    `json:"month"`
+	Month            string `json:"month"`
 	State            string `json:"state"`
 	//AccountManager   string `json:"account_manager"`
-	GroupBy          string `json:"group_by"`
+	GroupBy string `json:"group_by"`
 }
 
 type ProductionTargetsRespItem struct {
 	Month        string  `json:"month,omitempty"`
 	UserName     string  `json:"user_name,omitempty"`
 	UserID       int64   `json:"user_id,omitempty"`
-	State 			 string  `json:"state,omitempty"`
+	State        string  `json:"state,omitempty"`
 	ProjectsSold float64 `json:"projects_sold"`
 	MwSold       float64 `json:"mw_sold"`
 	InstallCt    float64 `json:"install_ct"`
@@ -135,9 +135,6 @@ type ProductionTargetsRespItem struct {
 	BatteriesCt  float64 `json:"batteries_ct"`
 	NTP          float64 `json:"ntp"`
 }
-
-
-
 
 // type MonthlyData struct {
 // 	Month          string `json:"name"`                       // Name of the month

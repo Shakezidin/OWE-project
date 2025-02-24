@@ -84,31 +84,75 @@ interface ImageViewerProps {
       setShowDeletePopup(true);
     };
   
-    const handleDeleteConfirm = (shouldDelete: boolean) => {
-      if (shouldDelete && pendingDeleteIndex !== null) {
-        const newImages = [...localImages];
-        newImages.splice(pendingDeleteIndex, 1);
+    // const handleDeleteConfirm = (shouldDelete: boolean) => {
+    //   if (shouldDelete && pendingDeleteIndex !== null) {
+    //     const newImages = [...localImages];
+    //     newImages.splice(pendingDeleteIndex, 1);
         
-        if (newImages.length === 0) {
-          onRemove(pendingDeleteIndex);
-          onClose();
-          return;
+    //     if (newImages.length === 0) {
+    //       onRemove(pendingDeleteIndex);
+    //       onClose();
+    //       return;
+    //     }
+        
+    //     let newCurrentIndex = currentIndex;
+    //     if (pendingDeleteIndex === currentIndex) {
+    //       newCurrentIndex = pendingDeleteIndex < newImages.length ? pendingDeleteIndex : Math.max(0, newImages.length - 1);
+    //     } else if (pendingDeleteIndex < currentIndex) {
+    //       newCurrentIndex--;
+    //     }
+        
+    //     setLocalImages(newImages);
+    //     setCurrentIndex(Math.max(0, Math.min(newCurrentIndex, newImages.length - 1)));
+    //     onRemove(pendingDeleteIndex);
+    //   }
+    //   setShowDeletePopup(false);
+    //   setPendingDeleteIndex(null);
+    // };
+
+    const handleDeleteConfirm = async (shouldDelete: boolean) => {
+        if (shouldDelete && pendingDeleteIndex !== null) {
+          try {
+            // Get the image URL
+            const imageToDelete = localImages[pendingDeleteIndex];
+            
+            // Extract the key from the S3 URL
+            // Assuming URL format: https://bucket-name.s3.region.amazonaws.com/datTool-images/filename
+            const urlParts = imageToDelete.url.split('/datTool-images/');
+            if (urlParts.length !== 2) {
+              throw new Error('Invalid S3 URL format');
+            }
+            const key = `datTool-images/${urlParts[1]}`;
+    
+            // Call the parent onRemove which should handle the S3 deletion
+            await onRemove(pendingDeleteIndex);
+    
+            // Update local state
+            const newImages = [...localImages];
+            newImages.splice(pendingDeleteIndex, 1);
+            
+            if (newImages.length === 0) {
+              onClose();
+              return;
+            }
+            
+            let newCurrentIndex = currentIndex;
+            if (pendingDeleteIndex === currentIndex) {
+              newCurrentIndex = pendingDeleteIndex < newImages.length ? pendingDeleteIndex : Math.max(0, newImages.length - 1);
+            } else if (pendingDeleteIndex < currentIndex) {
+              newCurrentIndex--;
+            }
+            
+            setLocalImages(newImages);
+            setCurrentIndex(Math.max(0, Math.min(newCurrentIndex, newImages.length - 1)));
+          } catch (error) {
+            console.error('Failed to delete image:', error);
+            // You might want to show an error toast here
+          }
         }
-        
-        let newCurrentIndex = currentIndex;
-        if (pendingDeleteIndex === currentIndex) {
-          newCurrentIndex = pendingDeleteIndex < newImages.length ? pendingDeleteIndex : Math.max(0, newImages.length - 1);
-        } else if (pendingDeleteIndex < currentIndex) {
-          newCurrentIndex--;
-        }
-        
-        setLocalImages(newImages);
-        setCurrentIndex(Math.max(0, Math.min(newCurrentIndex, newImages.length - 1)));
-        onRemove(pendingDeleteIndex);
-      }
-      setShowDeletePopup(false);
-      setPendingDeleteIndex(null);
-    };
+        setShowDeletePopup(false);
+        setPendingDeleteIndex(null);
+      };
   
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files ? Array.from(event.target.files) : [];
@@ -267,9 +311,25 @@ const ImageSection: React.FC<ImageSectionProps> = ({
     setShowDeletePopup(true);
   };
 
-  const handleDeleteConfirm = (shouldDelete: boolean) => {
+  const handleDeleteConfirm = async (shouldDelete: boolean) => {
     if (shouldDelete && pendingDeleteIndex !== null) {
-      onRemove(pendingDeleteIndex);
+      try {
+        // Get the image URL
+        const imageToDelete = images[pendingDeleteIndex];
+        
+        // Extract the key from the S3 URL
+        const urlParts = imageToDelete.url.split('/datTool-images/');
+        if (urlParts.length !== 2) {
+          throw new Error('Invalid S3 URL format');
+        }
+        const key = `datTool-images/${urlParts[1]}`;
+
+        // Call the parent onRemove which should handle the S3 deletion
+        await onRemove(pendingDeleteIndex);
+      } catch (error) {
+        console.error('Failed to delete image:', error);
+        // You might want to show an error toast here
+      }
     }
     setShowDeletePopup(false);
     setPendingDeleteIndex(null);
