@@ -493,12 +493,21 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     try {
       const imageToRemove = uploadedImages[index];
       const s3Client = s3Upload('/datTool-images');
-      const keyToDelete = imageToRemove.url.split('/datTool-images/')[1];
-      await s3Client.deleteFile(keyToDelete);
       
+      // Extract the key from the URL
+      const urlParts = imageToRemove.url.split('/datTool-images/');
+      if (urlParts.length !== 2) {
+        throw new Error('Invalid S3 URL format');
+      }
+      const key = `datTool-images/${urlParts[1]}`;
+      
+      // Delete from S3
+      await s3Client.deleteFile(key);
+      
+      // Update local state
       setUploadedImages(prev => prev.filter((_, i) => i !== index));
       
-      // If viewer is open, update its images too
+      // Update viewer state if open
       if (viewerImageInfo) {
         setViewerImageInfo(prev => {
           if (!prev) return null;
@@ -510,9 +519,11 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
           } : null;
         });
       }
+  
+      toast.success('Image deleted successfully');
     } catch (error) {
       console.error('Failed to remove image:', error);
-      toast.error('Failed to remove image');
+      toast.error('Failed to delete image');
     }
   };
 
