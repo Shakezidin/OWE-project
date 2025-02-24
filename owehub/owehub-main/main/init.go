@@ -8,7 +8,7 @@
 package main
 
 import (
-	appserver "OWEApp/shared/appserver"
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/types"
 	"encoding/json"
 	"fmt"
@@ -23,7 +23,7 @@ import (
 	apiHandler "OWEApp/owehub-main/services"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	models "OWEApp/shared/models"
+	"OWEApp/shared/models"
 
 	"github.com/google/uuid"
 	"gopkg.in/natefinch/lumberjack.v2"

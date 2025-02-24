@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS production_targets (
     mw_installed DOUBLE PRECISION NOT NULL,
     batteries_ct DOUBLE PRECISION NOT NULL,
     mw_ntp DOUBLE PRECISION NOT NULL,
+    ntp DOUBLE PRECISION NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (month, year, target_percentage, state, user_id),

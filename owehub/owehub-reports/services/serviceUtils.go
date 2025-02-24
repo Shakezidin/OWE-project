@@ -131,6 +131,10 @@ func getGoalAMs() ([]string, error) {
 		return nil, fmt.Errorf("failed to get AM data from DB")
 	}
 
+	if len(data) == 0 {
+		return nil, fmt.Errorf("no AM data found")
+	}
+
 	for _, val := range data {
 		if name, ok := val["name"].(string); ok {
 			responseData = append(responseData, name)
@@ -139,6 +143,8 @@ func getGoalAMs() ([]string, error) {
 			continue
 		}
 	}
+
+	log.FuncDebugTrace(0, "data of am is %v", data)
 
 	return responseData, nil
 
