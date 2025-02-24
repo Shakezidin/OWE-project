@@ -28,9 +28,9 @@ import (
  ******************************************************************************/
 
 const (
-	green = "#63ACA3"
-	blue  = "#377CF6"
-	grey  = "#E9E9E9"
+	green = "#7ECFC5"
+	blue  = "#7CAAF5"
+	grey  = "#EBEBEB"
 )
 
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {

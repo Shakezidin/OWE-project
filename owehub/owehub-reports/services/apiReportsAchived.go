@@ -128,7 +128,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			COALESCE(SUM(p.install_ct), 0) AS install_ct,
 			COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
 			COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct,
-			COALESCE(SUM(p.ntp), 0) AS ntp
+			COALESCE(SUM(p.ntp), 0) AS ntp,
+			COALESCE(SUM(p.mw_ntp), 0) AS mw_ntp
 		FROM months
 		LEFT JOIN production_targets p
 		ON months.n = p.month AND p.target_percentage = $3 AND p.year = $4 AND p.user_id = $5 AND %s
@@ -220,7 +221,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 	 NTP_NEW AS (
      SELECT
         DATE_PART('MONTH', N.ntp_complete_date) AS month,
-        COUNT(N.ntp_complete_date) AS ntp_ct  -- Count occurrences of ntp_complete_date
+        COUNT(N.ntp_complete_date) AS ntp_ct,  -- Count occurrences of ntp_complete_date
+        SUM(COALESCE(N.contracted_system_size_ntp_new, 0)) / 1000 AS mw_ntp
      FROM NTP_NTP_SCHEMA AS N
      WHERE
         DATE_PART('YEAR', N.ntp_complete_date) = $3  -- Ensure same year
@@ -240,7 +242,8 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 			COALESCE(PV.install_ct, 0)::FLOAT AS install_ct,
             COALESCE(PV.mw_installed, 0) AS mw_installed,  
 			COALESCE(NTP.batteries_ct, 0)::FLOAT AS batteries_ct,
-			COALESCE(NTP_NEW.ntp_ct, 0)::FLOAT AS ntp
+			COALESCE(NTP_NEW.ntp_ct, 0)::FLOAT AS ntp,
+            COALESCE(NTP_NEW.mw_ntp, 0) AS mw_ntp 
 		FROM MONTHS
 		LEFT JOIN CUSTOMERS ON CUSTOMERS.month = MONTHS.n
 		LEFT JOIN PV ON PV.month = MONTHS.n
@@ -337,6 +340,11 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					Achieved:          acheived.NTP,
 					LastMonthAcheived: lastMonthPct.NTP,
 				},
+				"mW ntp": {
+					Target:            target.MwNtp,
+					Achieved:          acheived.MwNtp,
+					LastMonthAcheived: lastMonthPct.MwNtp,
+				},
 			}
 
 			thisMonthPct = getProductionAchievedPercentage(target, acheived)
@@ -370,6 +378,11 @@ func HandleReportsTargetListRequest(resp http.ResponseWriter, req *http.Request)
 					Target:             target.NTP,
 					Achieved:           acheived.NTP,
 					PercentageAchieved: thisMonthPct.NTP,
+				},
+				"mW ntp": {
+					Target:             target.MwNtp,
+					Achieved:           acheived.MwNtp,
+					PercentageAchieved: thisMonthPct.MwNtp,
 				},
 			}
 		}
@@ -413,8 +426,13 @@ func getProductionTargetOrAchievedItem(rawRecord map[string]interface{}) *models
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to cast ntp from type %T to float64", rawRecord["ntp"])
 	}
+	mwNtp, ok := rawRecord["mw_ntp"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to cast mw_ntp from type %T to float64", rawRecord["mw_ntp"])
+	}
 
 	item.NTP = ntp
+	item.MwNtp = mwNtp
 	item.ProjectsSold = projectsSold
 	item.MwSold = mwSold
 	item.InstallCt = installCt
@@ -490,6 +508,9 @@ func getProductionAchievedPercentage(target *models.ProductionTargetOrAchievedIt
 
 	if target.NTP > 0 {
 		pct.NTP = acheived.NTP / target.NTP * 100
+	}
+	if target.MwNtp > 0 {
+		pct.MwNtp = acheived.MwNtp / target.MwNtp * 100
 	}
 
 	return &pct
