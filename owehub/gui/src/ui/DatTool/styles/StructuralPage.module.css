@@ -432,7 +432,13 @@
 .imageViewerContainer {
 }
 
+.UploadIconThumbnail:hover{
+  color: black;
+    transform: scale(1.05);
+    background-color: #d5e4ff;
+} 
 .UploadIcon:hover {
+  color: #fff;
   transform: scale(1.05);
   background-color: #d5e4ff;
 }
@@ -821,6 +827,7 @@
   font-size: 30px;
   padding: 8px;
   border-radius: 8px;
+  color: #fff;
 }
 
 @media (min-width: 480px) and (max-width: 540px) {
