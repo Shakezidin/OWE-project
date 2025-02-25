@@ -10,7 +10,7 @@ import (
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	models "OWEApp/shared/models"
+	"OWEApp/shared/models"
 	"reflect"
 
 	"encoding/json"

@@ -13,43 +13,60 @@ import useWindowWidth from '../../../../hooks/useWindowWidth';
 
 const RadarChartComponenet = ({ radData }: any) => {
 
+  const desiredOrder = [
+    'Projects Sold',
+    'mW Sold',
+    'ntp',
+    'mW ntp',
+    'Install Ct',
+    'mW Installed',
+    'Batteries Installed',
+    'Install Ct',
+  ];
+
   const data = radData
-    ? Object.entries(radData).map(([key, value]) => {
-      const target = (value as { target: number }).target;
-      const achieved = (value as { achieved: number }).achieved;
+    ? Object.entries(radData)
+      .filter(([key]) => desiredOrder.includes(key))
+      .sort(
+        ([a], [b]) =>
+          desiredOrder.indexOf(a) - desiredOrder.indexOf(b)
+      )
+      .map(([key, value]) => {
+        const target = (value as { target: number }).target;
+        const achieved = (value as { achieved: number }).achieved;
 
-      let percentAchieved: number;
+        let percentAchieved: number;
 
-      if (target === 0 && achieved > 0) {
-        percentAchieved = 100;
-      } else if (target === 0 && achieved === 0) {
-        percentAchieved = 0;
-      } else {
-        percentAchieved = (achieved / target) * 100;
-        percentAchieved = percentAchieved;
-      }
+        if (target === 0 && achieved > 0) {
+          percentAchieved = 100;
+        } else if (target === 0 && achieved === 0) {
+          percentAchieved = 0;
+        } else {
+          percentAchieved = (achieved / target) * 100;
+          percentAchieved = percentAchieved;
+        }
 
-      let norm: number;
+        let norm: number;
 
-      if (target === 0 && achieved > 0) {
-        norm = 100;
-      } else if (target === 0 && achieved === 0) {
-        norm = 0;
-      } else {
-        norm = (achieved / target) * 100;
-        norm = percentAchieved >= 100 ? 100 : percentAchieved;
-      }
+        if (target === 0 && achieved > 0) {
+          norm = 100;
+        } else if (target === 0 && achieved === 0) {
+          norm = 0;
+        } else {
+          norm = (achieved / target) * 100;
+          norm = percentAchieved >= 100 ? 100 : percentAchieved;
+        }
 
-      return {
-        subject: key,
-        Target: (value as { target: number }).target,
-        Achieve: (value as { achieved: number }).achieved,
-        Percent_Achieve: percentAchieved,
-        Normalized_Achieve: norm,
-        show: true,
-        B: 100
-      };
-    })
+        return {
+          subject: key,
+          Target: (value as { target: number }).target,
+          Achieve: (value as { achieved: number }).achieved,
+          Percent_Achieve: percentAchieved,
+          Normalized_Achieve: norm,
+          show: true,
+          B: 100
+        };
+      })
     : [];
 
 
@@ -92,7 +109,7 @@ const RadarChartComponenet = ({ radData }: any) => {
             fill="#767676"
             style={{ fontSize: '10px', fontWeight: '400' }}
           >
-            {payload.value === "ntp" ? "NTP" : payload.value}
+            {payload.value === "ntp" ? "NTP" : payload.value === "mW ntp" ? "mW NTP" : payload.value}
           </text>
         </g>
       );
@@ -112,7 +129,7 @@ const RadarChartComponenet = ({ radData }: any) => {
       <RadarChart
         cx="50%"
         cy="50%"
-        outerRadius={(isTablet || isMobile) ? "65%" : "70%"}
+        outerRadius={(isMobile) ? "45%" : isTablet ? '69%' : "70%"}
         data={newData}
       >
 

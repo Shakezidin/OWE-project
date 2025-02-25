@@ -39,6 +39,15 @@ const RadialChart = ({
   year: any;
   radData: ProgressData;
 }) => {
+  const desiredOrder = [
+    'Batteries Installed',
+    'mW Installed',
+    'Install Ct',
+    'mW ntp',
+    'ntp',
+    'mW Sold',
+    'Projects Sold',
+  ];
   const getColorByKey = (key: string) => {
     switch (key) {
       case 'Batteries Installed':
@@ -53,6 +62,8 @@ const RadialChart = ({
         return '#4ECF54';
       case 'ntp':
         return '#007ACC';
+      case 'mW ntp':
+        return '#833FDB';
       default:
         return '#000000';
     }
@@ -61,26 +72,32 @@ const RadialChart = ({
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const apiData = radData
-    ? Object.entries(radData).map(([key, value]) => {
-      let displayPercentage;
-      if (value.target === 0 && value.achieved > 0) {
-        displayPercentage = 100;
-      } else if (value.target === 0 && value.achieved === 0) {
-        displayPercentage = 0;
-      } else {
-        const percentage = (value.achieved / value.target) * 100;
-        displayPercentage = percentage >= 100 ? 100 : percentage.toFixed(2);
-      }
+    ? Object.entries(radData)
+      .filter(([key]) => desiredOrder.includes(key))
+      .sort(
+        ([a], [b]) =>
+          desiredOrder.indexOf(a) - desiredOrder.indexOf(b)
+      )
+      .map(([key, value]) => {
+        let displayPercentage;
+        if (value.target === 0 && value.achieved > 0) {
+          displayPercentage = 100;
+        } else if (value.target === 0 && value.achieved === 0) {
+          displayPercentage = 0;
+        } else {
+          const percentage = (value.achieved / value.target) * 100;
+          displayPercentage = percentage >= 100 ? 100 : percentage.toFixed(2);
+        }
 
-      return {
-        name: key,
-        Target: value.target,
-        Achieved: value.achieved,
-        DisplayPercentage: displayPercentage,
-        fill: getColorByKey(key),
-        tooltip: true,
-      };
-    })
+        return {
+          name: key,
+          Target: value.target,
+          Achieved: value.achieved,
+          DisplayPercentage: displayPercentage,
+          fill: getColorByKey(key),
+          tooltip: true,
+        };
+      })
     : [];
 
   const dummyData = [
@@ -124,7 +141,7 @@ const RadialChart = ({
                 marginRight: '-10px',
               }}
             >
-              {data.name === "ntp" ? "NTP" : data.name}
+              {data.name === "ntp" ? "NTP" : data.name === "mW ntp" ? "mW NTP" : data.name}
             </p>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <svg width="12" height="12" style={{ marginRight: '5px' }}>
@@ -179,9 +196,9 @@ const RadialChart = ({
       <RadialBarChart
         cx="50%"
         cy={isMobile ? '48%' : isTablet ? '52%' : '70%'}
-        innerRadius={isTablet || isMobile ? '6%' : '30%'}
-        outerRadius={isTablet || isMobile ? '140%' : '140%'}
-        barSize={15}
+        innerRadius={isMobile ? '26%' : isTablet ? '19%' : '30%'}
+        outerRadius={isMobile ? '120%' : isTablet ? '140%' : '140%'}
+        barSize={isMobile ? 8 : 15}
         data={data}
         startAngle={180}
         endAngle={0}
@@ -222,7 +239,7 @@ const RadialChart = ({
                 style={{
                   display: 'flex',
                   justifyContent: 'center',
-                  gap: isMobile ? '8px' : '19px',
+                  gap: isMobile ? '4px' : '19px',
                   marginBottom: '20px',
                 }}
               >
@@ -257,8 +274,9 @@ const RadialChart = ({
                 style={{
                   display: 'flex',
                   justifyContent: 'center',
-                  gap: '20px',
+                  gap: isMobile ? '10px' :'20px',
                   marginTop: '-8px',
+                  marginRight:'-38px'
                 }}
               >
                 {data.slice(3).map((item) => (
@@ -284,7 +302,7 @@ const RadialChart = ({
                           fontSize: isMobile ? '10px' : '12px',
                         }}
                       >
-                        {item.name === "ntp" ? "NTP" : item.name}
+                        {item.name === "ntp" ? "NTP" : item.name === "mW ntp" ? "mW NTP" : item.name}
                       </span>
                     )}
                   </div>
@@ -296,7 +314,7 @@ const RadialChart = ({
 
         <text
           x="50%"
-          y={isMobile ? '47%' : isTablet ? '47%' : '67%'}
+          y={isMobile ? '47%' : isTablet ? '50%' : '67%'}
           textAnchor="middle"
           dominantBaseline="middle"
           style={{

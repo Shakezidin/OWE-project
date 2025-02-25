@@ -91,6 +91,7 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 			item.MwInstalled,
 			item.BatteriesCt,
 			item.NTP,
+			item.MwNtp,
 		)
 
 		for i := prevWhereLen; i < len(whereEleList); i++ {
@@ -101,7 +102,7 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	query = fmt.Sprintf(`
-		INSERT INTO %s (month, year, target_percentage, user_id, state, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct, ntp)
+		INSERT INTO %s (month, year, target_percentage, user_id, state, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct, ntp, mw_ntp)
 		VALUES %s
 		ON CONFLICT (month, year, target_percentage, user_id, state) DO UPDATE SET
 			projects_sold = EXCLUDED.projects_sold,
@@ -109,13 +110,14 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 			install_ct = EXCLUDED.install_ct,
 			mw_installed = EXCLUDED.mw_installed,
 			batteries_ct = EXCLUDED.batteries_ct,
-			ntp = EXCLUDED.ntp
+			ntp = EXCLUDED.ntp,
+			mw_ntp = EXCLUDED.mw_ntp
 	`, db.TableName_ProductionTargets, strings.Join(valuesPlaceholders, ", "))
 
 	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to upsert data in DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get the production targets", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update the production targets", http.StatusInternalServerError, nil)
 		return
 	}
 
