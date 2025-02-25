@@ -19,9 +19,10 @@ interface Toggleprops {
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSidebarChange: React.Dispatch<React.SetStateAction<number>>;
   sidebarChange: number;
+  dbStatus:boolean;
 }
 
-const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
+const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, dbStatus }) => {
   const [, setDb] = useState<boolean>(false);
   const [, setProject] = useState<boolean>(false);
   const [cords, setCords] = useState<{
@@ -35,10 +36,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const isTablet = useMatchMedia('(max-width: 1024px)');
   const location = useLocation();
   const timeOut = useRef<NodeJS.Timeout | null>(null);
-  const [dbStatus, setDbStatus] = useState<boolean>(true);
   
-
-
   const role = localStorage.getItem('role');
 
   const filteredList = () => {
@@ -50,7 +48,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (
           isStaging !== 'staging' &&
-          ( item.path === ROUTES.COMMISSION_DASHBOARD ||
+          (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE ||
             item.path === ROUTES.SALES_REP_SCHEDULER ||
             item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.DAT_TOOL)
@@ -183,7 +181,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
             item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
-            item.path !== ROUTES.REPORTING && item.path !== ROUTES.DAT_TOOL && item.path !== ROUTES.DAT_TOOL && 
+            item.path !== ROUTES.REPORTING && item.path !== ROUTES.DAT_TOOL && item.path !== ROUTES.DAT_TOOL &&
             item.path !== ROUTES.COMMISSION_DASHBOARD && item.path !== ROUTES.SUMMARY_DASBOARD
           ) {
             newArr[0].mob.push(item);
@@ -208,8 +206,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
             item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
-            item.path !== ROUTES.REPORTING && item.path !== ROUTES.DAT_TOOL && 
-             item.path !== ROUTES.COMMISSION_DASHBOARD && item.path !== ROUTES.SUMMARY_DASBOARD
+            item.path !== ROUTES.REPORTING && item.path !== ROUTES.DAT_TOOL &&
+            item.path !== ROUTES.COMMISSION_DASHBOARD && item.path !== ROUTES.SUMMARY_DASBOARD
           ) {
             newArr[0].mob.push(item);
           }
@@ -322,24 +320,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   // const isMobile = width < 768;
   const isMobile = true;
 
-    /** check whether db down or not */
-    useEffect(() => {
-      const fetchDBStatus = async () => {
-        const status = await checkDBStatus();
-        setDbStatus(status);
-      };
-  
-      fetchDBStatus();
-    }, []);
+  /** check whether db down or not */
+ 
   return (
     <div
       style={{ zIndex: '200' }}
-      className={`${!dbStatus ? "side-bar-container-label" : "side-bar-container" } ${toggleOpen ? 'side-bar-active sidebar-hidden' : 'show'}`}
+      className={`${!dbStatus ? "side-bar-container-label" : "side-bar-container"} ${toggleOpen ? 'side-bar-active sidebar-hidden' : 'show'}`}
     >
       <div
-        className={`side-bar-content ${
-          toggleOpen ? 'side-bar-content-active' : ''
-        }`}
+        className={`side-bar-content ${toggleOpen ? 'side-bar-content-active' : ''
+          }`}
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
         {filteredList().map((el: any, i: number) => (
@@ -368,11 +358,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                           setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
                         }, 500);
                       }}
-                      className={`side-icon-container ${
-                        location.pathname.includes(oth.path)
+                      className={`side-icon-container ${location.pathname.includes(oth.path)
                           ? 'active-link-bg'
                           : 'not-active-link'
-                      }`}
+                        }`}
                     >
                       <div
                         className={

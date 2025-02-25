@@ -164,6 +164,7 @@ const MainLayout = () => {
           setToggleOpen={setToggleOpen}
           sidebarChange={sidebarChange}
           setSidebarChange={setSidebarChange}
+          dbStatus={dbStatus}
         />
         <div
           className="header-width"
