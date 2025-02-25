@@ -489,7 +489,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     }
   };
 
-  const handleImageRemove = async (index: number) => {
+  const handleImageRemove = async (index: number, skipToast = false) => {
     try {
       const imageToRemove = uploadedImages[index];
       const s3Client = s3Upload('/datTool-images');
@@ -520,10 +520,53 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
         });
       }
   
-      toast.success('Image deleted successfully');
+      // Only show toast if skipToast is false
+      if (!skipToast) {
+        toast.success('Image deleted successfully');
+      }
     } catch (error) {
       console.error('Failed to remove image:', error);
-      toast.error('Failed to delete image');
+      if (!skipToast) {
+        toast.error('Failed to delete image');
+      }
+    }
+  };
+  
+  const handleMultipleImageRemove = async (indices: number[]) => {
+    try {
+      const s3Client = s3Upload('/datTool-images');
+      
+      // Delete all images from S3
+      for (const index of indices) {
+        const imageToRemove = uploadedImages[index];
+        const urlParts = imageToRemove.url.split('/datTool-images/');
+        if (urlParts.length === 2) {
+          const key = `datTool-images/${urlParts[1]}`;
+          await s3Client.deleteFile(key);
+        }
+      }
+      
+      // Update local state (filter out all deleted indices)
+      setUploadedImages(prev => prev.filter((_, i) => !indices.includes(i)));
+      
+      // Update viewer state if open
+      if (viewerImageInfo) {
+        setViewerImageInfo(prev => {
+          if (!prev) return null;
+          const newImages = prev.allImages.filter((_, i) => !indices.includes(i));
+          return newImages.length > 0 ? {
+            ...prev,
+            mainUrl: newImages[0].url,
+            allImages: newImages
+          } : null;
+        });
+      }
+      
+      // Single toast with number of deleted images
+      toast.success(`${indices.length} images deleted successfully`);
+    } catch (error) {
+      console.error('Failed to remove multiple images:', error);
+      toast.error('Failed to delete images');
     }
   };
 
@@ -654,6 +697,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
           onClose={closeViewer}
           onRemove={handleImageRemove}
           onImageUpload={onImageUpload}
+          onMultipleRemove={handleMultipleImageRemove}
         />
       )}
       {loading ? (
