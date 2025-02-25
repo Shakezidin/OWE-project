@@ -179,4 +179,35 @@ export default [
     type: 'boolean',
     isCheckbox: false,
   },
+  {
+    name: 'pto',
+    displayName: 'PTO',
+    type: 'string',
+    isCheckbox: false,
+  },
+ 
+  {
+    name: 'ntp',
+    displayName: 'NTP',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'permit',
+    displayName: 'Permit',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'install',
+    displayName: 'Install',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'project_age',
+    displayName: 'Project Age',
+    type: 'string',
+    isCheckbox: false,
+  },
 ];
