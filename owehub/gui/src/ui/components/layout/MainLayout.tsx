@@ -101,7 +101,6 @@ const MainLayout = () => {
     }
   }, [dispatch, navigate, authData]);
 
-  /** check whether db down or not */
   useEffect(() => {
     const fetchDBStatus = async () => {
       const status = await checkDBStatus();
@@ -109,6 +108,9 @@ const MainLayout = () => {
     };
 
     fetchDBStatus();
+
+    const interval = setInterval(fetchDBStatus, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -162,6 +164,7 @@ const MainLayout = () => {
           setToggleOpen={setToggleOpen}
           sidebarChange={sidebarChange}
           setSidebarChange={setSidebarChange}
+          dbStatus={dbStatus}
         />
         <div
           className="header-width"
