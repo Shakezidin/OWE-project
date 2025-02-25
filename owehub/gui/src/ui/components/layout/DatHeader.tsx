@@ -55,7 +55,7 @@ const DatHeader: React.FC<Toggleprops> = ({ setRefreshDat, activeMenu, setActive
     const currentDate = new Date();
     const dayOfMonth = currentDate.getDate();
     const isStaging = process.env.REACT_APP_ENV;
-    const isSmMobile = useMatchMedia('(max-width: 480px)');
+    const isSmMobile = useMatchMedia('(max-width: 545px)');
 
     const handleLogout = () => {
         dispatch(logout());
