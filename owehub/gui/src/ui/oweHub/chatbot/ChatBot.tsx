@@ -3,24 +3,27 @@ import speechToTextUtils from './utility_transcribe';
 import TranscribeOutput from './TranscribeOutput';
 import InteractiveAvatar from './InteractiveAvatar';
 
-const ChatBot = () => {
-  const [transcribedData, setTranscribedData] = useState([]);
-  const [interimTranscribedData, setInterimTranscribedData] = useState('');
-  const [isRecording, setIsRecording] = useState(false);
+const ChatBot: React.FC = () => {
+  const [transcribedData, setTranscribedData] = useState<any>([]);
+  const [interimTranscribedData, setInterimTranscribedData] = useState<any>('');
+  const [isRecording, setIsRecording] = useState<any>(false);
 
   const [speak, setSpeak] = useState('');
 
   function flushInterimData() {
     if (interimTranscribedData !== '') {
       setInterimTranscribedData('');
-      setTranscribedData((oldData) => [...oldData, interimTranscribedData]);
+      setTranscribedData((oldData: any) => [
+        ...oldData,
+        interimTranscribedData,
+      ]);
     }
   }
 
-  function handleDataReceived(data, isFinal) {
+  function handleDataReceived(data: any, isFinal: any) {
     if (isFinal) {
       setInterimTranscribedData('');
-      setTranscribedData((oldData) => [...oldData, data]);
+      setTranscribedData((oldData: any) => [...oldData, data]);
     } else {
       setInterimTranscribedData(data);
     }
@@ -37,7 +40,7 @@ const ChatBot = () => {
     };
   }
 
-  function handleLLMData(data) {
+  function handleLLMData(data: any) {
     setSpeak(data);
     onStop();
   }
@@ -50,7 +53,7 @@ const ChatBot = () => {
       getTranscriptionConfig(),
       handleDataReceived,
       handleLLMData,
-      (error) => {
+      (error: any) => {
         console.error('Error when transcribing', error);
         setIsRecording(false);
         // No further action needed, as stream already closes itself on error
@@ -68,16 +71,8 @@ const ChatBot = () => {
     <div>
       <InteractiveAvatar speak={speak} />
       <div>
-        {!isRecording && (
-          <button onClick={onStart} variant="primary">
-            Speak
-          </button>
-        )}
-        {isRecording && (
-          <button onClick={onStop} variant="danger">
-            Stop
-          </button>
-        )}
+        {!isRecording && <button onClick={onStart}>Speak</button>}
+        {isRecording && <button onClick={onStop}>Stop</button>}
       </div>
       Response:
       <h6>{speak}</h6>

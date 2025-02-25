@@ -11,13 +11,12 @@ import { useEffect, useRef, useState } from 'react';
 
 // import { AVATARS, STT_LANGUAGE_LIST } from "@/app/lib/constants";
 
-export default function InteractiveAvatar({ speak }) {
+export default function InteractiveAvatar({ speak }: any) {
   const [isLoadingSession, setIsLoadingSession] = useState(false);
   const [isLoadingRepeat, setIsLoadingRepeat] = useState(false);
   const [stream, setStream] = useState();
 
-  const mediaStream = useRef(null);
-  const avatar = useRef(null);
+  const mediaStream = useRef<any>(null);
 
   async function fetchAccessToken() {
     try {
@@ -42,35 +41,36 @@ export default function InteractiveAvatar({ speak }) {
     return '';
   }
 
+  let currentAvatar: any;
   async function startSession() {
     setIsLoadingSession(true);
     const newToken = await fetchAccessToken();
 
-    avatar.current = new StreamingAvatar({
+    currentAvatar = new StreamingAvatar({
       token: newToken,
     });
-    avatar.current.on(StreamingEvents.AVATAR_START_TALKING, (e) => {
+    currentAvatar.on(StreamingEvents.AVATAR_START_TALKING, (e: any) => {
       console.log('Avatar started talking', e);
     });
-    avatar.current.on(StreamingEvents.AVATAR_STOP_TALKING, (e) => {
+    currentAvatar.on(StreamingEvents.AVATAR_STOP_TALKING, (e: any) => {
       console.log('Avatar stopped talking', e);
     });
-    avatar.current.on(StreamingEvents.STREAM_DISCONNECTED, () => {
+    currentAvatar.on(StreamingEvents.STREAM_DISCONNECTED, () => {
       console.log('Stream disconnected');
       endSession();
     });
-    avatar.current.on(StreamingEvents.STREAM_READY, (event) => {
+    currentAvatar.on(StreamingEvents.STREAM_READY, (event: any) => {
       console.log('>>>>> Stream ready:', event.detail);
       setStream(event.detail);
     });
-    avatar.current.on(StreamingEvents.USER_START, (event) => {
+    currentAvatar.on(StreamingEvents.USER_START, (event: any) => {
       console.log('>>>>> User started talking:', event);
     });
-    avatar.current.on(StreamingEvents.USER_STOP, (event) => {
+    currentAvatar.on(StreamingEvents.USER_STOP, (event: any) => {
       console.log('>>>>> User stopped talking:', event);
     });
     try {
-      await avatar.current.createStartAvatar({
+      await currentAvatar.createStartAvatar({
         quality: AvatarQuality.Low,
         avatarName: 'Anna_public_3_20240108',
         voice: {
@@ -88,19 +88,18 @@ export default function InteractiveAvatar({ speak }) {
   }
 
   useEffect(() => {
-    async function handleSpeak(speak) {
+    async function handleSpeak(speak: any) {
       setIsLoadingRepeat(true);
-      if (!avatar.current) {
+      if (!currentAvatar) {
         return;
       }
       // speak({ text: text, task_type: TaskType.REPEAT })
-      await avatar.current
-        .speak({
-          text: speak,
-          taskType: TaskType.REPEAT,
-          taskMode: TaskMode.SYNC,
-        })
-        .catch((e) => {});
+      await currentAvatar.speak({
+        text: speak,
+        taskType: TaskType.REPEAT,
+        taskMode: TaskMode.SYNC,
+      });
+
       setIsLoadingRepeat(false);
     }
 
@@ -110,13 +109,13 @@ export default function InteractiveAvatar({ speak }) {
   }, [speak]);
 
   async function handleInterrupt() {
-    if (!avatar.current) {
+    if (!currentAvatar) {
       return;
     }
-    await avatar.current.interrupt().catch((e) => {});
+    await currentAvatar.interrupt();
   }
   async function endSession() {
-    await avatar.current?.stopAvatar();
+    await currentAvatar?.stopAvatar();
     setStream(undefined);
   }
 
@@ -130,7 +129,7 @@ export default function InteractiveAvatar({ speak }) {
     if (stream && mediaStream.current) {
       mediaStream.current.srcObject = stream;
       mediaStream.current.onloadedmetadata = () => {
-        mediaStream.current.play();
+        mediaStream?.current?.play();
       };
     }
   }, [mediaStream, stream]);
@@ -154,20 +153,14 @@ export default function InteractiveAvatar({ speak }) {
               >
                 <track kind="captions" />
               </video>
-              <div className="flex flex-col gap-2 absolute bottom-3 right-3">
-                <button variant="primary" onClick={handleInterrupt}>
-                  Interrupt task
-                </button>
-                <button variant="primary" onClick={endSession}>
-                  End session
-                </button>
+              <div className="flex flex-col gap-2 bottom-3 right-3">
+                <button onClick={handleInterrupt}>Interrupt task</button>
+                <button onClick={endSession}>End session</button>
               </div>
             </div>
           ) : !isLoadingSession ? (
             <div style={{ margin: 20 }}>
-              <button variant="primary" onClick={startSession}>
-                Start session
-              </button>
+              <button onClick={startSession}>Start session</button>
             </div>
           ) : null}
         </div>

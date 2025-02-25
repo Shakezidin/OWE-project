@@ -1,22 +1,22 @@
-const socket = new WebSocket('ws://155.138.163.236:8000/bot/ws/transcribe/');
+const socket = new WebSocket('wss://staging.owe-hub.com/ws/transcribe/');
 
-function socketSend(data) {
+function socketSend(data: any) {
   socket.send(JSON.stringify(data));
 }
-setTimeout(() => {
+socket.onopen = () => {
   socketSend({
     event: 'set_agent',
     data: 'DOC_QA',
   });
-}, 3000);
+};
 
 // Stream Audio
-let bufferSize = 2048,
-  AudioContext,
-  context,
-  processor,
-  input,
-  globalStream;
+let bufferSize: any = 2048,
+  AudioContext: any,
+  context: any,
+  processor: any,
+  input: any,
+  globalStream: any;
 
 const mediaConstraints = {
   audio: true,
@@ -29,20 +29,25 @@ let AudioStreamer = {
    * @param {function} onData Callback to run on data each time it's received
    * @param {function} onError Callback to run on an error if one is emitted.
    */
-  initRecording: function (transcribeConfig, onData, onLLMData, onError) {
+  initRecording: function (
+    transcribeConfig: any,
+    onData: any,
+    onLLMData: any,
+    onError: any
+  ) {
     socketSend({ event: 'startGoogleCloudStream', data: transcribeConfig });
-    AudioContext = window.AudioContext || window.webkitAudioContext;
+    AudioContext = window.AudioContext;
     context = new AudioContext();
     processor = context.createScriptProcessor(bufferSize, 1, 1);
     processor.connect(context.destination);
     context.resume();
 
-    const handleSuccess = function (stream) {
+    const handleSuccess = function (stream: any) {
       globalStream = stream;
       input = context.createMediaStreamSource(stream);
       input.connect(processor);
 
-      processor.onaudioprocess = function (e) {
+      processor.onaudioprocess = function (e: any) {
         microphoneProcess(e);
       };
     };
@@ -81,7 +86,7 @@ export default AudioStreamer;
  *
  * @param {object} e Input from the microphone
  */
-function microphoneProcess(e) {
+function microphoneProcess(e: any) {
   const left = e.inputBuffer.getChannelData(0);
   const left16 = convertFloat32ToInt16(left);
   socket.send(left16);
@@ -93,7 +98,7 @@ function microphoneProcess(e) {
  *
  * @param {object} buffer Buffer being converted
  */
-function convertFloat32ToInt16(buffer) {
+function convertFloat32ToInt16(buffer: any) {
   let l = buffer.length;
   let buf = new Int16Array(l / 3);
 
