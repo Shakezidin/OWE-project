@@ -55,6 +55,16 @@ type GetCsvPerformance struct {
 	FinPassDate             string
 	PtoSubmittedDate        string
 	PtoDate                 string
+	DaysPendingNTP          string `json:"days_ntp,omitempty"`
+	DaysPendingPermits      string `json:"days_permits,omitempty"`
+	DaysPendingInstall      string `json:"days_install,omitempty"`
+	DaysPendingPTO          string `json:"days_pto,omitempty"`
+	DaysPendingProjectAge   string `json:"days_project_age,omitempty"`
+	DaysPendingSurvey       string `json:"days_survey_design,omitempty"`
+	DaysPendingCadDesign    string `json:"days_cad_design,omitempty"`
+	DaysPendingRoofing      string `json:"days_roofing,omitempty"`
+	DaysPendingInspection   string `json:"days_inspection,omitempty"`
+	DaysPendingActivation   string `json:"days_activation,omitempty"`
 }
 
 type GetCsvPerformanceList struct {

@@ -230,7 +230,98 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		pipelineDealerDataList.PipelineDealerDataList = append(pipelineDealerDataList.PipelineDealerDataList, pipelineDealerData)
 	}
 
+	pipelineDealerDataList.PipelineDealerDataList, err = getAgingReportForDealerData(pipelineDealerDataList.PipelineDealerDataList)
+	if err != nil {
+		log.FuncErrorTrace(0, "error while getting ageing report data")
+	}
+
 	log.FuncInfoTrace(0, "Number of PipelineDealerData List fetched : %v list %+v\n", RecordCount, pipelineDealerDataList)
 	appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, pipelineDealerDataList, RecordCount)
 
+}
+
+func getAgingReportForDealerData(AgRp []models.PipelineDealerData) ([]models.PipelineDealerData, error) {
+	var (
+		err     error
+		filters []string
+		values  = make(map[string]models.PipelineDealerData)
+	)
+	log.EnterFn(0, "HandleGetAgingReport")
+	defer func() { log.ExitFn(0, "HandleGetAgingReport", err) }()
+
+	query := `SELECT DISTINCT ON(unique_id)
+	unique_id, days_pending_ntp, days_pending_permits, days_pending_install, days_pending_pto, project_age 
+	FROM aging_report`
+
+	if len(AgRp) > 0 {
+		uniqueIdValues := make([]string, 0, len(AgRp))
+		for _, uid := range AgRp {
+			uniqueIdValues = append(uniqueIdValues, fmt.Sprintf("'%s'", strings.ReplaceAll(uid.UniqueId, "'", "''")))
+			values[uid.UniqueId] = uid
+		}
+		filters = append(filters, fmt.Sprintf("unique_id IN (%s)", strings.Join(uniqueIdValues, ", ")))
+	}
+
+	if len(filters) > 0 {
+		query += " WHERE " + strings.Join(filters, " AND ")
+	}
+
+	// Fetch data from DB
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get AgingReport data from db err: %v", err)
+		return nil, err
+	}
+
+	// Struct for pending days
+	type pending struct {
+		DaysPendingSurvey     string
+		DaysPendingCadDesign  string
+		DaysPendingPermits    string
+		DaysPendingRoofing    string
+		DaysPendingInstall    string
+		DaysPendingInspection string
+		DaysPendingActivation string
+		DaysPendingNTP        string
+		DaysPendingProjectAge string
+		DaysPendingPTO        string
+	}
+
+	// Map to store pending days
+	pendingData := make(map[string]pending)
+
+	// Parse DB result and store in pendingData
+	for _, row := range data {
+		uniqueId, _ := row["unique_id"].(string)
+		pendingData[uniqueId] = pending{
+			DaysPendingSurvey:     TextAccToInput("0"),
+			DaysPendingCadDesign:  TextAccToInput("0"),
+			DaysPendingPermits:    TextAccToInput(getFieldText(row, "days_pending_permits")),
+			DaysPendingRoofing:    TextAccToInput("0"),
+			DaysPendingInstall:    TextAccToInput(getFieldText(row, "days_pending_install")),
+			DaysPendingInspection: TextAccToInput("0"),
+			DaysPendingActivation: TextAccToInput("0"),
+			DaysPendingNTP:        TextAccToInput(getFieldText(row, "days_pending_ntp")),
+			DaysPendingProjectAge: TextAccToInput(getFieldText(row, "project_age")),
+			DaysPendingPTO:        TextAccToInput(getFieldText(row, "days_pending_pto")),
+		}
+	}
+
+	// Attach pending days to each project
+	for i, project := range AgRp {
+		if pendingInfo, exists := pendingData[project.UniqueId]; exists {
+			AgRp[i].DaysPendingSurvey = pendingInfo.DaysPendingSurvey
+			AgRp[i].DaysPendingCadDesign = pendingInfo.DaysPendingCadDesign
+			AgRp[i].DaysPendingPermits = pendingInfo.DaysPendingPermits
+			AgRp[i].DaysPendingRoofing = pendingInfo.DaysPendingRoofing
+			AgRp[i].DaysPendingInstall = pendingInfo.DaysPendingInstall
+			AgRp[i].DaysPendingInspection = pendingInfo.DaysPendingInspection
+			AgRp[i].DaysPendingActivation = pendingInfo.DaysPendingActivation
+			AgRp[i].DaysPendingNTP = pendingInfo.DaysPendingNTP
+			AgRp[i].DaysPendingProjectAge = pendingInfo.DaysPendingProjectAge
+			AgRp[i].DaysPendingPTO = pendingInfo.DaysPendingPTO
+		}
+	}
+
+	return AgRp, nil
 }
