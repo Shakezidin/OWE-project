@@ -109,7 +109,7 @@ const MainLayout = () => {
 
     fetchDBStatus();
 
-    const interval = setInterval(fetchDBStatus, 10000);
+    const interval = setInterval(fetchDBStatus, 60000);
     return () => clearInterval(interval);
   }, []);
 
