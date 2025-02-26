@@ -200,6 +200,13 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-reports-service/v1/update_production_targets_old",
+		apiHandler.HandleUpdateProductionTargetsRequestOld,
+		true,
+		[]types.UserGroup{types.GroupAdminAccounts},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-reports-service/v1/update_production_targets",
 		apiHandler.HandleUpdateProductionTargetsRequest,
 		true,

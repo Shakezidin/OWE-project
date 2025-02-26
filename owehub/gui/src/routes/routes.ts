@@ -74,10 +74,8 @@ export const ROUTES = {
   SITE_TIMELINES: '/reporting/site-timelines',
   SITE_FIRST_COMPLETION: '/reporting/site-first_completion',
   SITE_OUTSIDE_SLA: '/reporting/site-outise-sla',
-  INSTALL_TO_FIN:'/reporting/install-to-fin',
-  FIRST_TIME_COMPLETIONS:'/reporting/first-time-completion',
-
-
+  INSTALL_TO_FIN: '/reporting/install-to-fin',
+  FIRST_TIME_COMPLETIONS: '/reporting/first-time-completion',
 
   // other routes
   REPORT: '/report',
@@ -86,6 +84,7 @@ export const ROUTES = {
   PROJECT_STATUS: '/project-management',
   USER_MANAEMENT: '/userManagement',
   TECHNICAL_SUPPORT: '/technicalSupport',
+  CHAT_BOT: '/chat_bot',
   ACCOUNT_SETTING: '/accountSetting',
   // databse manager routes
   DB_MANAGER_DASHBOARD: '/dbManager/dashboard',
@@ -111,14 +110,14 @@ export const ROUTES = {
   LEAD_MANAGEMENT_SUCCESS_MODAl: '/lead-mgmt-success-modal',
   MAP_ADDRESS: '/map-address',
   SALE_RP_CUSTOMER_FORM: '/sale-rep-customer-form',
-  FOLDER_DETAIL:"/library/*",
-  LIBRARY_RECYCLE_BIN:'/library/recycle-bin',
-  CALCULATOR:'/calculator',
-  SIGN_DOCUMENT:'digital-signature-portal',
-  AHJ:'/reporting/ahj',
-  PERMIT_REDLINE:'/reporting/permit-redline',
-  DYNAMIC_REPORT:'/reporting/:id',
-  SUMMARY_DASBOARD:'/summary-dashboard',
-  DAT_TOOL:'/dat_tool',
-  DEALERDATA_PIPELINE:'/pipeline/pipeline_data'
+  FOLDER_DETAIL: '/library/*',
+  LIBRARY_RECYCLE_BIN: '/library/recycle-bin',
+  CALCULATOR: '/calculator',
+  SIGN_DOCUMENT: 'digital-signature-portal',
+  AHJ: '/reporting/ahj',
+  PERMIT_REDLINE: '/reporting/permit-redline',
+  DYNAMIC_REPORT: '/reporting/:id',
+  SUMMARY_DASBOARD: '/summary-dashboard',
+  DAT_TOOL: '/dat_tool',
+  DEALERDATA_PIPELINE: '/pipeline/pipeline_data',
 };
