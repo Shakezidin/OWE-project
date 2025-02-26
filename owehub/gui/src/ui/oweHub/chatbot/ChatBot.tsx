@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import speechToTextUtils from './utility_transcribe';
 import TranscribeOutput from './TranscribeOutput';
-import InteractiveAvatar from './InteractiveAvatar';
+// import InteractiveAvatar from './InteractiveAvatar';
 
 const ChatBot: React.FC = () => {
   const [transcribedData, setTranscribedData] = useState<any>([]);
@@ -69,7 +69,7 @@ const ChatBot: React.FC = () => {
 
   return (
     <div>
-      <InteractiveAvatar speak={speak} />
+      {/* <InteractiveAvatar speak={speak} /> */}
       <div>
         {!isRecording && <button onClick={onStart}>Speak</button>}
         {isRecording && <button onClick={onStop}>Stop</button>}

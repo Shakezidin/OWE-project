@@ -310,13 +310,6 @@ const ProjectPerformence = () => {
       'FinCreate Date',
       'FinPass Date',
       'Pto Submitted Date',
-      'Pto Date',
-      'PTO Days',
-      'NTP Days',
-      'Permit Days',
-      'Install Days',
-      'Project Age'
-
     ];
 
     const getAllData = await postCaller('get_peroformancecsvdownload', {
@@ -366,11 +359,6 @@ const ProjectPerformence = () => {
       item.FinPassDate,
       item.PtoSubmittedDate,
       item.PtoDate,
-      item.days_pto,
-      item.days_ntp,  
-      item.days_permits,
-      item.days_install,
-      item.days_project_age
     ]);
 
     const csvRows = [headers, ...csvData];
