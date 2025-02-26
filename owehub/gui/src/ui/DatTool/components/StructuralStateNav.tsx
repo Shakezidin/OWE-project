@@ -5,6 +5,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import downKey from '../assets/downKey.svg'
+
 interface StructuralStateNavProps {
   states: string[];
   activeState: string;
@@ -27,6 +28,7 @@ const StructuralStateNav: React.FC<StructuralStateNavProps> = ({
   const needsCarousel: boolean = states.length > displayCount;
   const isSmMobile = useMatchMedia('(max-width: 480px)');
   const [openInfoStates,setOpenInfoStates]=useState<boolean>(false);
+  
   // Ensure the active state is visible in the carousel
   useEffect(() => {
     const activeStateIndex = states.indexOf(activeState);
@@ -38,7 +40,7 @@ const StructuralStateNav: React.FC<StructuralStateNavProps> = ({
         setStartIndex(Math.max(0, activeStateIndex - displayCount + 1));
       }
     }
-  }, [activeState, states]);
+  }, [activeState, states, startIndex, displayCount]);
 
   const moveCarousel = (direction: 'next' | 'prev'): void => {
     setStartIndex(prev => {
@@ -56,72 +58,71 @@ const StructuralStateNav: React.FC<StructuralStateNavProps> = ({
 
   return (
     <div className={styles.carouselContainer}>
-      { !isSmMobile && needsCarousel && startIndex > 0 && (
+      {/* Only show carousel navigation when not editing */}
+      {!isEditing && !isSmMobile && needsCarousel && startIndex > 0 && (
         <div
           onClick={() => moveCarousel('prev')}
           className={styles.iconContainer}
           aria-label="Previous states"
         >
-          <FiChevronLeft  />
+          <FiChevronLeft />
         </div>
       )}
 
-     {!isSmMobile? <div className={styles.stateContainer}>
-        {visibleStates.map((state: string) => (
-          (!isEditing || activeState === state) && (
-            <div
-              key={state}
-              onClick={() => onStateChange(state)}
-              className={`
-                ${activeState === state
-                  ? styles.activeState
-                  : styles.wordContainer}`}
-              aria-pressed={activeState === state}
-            >
-              {state}
-            </div>
-          )
-        ))}
-      </div>:
-      <div className={styles.infoStateContainer} onClick={()=>{setOpenInfoStates(prev=>!prev)}}> 
-      <p  className={styles.infoStateContainer_currentState}>{activeState}</p>
-      <img src={downKey} alt="" style={{transform:openInfoStates ? "rotate(180deg)":""}}/>
-      {
-        openInfoStates && 
-        <div className={styles.dropDownForInfoStates}> 
-        {
-          states.map((state, index) =>
-            (isEditing &&
-              activeState === state) ||
-              !isEditing ? (
+      {!isSmMobile ? (
+        <div className={styles.stateContainer}>
+          {visibleStates.map((state: string) => (
+            (!isEditing || activeState === state) && (
               <div
-                key={index}
-                // className={`${
-                //   activeStructuralState === state
-                //     ? styles.activeState
-                //     : styles.wordContainer
-                // }`}
-                className={styles.infoStateOption}
-                style={{backgroundColor:state===activeState? "#377CF6":"", color:state===activeState?"#F3F0F9":""}}
+                key={state}
                 onClick={() => onStateChange(state)}
+                className={`
+                  ${activeState === state
+                    ? styles.activeState
+                    : styles.wordContainer}`}
+                aria-pressed={activeState === state}
               >
                 {state}
               </div>
-            ) : null
-          ) 
-        }
+            )
+          ))}
         </div>
-      }
-      </div>
-      }
+      ) : (
+        <div className={styles.infoStateContainer} onClick={()=>{setOpenInfoStates(prev=>!prev)}}> 
+          <p className={styles.infoStateContainer_currentState}>{activeState}</p>
+          <img src={downKey} alt="" style={{transform:openInfoStates ? "rotate(180deg)":""}}/>
+          {
+            openInfoStates && 
+            <div className={styles.dropDownForInfoStates}> 
+            {
+              states.map((state, index) =>
+                (isEditing &&
+                  activeState === state) ||
+                  !isEditing ? (
+                  <div
+                    key={index}
+                    className={styles.infoStateOption}
+                    style={{backgroundColor:state===activeState? "#377CF6":"", color:state===activeState?"#F3F0F9":""}}
+                    onClick={() => onStateChange(state)}
+                  >
+                    {state}
+                  </div>
+                ) : null
+              ) 
+            }
+            </div>
+          }
+        </div>
+      )}
 
-      {needsCarousel && startIndex < states.length - displayCount && (
+      {/* Only show carousel navigation when not editing */}
+      {!isEditing && needsCarousel && startIndex < states.length - displayCount && (
         <div
           onClick={() => moveCarousel('next')}
           className={styles.iconContainer}
           aria-label="Next states"
         >
-          <FiChevronRight  />
+          <FiChevronRight />
         </div>
       )}
     </div>
