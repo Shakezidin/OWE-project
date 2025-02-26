@@ -328,12 +328,13 @@ const CommonComponent: React.FC<commonComponentProps> = ({
                   </a>
                 ))}
               </div>
+              <div className={styles.gridWrapper}>
               <a
                 href={integrations[2].link}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.gOneRightBottomTxt}
-                style={{ marginTop: '1.2rem' }}
+                // style={{ marginTop: '1.2rem' }}
               >
                 <p className={styles.gOneRightBottomTxtImg}>
                   <img
@@ -346,6 +347,7 @@ const CommonComponent: React.FC<commonComponentProps> = ({
                   <FiArrowRight />
                 </span>
               </a>
+              </div>
             </div>
           </div>
         </div>

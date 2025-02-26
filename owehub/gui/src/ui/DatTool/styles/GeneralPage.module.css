@@ -228,6 +228,11 @@
 }
  
 .gOneRightBottom {
+  display: flex
+;
+    padding: 0 1.2rem;
+    flex-direction: column;
+    gap: 1.2rem;
   padding: 0 1.2rem;
 }
  
@@ -631,6 +636,17 @@
     margin-right:0;
     padding:0 0.8rem;
   }
+  .gOneRightBottomTxt{
+    width: fit-content;
+  }
+  .gOneRightBottomTxtOne{
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    justify-content: start;
+
+  }
+
 
 }
 
