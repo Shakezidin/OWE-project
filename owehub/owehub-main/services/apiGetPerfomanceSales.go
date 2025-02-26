@@ -218,7 +218,7 @@
 		 if last > 0 {
 			 return "+100%"
 		 }
-		 return "0%"
+		 return "0.0%"
 	 }
 
 	 percentage := ((float64(last) - float64(last2last)) / float64(last2last)) * 100
