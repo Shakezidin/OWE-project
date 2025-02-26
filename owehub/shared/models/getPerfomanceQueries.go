@@ -63,35 +63,35 @@ func SalesMetricsRetrieveQueryFunc() string {
             customers_customers_schema.dealer AS dealer,
             customers_customers_schema.primary_sales_rep,
             ntp_ntp_schema.ntp_complete_date AS ntp_date
-        FROM 
+        FROM
             customers_customers_schema
-        LEFT JOIN survey_survey_schema 
+        LEFT JOIN survey_survey_schema
             ON survey_survey_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN planset_cad_schema 
+        LEFT JOIN planset_cad_schema
            ON planset_cad_schema.our_number = customers_customers_schema.unique_id
-        LEFT JOIN permit_fin_pv_permits_schema 
+        LEFT JOIN permit_fin_pv_permits_schema
             ON permit_fin_pv_permits_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN ic_ic_pto_schema 
+        LEFT JOIN ic_ic_pto_schema
             ON ic_ic_pto_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN pv_install_install_subcontracting_schema 
+        LEFT JOIN pv_install_install_subcontracting_schema
             ON pv_install_install_subcontracting_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN pto_ic_schema 
+        LEFT JOIN pto_ic_schema
             ON pto_ic_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN roofing_request_install_subcontracting_schema 
+        LEFT JOIN roofing_request_install_subcontracting_schema
             ON roofing_request_install_subcontracting_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN batteries_service_electrical_schema 
+        LEFT JOIN batteries_service_electrical_schema
             ON batteries_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN mpu_service_electrical_schema 
+        LEFT JOIN mpu_service_electrical_schema
             ON mpu_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN derates_service_electrical_schema 
+        LEFT JOIN derates_service_electrical_schema
             ON derates_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN fin_permits_fin_schema 
+        LEFT JOIN fin_permits_fin_schema
             ON fin_permits_fin_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN trenching_service_electrical_schema 
+        LEFT JOIN trenching_service_electrical_schema
             ON trenching_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN ntp_ntp_schema 
+        LEFT JOIN ntp_ntp_schema
             ON ntp_ntp_schema.unique_id = customers_customers_schema.unique_id
-        LEFT JOIN system_customers_schema 
+        LEFT JOIN system_customers_schema
             ON system_customers_schema.customer_id = customers_customers_schema.unique_id
     `
 	return SalesMetricsRetrieveQuery
@@ -138,35 +138,35 @@ func CsvSalesMetricsRetrieveQueryFunc() string {
             customers_customers_schema.dealer AS dealer,
             customers_customers_schema.primary_sales_rep,
             ntp_ntp_schema.ntp_complete_date AS ntp_date
-        FROM 
+        FROM
             customers_customers_schema
-        LEFT JOIN survey_survey_schema 
+        LEFT JOIN survey_survey_schema
             ON survey_survey_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN planset_cad_schema 
+        LEFT JOIN planset_cad_schema
            ON planset_cad_schema.our_number = customers_customers_schema.unique_id
-        LEFT JOIN permit_fin_pv_permits_schema 
+        LEFT JOIN permit_fin_pv_permits_schema
             ON permit_fin_pv_permits_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN ic_ic_pto_schema 
+        LEFT JOIN ic_ic_pto_schema
             ON ic_ic_pto_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN pv_install_install_subcontracting_schema 
+        LEFT JOIN pv_install_install_subcontracting_schema
             ON pv_install_install_subcontracting_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN pto_ic_schema 
+        LEFT JOIN pto_ic_schema
             ON pto_ic_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN roofing_request_install_subcontracting_schema 
+        LEFT JOIN roofing_request_install_subcontracting_schema
             ON roofing_request_install_subcontracting_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN batteries_service_electrical_schema 
+        LEFT JOIN batteries_service_electrical_schema
             ON batteries_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN mpu_service_electrical_schema 
+        LEFT JOIN mpu_service_electrical_schema
             ON mpu_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN derates_service_electrical_schema 
+        LEFT JOIN derates_service_electrical_schema
             ON derates_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN fin_permits_fin_schema 
+        LEFT JOIN fin_permits_fin_schema
             ON fin_permits_fin_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN trenching_service_electrical_schema 
+        LEFT JOIN trenching_service_electrical_schema
             ON trenching_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
-        LEFT JOIN ntp_ntp_schema 
+        LEFT JOIN ntp_ntp_schema
             ON ntp_ntp_schema.unique_id = customers_customers_schema.unique_id
-        LEFT JOIN system_customers_schema 
+        LEFT JOIN system_customers_schema
             ON system_customers_schema.customer_id = customers_customers_schema.unique_id
     `
 	return SalesMetricsRetrieveQuery
@@ -198,73 +198,73 @@ func ProjectMngmntRetrieveQueryFunc(filterUserQuery, searchValue string) string 
 	}
 
 	ProjectMngmntRetrieveQuery := fmt.Sprintf(`
-        SELECT customers_customers_schema.unique_id, 
+        SELECT customers_customers_schema.unique_id,
         customers_customers_schema.sale_date AS contract_date,
-		ntp_ntp_schema.ntp_complete_date AS ntp_date, 
-        survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date, 
+		ntp_ntp_schema.ntp_complete_date AS ntp_date,
+        survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date,
         survey_survey_schema.reschedule_needed_on_date AS site_survey_rescheduled_date,
-        CASE 
-            WHEN (survey_survey_schema.reschedule_needed_on_date IS NOT NULL 
+        CASE
+            WHEN (survey_survey_schema.reschedule_needed_on_date IS NOT NULL
             AND survey_survey_schema.twond_visit_date IS NULL)
             THEN NULL
             WHEN survey_survey_schema.twond_visit_date IS NOT NULL
             THEN survey_survey_schema.twond_completion_date
             ELSE survey_survey_schema.survey_completion_date
-        END AS site_survey_completed_date, 
+        END AS site_survey_completed_date,
 		permit_fin_pv_permits_schema.created_on AS permit_created,
-        permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date, 
-        permit_fin_pv_permits_schema.pv_approved AS permit_approved_date, 
-		ic_ic_pto_schema.created_on AS ic_created_date, 
-        ic_ic_pto_schema.ic_submitted_date, 
-        ic_ic_pto_schema.ic_approved_date, 
-		pv_install_install_subcontracting_schema.created_on AS pv_install_created_date, 
+        permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date,
+        permit_fin_pv_permits_schema.pv_approved AS permit_approved_date,
+		ic_ic_pto_schema.created_on AS ic_created_date,
+        ic_ic_pto_schema.ic_submitted_date,
+        ic_ic_pto_schema.ic_approved_date,
+		pv_install_install_subcontracting_schema.created_on AS pv_install_created_date,
         pv_install_install_subcontracting_schema.pv_scheduling_ready_date AS pv_install_ready_date,
         pv_install_install_subcontracting_schema.install_fix_scheduled_date AS pv_install_scheduled_date,
-        pv_install_install_subcontracting_schema.pv_completion_date AS pv_install_completed_date, 
-		fin_permits_fin_schema.pv_fin_date AS fin_scheduled_date, 
-        fin_permits_fin_schema.approved_date AS fin_pass_date, 
-		pto_ic_schema.pto_created_on AS pto_created_date, 
+        pv_install_install_subcontracting_schema.pv_completion_date AS pv_install_completed_date,
+		fin_permits_fin_schema.pv_fin_date AS fin_scheduled_date,
+        fin_permits_fin_schema.approved_date AS fin_pass_date,
+		pto_ic_schema.pto_created_on AS pto_created_date,
         pto_ic_schema.submitted AS pto_submitted_date,
-        pto_ic_schema.pto_granted AS pto_date, 
+        pto_ic_schema.pto_granted AS pto_date,
 		customers_customers_schema.customer_name AS home_owner,
-		system_customers_schema.contracted_system_size_parent AS system_size, 
-		customers_customers_schema.state, 
-		ntp_ntp_schema.ahj, 
-		customers_customers_schema.adder_breakdown_and_total_new AS adder_breakdown_and_total, 
-		customers_customers_schema.total_system_cost AS contract_total, 
-		ntp_ntp_schema.finance AS finance_company, 
+		system_customers_schema.contracted_system_size_parent AS system_size,
+		customers_customers_schema.state,
+		ntp_ntp_schema.ahj,
+		customers_customers_schema.adder_breakdown_and_total_new AS adder_breakdown_and_total,
+		customers_customers_schema.total_system_cost AS contract_total,
+		ntp_ntp_schema.finance AS finance_company,
 		ntp_ntp_schema.net_epc
 FROM customers_customers_schema
-LEFT JOIN ntp_ntp_schema 
+LEFT JOIN ntp_ntp_schema
     ON ntp_ntp_schema.unique_id = customers_customers_schema.unique_id
-    AND LOWER(ntp_ntp_schema.project_status) NOT ILIKE '%%DUPLICATE%%' 
+    AND LOWER(ntp_ntp_schema.project_status) NOT ILIKE '%%DUPLICATE%%'
     AND LOWER(ntp_ntp_schema.app_status) NOT ILIKE '%%DUPLICATE%%'
 LEFT JOIN survey_survey_schema
     ON survey_survey_schema.customer_unique_id = customers_customers_schema.unique_id
-    AND LOWER(survey_survey_schema.project_status) NOT ILIKE '%%DUPLICATE%%' 
+    AND LOWER(survey_survey_schema.project_status) NOT ILIKE '%%DUPLICATE%%'
     AND LOWER(survey_survey_schema.app_status) NOT ILIKE '%%DUPLICATE%%'
 LEFT JOIN pv_install_install_subcontracting_schema
     ON pv_install_install_subcontracting_schema.customer_unique_id = customers_customers_schema.unique_id
-    AND LOWER(pv_install_install_subcontracting_schema.project_status) NOT ILIKE '%%DUPLICATE%%' 
+    AND LOWER(pv_install_install_subcontracting_schema.project_status) NOT ILIKE '%%DUPLICATE%%'
     AND LOWER(pv_install_install_subcontracting_schema.app_status) NOT ILIKE '%%DUPLICATE%%'
-LEFT JOIN ic_ic_pto_schema 
+LEFT JOIN ic_ic_pto_schema
     ON ic_ic_pto_schema.customer_unique_id = customers_customers_schema.unique_id
-    AND LOWER(ic_ic_pto_schema.project_status) NOT ILIKE '%%DUPLICATE%%' 
+    AND LOWER(ic_ic_pto_schema.project_status) NOT ILIKE '%%DUPLICATE%%'
     AND LOWER(ic_ic_pto_schema.app_status) NOT ILIKE '%%DUPLICATE%%'
-LEFT JOIN permit_fin_pv_permits_schema 
+LEFT JOIN permit_fin_pv_permits_schema
     ON permit_fin_pv_permits_schema.customer_unique_id = customers_customers_schema.unique_id
-    AND LOWER(permit_fin_pv_permits_schema.project_status) NOT ILIKE '%%DUPLICATE%%' 
+    AND LOWER(permit_fin_pv_permits_schema.project_status) NOT ILIKE '%%DUPLICATE%%'
     AND LOWER(permit_fin_pv_permits_schema.app_status) NOT ILIKE '%%DUPLICATE%%'
 LEFT JOIN fin_permits_fin_schema
     ON fin_permits_fin_schema.customer_unique_id = customers_customers_schema.unique_id
-    AND LOWER(fin_permits_fin_schema.project_status) NOT ILIKE '%%DUPLICATE%%' 
+    AND LOWER(fin_permits_fin_schema.project_status) NOT ILIKE '%%DUPLICATE%%'
     AND LOWER(fin_permits_fin_schema.app_status) NOT ILIKE '%%DUPLICATE%%'
-LEFT JOIN pto_ic_schema 
+LEFT JOIN pto_ic_schema
     ON pto_ic_schema.customer_unique_id = customers_customers_schema.unique_id
-    AND LOWER(pto_ic_schema.project_status) NOT ILIKE '%%DUPLICATE%%' 
+    AND LOWER(pto_ic_schema.project_status) NOT ILIKE '%%DUPLICATE%%'
 LEFT JOIN system_customers_schema
     ON system_customers_schema.customer_id = customers_customers_schema.unique_id
-    AND LOWER(system_customers_schema.project_status) NOT ILIKE '%%DUPLICATE%%'  
+    AND LOWER(system_customers_schema.project_status) NOT ILIKE '%%DUPLICATE%%'
     WHERE %s %s `, filterUserQuery, searchValue)
 	return ProjectMngmntRetrieveQuery
 }
@@ -272,53 +272,53 @@ LEFT JOIN system_customers_schema
 func QcNtpRetrieveQueryFunc() string {
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(`
-        SELECT 
+        SELECT
             customers_customers_schema.current_live_cad,
             customers_customers_schema.system_sold_er,
             customers_customers_schema.podio_link,
             customers_customers_schema.unique_id,
-            ntp_ntp_schema.production_discrepancy, 
-            ntp_ntp_schema.finance_ntp_of_project, 
-            ntp_ntp_schema.utility_bill_uploaded, 
-            ntp_ntp_schema.powerclerk_signatures_complete, 
+            ntp_ntp_schema.production_discrepancy,
+            ntp_ntp_schema.finance_ntp_of_project,
+            ntp_ntp_schema.utility_bill_uploaded,
+            ntp_ntp_schema.powerclerk_signatures_complete,
             ntp_ntp_schema.change_order_status,
             customers_customers_schema.utility_company,
             customers_customers_schema.state,
             customers_customers_schema.customer_name AS home_owner,
             ntp_ntp_schema.ntp_complete_date AS ntp_date,
             split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value,
-            CASE 
+            CASE
                 WHEN customers_customers_schema.utility_company = 'APS' THEN prospects_customers_schema.powerclerk_sent_az
-                ELSE 'Not Needed' 
+                ELSE 'Not Needed'
             END AS powerclerk_sent_az,
-            CASE 
+            CASE
                 WHEN prospects_customers_schema.payment_method = 'Cash' THEN prospects_customers_schema.ach_waiver_sent_and_signed_cash_only
                 ELSE 'Not Needed'
             END AS ach_waiver_sent_and_signed_cash_only,
-            CASE 
+            CASE
                 WHEN customers_customers_schema.state = 'NM :: New Mexico' THEN prospects_customers_schema.green_area_nm_only
                 ELSE 'Not Needed'
             END AS green_area_nm_only,
-            CASE 
+            CASE
                 WHEN prospects_customers_schema.payment_method = 'Lease' OR prospects_customers_schema.payment_method = 'Loan' THEN prospects_customers_schema.finance_credit_approved_loan_or_lease
                 ELSE 'Not Needed'
             END AS finance_credit_approved_loan_or_lease,
-            CASE 
+            CASE
                 WHEN prospects_customers_schema.payment_method = 'Lease' OR prospects_customers_schema.payment_method = 'Loan' THEN prospects_customers_schema.finance_agreement_completed_loan_or_lease
                 ELSE 'Not Needed'
             END AS finance_agreement_completed_loan_or_lease,
-            CASE 
+            CASE
                 WHEN prospects_customers_schema.payment_method = 'Cash' OR prospects_customers_schema.payment_method = 'Loan' THEN prospects_customers_schema.owe_documents_completed
                 ELSE 'Not Needed'
             END AS owe_documents_completed
         FROM customers_customers_schema
-        LEFT JOIN ntp_ntp_schema 
+        LEFT JOIN ntp_ntp_schema
             ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
             AND ntp_ntp_schema.app_status NOT ILIKE '%DUPLICATE%'
-        LEFT JOIN system_customers_schema  
+        LEFT JOIN system_customers_schema
             ON customers_customers_schema.unique_id = system_customers_schema.customer_id
             AND system_customers_schema.project_status NOT ILIKE '%DUPLICATE%'
-        LEFT JOIN prospects_customers_schema 
+        LEFT JOIN prospects_customers_schema
         ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.prospect_id::text
         AND ntp_ntp_schema.prospectid_dealerid_salesrepid IS NOT NULL
         AND ntp_ntp_schema.prospectid_dealerid_salesrepid <> ''
@@ -331,24 +331,24 @@ func QcNtpRetrieveQueryFunc() string {
 func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(fmt.Sprintf(`
-        SELECT 
+        SELECT
             customers_customers_schema.unique_id,
             ntp_ntp_schema.change_order_status,
             customers_customers_schema.customer_name AS home_owner,
             ntp_ntp_schema.ntp_complete_date AS ntp_date
-     FROM ntp_ntp_schema 
-     LEFT JOIN customers_customers_schema 
+     FROM ntp_ntp_schema
+     LEFT JOIN customers_customers_schema
         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
         AND customers_customers_schema.unique_id != ''
      WHERE ntp_ntp_schema.project_status NOT IN (
-        'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED', 
+        'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED',
         'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
-     ) 
+     )
      AND ntp_ntp_schema.app_status IN (
-        'Pending NTP Review', 'Pending QC', 'Pending NTP', 
+        'Pending NTP Review', 'Pending QC', 'Pending NTP',
         'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
      ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
-     AND %v %v  
+     AND %v %v
     `, filterUserQuery, searchValue))
 
 	return filtersBuilder.String()
@@ -357,20 +357,20 @@ func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
 func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(fmt.Sprintf(`
-        SELECT 
+        SELECT
             customers_customers_schema.unique_id,
-            ntp_ntp_schema.production_discrepancy, 
-            ntp_ntp_schema.finance_ntp_of_project, 
-            ntp_ntp_schema.utility_bill_uploaded, 
+            ntp_ntp_schema.production_discrepancy,
+            ntp_ntp_schema.finance_ntp_of_project,
+            ntp_ntp_schema.utility_bill_uploaded,
             ntp_ntp_schema.powerclerk_signatures_complete,
             customers_customers_schema.customer_name AS home_owner,
             ntp_ntp_schema.ntp_complete_date AS ntp_date
-        FROM ntp_ntp_schema 
+        FROM ntp_ntp_schema
 	 LEFT JOIN customers_customers_schema ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
      AND customers_customers_schema.unique_id != ''
 	 WHERE ntp_ntp_schema.app_status IN ('Pending NTP Review','Pending QC','Pending NTP','Pending NTP - Change Order','Under Review')
      AND ntp_ntp_schema.project_status NOT IN ('HOLD',E'PTO\'d (Service)', E'PTO\'d (Audit)','BLOCKED','JEOPARDY','CANCEL','DUPLICATE','COMPETING')
-     AND %v %v   
+     AND %v %v
     `, filterUserQuery, searchValue))
 
 	return filtersBuilder.String()
@@ -379,26 +379,26 @@ func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
 func PendingActionPageTileQuery(filterUserQuery, searchValue string) string {
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(fmt.Sprintf(`
-        SELECT 
-    (SELECT COUNT(*) 
-     FROM ntp_ntp_schema 
+        SELECT
+    (SELECT COUNT(*)
+     FROM ntp_ntp_schema
 	 LEFT JOIN customers_customers_schema ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
      AND customers_customers_schema.unique_id != ''
 	 WHERE ntp_ntp_schema.app_status IN ('Pending NTP Review','Pending QC','Pending NTP','Pending NTP - Change Order','Under Review')
      AND ntp_ntp_schema.project_status NOT IN ('HOLD',E'PTO\'d (Service)', E'PTO\'d (Audit)','BLOCKED','JEOPARDY','CANCEL','DUPLICATE','COMPETING')
      AND %v %v) AS ntp_count,
 
-    (SELECT COUNT(*) 
-     FROM ntp_ntp_schema 
-     LEFT JOIN customers_customers_schema 
+    (SELECT COUNT(*)
+     FROM ntp_ntp_schema
+     LEFT JOIN customers_customers_schema
         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
         AND customers_customers_schema.unique_id != ''
      WHERE ntp_ntp_schema.project_status NOT IN (
-        'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED', 
+        'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED',
         'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
-     ) 
+     )
      AND ntp_ntp_schema.app_status IN (
-        'Pending NTP Review', 'Pending QC', 'Pending NTP', 
+        'Pending NTP Review', 'Pending QC', 'Pending NTP',
         'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
      ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
      AND %v %v) AS co_count;
@@ -413,15 +413,15 @@ func CsvDownloadRetrieveQueryFunc() string {
 	filtersBuilder.WriteString(`
         SELECT cs.unique_id,cs.customer_name as home_owner,cs.email_address,
         cs.phone_number,cs.address,cs.state,
-        scs.contracted_system_size_parent, 
-        cs.sale_date,ns.ntp_complete_date, pis.pv_completion_date, 
-        ps.pto_granted as pto_date, cs.cancel_date, cs.primary_sales_rep, 
-        cs.secondary_sales_rep, cs.total_system_cost as contract_total FROM customers_customers_schema cs 
-								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
-								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-                                --LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id 
+        scs.contracted_system_size_parent,
+        cs.sale_date,ns.ntp_complete_date, pis.pv_completion_date,
+        ps.pto_granted as pto_date, cs.cancel_date, cs.primary_sales_rep,
+        cs.secondary_sales_rep, cs.total_system_cost as contract_total FROM customers_customers_schema cs
+								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id
+								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id
+                                --LEFT JOIN sales_metrics_schema ss ON ss.unique_id = cs.unique_id
 								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id
-                                LEFT JOIN pto_ic_schema ps ON ps.customer_unique_id = cs.unique_id 
+                                LEFT JOIN pto_ic_schema ps ON ps.customer_unique_id = cs.unique_id
         `)
 
 	return filtersBuilder.String()
@@ -450,8 +450,8 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                 survey.twond_visit_date       AS twond_visit_date,
                 survey.twond_completion_date  AS twond_completion_date,
 
-               CASE 
-                    WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+               CASE
+                    WHEN (survey.reschedule_needed_on_date IS NOT NULL
                         AND survey.twond_visit_date IS NULL)
                         THEN NULL
                     WHEN survey.twond_visit_date IS NOT NULL
@@ -502,7 +502,7 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                 roofing.roof_work_needed_date as roof_work_needed
 
             FROM customers_customers_schema AS cust
-            
+
             -- Original Joins
             LEFT JOIN ntp_ntp_schema AS ntp
                 ON cust.our = ntp.unique_id
@@ -519,17 +519,17 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                 ON cust.our = install.customer_unique_id
         LEFT JOIN roofing_request_install_subcontracting_schema AS roofing
                 ON cust.our = roofing.customer_unique_id
-            
+
             -- New FIN & PTO Joins
             LEFT JOIN fin_permits_fin_schema AS fin
                 ON cust.our = fin.customer_unique_id
             LEFT JOIN pto_ic_schema AS pto
                 ON cust.our = pto.customer_unique_id
-            
-        
+
+
              WHERE
             cust.project_status IN (%v)
-               AND %v 
+               AND %v
         ),
 
         all_queues AS (
@@ -550,27 +550,27 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                         AND ti.ic_approval_date IS NULL
                         AND ti.install_complete_date IS NULL
                     THEN 'Survey Queue'
-                    
+
                    WHEN ti.cad_complete_date IS NULL
 						and ti.plan_set_status NOT IN ('Plan Set Complete')
 						and ti.cad_active_status IN ('Active')
 						AND ti.project_status_new IN ('ACTIVE')
-						AND ti.cad_version NOT IN ('ABCAD 1', 'ABCAD 2', 'ABCAD 3', 
-					'ABCAD 4','ABCAD 5', 'ABCAD 6', 'ABCAD 7', 
+						AND ti.cad_version NOT IN ('ABCAD 1', 'ABCAD 2', 'ABCAD 3',
+					'ABCAD 4','ABCAD 5', 'ABCAD 6', 'ABCAD 7',
 					'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
                     THEN 'CAD Queue'
-                    
+
                     WHEN ti.permit_approval_date IS NULL
                         AND ti.cad_complete_date IS NOT NULL
                         AND ti.ic_approval_date IS NULL
                         AND ti.install_complete_date IS NULL
                     THEN 'Permit Queue'
-                    
+
                     WHEN ti.ic_approval_date IS NULL
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.install_complete_date IS NULL
                     THEN 'IC Queue'
-                    
+
                     WHEN ti.install_complete_date IS NULL
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.ic_approval_date IS NOT NULL
@@ -578,28 +578,28 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
                         AND ( ti.no_roof_work_needed IS NOT NULL
                         OR (ti.roof_work_needed IS NOT NULL AND ti.roofing_completed_date IS NOT NULL))
                     THEN 'Install (Scheduling) Queue'
-                    
+
                     WHEN ti.install_complete_date IS NULL
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.ic_approval_date IS NOT NULL
                         AND ti.pv_install_day_window IS NOT NULL
                     THEN 'Install (Pending) Queue'
-                    
+
                     WHEN ti.install_complete_date IS NOT NULL
                         AND ti.fin_approved_date IS NULL
                         AND ti.pto_granted_new IS NULL
                     THEN 'Inspections Queue'
-                    
+
                     WHEN ti.install_complete_date IS NOT NULL
                         AND ti.fin_approved_date IS NOT NULL
                         AND ti.pto_granted_new IS NULL
                     THEN 'Activation Queue'
-                    
-                    WHEN ti.roofing_created_date IS NOT NULL 
-                        AND ti.roofing_completed_date IS NULL 
+
+                    WHEN ti.roofing_created_date IS NOT NULL
+                        AND ti.roofing_completed_date IS NULL
                         AND ti.roof_work_needed IS NOT NULL
                     THEN 'Roofing Queue'
-                    
+
                     ELSE NULL
                 END AS queue_status
             FROM time_intervals ti
@@ -632,7 +632,7 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
             FROM all_queues aq
         )
 
-        SELECT 
+        SELECT
             queue_status,
             COUNT(DISTINCT customer_unique_id) AS distinct_customer_count
         FROM final_queues
@@ -646,23 +646,53 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
 func PipelineSurveyTileData(filterUserQuery, projectStatus string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Survey Queue' AS queue_status, count(survey.customer_unique_id) AS distinct_customer_count
-        FROM
-	        survey_survey_schema AS survey
+            'Survey Queue' AS queue_status,
+            COUNT(survey.customer_unique_id) AS count,
+
+            -- Count for last month
+            COUNT(CASE
+                WHEN DATE_PART('month', survey.survey_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
+                 AND DATE_PART('year', survey.survey_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
+                THEN 1
+            END) AS last_month_count,
+
+            -- Count for last-to-last month
+            COUNT(CASE
+                WHEN DATE_PART('month', survey.survey_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
+                 AND DATE_PART('year', survey.survey_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
+                THEN 1
+            END) AS last_to_last_month_count
+
+        FROM survey_survey_schema AS survey
         LEFT JOIN customers_customers_schema AS cust
             ON survey.customer_unique_id = cust.unique_id
         WHERE
-	        survey.project_status IN (%v) AND
-	        survey.app_status NOT IN ('Reschedule Complete','CANCEL', 'DUPLICATE', 'Complete') AND
-	        %v;
+            survey.project_status IN (%v)
+            AND survey.app_status NOT IN ('Reschedule Complete', 'CANCEL', 'DUPLICATE', 'Complete')
+            AND %v;
         `, projectStatus, filterUserQuery)
+
 	return PipelineTileDataQuery
 }
 
 func PipelineCadTileData(filterUserQuery, projectStatus string) string {
-	PipelineTileDataQuery := fmt.Sprintf(`
-        SELECT 'CAD Queue' AS queue_status ,COUNT(*) AS distinct_customer_count
-            FROM planset_cad_schema AS cad
+	return fmt.Sprintf(`
+        SELECT
+            'CAD Queue' AS queue_status,
+            COUNT(*) AS count,
+            COUNT(CASE
+                WHEN DATE_PART('month', survey.survey_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
+                     AND DATE_PART('year', survey.survey_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
+                THEN 1
+            END) AS last_month_count,
+            COUNT(CASE
+                WHEN DATE_PART('month', survey.survey_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
+                     AND DATE_PART('year', survey.survey_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
+                THEN 1
+            END) AS last_to_last_month_count
+        FROM planset_cad_schema AS cad
+        LEFT JOIN survey_survey_schema AS survey
+            ON cad.our_number = survey.customer_unique_id
         LEFT JOIN customers_customers_schema AS cust
             ON cad.our_number = cust.unique_id
         WHERE
@@ -671,53 +701,81 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
             AND cad.project_status_new IN (%v)
             AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')
             AND cad.plan_set_version NOT IN (
-                'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5', 
+                'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5',
                 'ABCAD 6', 'ABCAD 7', 'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
-            AND %v`, projectStatus, filterUserQuery)
-
-	return PipelineTileDataQuery
+            AND %v
+    `, projectStatus, filterUserQuery)
 }
 
 func PipelinePermitTileData(filterUserQuery, projectStatus string) string {
-	PipelineTileDataQuery := fmt.Sprintf(`
-           SELECT
-	   	        'Permit Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
-	           FROM
-	   	        customers_customers_schema AS cust
-	           LEFT JOIN
-	   	        permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
-	           WHERE
-	   	        permit.project_status IN (%v)               AND
-	   	        permit.app_status NOT IN (
-                    'Approved - Permit in Hand',
-                    'Approved - No Permit Required - Permitting Complete',
-                    'AB Not Required - Permitting Complete',
-                    'AB Permitting Complete ',
-                    'CANCEL',
-                    'DUPLICATE'
-                    )                                       AND
-                permit.pv_approved IS NULL                  AND
-	   	        %v`, projectStatus, filterUserQuery)
-
-	return PipelineTileDataQuery
+	return fmt.Sprintf(`
+        SELECT
+            'Permit Queue' AS queue_status,
+            COUNT(DISTINCT CASE WHEN permit.pv_approved IS NULL THEN cust.unique_id END) AS count,
+            COUNT(CASE
+                WHEN permit.pv_approved IS NOT NULL
+                     AND DATE_PART('month', permit.pv_approved) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
+                     AND DATE_PART('year', permit.pv_approved) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
+                THEN 1
+            END) AS last_month_count,
+            COUNT(CASE
+                WHEN permit.pv_approved IS NOT NULL
+                     AND DATE_PART('month', permit.pv_approved) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
+                     AND DATE_PART('year', permit.pv_approved) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
+                THEN 1
+            END) AS last_to_last_month_count
+        FROM customers_customers_schema AS cust
+        LEFT JOIN permit_fin_pv_permits_schema AS permit
+            ON cust.unique_id = permit.customer_unique_id
+        WHERE
+            permit.project_status IN (%v)
+            AND permit.app_status NOT IN (
+                'Approved - Permit in Hand',
+                'Approved - No Permit Required - Permitting Complete',
+                'AB Not Required - Permitting Complete',
+                'AB Permitting Complete ',
+                'CANCEL',
+                'DUPLICATE'
+            )
+            AND %v
+    `, projectStatus, filterUserQuery)
 }
 
 func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Roofing Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
-        FROM
-	        customers_customers_schema AS cust
-        LEFT JOIN
-	        roofing_request_install_subcontracting_schema AS roofing ON cust.our = roofing.customer_unique_id
+            'Roofing Queue' AS queue_status,
+
+            -- Count of distinct customers where roofing work is still pending
+            COUNT(DISTINCT CASE
+                WHEN roofing.work_completed_date IS NULL
+                THEN cust.unique_id
+            END) AS count,
+
+            -- Count of customers whose roofing was completed last month
+            COUNT(DISTINCT CASE
+                WHEN DATE_PART('month', roofing.work_completed_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
+                 AND DATE_PART('year', roofing.work_completed_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
+                THEN cust.unique_id
+            END) AS last_month_count,
+
+            -- Count of customers whose roofing was completed in the month before last month
+            COUNT(DISTINCT CASE
+                WHEN DATE_PART('month', roofing.work_completed_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
+                 AND DATE_PART('year', roofing.work_completed_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
+                THEN cust.unique_id
+            END) AS last_to_last_month_count
+
+        FROM customers_customers_schema AS cust
+        LEFT JOIN roofing_request_install_subcontracting_schema AS roofing
+            ON cust.our = roofing.customer_unique_id
         WHERE
-	        cust.unique_id != '' 						AND
-	        cust.unique_id IS NOT NULL					AND
-	        roofing.project_status IN (%v)                 AND
-	        roofing.record_created_on IS NOT NULL		AND
-	        roofing.roof_work_needed_date IS NOT NULL 	AND
-	        roofing.work_completed_date IS NULL         AND
-            %v`, projectStatus, filterUserQuery)
+            cust.unique_id IS NOT NULL
+            AND cust.unique_id != ''
+            AND roofing.project_status IN (%v)
+            AND roofing.record_created_on IS NOT NULL
+            AND roofing.roof_work_needed_date IS NOT NULL
+            AND %v`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -725,14 +783,26 @@ func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Install (Scheduling) Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
-        FROM
-	        customers_customers_schema AS cust
-        LEFT JOIN
-            pv_install_install_subcontracting_schema AS install ON cust.our = install.customer_unique_id
+            'Install (Scheduling) Queue' AS queue_status,
+            COUNT(DISTINCT cust.unique_id) AS count,
+            COUNT(CASE
+                WHEN install.pv_completion_date IS NOT NULL
+                     AND DATE_PART('month', install.pv_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
+                     AND DATE_PART('year', install.pv_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
+                THEN 1
+            END) AS last_month_count,
+            COUNT(CASE
+                WHEN install.pv_completion_date IS NOT NULL
+                     AND DATE_PART('month', install.pv_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
+                     AND DATE_PART('year', install.pv_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
+                THEN 1
+            END) AS last_to_last_month_count
+        FROM customers_customers_schema AS cust
+        LEFT JOIN pv_install_install_subcontracting_schema AS install
+            ON cust.our = install.customer_unique_id
         WHERE
 	        install.project_status not in
-                ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND 
+                ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND
             install.app_status not in
                 ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')       AND
             %v`, filterUserQuery)
@@ -740,6 +810,7 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 	return PipelineTileDataQuery
 }
 
+//first logic of activation
 // func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
 // 	PipelineTileDataQuery := fmt.Sprintf(`
 //         SELECT
@@ -756,48 +827,125 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 
 //		return PipelineTileDataQuery
 //	}
+
+// updated logic without applying distinct
+//
+//	func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
+//		PipelineTileDataQuery := fmt.Sprintf(`WITH mpu_count AS (
+//	    SELECT COUNT(DISTINCT mpu.customer_unique_id) AS count_val
+//	    FROM mpu_service_electrical_schema mpu
+//	    LEFT JOIN customers_customers_schema AS cust
+//	        ON mpu.customer_unique_id = cust.unique_id
+//	    WHERE mpu.project_status NOT IN ('CANCEL', 'DUPLICATE', 'UNRESPONSIVE')
+//	    AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
+//	    AND mpu.customer_unique_id <> '' AND %v
+//
+// ),
+// inspection_count AS (
+//
+//	SELECT COUNT(DISTINCT cust.unique_id) AS count_val
+//	FROM fin_permits_fin_schema AS fin
+//	LEFT JOIN customers_customers_schema AS cust
+//	    ON fin.customer_unique_id = cust.unique_id
+//	    AND fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d',
+//	                                   'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM',
+//	                                   'LEGAL - Customer has an attorney involved')
+//	    AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
+//	WHERE cust.unique_id IS NOT NULL
+//	AND cust.unique_id <> '' AND %v
+//
+// )
+// SELECT
+//
+//	'Inspections Queue' AS queue_status,
+//	(mpu_count.count_val + inspection_count.count_val) AS "distinct_customer_count"
+//
+// FROM mpu_count, inspection_count`, filterUserQuery, filterUserQuery)
+//
+//		return PipelineTileDataQuery
+//	}
+
+
 func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
-	PipelineTileDataQuery := fmt.Sprintf(`WITH mpu_count AS (
-    SELECT COUNT(DISTINCT mpu.customer_unique_id) AS count_val
+	return fmt.Sprintf(`
+WITH mpu_customers AS (
+    SELECT DISTINCT mpu.customer_unique_id
     FROM mpu_service_electrical_schema mpu
-    LEFT JOIN customers_customers_schema AS cust 
+    LEFT JOIN customers_customers_schema cust
         ON mpu.customer_unique_id = cust.unique_id
     WHERE mpu.project_status NOT IN ('CANCEL', 'DUPLICATE', 'UNRESPONSIVE')
-    AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
-    AND mpu.customer_unique_id <> '' AND %v
+      AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
+      AND %v
 ),
-inspection_count AS (
-    SELECT COUNT(DISTINCT cust.unique_id) AS count_val
-    FROM fin_permits_fin_schema AS fin
-    LEFT JOIN customers_customers_schema AS cust 
+inspection_customers AS (
+    SELECT DISTINCT cust.unique_id AS customer_unique_id
+    FROM fin_permits_fin_schema fin
+    LEFT JOIN customers_customers_schema cust
         ON fin.customer_unique_id = cust.unique_id
-        AND fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d', 
-                                       'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 
-                                       'LEGAL - Customer has an attorney involved')
-        AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
-    WHERE cust.unique_id IS NOT NULL 
-    AND cust.unique_id <> '' AND %v
+    WHERE fin.project_status NOT IN (
+              'PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d',
+              'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM',
+              'LEGAL - Customer has an attorney involved')
+      AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
+      AND %v
+),
+combined_customers AS (
+    SELECT customer_unique_id FROM mpu_customers
+    UNION
+    SELECT customer_unique_id FROM inspection_customers
+),
+fin_percentages AS (
+    SELECT
+        COUNT(CASE
+                WHEN DATE_PART('month', fin.pv_fin_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
+                     AND DATE_PART('year', fin.pv_fin_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
+                THEN 1 END) AS last_month_count,
+        COUNT(CASE
+                WHEN DATE_PART('month', fin.pv_fin_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
+                     AND DATE_PART('year', fin.pv_fin_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
+                THEN 1 END) AS last_to_last_month_count
+    FROM customers_customers_schema cust
+    LEFT JOIN fin_permits_fin_schema fin
+        ON cust.our = fin.customer_unique_id
+    WHERE fin.app_status NOT IN ('PV FIN Complete', 'DUPLICATE')
+      AND cust.unique_id != ''
+      AND fin.pv_fin_date IS NOT NULL
+      AND %v
 )
-SELECT 
-    'Inspections Queue' AS queue_status,
-    (mpu_count.count_val + inspection_count.count_val) AS "distinct_customer_count"
-FROM mpu_count, inspection_count`, filterUserQuery, filterUserQuery)
-	return PipelineTileDataQuery
+SELECT
+  'Inspections Queue' AS queue_status,
+  (SELECT COUNT(DISTINCT customer_unique_id) FROM combined_customers) AS count,
+  fp.last_month_count,
+  fp.last_to_last_month_count
+FROM fin_percentages fp;
+`, filterUserQuery, filterUserQuery, filterUserQuery)
 }
 
-func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
-	PipelineTileDataQuery := fmt.Sprintf(`
-        SELECT
-            'Activation Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
-        FROM
-	        customers_customers_schema AS cust
-        LEFT JOIN
-	        pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
-        WHERE
-	        pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')   AND
-            %v`, filterUserQuery)
 
-	return PipelineTileDataQuery
+func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
+	return fmt.Sprintf(`
+        SELECT
+            'Activation Queue' AS queue_status,
+            COUNT(DISTINCT cust.unique_id) AS count,
+            COUNT(CASE
+                WHEN pto.pto_granted IS NOT NULL
+                     AND DATE_PART('month', pto.pto_granted) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
+                     AND DATE_PART('year', pto.pto_granted) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
+                THEN 1
+            END) AS last_month_count,
+            COUNT(CASE
+                WHEN pto.pto_granted IS NOT NULL
+                     AND DATE_PART('month', pto.pto_granted) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
+                     AND DATE_PART('year', pto.pto_granted) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
+                THEN 1
+            END) AS last_to_last_month_count
+        FROM customers_customers_schema AS cust
+        LEFT JOIN pto_ic_schema AS pto
+            ON cust.our = pto.customer_unique_id
+        WHERE
+            pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')
+            AND %v
+    `, filterUserQuery)
 }
 
 func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
@@ -815,8 +963,8 @@ func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, search
             cust.total_system_cost AS contract_total,
             cust.contracted_system_size AS system_size,
             survey.original_survey_scheduled_date AS site_survey_scheduled_date,
-	        CASE 
-		        WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+	        CASE
+		        WHEN (survey.reschedule_needed_on_date IS NOT NULL
 			        AND survey.twond_visit_date IS NULL)
 			        THEN NULL
 		        WHEN survey.twond_visit_date IS NOT NULL
@@ -852,8 +1000,8 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
             cust.customer_name AS home_owner,
 	        cad.record_created_on AS cad_ready,
 	        cad.pv_install_completed_date AS cad_complete_date,
-	    CASE 
-		    WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+	    CASE
+		    WHEN (survey.reschedule_needed_on_date IS NOT NULL
 			    AND survey.twond_visit_date IS NULL)
 			    THEN NULL
 		    WHEN survey.twond_visit_date IS NOT NULL
@@ -872,7 +1020,7 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
             AND cad.project_status_new IN (%v)
             AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')
             AND cad.plan_set_version NOT IN (
-			    'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5', 
+			    'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5',
 			    'ABCAD 6', 'ABCAD 7', 'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
 	            AND %v %v
             ;`, projectStatus, filterUserQuery, searchValue)
@@ -973,7 +1121,7 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
             install.created_on AS pv_install_created_date,
 			b.battery_installation_date AS battery_scheduled_date,
 			b.completion_date AS battery_complete_date,
-			install.pv_completion_date AS install_completed_date,
+			pv_install_install_subcontracting_schema.pv_completion_date AS install_completed_date,
 			permit.pv_approved AS permit_approval_date,
 			ic.ic_approved_date AS ic_approval_date
         FROM
@@ -988,7 +1136,7 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
             batteries_service_electrical_schema b ON cust.unique_id = b.customer_unique_id
         WHERE
             install.project_status not in
-                ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND 
+                ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND
             install.app_status not in
                 ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')      AND
             %v %v;`, filterUserQuery, searchValue)
@@ -1028,71 +1176,124 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
 // 	return PipelineDataQuery
 // }
 
+// func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+// 	PipelineDataQuery := fmt.Sprintf(`WITH mpu_data AS (
+//     SELECT
+//         DISTINCT ON (cust.unique_id)
+//         cust.unique_id AS customer_unique_id,
+//         cust.customer_name AS home_owner,
+//         cust.dealer,
+//         cust.primary_sales_rep,
+//         cust.email_address AS customer_email,
+//         cust.phone_number AS customer_phone_number,
+//         cust.address,
+//         cust.state,
+//         cust.total_system_cost AS contract_total,
+//         cust.contracted_system_size AS system_size,
+//         fin.created_on AS fin_created_date,
+//         fin.pv_fin_date AS fin_pass_date,
+//         install.pv_completion_date AS install_completed_date,
+//         'MPU Queue' AS queue_status
+//     FROM mpu_service_electrical_schema mpu
+//     LEFT JOIN customers_customers_schema AS cust
+//         ON mpu.customer_unique_id = cust.unique_id
+//     LEFT JOIN fin_permits_fin_schema AS fin
+//         ON cust.unique_id = fin.customer_unique_id
+//     LEFT JOIN pv_install_install_subcontracting_schema AS install
+//         ON cust.unique_id = install.customer_unique_id
+//     WHERE mpu.project_status NOT IN ('CANCEL', 'DUPLICATE', 'UNRESPONSIVE')
+//     AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
+//     AND mpu.customer_unique_id <> '' AND %v %v
+// ),
+// inspection_data AS (
+//     SELECT
+//         DISTINCT ON (cust.unique_id)
+//         cust.unique_id AS customer_unique_id,
+//         cust.customer_name AS home_owner,
+//         cust.dealer,
+//         cust.primary_sales_rep,
+//         cust.email_address AS customer_email,
+//         cust.phone_number AS customer_phone_number,
+//         cust.address,
+//         cust.state,
+//         cust.total_system_cost AS contract_total,
+//         cust.contracted_system_size AS system_size,
+//         fin.created_on AS fin_created_date,
+//         fin.pv_fin_date AS fin_pass_date,
+//         install.pv_completion_date AS install_completed_date,
+//         'Inspections Queue' AS queue_status
+//     FROM fin_permits_fin_schema AS fin
+//     LEFT JOIN customers_customers_schema AS cust
+//         ON fin.customer_unique_id = cust.unique_id
+//     LEFT JOIN pv_install_install_subcontracting_schema AS install
+//         ON cust.unique_id = install.customer_unique_id
+//     WHERE fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d',
+//                                      'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM',
+//                                      'LEGAL - Customer has an attorney involved')
+//     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
+//     AND cust.unique_id IS NOT NULL
+//     AND cust.unique_id <> '' AND %v %v
+// )
+// SELECT *
+// FROM (
+//     SELECT * FROM mpu_data
+//     UNION ALL
+//     SELECT * FROM inspection_data
+// ) combined_data
+// ORDER BY queue_status, customer_unique_id;
+// `, filterUserQuery, searchValue, filterUserQuery, searchValue)
+// 	return PipelineDataQuery
+// }
+
 func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
-	PipelineDataQuery := fmt.Sprintf(`WITH mpu_data AS (
-    SELECT 
-        DISTINCT ON (cust.unique_id) 
-        cust.unique_id AS customer_unique_id,
-        cust.customer_name AS home_owner,
-        cust.dealer,
-        cust.primary_sales_rep,
-        cust.email_address AS customer_email,
-        cust.phone_number AS customer_phone_number,
-        cust.address,
-        cust.state,
-        cust.total_system_cost AS contract_total,
-        cust.contracted_system_size AS system_size,
-        fin.created_on AS fin_created_date,
-        fin.pv_fin_date AS fin_pass_date,
-        install.pv_completion_date AS install_completed_date,
-        'MPU Queue' AS queue_status
+	PipelineDataQuery := fmt.Sprintf(`	WITH mpu_customers AS (
+    SELECT DISTINCT mpu.customer_unique_id
     FROM mpu_service_electrical_schema mpu
-    LEFT JOIN customers_customers_schema AS cust 
+    LEFT JOIN customers_customers_schema AS cust
         ON mpu.customer_unique_id = cust.unique_id
-    LEFT JOIN fin_permits_fin_schema AS fin 
-        ON cust.unique_id = fin.customer_unique_id
-    LEFT JOIN pv_install_install_subcontracting_schema AS install 
-        ON cust.unique_id = install.customer_unique_id
     WHERE mpu.project_status NOT IN ('CANCEL', 'DUPLICATE', 'UNRESPONSIVE')
     AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
-    AND mpu.customer_unique_id <> '' AND %v %v
+    AND %v %v
 ),
-inspection_data AS (
-    SELECT 
-        DISTINCT ON (cust.unique_id) 
-        cust.unique_id AS customer_unique_id,
-        cust.customer_name AS home_owner,
-        cust.dealer,
-        cust.primary_sales_rep,
-        cust.email_address AS customer_email,
-        cust.phone_number AS customer_phone_number,
-        cust.address,
-        cust.state,
-        cust.total_system_cost AS contract_total,
-        cust.contracted_system_size AS system_size,
+inspection_customers AS (
+    SELECT DISTINCT fin.customer_unique_id
+    FROM fin_permits_fin_schema AS fin
+    LEFT JOIN customers_customers_schema AS cust
+        ON fin.customer_unique_id = cust.unique_id
+    WHERE fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d',
+                                    'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM',
+                                    'LEGAL - Customer has an attorney involved')
+    AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
+    AND %v %v
+),
+combined_customers AS (
+    SELECT customer_unique_id FROM mpu_customers
+    UNION
+    SELECT customer_unique_id FROM inspection_customers
+),
+customer_data AS (
+    SELECT
+		DISTINCT ON (c.customer_unique_id)
+        cc.unique_id AS customer_unique_id,
+        cc.customer_name AS home_owner,
+        cc.dealer,
+        cc.primary_sales_rep,
+        cc.email_address AS customer_email,
+        cc.phone_number AS customer_phone_number,
+        cc.address,
+        cc.state,
+        cc.total_system_cost AS contract_total,
+        cc.contracted_system_size AS system_size,
         fin.created_on AS fin_created_date,
         fin.pv_fin_date AS fin_pass_date,
-        install.pv_completion_date AS install_completed_date,
-        'Inspections Queue' AS queue_status
-    FROM fin_permits_fin_schema AS fin
-    LEFT JOIN customers_customers_schema AS cust 
-        ON fin.customer_unique_id = cust.unique_id
-    LEFT JOIN pv_install_install_subcontracting_schema AS install 
-        ON cust.unique_id = install.customer_unique_id
-    WHERE fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d', 
-                                     'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 
-                                     'LEGAL - Customer has an attorney involved')
-    AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
-    AND cust.unique_id IS NOT NULL 
-    AND cust.unique_id <> '' AND %v %v
+        install.pv_completion_date AS install_completed_date
+    FROM combined_customers c
+    JOIN customers_customers_schema cc ON c.customer_unique_id = cc.unique_id
+    LEFT JOIN fin_permits_fin_schema fin ON cc.unique_id = fin.customer_unique_id
+    LEFT JOIN pv_install_install_subcontracting_schema install ON cc.unique_id = install.customer_unique_id
 )
 SELECT *
-FROM (
-    SELECT * FROM mpu_data
-    UNION ALL
-    SELECT * FROM inspection_data
-) combined_data
-ORDER BY queue_status, customer_unique_id;
+FROM customer_data
 `, filterUserQuery, searchValue, filterUserQuery, searchValue)
 	return PipelineDataQuery
 }
@@ -1143,29 +1344,29 @@ func GetBasePipelineQuery(uniqueIds string) string {
             cust.total_system_cost AS contract_total,
             cust.contracted_system_size AS system_size,
 			cust.sale_date,
-            
+
 			install.created_on AS pv_install_created_date,
             install.pv_completion_date AS install_completed_date,
-            
+
 			b.battery_installation_date AS battery_scheduled_date,
             b.completion_date AS battery_complete_date,
-            
+
 			ic.ic_approved_date AS ic_approval_date,
             ic.ic_submitted_date,
-            
+
 			pto.submitted AS pto_submitted_date,
             pto.pto_granted AS pto_granted_new,
-            
+
 			fin.pv_fin_date AS fin_pass_date,
             fin.created_on AS fin_created_date,
-            
+
             roofing.work_completed_date AS roofing_completed_date,
             roofing.app_status AS roofing_status,
             roofing.record_created_on AS roofing_created_date,
-            
+
 			permit.pv_approved AS permit_approval_date,
             permit.pv_submitted AS permit_submitted_date,
-            
+
 			cad.record_created_on AS cad_ready,
             cad.plan_set_complete_day AS cad_complete_date,
 
@@ -1173,10 +1374,10 @@ func GetBasePipelineQuery(uniqueIds string) string {
 			pto.pto_granted AS pto_granted_new,
 
             ntp.ntp_complete_date AS ntp_complete_date,
-            
+
 			survey.original_survey_scheduled_date AS site_survey_scheduled_date,
-            CASE 
-                WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+            CASE
+                WHEN (survey.reschedule_needed_on_date IS NOT NULL
                     AND survey.twond_visit_date IS NULL)
                     THEN NULL
                 WHEN survey.twond_visit_date IS NOT NULL
@@ -1185,7 +1386,7 @@ func GetBasePipelineQuery(uniqueIds string) string {
             END AS survey_final_completion_date
         FROM
             customers_customers_schema AS cust
-        LEFT JOIN 
+        LEFT JOIN
 			ntp_ntp_schema AS ntp ON cust.unique_id = ntp.unique_id
         LEFT JOIN
             permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
@@ -1204,7 +1405,7 @@ func GetBasePipelineQuery(uniqueIds string) string {
         LEFT JOIN
             fin_permits_fin_schema AS fin ON cust.unique_id = fin.customer_unique_id
         LEFT JOIN
-            pto_ic_schema AS pto ON cust.our = pto.customer_unique_id 
+            pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
 		WHERE cust.unique_id in (%v) ORDER BY cust.unique_id, install.pv_completion_date DESC NULLS LAST`, uniqueIds)
 }
 
@@ -1216,31 +1417,31 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
         WHERE %s
         AND cust.unique_id <> ''
     ),
-    -- NTP: 
+    -- NTP:
     ntp_single AS (
-        SELECT 
+        SELECT
             unique_id,
             ntp_complete_date,
             finance_type,
             ROW_NUMBER() OVER (
-                PARTITION BY unique_id 
+                PARTITION BY unique_id
                 ORDER BY ntp_complete_date DESC
             ) AS rn
         FROM ntp_ntp_schema
     ),
-    -- SURVEY: 
+    -- SURVEY:
     survey_single AS (
-        SELECT 
+        SELECT
             customer_unique_id,
-            CASE 
+            CASE
                 WHEN (reschedule_needed_on_date IS NOT NULL AND twond_visit_date IS NULL) THEN NULL
                 WHEN twond_visit_date IS NOT NULL THEN twond_completion_date
                 ELSE survey_completion_date
             END AS survey_final_completion_date,
             ROW_NUMBER() OVER (
-                PARTITION BY customer_unique_id 
-                ORDER BY 
-                    CASE 
+                PARTITION BY customer_unique_id
+                ORDER BY
+                    CASE
                         WHEN (reschedule_needed_on_date IS NOT NULL AND twond_visit_date IS NULL) THEN NULL
                         WHEN twond_visit_date IS NOT NULL THEN twond_completion_date
                         ELSE survey_completion_date
@@ -1248,59 +1449,59 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
             ) AS rn
         FROM survey_survey_schema
     ),
-    -- PERMIT: 
+    -- PERMIT:
     permit_single AS (
-        SELECT 
+        SELECT
             customer_unique_id,
             pv_submitted,
             pv_approved,
             ROW_NUMBER() OVER (
-                PARTITION BY customer_unique_id 
+                PARTITION BY customer_unique_id
                 ORDER BY pv_submitted DESC
             ) AS rn
         FROM permit_fin_pv_permits_schema
     ),
-    -- INTERCONNECTION: 
+    -- INTERCONNECTION:
     ic_single AS (
-        SELECT 
+        SELECT
             customer_unique_id,
             ic_submitted_date,
             ic_approved_date,
             ROW_NUMBER() OVER (
-                PARTITION BY customer_unique_id 
+                PARTITION BY customer_unique_id
                 ORDER BY ic_submitted_date DESC
             ) AS rn
         FROM ic_ic_pto_schema
     ),
-    -- INSTALL: 
+    -- INSTALL:
     install_single AS (
-        SELECT 
+        SELECT
             customer_unique_id,
             pv_completion_date,
             ROW_NUMBER() OVER (
-                PARTITION BY customer_unique_id 
+                PARTITION BY customer_unique_id
                 ORDER BY pv_completion_date DESC
             ) AS rn
         FROM pv_install_install_subcontracting_schema
     ),
-    -- FIN: 
+    -- FIN:
     fin_single AS (
-        SELECT 
+        SELECT
             customer_unique_id,
             pv_fin_date,
             ROW_NUMBER() OVER (
-                PARTITION BY customer_unique_id 
+                PARTITION BY customer_unique_id
                 ORDER BY pv_fin_date DESC
             ) AS rn
         FROM fin_permits_fin_schema
     ),
-    -- PTO: 
+    -- PTO:
     pto_single AS (
-        SELECT 
+        SELECT
             customer_unique_id,
             pto_granted,
             ROW_NUMBER() OVER (
-                PARTITION BY customer_unique_id 
+                PARTITION BY customer_unique_id
                 ORDER BY pto_granted DESC
             ) AS rn
         FROM pto_ic_schema
@@ -1321,31 +1522,31 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
         cust.total_system_cost AS contract_amount,
         cust.sale_date AS created_date,
         cust.sale_date AS contract_date,
-        
+
         -- NTP Dates
         ntp.ntp_complete_date,
         ntp.finance_type AS loan_type,
-        
+
         -- Survey Dates
         survey.survey_final_completion_date,
-        
+
         -- Permit Dates
         permit.pv_submitted AS permit_submit_date,
         permit.pv_approved AS permit_approval_date,
-        
+
         -- Interconnection Dates
         ic.ic_submitted_date AS ic_submit_date,
         ic.ic_approved_date AS ic_approval_date,
-        
+
         -- Additional Milestone Dates (from the customer record)
         cust.jeopardy_date,
         cust.cancel_date,
-        
+
         -- Installation and Final Dates
         install.pv_completion_date AS pv_install_date,
         fin.pv_fin_date AS fin_complete_date,
         pto.pto_granted AS pto_date
-    
+
     FROM filtered_customers AS cust
     LEFT JOIN ntp_single AS ntp
         ON cust.unique_id = ntp.unique_id
@@ -1367,7 +1568,7 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
     AND fin.rn = 1
     LEFT JOIN pto_single AS pto
         ON cust.unique_id = pto.customer_unique_id
-    AND pto.rn = 1 
+    AND pto.rn = 1
     `, filterUserQuery)
 	return PipelineDealerQuery
 }
@@ -1406,8 +1607,8 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                 survey.twond_visit_date       AS twond_visit_date,
                 survey.twond_completion_date  AS twond_completion_date,
 
-                CASE 
-                    WHEN (survey.reschedule_needed_on_date IS NOT NULL 
+                CASE
+                    WHEN (survey.reschedule_needed_on_date IS NOT NULL
                         AND survey.twond_visit_date IS NULL)
                         THEN NULL
                     WHEN survey.twond_visit_date IS NOT NULL
@@ -1463,7 +1664,7 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                 roofing.roof_work_needed_date as roof_work_needed
 
             FROM customers_customers_schema AS cust
-            
+
             -- Original Joins
             LEFT JOIN ntp_ntp_schema AS ntp
                 ON cust.our = ntp.unique_id
@@ -1480,14 +1681,14 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                 ON cust.our = install.customer_unique_id
             LEFT JOIN roofing_request_install_subcontracting_schema AS roofing
                ON cust.our = roofing.customer_unique_id
-            
+
             -- New FIN & PTO Joins
             LEFT JOIN fin_permits_fin_schema AS fin
                 ON cust.our = fin.customer_unique_id
             LEFT JOIN pto_ic_schema AS pto
                 ON cust.our = pto.customer_unique_id
-            
-        
+
+
               WHERE
                 cust.project_status IN (%v)
                 AND %v
@@ -1511,27 +1712,27 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                         AND ti.ic_approval_date IS NULL
                         AND ti.install_completed_date IS NULL
                     THEN 'Survey Queue'
-                    
+
                     WHEN ti.cad_complete_date IS NULL
 						and ti.plan_set_status NOT IN ('Plan Set Complete')
 						and ti.cad_active_status IN ('Active')
 						AND ti.project_status_new IN ('ACTIVE')
-						AND ti.cad_version NOT IN ('ABCAD 1', 'ABCAD 2', 'ABCAD 3', 
-					'ABCAD 4','ABCAD 5', 'ABCAD 6', 'ABCAD 7', 
+						AND ti.cad_version NOT IN ('ABCAD 1', 'ABCAD 2', 'ABCAD 3',
+					'ABCAD 4','ABCAD 5', 'ABCAD 6', 'ABCAD 7',
 					'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
                     THEN 'CAD Queue'
-                    
+
                     WHEN ti.permit_approval_date IS NULL
                         AND ti.cad_complete_date IS NOT NULL
                         AND ti.ic_approval_date IS NULL
                         AND ti.install_completed_date IS NULL
                     THEN 'Permit Queue'
-                    
+
                     WHEN ti.ic_approval_date IS NULL
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.install_completed_date IS NULL
                     THEN 'IC Queue'
-                    
+
                     WHEN ti.install_completed_date IS NULL
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.ic_approval_date IS NOT NULL
@@ -1539,28 +1740,28 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                         AND ( ti.no_roof_work_needed IS NOT NULL
                         OR (ti.roof_work_needed IS NOT NULL AND ti.roofing_completed_date IS NOT NULL))
                     THEN 'Install (Scheduling) Queue'
-                    
+
                     WHEN ti.install_completed_date IS NULL
                         AND ti.permit_approval_date IS NOT NULL
                         AND ti.ic_approval_date IS NOT NULL
                         AND ti.pv_install_day_window IS NOT NULL
                     THEN 'Install (Pending) Queue'
-                    
+
                     WHEN ti.install_completed_date IS NOT NULL
                         AND ti.fin_approved_date IS NULL
                         AND ti.pto_granted_new IS NULL
                     THEN 'Inspections Queue'
-                    
+
                     WHEN ti.install_completed_date IS NOT NULL
                         AND ti.fin_approved_date IS NOT NULL
                         AND ti.pto_granted_new IS NULL
                     THEN 'Activation Queue'
-                    
-                    WHEN ti.roofing_created_date IS NOT NULL 
-                        AND ti.roofing_completed_date IS NULL 
+
+                    WHEN ti.roofing_created_date IS NOT NULL
+                        AND ti.roofing_completed_date IS NULL
                         AND ti.roof_work_needed IS NOT NULL
                     THEN 'Roofing Queue'
-                    
+
                     ELSE NULL
                 END AS queue_status
             FROM time_intervals ti
@@ -1585,7 +1786,7 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
                     WHEN aq.queue_status = 'Inspections Queue'
                     THEN DATE_PART('day', CURRENT_DATE - aq.install_completed_date)
                     WHEN aq.queue_status = 'Activation Queue'
-                    THEN DATE_PART('day', CURRENT_DATE - aq.fin_approved_date)        
+                    THEN DATE_PART('day', CURRENT_DATE - aq.fin_approved_date)
                     WHEN aq.queue_status = 'Roofing Queue'
                     THEN DATE_PART('day', CURRENT_DATE - aq.roofing_completed_date)
                     ELSE NULL
@@ -1605,12 +1806,12 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
         FROM customers_customers_schema c
         LEFT JOIN batteries_service_electrical_schema b ON c.unique_id = b.customer_unique_id
         WHERE EXISTS (
-            SELECT 1 
-            FROM queue_customers qc 
+            SELECT 1
+            FROM queue_customers qc
             WHERE qc.customer_unique_id = c.unique_id
         )
     )
-    SELECT 
+    SELECT
         DISTINCT ON(q.customer_unique_id)
         *
         FROM queue_customers q
@@ -1622,56 +1823,56 @@ func PipelineTileDataBelowQuery(filterUserQuery, projectStatus, queueStatus, sea
 func PipelineNTPQuery(uniqueIds []string) string {
 	PipelineNTPQuery := `
         WITH base_query AS (
-            SELECT 
-                customers_customers_schema.unique_id, 
-                customers_customers_schema.current_live_cad, 
-                customers_customers_schema.system_sold_er, 
+            SELECT
+                customers_customers_schema.unique_id,
+                customers_customers_schema.current_live_cad,
+                customers_customers_schema.system_sold_er,
                 customers_customers_schema.podio_link,
-                ntp_ntp_schema.production_discrepancy, 
-                ntp_ntp_schema.finance_ntp_of_project, 
-                ntp_ntp_schema.utility_bill_uploaded, 
-                ntp_ntp_schema.powerclerk_signatures_complete, 
+                ntp_ntp_schema.production_discrepancy,
+                ntp_ntp_schema.finance_ntp_of_project,
+                ntp_ntp_schema.utility_bill_uploaded,
+                ntp_ntp_schema.powerclerk_signatures_complete,
                 ntp_ntp_schema.change_order_status,
                 customers_customers_schema.utility_company,
                 customers_customers_schema.state,
                 ntp_ntp_schema.ntp_complete_date,
                 split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value
-            FROM 
+            FROM
                 customers_customers_schema
-            LEFT JOIN ntp_ntp_schema 
+            LEFT JOIN ntp_ntp_schema
                 ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
-            WHERE 
+            WHERE
                 customers_customers_schema.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
         )
-        SELECT 
-            b.*, 
-            CASE 
+        SELECT
+            b.*,
+            CASE
                 WHEN b.utility_company = 'APS' THEN prospects_customers_schema.powerclerk_sent_az
-                ELSE 'Not Needed' 
+                ELSE 'Not Needed'
             END AS powerclerk_sent_az,
-            CASE 
+            CASE
                 WHEN prospects_customers_schema.payment_method = 'Cash' THEN prospects_customers_schema.ach_waiver_sent_and_signed_cash_only
                 ELSE 'Not Needed'
             END AS ach_waiver_sent_and_signed_cash_only,
-            CASE 
+            CASE
                 WHEN b.state = 'NM :: New Mexico' THEN prospects_customers_schema.green_area_nm_only
                 ELSE 'Not Needed'
             END AS green_area_nm_only,
-            CASE 
+            CASE
                 WHEN prospects_customers_schema.payment_method IN ('Lease', 'Loan') THEN prospects_customers_schema.finance_credit_approved_loan_or_lease
                 ELSE 'Not Needed'
             END AS finance_credit_approved_loan_or_lease,
-            CASE 
+            CASE
                 WHEN prospects_customers_schema.payment_method IN ('Lease', 'Loan') THEN prospects_customers_schema.finance_agreement_completed_loan_or_lease
                 ELSE 'Not Needed'
             END AS finance_agreement_completed_loan_or_lease,
-            CASE 
+            CASE
                 WHEN prospects_customers_schema.payment_method IN ('Cash', 'Loan') THEN prospects_customers_schema.owe_documents_completed
                 ELSE 'Not Needed'
             END AS owe_documents_completed
-        FROM 
+        FROM
             base_query b
-        LEFT JOIN 
+        LEFT JOIN
             prospects_customers_schema ON b.first_value::text = prospects_customers_schema.prospect_id::text;
     `
 	return PipelineNTPQuery
@@ -1703,16 +1904,16 @@ func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) (stri
 			split_part(srs.team_region_untd, '/'::text, 1) AS team,
 			split_part(srs.team_region_untd, '/'::text, 2) AS region
 		FROM customers_customers_schema cs
-        LEFT JOIN ntp_ntp_schema ns 
+        LEFT JOIN ntp_ntp_schema ns
 			ON ns.unique_id = cs.unique_id
-            AND ns.project_status NOT ILIKE '%%DUPLICATE%%'  AND ns.app_status NOT ILIKE '%%DUPLICATE%%' 
-		LEFT JOIN sales_rep_dbhub_schema srs 
+            AND ns.project_status NOT ILIKE '%%DUPLICATE%%'  AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
+		LEFT JOIN sales_rep_dbhub_schema srs
 			ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
-		WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' 
+		WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%'
 			AND cs.unique_id != ''
 			AND %v
 		)
-		SELECT 
+		SELECT
 			%v,
 			COUNT(CASE WHEN sale_date %v THEN 1 END) AS sale,
 			COUNT(CASE WHEN cancel_date %v THEN 1 END) AS cancel
@@ -1723,25 +1924,25 @@ func LeaderBoardSaleCancelData(dateRange, dealers, groupBy, chosen string) (stri
 	} else {
 		query = fmt.Sprintf(`
 		WITH distinct_sales AS (
-		SELECT 
+		SELECT
 			cs.unique_id, cs.sale_date, cs.cancel_date, cs.primary_sales_rep,cs.dealer,
 			cs.setter, cs.state, scs.contracted_system_size_parent,
 			split_part(srs.team_region_untd, '/'::text, 1) AS team,
 			split_part(srs.team_region_untd, '/'::text, 2) AS region
 		FROM customers_customers_schema cs
-		LEFT JOIN ntp_ntp_schema ns 
+		LEFT JOIN ntp_ntp_schema ns
 			ON ns.unique_id = cs.unique_id
-            AND ns.project_status NOT ILIKE '%%DUPLICATE%%'  AND ns.app_status NOT ILIKE '%%DUPLICATE%%' 
-		LEFT JOIN sales_rep_dbhub_schema srs 
+            AND ns.project_status NOT ILIKE '%%DUPLICATE%%'  AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
+		LEFT JOIN sales_rep_dbhub_schema srs
 			ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
-		LEFT JOIN system_customers_schema scs 
+		LEFT JOIN system_customers_schema scs
 			ON scs.customer_id = cs.unique_id
 			AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
-		WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%' 
+		WHERE cs.project_status NOT ILIKE '%%DUPLICATE%%'
 			AND cs.unique_id != ''
 			AND %v
 		)
-		SELECT 
+		SELECT
 			%v,
 			SUM(CASE WHEN sale_date %v THEN contracted_system_size_parent ELSE 0 END) AS sale,
 			SUM(CASE WHEN cancel_date %v THEN contracted_system_size_parent ELSE 0 END) AS cancel
@@ -1775,26 +1976,26 @@ func LeaderBoardInstallBatteryData(dateRange, dealers, groupBy, chosen string) (
 	if chosen == "count" {
 		query = fmt.Sprintf(`
 		WITH distinct_installs AS (
-		SELECT 
+		SELECT
 			pis.customer_unique_id, pis.pv_completion_date,
 			ns.battery_count, cs.primary_sales_rep, pis.state,cs.setter,pis.dealer,
 			split_part(srs.team_region_untd, '/'::text, 1) AS team,
 			split_part(srs.team_region_untd, '/'::text, 2) AS region
 		FROM pv_install_install_subcontracting_schema pis
-		LEFT JOIN ntp_ntp_schema ns 
+		LEFT JOIN ntp_ntp_schema ns
 			ON ns.unique_id = pis.customer_unique_id
-            AND ns.project_status NOT ILIKE '%%DUPLICATE%%'  AND ns.app_status NOT ILIKE '%%DUPLICATE%%' 
-		LEFT JOIN customers_customers_schema cs 
+            AND ns.project_status NOT ILIKE '%%DUPLICATE%%'  AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
+		LEFT JOIN customers_customers_schema cs
 			ON cs.unique_id = pis.customer_unique_id
             AND cs.project_status NOT ILIKE '%%DUPLICATE%%'
-		LEFT JOIN sales_rep_dbhub_schema srs 
+		LEFT JOIN sales_rep_dbhub_schema srs
 			ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
-		WHERE pis.project_status NOT ILIKE '%%DUPLICATE%%' 
-			AND pis.app_status NOT ILIKE '%%DUPLICATE%%' 
+		WHERE pis.project_status NOT ILIKE '%%DUPLICATE%%'
+			AND pis.app_status NOT ILIKE '%%DUPLICATE%%'
 			AND pis.customer_unique_id != ''
 			AND %v
 		)
-		SELECT 
+		SELECT
 			%v,
 			COUNT(CASE WHEN pv_completion_date %v THEN 1 END) AS install,
 			SUM(CASE WHEN pv_completion_date %v THEN battery_count ELSE 0 END) AS battery
@@ -1805,30 +2006,30 @@ func LeaderBoardInstallBatteryData(dateRange, dealers, groupBy, chosen string) (
 	} else {
 		query = fmt.Sprintf(`
 		WITH distinct_installs AS (
-		SELECT 
+		SELECT
 			pis.customer_unique_id, pis.pv_completion_date,
 			ns.battery_count, cs.primary_sales_rep, pis.state,cs.setter,
 			split_part(srs.team_region_untd, '/'::text, 1) AS team,
 			split_part(srs.team_region_untd, '/'::text, 2) AS region,pis.dealer,
 			scs.contracted_system_size_parent
 		FROM pv_install_install_subcontracting_schema pis
-		LEFT JOIN ntp_ntp_schema ns 
+		LEFT JOIN ntp_ntp_schema ns
 			ON ns.unique_id = pis.customer_unique_id
-            AND ns.project_status NOT ILIKE '%%DUPLICATE%%'  AND ns.app_status NOT ILIKE '%%DUPLICATE%%' 
-		LEFT JOIN customers_customers_schema cs 
+            AND ns.project_status NOT ILIKE '%%DUPLICATE%%'  AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
+		LEFT JOIN customers_customers_schema cs
 			ON cs.unique_id = pis.customer_unique_id
             AND cs.project_status NOT ILIKE '%%DUPLICATE%%'
-		LEFT JOIN sales_rep_dbhub_schema srs 
+		LEFT JOIN sales_rep_dbhub_schema srs
 			ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
-        LEFT JOIN system_customers_schema scs 
+        LEFT JOIN system_customers_schema scs
             ON scs.customer_id = pis.customer_unique_id
             AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
-		WHERE pis.project_status NOT ILIKE '%%DUPLICATE%%' 
-			AND pis.app_status NOT ILIKE '%%DUPLICATE%%' 
+		WHERE pis.project_status NOT ILIKE '%%DUPLICATE%%'
+			AND pis.app_status NOT ILIKE '%%DUPLICATE%%'
 			AND pis.customer_unique_id != ''
 			AND %v
 		)
-		SELECT 
+		SELECT
 			%v,
 			SUM(CASE WHEN pv_completion_date %v THEN contracted_system_size_parent ELSE 0 END) AS install
 		FROM distinct_installs
@@ -1861,7 +2062,7 @@ func LeaderBoardNTPData(dateRange, dealers, groupBy, chosen string) (string, str
 	if chosen == "count" {
 		query = fmt.Sprintf(`
 		WITH distinct_ntp AS (
-    SELECT 
+    SELECT
         ns.unique_id,
         ns.dealer,
         ns.ntp_complete_date,
@@ -1871,21 +2072,21 @@ func LeaderBoardNTPData(dateRange, dealers, groupBy, chosen string) (string, str
         split_part(srs.team_region_untd, '/'::text, 1) AS team,
         split_part(srs.team_region_untd, '/'::text, 2) AS region
     FROM ntp_ntp_schema ns
-    LEFT JOIN customers_customers_schema cs 
+    LEFT JOIN customers_customers_schema cs
         ON cs.unique_id = ns.unique_id
         AND cs.project_status NOT ILIKE '%%DUPLICATE%%'
-    LEFT JOIN sales_rep_dbhub_schema srs 
+    LEFT JOIN sales_rep_dbhub_schema srs
         ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
-    WHERE ns.project_status NOT ILIKE '%%DUPLICATE%%' 
-        AND ns.app_status NOT ILIKE '%%DUPLICATE%%' 
+    WHERE ns.project_status NOT ILIKE '%%DUPLICATE%%'
+        AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
         AND ns.unique_id != ''
         AND %v
 )
-SELECT 
+SELECT
     %v,
-    COUNT(CASE 
-        WHEN ntp_complete_date %v 
-        THEN 1 
+    COUNT(CASE
+        WHEN ntp_complete_date %v
+        THEN 1
     END) AS ntp
 FROM distinct_ntp
 WHERE 1=1
@@ -1895,7 +2096,7 @@ GROUP BY %v
 	} else {
 		query = fmt.Sprintf(`
 		WITH distinct_ntp AS (
-    SELECT 
+    SELECT
         ns.unique_id,
         ns.dealer,
         ns.ntp_complete_date,
@@ -1906,23 +2107,23 @@ GROUP BY %v
         split_part(srs.team_region_untd, '/'::text, 2) AS region,
         ns.contracted_system_size_ntp_new
     FROM ntp_ntp_schema ns
-    LEFT JOIN customers_customers_schema cs 
+    LEFT JOIN customers_customers_schema cs
         ON cs.unique_id = ns.unique_id
         AND cs.project_status NOT ILIKE '%%DUPLICATE%%'
-    LEFT JOIN sales_rep_dbhub_schema srs 
+    LEFT JOIN sales_rep_dbhub_schema srs
         ON SPLIT_PART(ns.prospectid_dealerid_salesrepid, ',', 3) = srs.record_id::text
-    LEFT JOIN system_customers_schema scs 
+    LEFT JOIN system_customers_schema scs
         ON scs.customer_id = ns.unique_id
         AND scs.project_status NOT ILIKE '%%DUPLICATE%%'
-    WHERE ns.project_status NOT ILIKE '%%DUPLICATE%%' 
-        AND ns.app_status NOT ILIKE '%%DUPLICATE%%' 
+    WHERE ns.project_status NOT ILIKE '%%DUPLICATE%%'
+        AND ns.app_status NOT ILIKE '%%DUPLICATE%%'
         AND ns.unique_id != ''
         AND %v
 )
-SELECT 
+SELECT
     %v,
-    SUM(CASE 
-        WHEN ntp_complete_date %v 
+    SUM(CASE
+        WHEN ntp_complete_date %v
         THEN contracted_system_size_ntp_new ELSE 0 END) AS ntp
 FROM distinct_ntp
 WHERE 1=1

@@ -13,6 +13,7 @@ import TeamTable from '../ui/oweHub/teammanagement/teamtable';
 import Calendar from '../ui/Calendar/PerformanceCalendar';
 import LeadManagementDashboard from '../ui/leadmanagement/LeadManagementDashboard';
 import Summary_Dashboard from '../ui/reporting/Summary-Dashboard/Summary_Dashboard';
+import ChatBot from '../ui/oweHub/chatbot/ChatBot';
 const exceptDB = Object.values(TYPE_OF_USER).filter(
   (item) => item !== 'DB User'
 );
@@ -60,7 +61,7 @@ export default [
       TYPE_OF_USER.SALES_REPRESENTATIVE,
       TYPE_OF_USER.APPOINTMENT_SETTER,
       TYPE_OF_USER.ACCOUNT_MANAGER,
-      TYPE_OF_USER.PROJECT_MANAGER
+      TYPE_OF_USER.PROJECT_MANAGER,
     ],
     stagingOnly: false,
   },
@@ -121,10 +122,7 @@ export default [
   {
     route: ROUTES.CONFIG_PAGE,
     element: ConfigurePage,
-    available: [
-      TYPE_OF_USER.ADMIN,
-      TYPE_OF_USER.FINANCE_ADMIN,
-    ],
+    available: [TYPE_OF_USER.ADMIN, TYPE_OF_USER.FINANCE_ADMIN],
     stagingOnly: false,
   },
   {
@@ -147,13 +145,10 @@ export default [
     available: Object.values(TYPE_OF_USER),
     stagingOnly: false,
   },
-
   {
     route: ROUTES.SUMMARY_DASBOARD,
     element: Summary_Dashboard,
-    available: [
-      TYPE_OF_USER.ADMIN,
-    ],
+    available: [TYPE_OF_USER.ADMIN],
     stagingOnly: false,
   },
 ];
