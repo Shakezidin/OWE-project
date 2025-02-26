@@ -391,10 +391,7 @@ const Banner: React.FC<BannerProps> = ({
                   disabled={isLoading}
                   onChange={(e) => {
                     // Remove any non-alphanumeric characters
-                    const sanitizedValue = e.target.value.replace(
-                      /[^a-zA-Z0-9 ]/g,
-                      ''
-                    );
+                    const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 _-]/g, '');
                     setSearch(sanitizedValue);
 
                     if (sanitizedValue.trim()) {
