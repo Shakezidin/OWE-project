@@ -740,6 +740,7 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 	return PipelineTileDataQuery
 }
 
+//first logic of activation
 // func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
 // 	PipelineTileDataQuery := fmt.Sprintf(`
 //         SELECT
@@ -756,32 +757,76 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 
 //		return PipelineTileDataQuery
 //	}
+
+// updated logic without applying distinct
+//
+//	func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
+//		PipelineTileDataQuery := fmt.Sprintf(`WITH mpu_count AS (
+//	    SELECT COUNT(DISTINCT mpu.customer_unique_id) AS count_val
+//	    FROM mpu_service_electrical_schema mpu
+//	    LEFT JOIN customers_customers_schema AS cust
+//	        ON mpu.customer_unique_id = cust.unique_id
+//	    WHERE mpu.project_status NOT IN ('CANCEL', 'DUPLICATE', 'UNRESPONSIVE')
+//	    AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
+//	    AND mpu.customer_unique_id <> '' AND %v
+//
+// ),
+// inspection_count AS (
+//
+//	SELECT COUNT(DISTINCT cust.unique_id) AS count_val
+//	FROM fin_permits_fin_schema AS fin
+//	LEFT JOIN customers_customers_schema AS cust
+//	    ON fin.customer_unique_id = cust.unique_id
+//	    AND fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d',
+//	                                   'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM',
+//	                                   'LEGAL - Customer has an attorney involved')
+//	    AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
+//	WHERE cust.unique_id IS NOT NULL
+//	AND cust.unique_id <> '' AND %v
+//
+// )
+// SELECT
+//
+//	'Inspections Queue' AS queue_status,
+//	(mpu_count.count_val + inspection_count.count_val) AS "distinct_customer_count"
+//
+// FROM mpu_count, inspection_count`, filterUserQuery, filterUserQuery)
+//
+//		return PipelineTileDataQuery
+//	}
 func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
-	PipelineTileDataQuery := fmt.Sprintf(`WITH mpu_count AS (
-    SELECT COUNT(DISTINCT mpu.customer_unique_id) AS count_val
+	PipelineTileDataQuery := fmt.Sprintf(`WITH mpu_customers AS (
+    SELECT DISTINCT mpu.customer_unique_id
     FROM mpu_service_electrical_schema mpu
-    LEFT JOIN customers_customers_schema AS cust 
+    LEFT JOIN customers_customers_schema AS cust
         ON mpu.customer_unique_id = cust.unique_id
     WHERE mpu.project_status NOT IN ('CANCEL', 'DUPLICATE', 'UNRESPONSIVE')
     AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
-    AND mpu.customer_unique_id <> '' AND %v
+    AND %v
 ),
-inspection_count AS (
-    SELECT COUNT(DISTINCT cust.unique_id) AS count_val
+
+inspection_customers AS (
+    SELECT DISTINCT cust.unique_id AS customer_unique_id
     FROM fin_permits_fin_schema AS fin
-    LEFT JOIN customers_customers_schema AS cust 
+    LEFT JOIN customers_customers_schema AS cust
         ON fin.customer_unique_id = cust.unique_id
-        AND fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d', 
-                                       'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 
-                                       'LEGAL - Customer has an attorney involved')
-        AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
-    WHERE cust.unique_id IS NOT NULL 
-    AND cust.unique_id <> '' AND %v
+    WHERE fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d',
+                                  'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM',
+                                  'LEGAL - Customer has an attorney involved')
+    AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
+    AND %v
+),
+
+combined_customers AS (
+    SELECT customer_unique_id FROM mpu_customers
+    UNION
+    SELECT customer_unique_id FROM inspection_customers
 )
-SELECT 
+
+SELECT
     'Inspections Queue' AS queue_status,
-    (mpu_count.count_val + inspection_count.count_val) AS "distinct_customer_count"
-FROM mpu_count, inspection_count`, filterUserQuery, filterUserQuery)
+    COUNT(DISTINCT customer_unique_id) AS distinct_customer_count
+FROM combined_customers;`, filterUserQuery, filterUserQuery)
 	return PipelineTileDataQuery
 }
 
@@ -1028,71 +1073,124 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
 // 	return PipelineDataQuery
 // }
 
+// func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+// 	PipelineDataQuery := fmt.Sprintf(`WITH mpu_data AS (
+//     SELECT
+//         DISTINCT ON (cust.unique_id)
+//         cust.unique_id AS customer_unique_id,
+//         cust.customer_name AS home_owner,
+//         cust.dealer,
+//         cust.primary_sales_rep,
+//         cust.email_address AS customer_email,
+//         cust.phone_number AS customer_phone_number,
+//         cust.address,
+//         cust.state,
+//         cust.total_system_cost AS contract_total,
+//         cust.contracted_system_size AS system_size,
+//         fin.created_on AS fin_created_date,
+//         fin.pv_fin_date AS fin_pass_date,
+//         install.pv_completion_date AS install_completed_date,
+//         'MPU Queue' AS queue_status
+//     FROM mpu_service_electrical_schema mpu
+//     LEFT JOIN customers_customers_schema AS cust
+//         ON mpu.customer_unique_id = cust.unique_id
+//     LEFT JOIN fin_permits_fin_schema AS fin
+//         ON cust.unique_id = fin.customer_unique_id
+//     LEFT JOIN pv_install_install_subcontracting_schema AS install
+//         ON cust.unique_id = install.customer_unique_id
+//     WHERE mpu.project_status NOT IN ('CANCEL', 'DUPLICATE', 'UNRESPONSIVE')
+//     AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
+//     AND mpu.customer_unique_id <> '' AND %v %v
+// ),
+// inspection_data AS (
+//     SELECT
+//         DISTINCT ON (cust.unique_id)
+//         cust.unique_id AS customer_unique_id,
+//         cust.customer_name AS home_owner,
+//         cust.dealer,
+//         cust.primary_sales_rep,
+//         cust.email_address AS customer_email,
+//         cust.phone_number AS customer_phone_number,
+//         cust.address,
+//         cust.state,
+//         cust.total_system_cost AS contract_total,
+//         cust.contracted_system_size AS system_size,
+//         fin.created_on AS fin_created_date,
+//         fin.pv_fin_date AS fin_pass_date,
+//         install.pv_completion_date AS install_completed_date,
+//         'Inspections Queue' AS queue_status
+//     FROM fin_permits_fin_schema AS fin
+//     LEFT JOIN customers_customers_schema AS cust
+//         ON fin.customer_unique_id = cust.unique_id
+//     LEFT JOIN pv_install_install_subcontracting_schema AS install
+//         ON cust.unique_id = install.customer_unique_id
+//     WHERE fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d',
+//                                      'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM',
+//                                      'LEGAL - Customer has an attorney involved')
+//     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
+//     AND cust.unique_id IS NOT NULL
+//     AND cust.unique_id <> '' AND %v %v
+// )
+// SELECT *
+// FROM (
+//     SELECT * FROM mpu_data
+//     UNION ALL
+//     SELECT * FROM inspection_data
+// ) combined_data
+// ORDER BY queue_status, customer_unique_id;
+// `, filterUserQuery, searchValue, filterUserQuery, searchValue)
+// 	return PipelineDataQuery
+// }
+
 func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
-	PipelineDataQuery := fmt.Sprintf(`WITH mpu_data AS (
-    SELECT 
-        DISTINCT ON (cust.unique_id) 
-        cust.unique_id AS customer_unique_id,
-        cust.customer_name AS home_owner,
-        cust.dealer,
-        cust.primary_sales_rep,
-        cust.email_address AS customer_email,
-        cust.phone_number AS customer_phone_number,
-        cust.address,
-        cust.state,
-        cust.total_system_cost AS contract_total,
-        cust.contracted_system_size AS system_size,
-        fin.created_on AS fin_created_date,
-        fin.pv_fin_date AS fin_pass_date,
-        install.pv_completion_date AS install_completed_date,
-        'MPU Queue' AS queue_status
+	PipelineDataQuery := fmt.Sprintf(`	WITH mpu_customers AS (
+    SELECT DISTINCT mpu.customer_unique_id
     FROM mpu_service_electrical_schema mpu
     LEFT JOIN customers_customers_schema AS cust 
         ON mpu.customer_unique_id = cust.unique_id
-    LEFT JOIN fin_permits_fin_schema AS fin 
-        ON cust.unique_id = fin.customer_unique_id
-    LEFT JOIN pv_install_install_subcontracting_schema AS install 
-        ON cust.unique_id = install.customer_unique_id
     WHERE mpu.project_status NOT IN ('CANCEL', 'DUPLICATE', 'UNRESPONSIVE')
     AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
-    AND mpu.customer_unique_id <> '' AND %v %v
+    AND %v %v
 ),
-inspection_data AS (
-    SELECT 
-        DISTINCT ON (cust.unique_id) 
-        cust.unique_id AS customer_unique_id,
-        cust.customer_name AS home_owner,
-        cust.dealer,
-        cust.primary_sales_rep,
-        cust.email_address AS customer_email,
-        cust.phone_number AS customer_phone_number,
-        cust.address,
-        cust.state,
-        cust.total_system_cost AS contract_total,
-        cust.contracted_system_size AS system_size,
-        fin.created_on AS fin_created_date,
-        fin.pv_fin_date AS fin_pass_date,
-        install.pv_completion_date AS install_completed_date,
-        'Inspections Queue' AS queue_status
+inspection_customers AS (
+    SELECT DISTINCT fin.customer_unique_id
     FROM fin_permits_fin_schema AS fin
     LEFT JOIN customers_customers_schema AS cust 
         ON fin.customer_unique_id = cust.unique_id
-    LEFT JOIN pv_install_install_subcontracting_schema AS install 
-        ON cust.unique_id = install.customer_unique_id
     WHERE fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d', 
-                                     'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 
-                                     'LEGAL - Customer has an attorney involved')
+                                    'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 
+                                    'LEGAL - Customer has an attorney involved')
     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
-    AND cust.unique_id IS NOT NULL 
-    AND cust.unique_id <> '' AND %v %v
+    AND %v %v
+),
+combined_customers AS (
+    SELECT customer_unique_id FROM mpu_customers
+    UNION
+    SELECT customer_unique_id FROM inspection_customers
+),
+customer_data AS (
+    SELECT
+		DISTINCT ON (c.customer_unique_id)
+        cc.unique_id AS customer_unique_id,
+        cc.customer_name AS home_owner,
+        cc.dealer,
+        cc.primary_sales_rep,
+        cc.email_address AS customer_email,
+        cc.phone_number AS customer_phone_number,
+        cc.address,
+        cc.state,
+        cc.total_system_cost AS contract_total,
+        cc.contracted_system_size AS system_size,
+        fin.created_on AS fin_created_date,
+        fin.pv_fin_date AS fin_pass_date,
+        install.pv_completion_date AS install_completed_date
+    FROM combined_customers c
+    JOIN customers_customers_schema cc ON c.customer_unique_id = cc.unique_id
+    LEFT JOIN fin_permits_fin_schema fin ON cc.unique_id = fin.customer_unique_id
+    LEFT JOIN pv_install_install_subcontracting_schema install ON cc.unique_id = install.customer_unique_id
 )
 SELECT *
-FROM (
-    SELECT * FROM mpu_data
-    UNION ALL
-    SELECT * FROM inspection_data
-) combined_data
-ORDER BY queue_status, customer_unique_id;
+FROM customer_data
 `, filterUserQuery, searchValue, filterUserQuery, searchValue)
 	return PipelineDataQuery
 }

@@ -19,22 +19,23 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleUpdateProductionTargetsRequest
+ * FUNCTION:		HandleUpdateProductionTargetsRequestOld
  * DESCRIPTION:     handler for update production targets request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleUpdateProductionTargetsRequestOld(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                error
-		dataReq            models.UpdateProductionTargetsReq
+		dataReq            models.UpdateProductionTargetsReqOld
 		whereEleList       []interface{}
 		valuesPlaceholders []string
 		query              string
+		targetUserId       int64
 	)
 
-	log.EnterFn(0, "HandleUpdateProductionTargetsRequest")
-	defer func() { log.ExitFn(0, "HandleUpdateProductionTargetsRequest", err) }()
+	log.EnterFn(0, "HandleUpdateProductionTargetsRequestOld")
+	defer func() { log.ExitFn(0, "HandleUpdateProductionTargetsRequestOld", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null")
@@ -57,6 +58,12 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
+	targetUserId, err = getProdTargetUserId(req.Context(), dataReq.AccountManager)
+	if err != nil {
+		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusBadRequest, nil)
+		return
+	}
+
 	// Construct the upsert query
 	// Example:
 	// INSERT INTO production_targets (month, year, target_percentage, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct)
@@ -72,22 +79,12 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 		prevWhereLen := len(whereEleList)
 		itemPlaceholders := []string{}
 
-		// default values; am = admin, state from input
-		itemAmId := int64(1)
-		itemState := item.State
-
-		// if am_id is set, use all for state
-		if item.AmId != 0 {
-			itemAmId = item.AmId
-			itemState = "All"
-		}
-
 		whereEleList = append(whereEleList,
 			item.Month,
 			item.Year,
-			item.TargetPercentage,
-			itemAmId,
-			itemState,
+			dataReq.TargetPercentage,
+			targetUserId,
+			dataReq.State,
 			item.ProjectsSold,
 			item.MwSold,
 			item.InstallCt,
@@ -105,17 +102,17 @@ func HandleUpdateProductionTargetsRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	query = fmt.Sprintf(`
-		 INSERT INTO %s (month, year, target_percentage, user_id, state, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct, ntp, mw_ntp)
-		 VALUES %s
-		 ON CONFLICT (month, year, target_percentage, user_id, state) DO UPDATE SET
-			 projects_sold = EXCLUDED.projects_sold,
-			 mw_sold = EXCLUDED.mw_sold,
-			 install_ct = EXCLUDED.install_ct,
-			 mw_installed = EXCLUDED.mw_installed,
-			 batteries_ct = EXCLUDED.batteries_ct,
-			 ntp = EXCLUDED.ntp,
-			 mw_ntp = EXCLUDED.mw_ntp
-	 `, db.TableName_ProductionTargets, strings.Join(valuesPlaceholders, ", "))
+		INSERT INTO %s (month, year, target_percentage, user_id, state, projects_sold, mw_sold, install_ct, mw_installed, batteries_ct, ntp, mw_ntp)
+		VALUES %s
+		ON CONFLICT (month, year, target_percentage, user_id, state) DO UPDATE SET
+			projects_sold = EXCLUDED.projects_sold,
+			mw_sold = EXCLUDED.mw_sold,
+			install_ct = EXCLUDED.install_ct,
+			mw_installed = EXCLUDED.mw_installed,
+			batteries_ct = EXCLUDED.batteries_ct,
+			ntp = EXCLUDED.ntp,
+			mw_ntp = EXCLUDED.mw_ntp
+	`, db.TableName_ProductionTargets, strings.Join(valuesPlaceholders, ", "))
 
 	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
