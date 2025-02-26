@@ -310,7 +310,6 @@ const ProjectPerformence = () => {
       'FinCreate Date',
       'FinPass Date',
       'Pto Submitted Date',
-      'Pto Date',
     ];
 
     const getAllData = await postCaller('get_peroformancecsvdownload', {
@@ -347,6 +346,9 @@ const ProjectPerformence = () => {
       item.RoofingCreatedDate,
       item.RoofingCompleteDate,
       item.PvInstallCreatedDate,
+      item.BatteryScheduledDate,
+      item.BatteryCompletedDate,
+      item.PvInstallCompletedDate,
       item.MpuCreatedDate,
       item.MpucompleteDate,
       item.DerateCreateDate,
