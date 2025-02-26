@@ -36,8 +36,8 @@ func HandleGetProductionTargets(resp http.ResponseWriter, req *http.Request) {
 		apiResp      []models.ProductionTargetsRespItem
 		data         []map[string]interface{}
 		whereEleList []interface{}
-	//  targetUserId   int64
-	//  targetStateCnd string
+		goalAms      []string
+		goalStates   []string
 	)
 
 	log.EnterFn(0, "HandleGetProductionTargets")
@@ -98,13 +98,14 @@ func HandleGetProductionTargets(resp http.ResponseWriter, req *http.Request) {
 		whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year}
 
 	case "am":
-		ams, err := getGoalAMs()
+		// select ams for left join
+		goalAms, err = getGoalAMs()
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get AMs, err: %v", err)
 			appserver.FormAndSendHttpResp(resp, "Server error", http.StatusInternalServerError, nil)
 			return
 		}
-		if len(ams) == 0 {
+		if len(goalAms) == 0 {
 			appserver.FormAndSendHttpResp(resp, "Production Targets", http.StatusOK, apiResp)
 			return
 		}
@@ -130,22 +131,42 @@ func HandleGetProductionTargets(resp http.ResponseWriter, req *http.Request) {
             AND p.month = $4
             AND LOWER(p.state) = 'all'
       `
-		whereEleList = []interface{}{pq.Array(ams), dataReq.TargetPercentage, dataReq.Year, intMonth}
+		whereEleList = []interface{}{pq.Array(goalAms), dataReq.TargetPercentage, dataReq.Year, intMonth}
 
 	case "state":
-		query = `
-              SELECT
-                 state,
-                  COALESCE(SUM(p.projects_sold), 0) AS projects_sold,
-                  COALESCE(SUM(p.mw_sold), 0) AS mw_sold,
-                  COALESCE(SUM(p.install_ct), 0) AS install_ct,
-                  COALESCE(SUM(p.mw_installed), 0) AS mw_installed,
-                  COALESCE(SUM(p.batteries_ct), 0) AS batteries_ct,
-                  COALESCE(SUM(p.ntp), 0) AS ntp
-              FROM production_targets p
-              WHERE p.user_id = 1  AND p.target_percentage = $1 AND p.year = $2 AND p.month = $3 AND LOWER(p.state) != 'all'
-              GROUP BY state
-          `
+		// select states for left join
+		goalStates = getGoalStates()
+
+		stateValues := ""
+
+		for i, state := range goalStates {
+			if i > 0 {
+				stateValues += ", "
+			}
+			// escape single quote
+			valueTuple := fmt.Sprintf("('%s')", strings.ReplaceAll(state, "'", "''"))
+			stateValues += valueTuple
+		}
+
+		query = fmt.Sprintf(`
+		WITH states(s) AS (VALUES %s)	
+		SELECT
+			states.s AS state,
+			COALESCE(p.projects_sold, 0) AS projects_sold,
+			COALESCE(p.mw_sold, 0) AS mw_sold,
+			COALESCE(p.install_ct, 0) AS install_ct,
+			COALESCE(p.mw_installed, 0) AS mw_installed,
+			COALESCE(p.batteries_ct, 0) AS batteries_ct,
+			COALESCE(p.ntp, 0) AS ntp
+		FROM states LEFT JOIN
+		production_targets p ON p.state = states.s 
+		AND
+          	p.user_id = 1
+            AND p.target_percentage = $1
+            AND p.year = $2
+            AND p.month = $3
+            AND LOWER(p.state) != 'all'
+        `, stateValues)
 		whereEleList = []interface{}{dataReq.TargetPercentage, dataReq.Year, intMonth}
 
 	default:

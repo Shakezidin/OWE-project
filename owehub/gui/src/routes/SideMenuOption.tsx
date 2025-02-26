@@ -184,13 +184,7 @@ const mob = {
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
       },
     },
-    {
-      path: ROUTES.CHAT_BOT,
-      sidebarProps: {
-        displayText: 'Chat Bot',
-        icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
-      },
-    },
+    
   ],
 };
 
