@@ -423,7 +423,7 @@ const ImageSection: React.FC<ImageSectionProps> = ({
   if (!images || images.length === 0) {
     return (
       <div className={styles.uploadImage}>
-        <div className={styles.imagePreviewContainer}></div>
+        {/* <div className={styles.imagePreviewContainer}></div> */}
         <div>
           <label htmlFor="imageUpload" style={{ cursor: 'pointer' }}>
             <div className={styles.UploadIcon}>
