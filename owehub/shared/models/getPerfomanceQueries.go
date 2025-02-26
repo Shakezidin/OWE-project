@@ -646,53 +646,23 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
 func PipelineSurveyTileData(filterUserQuery, projectStatus string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Survey Queue' AS queue_status,
-            COUNT(survey.customer_unique_id) AS count,
-
-            -- Count for last month
-            COUNT(CASE
-                WHEN DATE_PART('month', survey.survey_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
-                 AND DATE_PART('year', survey.survey_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
-                THEN 1
-            END) AS last_month_count,
-
-            -- Count for last-to-last month
-            COUNT(CASE
-                WHEN DATE_PART('month', survey.survey_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
-                 AND DATE_PART('year', survey.survey_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
-                THEN 1
-            END) AS last_to_last_month_count
-
-        FROM survey_survey_schema AS survey
+            'Survey Queue' AS queue_status, count(survey.customer_unique_id) AS distinct_customer_count
+        FROM
+	        survey_survey_schema AS survey
         LEFT JOIN customers_customers_schema AS cust
             ON survey.customer_unique_id = cust.unique_id
         WHERE
-            survey.project_status IN (%v)
-            AND survey.app_status NOT IN ('Reschedule Complete', 'CANCEL', 'DUPLICATE', 'Complete')
-            AND %v;
+	        survey.project_status IN (%v) AND
+	        survey.app_status NOT IN ('Reschedule Complete','CANCEL', 'DUPLICATE', 'Complete') AND
+	        %v;
         `, projectStatus, filterUserQuery)
-
 	return PipelineTileDataQuery
 }
 
 func PipelineCadTileData(filterUserQuery, projectStatus string) string {
-	return fmt.Sprintf(`
-        SELECT
-            'CAD Queue' AS queue_status,
-            COUNT(*) AS count,
-            COUNT(CASE
-                WHEN DATE_PART('month', survey.survey_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
-                     AND DATE_PART('year', survey.survey_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
-                THEN 1
-            END) AS last_month_count,
-            COUNT(CASE
-                WHEN DATE_PART('month', survey.survey_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
-                     AND DATE_PART('year', survey.survey_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
-                THEN 1
-            END) AS last_to_last_month_count
-        FROM planset_cad_schema AS cad
-        LEFT JOIN survey_survey_schema AS survey
-            ON cad.our_number = survey.customer_unique_id
+	PipelineTileDataQuery := fmt.Sprintf(`
+        SELECT 'CAD Queue' AS queue_status ,COUNT(*) AS distinct_customer_count
+            FROM planset_cad_schema AS cad
         LEFT JOIN customers_customers_schema AS cust
             ON cad.our_number = cust.unique_id
         WHERE
@@ -703,79 +673,51 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
             AND cad.plan_set_version NOT IN (
                 'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5',
                 'ABCAD 6', 'ABCAD 7', 'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
-            AND %v
-    `, projectStatus, filterUserQuery)
+            AND %v`, projectStatus, filterUserQuery)
+
+	return PipelineTileDataQuery
 }
 
 func PipelinePermitTileData(filterUserQuery, projectStatus string) string {
-	return fmt.Sprintf(`
-        SELECT
-            'Permit Queue' AS queue_status,
-            COUNT(DISTINCT CASE WHEN permit.pv_approved IS NULL THEN cust.unique_id END) AS count,
-            COUNT(CASE
-                WHEN permit.pv_approved IS NOT NULL
-                     AND DATE_PART('month', permit.pv_approved) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
-                     AND DATE_PART('year', permit.pv_approved) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
-                THEN 1
-            END) AS last_month_count,
-            COUNT(CASE
-                WHEN permit.pv_approved IS NOT NULL
-                     AND DATE_PART('month', permit.pv_approved) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
-                     AND DATE_PART('year', permit.pv_approved) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
-                THEN 1
-            END) AS last_to_last_month_count
-        FROM customers_customers_schema AS cust
-        LEFT JOIN permit_fin_pv_permits_schema AS permit
-            ON cust.unique_id = permit.customer_unique_id
-        WHERE
-            permit.project_status IN (%v)
-            AND permit.app_status NOT IN (
-                'Approved - Permit in Hand',
-                'Approved - No Permit Required - Permitting Complete',
-                'AB Not Required - Permitting Complete',
-                'AB Permitting Complete ',
-                'CANCEL',
-                'DUPLICATE'
-            )
-            AND %v
-    `, projectStatus, filterUserQuery)
+	PipelineTileDataQuery := fmt.Sprintf(`
+           SELECT
+	   	        'Permit Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
+	           FROM
+	   	        customers_customers_schema AS cust
+	           LEFT JOIN
+	   	        permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
+	           WHERE
+	   	        permit.project_status IN (%v)               AND
+	   	        permit.app_status NOT IN (
+                    'Approved - Permit in Hand',
+                    'Approved - No Permit Required - Permitting Complete',
+                    'AB Not Required - Permitting Complete',
+                    'AB Permitting Complete ',
+                    'CANCEL',
+                    'DUPLICATE'
+                    )                                       AND
+                permit.pv_approved IS NULL                  AND
+	   	        %v`, projectStatus, filterUserQuery)
+
+	return PipelineTileDataQuery
 }
 
 func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Roofing Queue' AS queue_status,
-
-            -- Count of distinct customers where roofing work is still pending
-            COUNT(DISTINCT CASE
-                WHEN roofing.work_completed_date IS NULL
-                THEN cust.unique_id
-            END) AS count,
-
-            -- Count of customers whose roofing was completed last month
-            COUNT(DISTINCT CASE
-                WHEN DATE_PART('month', roofing.work_completed_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
-                 AND DATE_PART('year', roofing.work_completed_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
-                THEN cust.unique_id
-            END) AS last_month_count,
-
-            -- Count of customers whose roofing was completed in the month before last month
-            COUNT(DISTINCT CASE
-                WHEN DATE_PART('month', roofing.work_completed_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
-                 AND DATE_PART('year', roofing.work_completed_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
-                THEN cust.unique_id
-            END) AS last_to_last_month_count
-
-        FROM customers_customers_schema AS cust
-        LEFT JOIN roofing_request_install_subcontracting_schema AS roofing
-            ON cust.our = roofing.customer_unique_id
+            'Roofing Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
+        FROM
+	        customers_customers_schema AS cust
+        LEFT JOIN
+	        roofing_request_install_subcontracting_schema AS roofing ON cust.our = roofing.customer_unique_id
         WHERE
-            cust.unique_id IS NOT NULL
-            AND cust.unique_id != ''
-            AND roofing.project_status IN (%v)
-            AND roofing.record_created_on IS NOT NULL
-            AND roofing.roof_work_needed_date IS NOT NULL
-            AND %v`, projectStatus, filterUserQuery)
+	        cust.unique_id != '' 						AND
+	        cust.unique_id IS NOT NULL					AND
+	        roofing.project_status IN (%v)                 AND
+	        roofing.record_created_on IS NOT NULL		AND
+	        roofing.roof_work_needed_date IS NOT NULL 	AND
+	        roofing.work_completed_date IS NULL         AND
+            %v`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -783,23 +725,11 @@ func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Install (Scheduling) Queue' AS queue_status,
-            COUNT(DISTINCT cust.unique_id) AS count,
-            COUNT(CASE
-                WHEN install.pv_completion_date IS NOT NULL
-                     AND DATE_PART('month', install.pv_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
-                     AND DATE_PART('year', install.pv_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
-                THEN 1
-            END) AS last_month_count,
-            COUNT(CASE
-                WHEN install.pv_completion_date IS NOT NULL
-                     AND DATE_PART('month', install.pv_completion_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
-                     AND DATE_PART('year', install.pv_completion_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
-                THEN 1
-            END) AS last_to_last_month_count
-        FROM customers_customers_schema AS cust
-        LEFT JOIN pv_install_install_subcontracting_schema AS install
-            ON cust.our = install.customer_unique_id
+            'Install (Scheduling) Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
+        FROM
+	        customers_customers_schema AS cust
+        LEFT JOIN
+            pv_install_install_subcontracting_schema AS install ON cust.our = install.customer_unique_id
         WHERE
 	        install.project_status not in
                 ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND
@@ -864,88 +794,55 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 //
 //		return PipelineTileDataQuery
 //	}
-
-
 func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
-	return fmt.Sprintf(`
-WITH mpu_customers AS (
+	PipelineTileDataQuery := fmt.Sprintf(`WITH mpu_customers AS (
     SELECT DISTINCT mpu.customer_unique_id
     FROM mpu_service_electrical_schema mpu
-    LEFT JOIN customers_customers_schema cust
+    LEFT JOIN customers_customers_schema AS cust
         ON mpu.customer_unique_id = cust.unique_id
     WHERE mpu.project_status NOT IN ('CANCEL', 'DUPLICATE', 'UNRESPONSIVE')
-      AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
-      AND %v
+    AND mpu.app_status NOT IN ('Complete', 'Canceled', 'DUPLICATE')
+    AND %v
 ),
+
 inspection_customers AS (
     SELECT DISTINCT cust.unique_id AS customer_unique_id
-    FROM fin_permits_fin_schema fin
-    LEFT JOIN customers_customers_schema cust
+    FROM fin_permits_fin_schema AS fin
+    LEFT JOIN customers_customers_schema AS cust
         ON fin.customer_unique_id = cust.unique_id
-    WHERE fin.project_status NOT IN (
-              'PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d',
-              'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM',
-              'LEGAL - Customer has an attorney involved')
-      AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
-      AND %v
+    WHERE fin.project_status NOT IN ('PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d',
+                                  'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM',
+                                  'LEGAL - Customer has an attorney involved')
+    AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
+    AND %v
 ),
+
 combined_customers AS (
     SELECT customer_unique_id FROM mpu_customers
     UNION
     SELECT customer_unique_id FROM inspection_customers
-),
-fin_percentages AS (
-    SELECT
-        COUNT(CASE
-                WHEN DATE_PART('month', fin.pv_fin_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
-                     AND DATE_PART('year', fin.pv_fin_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
-                THEN 1 END) AS last_month_count,
-        COUNT(CASE
-                WHEN DATE_PART('month', fin.pv_fin_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
-                     AND DATE_PART('year', fin.pv_fin_date) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
-                THEN 1 END) AS last_to_last_month_count
-    FROM customers_customers_schema cust
-    LEFT JOIN fin_permits_fin_schema fin
-        ON cust.our = fin.customer_unique_id
-    WHERE fin.app_status NOT IN ('PV FIN Complete', 'DUPLICATE')
-      AND cust.unique_id != ''
-      AND fin.pv_fin_date IS NOT NULL
-      AND %v
 )
+
 SELECT
-  'Inspections Queue' AS queue_status,
-  (SELECT COUNT(DISTINCT customer_unique_id) FROM combined_customers) AS count,
-  fp.last_month_count,
-  fp.last_to_last_month_count
-FROM fin_percentages fp;
-`, filterUserQuery, filterUserQuery, filterUserQuery)
+    'Inspections Queue' AS queue_status,
+    COUNT(DISTINCT customer_unique_id) AS distinct_customer_count
+FROM combined_customers;`, filterUserQuery, filterUserQuery)
+	return PipelineTileDataQuery
 }
 
-
 func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
-	return fmt.Sprintf(`
+	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Activation Queue' AS queue_status,
-            COUNT(DISTINCT cust.unique_id) AS count,
-            COUNT(CASE
-                WHEN pto.pto_granted IS NOT NULL
-                     AND DATE_PART('month', pto.pto_granted) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
-                     AND DATE_PART('year', pto.pto_granted) = DATE_PART('year', CURRENT_DATE - INTERVAL '1 month')
-                THEN 1
-            END) AS last_month_count,
-            COUNT(CASE
-                WHEN pto.pto_granted IS NOT NULL
-                     AND DATE_PART('month', pto.pto_granted) = DATE_PART('month', CURRENT_DATE - INTERVAL '2 month')
-                     AND DATE_PART('year', pto.pto_granted) = DATE_PART('year', CURRENT_DATE - INTERVAL '2 month')
-                THEN 1
-            END) AS last_to_last_month_count
-        FROM customers_customers_schema AS cust
-        LEFT JOIN pto_ic_schema AS pto
-            ON cust.our = pto.customer_unique_id
+            'Activation Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
+        FROM
+	        customers_customers_schema AS cust
+        LEFT JOIN
+	        pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
         WHERE
-            pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')
-            AND %v
-    `, filterUserQuery)
+	        pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')   AND
+            %v`, filterUserQuery)
+
+	return PipelineTileDataQuery
 }
 
 func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
@@ -1121,7 +1018,7 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
             install.created_on AS pv_install_created_date,
 			b.battery_installation_date AS battery_scheduled_date,
 			b.completion_date AS battery_complete_date,
-			pv_install_install_subcontracting_schema.pv_completion_date AS install_completed_date,
+			install.pv_completion_date AS install_completed_date,
 			permit.pv_approved AS permit_approval_date,
 			ic.ic_approved_date AS ic_approval_date
         FROM
