@@ -278,7 +278,7 @@ const EditModal = ({
   const handleSubmit = async () => {
     setLoad(true);
     try {
-      const response = await reportingCaller('update_production_targets', {
+      const response = await reportingCaller('update_production_target', {
         targets: mergedData,
         target_percentage: parseInt(activePerc),
         state: selectedState.value,

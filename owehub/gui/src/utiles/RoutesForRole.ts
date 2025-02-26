@@ -146,13 +146,6 @@ export default [
     stagingOnly: false,
   },
   {
-    route: ROUTES.CHAT_BOT,
-    element: ChatBot,
-    available: Object.values(TYPE_OF_USER),
-    stagingOnly: false,
-  },
-
-  {
     route: ROUTES.SUMMARY_DASBOARD,
     element: Summary_Dashboard,
     available: [TYPE_OF_USER.ADMIN],
