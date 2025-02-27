@@ -180,34 +180,39 @@ export default [
     isCheckbox: false,
   },
   {
-    name: 'Project Age',
+    name: 'days_project_age',
     displayName: 'Project Age',
     type: 'string',
     isCheckbox: false,
+    isNotFilter: true
   },
  
   {
-    name: 'Days Pending NTP',
+    name: 'days_ntp',
     displayName: 'Days Pending NTP',
     type: 'string',
     isCheckbox: false,
+    isNotFilter: true
   },
   {
-    name: 'Days Pending Permits',
+    name: 'days_permits',
     displayName: 'Days Pending Permits',
     type: 'string',
     isCheckbox: false,
+    isNotFilter: true
   },
   {
-    name: 'Days Pending Install',
+    name: 'days_install',
     displayName: 'Days Pending Install',
     type: 'string',
     isCheckbox: false,
+    isNotFilter: true
   },
   {
-    name: 'Days Pending PTO',
+    name: 'days_pto',
     displayName: 'Days Pending PTO',
     type: 'string',
     isCheckbox: false,
+    isNotFilter: true
   },
 ];
