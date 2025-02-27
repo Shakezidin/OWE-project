@@ -879,6 +879,9 @@ func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, search
 }
 
 func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
             DISTINCT ON (cust.unique_id)
@@ -917,13 +920,16 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
             AND cad.plan_set_version NOT IN (
 			    'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5',
 			    'ABCAD 6', 'ABCAD 7', 'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
-	            AND %v %v
+	            %v %v
             ;`, projectStatus, filterUserQuery, searchValue)
 
 	return PipelineDataQuery
 }
 
 func PipelinePermitDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
             DISTINCT ON (cust.unique_id)
@@ -960,13 +966,16 @@ func PipelinePermitDataBelow(filterUserQuery, projectStatus, queueStatus, search
                 'CANCEL',
                 'DUPLICATE'
             )                                       AND
-            permit.pv_approved IS NULL                  AND
+            permit.pv_approved IS NULL              
             %v %v;`, projectStatus, filterUserQuery, searchValue)
 
 	return PipelineDataQuery
 }
 
 func PipelineRoofingDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
             DISTINCT ON (cust.unique_id)
@@ -993,13 +1002,16 @@ func PipelineRoofingDataBelow(filterUserQuery, projectStatus, queueStatus, searc
 	        roofing.project_status IN (%v)                 AND
 	        roofing.record_created_on IS NOT NULL		AND
 	        roofing.roof_work_needed_date IS NOT NULL 	AND
-	        roofing.work_completed_date IS NULL         AND
+	        roofing.work_completed_date IS NULL         
             %v %v;`, projectStatus, filterUserQuery, searchValue)
 
 	return PipelineDataQuery
 }
 
 func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
             DISTINCT ON (cust.unique_id)
@@ -1033,13 +1045,16 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
             install.project_status not in
                 ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND
             install.app_status not in
-                ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')      AND
+                ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')     
             %v %v;`, filterUserQuery, searchValue)
 
 	return PipelineDataQuery
 }
 
 func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineDataQuery := fmt.Sprintf(`
     SELECT
 		DISTINCT ON (fin.customer_unique_id)
@@ -1062,11 +1077,14 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
 	WHERE 
         fin.project_status IN ('%v')
     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
-    AND %v %v`, projectStatus, filterUserQuery, searchValue)
+    %v %v`, projectStatus, filterUserQuery, searchValue)
 	return PipelineDataQuery
 }
 
 func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
             DISTINCT ON (cust.unique_id)
@@ -1091,7 +1109,7 @@ func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, se
 		LEFT JOIN
 			pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
         WHERE
-	        pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')      AND
+	        pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')      
             %v %v;`, filterUserQuery, searchValue)
 
 	return PipelineDataQuery
