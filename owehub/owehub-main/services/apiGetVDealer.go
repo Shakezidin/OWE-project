@@ -93,7 +93,7 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// dealerCode
 		dealerCode, dealercodeOk := item["dealer_code"].(string)
 		if !dealercodeOk || dealerCode == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer code for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncWarnTrace(0, "Failed to get dealer code for Record ID %v. Item: %+v\n", RecordId, item)
 			dealerCode = ""
 		}
 
@@ -107,28 +107,28 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// Description
 		Description, discriptioneOk := item["description"].(string)
 		if !discriptioneOk || Description == "" {
-			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncWarnTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
 			Description = ""
 		}
 
 		// DealerName
 		DealerLogo, dealerLogoOk := item["dealer_logo"].(string)
 		if !dealerLogoOk || DealerLogo == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncWarnTrace(0, "Failed to get dealer logo for Record ID %v. Item: %+v\n", RecordId, item)
 			DealerLogo = ""
 		}
 
 		// Description
 		bgColour, bgColourOk := item["bg_colour"].(string)
 		if !bgColourOk || bgColour == "" {
-			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncWarnTrace(0, "Failed to get bg_colour for Record ID %v. Item: %+v\n", RecordId, item)
 			bgColour = ""
 		}
 
 		// PreferredName
 		PreferredName, PreferredNameOk := item["preferred_name"].(string)
 		if !PreferredNameOk || PreferredName == "" {
-			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncWarnTrace(0, "Failed to get preferred_name for Record ID %v. Item: %+v\n", RecordId, item)
 			PreferredName = ""
 		}
 

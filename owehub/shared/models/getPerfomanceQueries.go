@@ -329,6 +329,9 @@ func QcNtpRetrieveQueryFunc() string {
 }
 
 func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(fmt.Sprintf(`
         SELECT
@@ -348,13 +351,16 @@ func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
         'Pending NTP Review', 'Pending QC', 'Pending NTP',
         'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
      ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
-     AND %v %v
+     %v %v
     `, filterUserQuery, searchValue))
 
 	return filtersBuilder.String()
 }
 
 func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(fmt.Sprintf(`
         SELECT
@@ -370,13 +376,16 @@ func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
      AND customers_customers_schema.unique_id != ''
 	 WHERE ntp_ntp_schema.app_status IN ('Pending NTP Review','Pending QC','Pending NTP','Pending NTP - Change Order','Under Review')
      AND ntp_ntp_schema.project_status NOT IN ('HOLD',E'PTO\'d (Service)', E'PTO\'d (Audit)','BLOCKED','JEOPARDY','CANCEL','DUPLICATE','COMPETING')
-     AND %v %v
+     %v %v
     `, filterUserQuery, searchValue))
 
 	return filtersBuilder.String()
 }
 
 func PendingActionPageTileQuery(filterUserQuery, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(fmt.Sprintf(`
         SELECT
@@ -386,7 +395,7 @@ func PendingActionPageTileQuery(filterUserQuery, searchValue string) string {
      AND customers_customers_schema.unique_id != ''
 	 WHERE ntp_ntp_schema.app_status IN ('Pending NTP Review','Pending QC','Pending NTP','Pending NTP - Change Order','Under Review')
      AND ntp_ntp_schema.project_status NOT IN ('HOLD',E'PTO\'d (Service)', E'PTO\'d (Audit)','BLOCKED','JEOPARDY','CANCEL','DUPLICATE','COMPETING')
-     AND %v %v) AS ntp_count,
+     %v %v) AS ntp_count,
 
     (SELECT COUNT(*)
      FROM ntp_ntp_schema
@@ -401,7 +410,7 @@ func PendingActionPageTileQuery(filterUserQuery, searchValue string) string {
         'Pending NTP Review', 'Pending QC', 'Pending NTP',
         'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
      ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
-     AND %v %v) AS co_count;
+     %v %v) AS co_count;
     `, filterUserQuery, searchValue, filterUserQuery, searchValue))
 
 	return filtersBuilder.String()
@@ -644,6 +653,9 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
 }
 
 func PipelineSurveyTileData(filterUserQuery, projectStatus string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
             'Survey Queue' AS queue_status, count(survey.customer_unique_id) AS distinct_customer_count
@@ -653,13 +665,16 @@ func PipelineSurveyTileData(filterUserQuery, projectStatus string) string {
             ON survey.customer_unique_id = cust.unique_id
         WHERE
 	        survey.project_status IN (%v) AND
-	        survey.app_status NOT IN ('Reschedule Complete','CANCEL', 'DUPLICATE', 'Complete') AND
+	        survey.app_status NOT IN ('Reschedule Complete','CANCEL', 'DUPLICATE', 'Complete')
 	        %v;
         `, projectStatus, filterUserQuery)
 	return PipelineTileDataQuery
 }
 
 func PipelineCadTileData(filterUserQuery, projectStatus string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT 'CAD Queue' AS queue_status ,COUNT(*) AS distinct_customer_count
             FROM planset_cad_schema AS cad
@@ -673,12 +688,15 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
             AND cad.plan_set_version NOT IN (
                 'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5',
                 'ABCAD 6', 'ABCAD 7', 'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
-            AND %v`, projectStatus, filterUserQuery)
+            %v`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
 
 func PipelinePermitTileData(filterUserQuery, projectStatus string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineTileDataQuery := fmt.Sprintf(`
            SELECT
 	   	        'Permit Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
@@ -696,13 +714,16 @@ func PipelinePermitTileData(filterUserQuery, projectStatus string) string {
                     'CANCEL',
                     'DUPLICATE'
                     )                                       AND
-                permit.pv_approved IS NULL                  AND
+                permit.pv_approved IS NULL                  
 	   	        %v`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
 
 func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
             'Roofing Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
@@ -716,13 +737,16 @@ func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 	        roofing.project_status IN (%v)              AND
 	        roofing.record_created_on IS NOT NULL		AND
 	        roofing.roof_work_needed_date IS NOT NULL 	AND
-	        roofing.work_completed_date IS NULL         AND
+	        roofing.work_completed_date IS NULL         
             %v`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
 
 func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
             'Install (Scheduling) Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
@@ -734,7 +758,7 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 	        install.project_status not in
                 ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND
             install.app_status not in
-                ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')       AND
+                ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')      
             %v`, filterUserQuery)
 
 	return PipelineTileDataQuery
@@ -780,6 +804,9 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 //	}
 
 func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineTileDataQuery := fmt.Sprintf(`
     SELECT 
         'Inspections Queue' AS queue_status, COUNT(DISTINCT (customer_unique_id)) AS distinct_customer_count
@@ -790,12 +817,15 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
     WHERE 
         fin.project_status IN ('%v')
     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
-    AND %v`, projectStatus, filterUserQuery)
+    %v`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
 
 func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
             'Activation Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
@@ -804,13 +834,16 @@ func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
         LEFT JOIN
 	        pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
         WHERE
-	        pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')   AND
+	        pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')   
             %v`, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
 
 func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery += "AND " + filterUserQuery
+	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
             cust.unique_id AS customer_unique_id,
@@ -839,7 +872,7 @@ func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, search
 	        customers_customers_schema AS cust ON survey.customer_unique_id = cust.unique_id
         WHERE
 	        survey.project_status IN (%v) AND
-	        survey.app_status NOT IN ('Reschedule Complete','CANCEL', 'DUPLICATE', 'Complete')  AND
+	        survey.app_status NOT IN ('Reschedule Complete','CANCEL', 'DUPLICATE', 'Complete') 
 	        %v %v;
         `, projectStatus, filterUserQuery, searchValue)
 	return PipelineDataQuery
