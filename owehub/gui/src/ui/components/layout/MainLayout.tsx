@@ -15,6 +15,7 @@ import {
 import { toast } from 'react-toastify';
 import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePassword';
 import { checkUserExists, checkDBStatus } from '../../../redux/apiActions/auth/authActions';
+import { useDBStatusMonitor } from '../../../hooks/useDBStatusMonitor';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 import useAuth from '../../../hooks/useAuth';
@@ -29,7 +30,9 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
-  const [dbStatus, setDbStatus] = useState<boolean>(true);
+  // const [dbStatus, setDbStatus] = useState<boolean>(true);
+  const { dbStatus } = useDBStatusMonitor();
+
   const [toggleOpen, setToggleOpen] = useState<boolean>(true);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -100,18 +103,6 @@ const MainLayout = () => {
         });
     }
   }, [dispatch, navigate, authData]);
-
-  useEffect(() => {
-    const fetchDBStatus = async () => {
-      const status = await checkDBStatus();
-      setDbStatus(status);
-    };
-
-    fetchDBStatus();
-
-    const interval = setInterval(fetchDBStatus, 60000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     if (isTablet) {
