@@ -247,31 +247,38 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
 
       // Validate the data
       if (section === 'structural_info') {
+        // For new states, mpData might not have the active state yet
         if (!mpData[activeStructuralState]) {
-          toast.error('Invalid structural state data.');
-          return false;
+          // This is a new state, so we should proceed with all provided values
+          payload = {
+            project_id: currentGeneralId,
+            structural_state: activeStructuralState.toLowerCase(),
+            structural_info: newValues,
+          };
+        } else {
+          // For existing states, compare with previous values
+          const modifiedFields = Object.keys(newValues).reduce(
+            (acc, key) => {
+              if (newValues[key] !== mpData[activeStructuralState]?.[key]) {
+                acc[key] = newValues[key];
+              }
+              return acc;
+            },
+            {} as Record<string, any>
+          );
+
+          if (Object.keys(modifiedFields).length === 0) {
+            // If no changes were made, just show a message and return success
+            toast.info('No changes detected for structural info.');
+            return true;
+          }
+
+          payload = {
+            project_id: currentGeneralId,
+            structural_state: activeStructuralState.toLowerCase(),
+            structural_info: modifiedFields,
+          };
         }
-
-        const modifiedFields = Object.keys(newValues).reduce(
-          (acc, key) => {
-            if (newValues[key] !== mpData[activeStructuralState]?.[key]) {
-              acc[key] = newValues[key];
-            }
-            return acc;
-          },
-          {} as Record<string, any>
-        );
-
-        if (Object.keys(modifiedFields).length === 0) {
-          toast.error('No changes detected for structural info.');
-          return false;
-        }
-
-        payload = {
-          project_id: currentGeneralId,
-          structural_state: activeStructuralState.toLowerCase(),
-          structural_info: modifiedFields,
-        };
       } else {
         payload[section.toLowerCase()] = newValues;
       }
@@ -279,7 +286,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       const response = await dispatch(updateDatTool(payload));
 
       if (response?.payload?.status === 200) {
-        toast.success(`Data Updated Successfully`);
+        toast.success(`Structural state created successfully`);
         return true;
       }
 
@@ -303,30 +310,40 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
 
       switch (stateName) {
         case 'structuralInfo':
+          // For a new state, ensure we have at least some basic required fields
+          if (!mpData[activeStructuralState]) {
+            // These might be the minimum required fields for a new structural state
+            const requiredFields = ['structure', 'roof_type', 'sheathing_type'];
+            const missingFields = requiredFields.filter(field => !updates[field]);
+            
+            if (missingFields.length > 0) {
+              // If critical fields are missing, notify user but allow continuation
+              toast.warning(`Missing recommended fields: ${missingFields.join(', ')}`);
+            }
+          }
+          
           // Map field names appropriately and convert types
           const modifiedFields = Object.keys(updates).reduce(
             (acc, key) => {
-              // Skip if value hasn't changed
-              if (updates[key] === mpData[activeStructuralState]?.[key]) {
-                return acc;
-              }
-
-              // Special field name mapping
-              if (key === 'roof_material') {
-                acc['structural_roof_material'] = updates[key];
-              }
-              // Handle framing_spacing conversion to integer
-              else if (key === 'framing_spacing') {
-                const spacing =
-                  typeof updates[key] === 'string'
-                    ? parseInt(updates[key] as string, 10)
-                    : Number(updates[key]);
-
-                if (!isNaN(spacing)) {
-                  acc[key] = spacing;
+              // For new states or modified fields, include them
+              if (!mpData[activeStructuralState] || updates[key] !== mpData[activeStructuralState]?.[key]) {
+                // Special field name mapping
+                if (key === 'roof_material') {
+                  acc['structural_roof_material'] = updates[key];
                 }
-              } else {
-                acc[key] = updates[key];
+                // Handle framing_spacing conversion to integer
+                else if (key === 'framing_spacing') {
+                  const spacing =
+                    typeof updates[key] === 'string'
+                      ? parseInt(updates[key] as string, 10)
+                      : Number(updates[key]);
+
+                  if (!isNaN(spacing)) {
+                    acc[key] = spacing;
+                  }
+                } else {
+                  acc[key] = updates[key];
+                }
               }
 
               return acc;
@@ -334,14 +351,13 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
             {} as Record<string, any>
           );
 
-          if (Object.keys(modifiedFields).length > 0) {
+          // Always proceed with the update for new states, even if no fields were explicitly modified
+          if (Object.keys(modifiedFields).length > 0 || !mpData[activeStructuralState]) {
             success = await handleUpdate('structural_info', modifiedFields);
             if (success) {
+              // Update mpData with the new or updated state
               setMpData((prev) => {
-                // Create a copy of the current MP data
                 const prevMpData = prev[activeStructuralState] || {};
-
-                // Build updated MP data with proper field mapping
                 const updatedMpData = { ...prevMpData };
 
                 // Handle special case for roof material
@@ -364,10 +380,12 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
               });
             }
           } else {
+            toast.info('No changes made, Structural State created. ');
             success = true;
           }
           break;
 
+        // Other cases remain the same
         case 'attachment':
           success = await handleUpdate('attachment', {
             attachment_spacing: updates.attachment_spacing,
@@ -412,6 +430,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       }
     }
 
+    // Reset tempSelectedValues based on current mpData for the active state
     setTempSelectedValues(
       stateName === 'structuralInfo'
         ? mpData[activeStructuralState] || {}
@@ -577,9 +596,27 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     const lastState = structuralInfoStates[structuralInfoStates.length - 1];
     const newStateNumber = parseInt(lastState.replace('MP', '')) + 1;
     const newState = `MP${newStateNumber}`;
-    setStructuralInfoStates((prev) => [...prev, newState]);
+    
+    // Initialize the new state with default values or clone from the last state
+    const lastStateData = mpData[lastState] || {};
+    
+    // Create a deep copy of the last state's data for the new state
+    const newStateData = { ...lastStateData };
+    
+    // Update the mpData with the new state
+    setMpData(prev => ({
+      ...prev,
+      [newState]: newStateData
+    }));
+    
+    setStructuralInfoStates(prev => [...prev, newState]);
     setActiveStructuralState(newState);
-    setEditStates((prev) => ({ ...prev, structuralInfo: true }));
+    
+    // Set temp values to the new state's data
+    setTempSelectedValues(newStateData);
+    
+    // Enable edit mode
+    setEditStates(prev => ({ ...prev, structuralInfo: true }));
   };
 
   const handleDeleteState = async (stateToDelete: string) => {

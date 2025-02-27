@@ -690,11 +690,14 @@ const ProjectPerformence = () => {
     }
   }, [projectStatus, pipelineData]);
 
+  
+  const isStaging = process.env.REACT_APP_ENV;
+
 
   const showNewPage =
     role === TYPE_OF_USER.DEALER_OWNER ||
     role === TYPE_OF_USER.REGIONAL_MANGER ||
-    role === TYPE_OF_USER.SALES_REPRESENTATIVE;
+    (role === TYPE_OF_USER.SALES_REPRESENTATIVE && isStaging === 'staging');
 
 
   const navigate = useNavigate();
@@ -702,7 +705,7 @@ const ProjectPerformence = () => {
     navigate('/pipeline/pipeline_data', { state: { selectedDealer } });
   };
 
-  const isStaging = process.env.REACT_APP_ENV;
+  
 
 
   return (

@@ -193,21 +193,35 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	var currSaleRep models.CombinedResult
 	var add bool
-	filteredResults := make([]models.CombinedResult, 0, len(combinedResults)) // Create a new slice
 
 	if len(combinedResults) > 0 {
+		var filteredResults []models.CombinedResult
+		var topThreeList []models.CombinedResult
+
+		// First pass: assign ranks and handle highlighted item
 		for i, val := range combinedResults {
+			currVal := val // Create a copy to modify
+			currVal.Rank = i + 1
+
 			if val.HighLight {
-				currSaleRep = val
-				currSaleRep.Rank = i + 1
+				currSaleRep = currVal
 				add = true
-				continue // Skip adding this entry to filteredResults
+				// // Still add highlighted item to filtered results
+				// filteredResults = append(filteredResults, currVal)
+			} else {
+				filteredResults = append(filteredResults, currVal)
 			}
-			val.Rank = i + 1
-			filteredResults = append(filteredResults, val)
+
+			// Add to top three if rank is 1, 2, or 3
+			if currVal.Rank <= 3 {
+				topThreeList = append(topThreeList, currVal)
+			}
 		}
 
-		LeaderBoardList.TopLeaderBoardList = Paginate(filteredResults, 1, 3)
+		// Assign the top three directly
+		LeaderBoardList.TopLeaderBoardList = topThreeList
+
+		// Use Paginate for the main leaderboard list
 		LeaderBoardList.LeaderBoardList = Paginate(filteredResults, dataReq.PageNumber, dataReq.PageSize)
 	} else {
 		LeaderBoardList.TopLeaderBoardList = []models.CombinedResult{}

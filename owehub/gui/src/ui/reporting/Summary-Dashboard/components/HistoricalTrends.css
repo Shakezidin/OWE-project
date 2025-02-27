@@ -1,0 +1,213 @@
+/* Container */
+.historical-trends {
+  background-color: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+.historical-trends h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.overview-title {
+    font-size: 16px;
+    margin-right: -125px;
+    margin-left: 19px;
+    color: #101828;
+    font-weight: 600;
+  }
+/* Top Section: Filters + Dropdowns */
+.top-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Filters Section */
+/* Filters Section */
+/* Filters Section */
+/* Filters */
+.filters {
+  display: flex;
+  /* gap: 8px; */
+}
+/* General Button Styles */
+.filter-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  /* border-radius: 20px; */
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease-in-out;
+  background-color: #F6F6F8;
+  color:#2A2626;
+  border-radius: 0; /* Default, so we only add border-radius to first/last buttons */
+  min-width: 100px;
+  text-align: center;
+  position: relative;
+}
+
+/* Only the first button */
+.filter-button:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  
+  /* Only the last button */
+  .filter-button:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+/* Add Thin Right Border Except Last Button */
+.filter-button:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  height: 100%;
+  width: 0.8px;
+  background: #ddd;
+}
+
+/* Active (Selected) Button - Black Background with White Text */
+.filter-button.active {
+  background-color: #222;
+  color: white !important;
+}
+
+/* Color Indicator Circle (Small Dot) */
+.color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* Specific Colors for Dots */
+.color-dot.sales {
+  background-color: #20c6c6;
+}
+.color-dot.ntp {
+  background-color: #627ef7;
+}
+.color-dot.install {
+  background-color: #ec5df7;
+}
+.color-dot.battery {
+  background-color: #e5b600;
+}
+.color-dot.cancel {
+  background-color: #E1D6FB !important;
+}
+
+/* Hide dot when button is selected */
+.filter-button.active .color-dot {
+  display: none;
+}
+
+/* Dropdowns */
+/* Right Side (Dropdowns + Zoom) */
+.top-right-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.dropdown-container {
+  display: flex;
+  gap: 12px;
+}
+
+.dropdown-button {
+  padding: 8px 14px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.dropdown-button:hover {
+  background-color: #f3f3f3;
+}
+
+/* Chart Container */
+.chart-container {
+  width: 100%;
+  height: 400px;
+}
+
+/* Zoom Controls (Right Side of Chart) */
+.zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.zoom-button {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.zoom-button:hover {
+  background-color: #f3f3f3;
+}
+
+.scrollable-x-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+  }
+  
+  .chart-container {
+    max-width: 100%;
+    overflow-x: scroll;
+  }
+  
+  .chart-wrapper {
+    max-width: 100%;
+    position: relative;
+  }
+  
+  .chart-wrapper::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .chart-wrapper::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+  
+  .chart-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  .recharts-yAxis {
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 1;
+    background-color: white; /* Ensure solid background */
+  }
+  
+  /* Ensure the Y-axis container is wide enough and opaque */
+  .recharts-yAxis .recharts-cartesian-axis-ticks {
+    background-color: white;
+  }

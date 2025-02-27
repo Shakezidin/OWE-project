@@ -18,6 +18,7 @@ import useWindowWidth from '../../../hooks/useWindowWidth';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import useAuth from '../../../hooks/useAuth';
+// import TrendingSection from './components/TrendingSection';
 interface Option {
   value: string;
   label: string;
@@ -231,7 +232,6 @@ const Summary_Dashboard = () => {
     []
   );
 
-
   useEffect(() => {
     if (role === 'Admin' || isShowDropdown) {
       getNewFormData();
@@ -246,21 +246,18 @@ const Summary_Dashboard = () => {
     }
     setNewFormData(res.data);
 
-
     const amData: Option[] = res?.data?.account_manager
       ? [
-        { label: 'OWE', value: 'All' },
-        ...(res.data.account_manager as string[]).map((state) => ({
-          label: state,
-          value: state,
-        })),
-      ]
+          { label: 'OWE', value: 'All' },
+          ...(res.data.account_manager as string[]).map((state) => ({
+            label: state,
+            value: state,
+          })),
+        ]
       : [{ label: 'OWE', value: 'All' }];
     setAM(amData);
     setDrop(false);
   };
-
-
 
   const handleButtonClick = (buttonName: any) => {
     setActiveButton(buttonName);
@@ -270,11 +267,9 @@ const Summary_Dashboard = () => {
     setLine(!line);
   };
 
-
   const handlePercButtonClick = (buttonName: any) => {
     setActivePerc(buttonName);
   };
-
 
   const handleOpen = () => {
     setOpen(true);
@@ -285,8 +280,6 @@ const Summary_Dashboard = () => {
 
   //Api Integration
   const dispatch = useAppDispatch();
-
-
 
   useEffect(() => {
     dispatch(
@@ -304,7 +297,6 @@ const Summary_Dashboard = () => {
   const { summaryData, loading } = useAppSelector(
     (state) => state.reportingSlice
   );
-
 
   useEffect(() => {
     setSummaryDataState(summaryData?.data?.data?.summary);
@@ -484,9 +476,12 @@ const Summary_Dashboard = () => {
                           <div className={classes.top_box_top}>
                             <div className={classes.top_box_head}>
                               <p>
-                                {key === "ntp" ? "NTP" : key === "mW ntp" ? "mW NTP" : key}
+                                {key === 'ntp'
+                                  ? 'NTP'
+                                  : key === 'mW ntp'
+                                    ? 'mW NTP'
+                                    : key}
                               </p>
-
                             </div>
                             {data && (
                               <>
@@ -533,6 +528,7 @@ const Summary_Dashboard = () => {
             )}
           </div>
         </div>
+
         <div className={classes.bottom_box}>
           <div className={classes.bottom_box_chart1}>
             <p>Monthly Progress</p>
@@ -612,24 +608,25 @@ const Summary_Dashboard = () => {
                 />
                 {!(isMobile || isTablet) ? (
                   <div className={classes.bottom_box_chart2_head_buttons}>
-
                     {data.map((item) => (
                       <div
                         key={item.value}
                         className={`${classes.bottom_box_button} ${activeButton === item.value ? classes.active : ''}`}
                         style={{
-                          borderBottomLeftRadius: item.value === "projects_sold" ? "10px" : "0px",
-                          borderTopLeftRadius: item.value === "projects_sold" ? "10px" : "0px",
-                          borderBottomRightRadius: item.value === "batteries_ct" ? "10px" : "0px",
-                          borderTopRightRadius: item.value === "batteries_ct" ? "10px" : "0px",
+                          borderBottomLeftRadius:
+                            item.value === 'projects_sold' ? '10px' : '0px',
+                          borderTopLeftRadius:
+                            item.value === 'projects_sold' ? '10px' : '0px',
+                          borderBottomRightRadius:
+                            item.value === 'batteries_ct' ? '10px' : '0px',
+                          borderTopRightRadius:
+                            item.value === 'batteries_ct' ? '10px' : '0px',
                         }}
                         onClick={() => handleButtonClick(item.value)}
                       >
                         {item.label}
                       </div>
                     ))}
-
-
                   </div>
                 ) : (
                   <SelectOption
@@ -678,6 +675,10 @@ const Summary_Dashboard = () => {
               </div>
             )}
           </div>
+
+          {/* <div>
+            <TrendingSection/>
+          </div> */}
         </div>
       </div>
     </>
