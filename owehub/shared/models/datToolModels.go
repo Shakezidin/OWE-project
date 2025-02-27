@@ -269,7 +269,10 @@ type ExistingPvInfo struct {
 
 // //////// DROP DOWN Request RESPONSE STRUCTURE ///////////////////////////////////////////////
 type DropdownRequest struct {
-	DropDownList []string `json:"drop_down_list"`
+	//DropDownList []string `json:"drop_down_list"`
+	Structure     string `json:"structure"`
+	RoofType      string `json:"roof_type"`
+	RackingMethod string `json:"racking_method"`
 }
 type DropdownResponse struct {
 	Data map[string][]interface{} `json:"data"`
