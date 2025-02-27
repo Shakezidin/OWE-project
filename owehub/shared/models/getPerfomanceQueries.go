@@ -330,7 +330,7 @@ func QcNtpRetrieveQueryFunc() string {
 
 func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(fmt.Sprintf(`
@@ -359,7 +359,7 @@ func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
 
 func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(fmt.Sprintf(`
@@ -384,7 +384,7 @@ func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
 
 func PendingActionPageTileQuery(filterUserQuery, searchValue string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(fmt.Sprintf(`
@@ -654,7 +654,7 @@ func PipelineTileDataAboveQuery(filterUserQuery, projectStatus string) string {
 
 func PipelineSurveyTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
@@ -673,7 +673,7 @@ func PipelineSurveyTileData(filterUserQuery, projectStatus string) string {
 
 func PipelineCadTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT 'CAD Queue' AS queue_status ,COUNT(*) AS distinct_customer_count
@@ -695,7 +695,7 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
 
 func PipelinePermitTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineTileDataQuery := fmt.Sprintf(`
            SELECT
@@ -722,7 +722,7 @@ func PipelinePermitTileData(filterUserQuery, projectStatus string) string {
 
 func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
@@ -745,7 +745,7 @@ func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 
 func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
@@ -805,7 +805,7 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 
 func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineTileDataQuery := fmt.Sprintf(`
     SELECT 
@@ -824,7 +824,7 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
 
 func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
@@ -842,7 +842,7 @@ func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
 
 func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
@@ -880,7 +880,7 @@ func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, search
 
 func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
@@ -928,7 +928,7 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
 
 func PipelinePermitDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
@@ -974,7 +974,7 @@ func PipelinePermitDataBelow(filterUserQuery, projectStatus, queueStatus, search
 
 func PipelineRoofingDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
@@ -1010,7 +1010,7 @@ func PipelineRoofingDataBelow(filterUserQuery, projectStatus, queueStatus, searc
 
 func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
@@ -1053,7 +1053,7 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
 
 func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineDataQuery := fmt.Sprintf(`
     SELECT
@@ -1083,7 +1083,7 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
 
 func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, searchValue string) string {
 	if filterUserQuery != "" {
-		filterUserQuery += "AND " + filterUserQuery
+		filterUserQuery = "AND " + filterUserQuery
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
