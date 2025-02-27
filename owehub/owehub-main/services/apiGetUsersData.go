@@ -175,14 +175,14 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// EmailID
 		EmailID, emailOk := item["email_id"].(string)
 		if !emailOk || EmailID == "" {
-			log.FuncWarnTrace(0, "Failed to get EmailID for Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get EmailID for Item: %+v\n", item)
 			EmailID = ""
 		}
 
 		// MobileNumber
 		MobileNumber, mobileOk := item["mobile_number"].(string)
 		if !mobileOk || MobileNumber == "" {
-			log.FuncWarnTrace(0, "Failed to get MobileNumber for Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get MobileNumber for Item: %+v\n", item)
 			MobileNumber = ""
 		}
 
