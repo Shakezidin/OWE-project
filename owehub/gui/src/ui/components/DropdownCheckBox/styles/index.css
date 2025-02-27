@@ -83,3 +83,11 @@ span.disbaled-label {
 .dropdown-checkbox .dropdown-toggle.active svg {
   color: var(--primary-color);
 }
+
+
+@media (max-width: 768px) {
+  .dropdown-checkbox {
+    min-width: 0;
+    border-radius: 8px;
+  }
+}
