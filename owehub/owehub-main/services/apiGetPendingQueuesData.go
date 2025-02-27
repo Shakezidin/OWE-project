@@ -154,7 +154,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			return
 		} else if len(data) == 0 {
 			tileData := models.GetPendingQueueTileResp{}
-			log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+			log.FuncWarnTrace(0, "empty data set from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
 			return
 		}
@@ -167,7 +167,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			return
 		} else if len(data) == 0 {
 			tileData := models.GetPendingQueueTileResp{}
-			log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+			log.FuncWarnTrace(0, "empty data set from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
 			return
 		}
@@ -199,7 +199,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		HomeOwner, ok := item["home_owner"].(string)
 		if !ok || HomeOwner == "" {
 			HomeOwner = ""
-			log.FuncErrorTrace(0, "Failed to get HomeOwner. Item: %+v\n", item)
+			log.FuncWarnTrace(0, "Failed to get HomeOwner. Item: %+v\n", item)
 		}
 
 		ntpDate, ok := item["ntp_date"].(time.Time)
