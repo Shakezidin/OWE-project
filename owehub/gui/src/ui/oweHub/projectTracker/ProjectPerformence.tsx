@@ -567,7 +567,7 @@ const ProjectPerformence = () => {
     },
     {
       id: '6',
-      title: 'MPU/FIN',
+      title: 'FIN',
       value: titleData.inspection_count,
       pending: 'inspection',
     },
@@ -763,7 +763,7 @@ const ProjectPerformence = () => {
                 handleActiveTab('Hold & Jeopardy'), setPage(1);
               }}
             >
-              Hold & Jeopardy
+              Non Active
             </button>
             <button
               disabled={loading || isLoading}
