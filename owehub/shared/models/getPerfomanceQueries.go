@@ -1059,20 +1059,20 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
     SELECT
 		DISTINCT ON (fin.customer_unique_id)
         fin.customer_unique_id AS customer_unique_id,
-        cc.customer_name AS home_owner,
-        cc.dealer,
-        cc.primary_sales_rep,
-        cc.email_address AS customer_email,
-        cc.phone_number AS customer_phone_number,
-        cc.address,
-        cc.state,
-        cc.total_system_cost AS contract_total,
-        cc.contracted_system_size AS system_size,
+        cust.customer_name AS home_owner,
+        cust.dealer,
+        cust.primary_sales_rep,
+        cust.email_address AS customer_email,
+        cust.phone_number AS customer_phone_number,
+        cust.address,
+        cust.state,
+        cust.total_system_cost AS contract_total,
+        cust.contracted_system_size AS system_size,
         fin.created_on AS fin_created_date,
         fin.pv_fin_date AS fin_pass_date,
         install.pv_completion_date AS install_completed_date
     FROM fin_permits_fin_schema AS fin
-    LEFT JOIN customers_customers_schema cc ON cc.unique_id = fin.customer_unique_id
+    LEFT JOIN customers_customers_schema cust ON cust.unique_id = fin.customer_unique_id
     LEFT JOIN pv_install_install_subcontracting_schema install ON install.customer_unique_id = fin.customer_unique_id
 	WHERE 
         fin.project_status IN (%v)
