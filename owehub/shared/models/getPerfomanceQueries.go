@@ -815,7 +815,7 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
     LEFT JOIN 
         customers_customers_schema AS cust ON fin.customer_unique_id = cust.unique_id
     WHERE 
-        fin.project_status IN ('%v')
+        fin.project_status IN (%v)
     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
     %v`, projectStatus, filterUserQuery)
 
@@ -1075,7 +1075,7 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
     LEFT JOIN customers_customers_schema cc ON cc.unique_id = fin.customer_unique_id
     LEFT JOIN pv_install_install_subcontracting_schema install ON install.customer_unique_id = fin.customer_unique_id
 	WHERE 
-        fin.project_status IN ('%v')
+        fin.project_status IN (%v)
     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
     %v %v`, projectStatus, filterUserQuery, searchValue)
 	return PipelineDataQuery
