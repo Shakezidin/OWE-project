@@ -168,7 +168,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// Name
 		Name, nameOk := item["name"].(string)
 		if !nameOk || Name == "" {
-			log.FuncErrorTrace(0, "Failed to get Name for Item: %+v\n", item)
+			log.FuncWarnTrace(0, "Failed to get Name for Item: %+v\n", item)
 			Name = ""
 		}
 
@@ -189,48 +189,41 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// Designation
 		Designation, designationOk := item["user_designation"].(string)
 		if !designationOk || Designation == "" {
-			log.FuncErrorTrace(0, "Failed to get Designation for Item: %+v\n", item)
+			log.FuncWarnTrace(0, "Failed to get Designation for Item: %+v\n", item)
 			Designation = ""
 		}
 
 		// RoleName
 		RoleName, roleOk := item["role_name"].(string)
 		if !roleOk || RoleName == "" {
-			log.FuncErrorTrace(0, "Failed to get RoleName for Item: %+v\n", item)
+			log.FuncWarnTrace(0, "Failed to get RoleName for Item: %+v\n", item)
 			RoleName = ""
 		}
 
 		// UserCode
 		UserCode, codeOk := item["user_code"].(string)
 		if !codeOk || UserCode == "" {
-			log.FuncErrorTrace(0, "Failed to get UserCode for Item: %+v\n", item)
+			log.FuncWarnTrace(0, "Failed to get UserCode for Item: %+v\n", item)
 			UserCode = ""
 		}
 
 		// PasswordChangeReq
 		PasswordChangeReq, passOk := item["password_change_required"].(bool)
 		if !passOk {
-			log.FuncErrorTrace(0, "Failed to get PasswordChangeReq for Item: %+v\n", item)
+			log.FuncWarnTrace(0, "Failed to get PasswordChangeReq for Item: %+v\n", item)
 		}
 
 		// ReportingManager
 		ReportingManager, managerOk := item["reporting_manager"].(string)
 		if !managerOk || ReportingManager == "" {
-			log.FuncErrorTrace(0, "Failed to get ReportingManager for Item: %+v\n", item)
+			log.FuncWarnTrace(0, "Failed to get ReportingManager for Item: %+v\n", item)
 			ReportingManager = ""
 		}
-
-		// // DealerOwner
-		// DealerOwner, dealerownerOk := item["dealer_owner"].(string)
-		// if !dealerownerOk || DealerOwner == "" {
-		// 	log.FuncErrorTrace(0, "Failed to get DealerOwner for Item: %+v\n", item)
-		// 	DealerOwner = ""
-		// }
 
 		// UserStatus
 		UserStatus, statusOk := item["user_status"].(string)
 		if !statusOk || UserStatus == "" {
-			log.FuncErrorTrace(0, "Failed to get UserStatus for Item: %+v\n", item)
+			log.FuncWarnTrace(0, "Failed to get UserStatus for Item: %+v\n", item)
 			UserStatus = ""
 		}
 
@@ -313,13 +306,13 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		var tablePermissions []models.GetTablePermission
 		err = json.Unmarshal(tablesPermissionsJSON, &tablePermissions)
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to unmarshall table permission data err: %v", err)
+			log.FuncWarnTrace(0, "Failed to unmarshall table permission data err: %v", err)
 		}
 
 		// Assign Manager Name
 		ManagerRole, managerRoleOK := item["manager_role"].(string)
 		if !managerRoleOK || ManagerRole == "" {
-			log.FuncErrorTrace(0, "Failed to get manager name for Item: %+v\n", item)
+			log.FuncWarnTrace(0, "Failed to get manager name for Item: %+v\n", item)
 			ManagerRole = ""
 		}
 
