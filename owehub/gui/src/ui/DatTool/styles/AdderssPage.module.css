@@ -241,19 +241,12 @@
   }
   .adderssPageMainPart_Right{
     width: 100%;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 
   }
   .wrapper{
     margin-right: 0px;
   }
-  /* .adderssPageMainPart_rightBarContainer{
-    flex-direction: column;
-  } */
-  /* .wrapper{
-    margin: 0px 20px;
-    margin-right: 20px !important;
-  } */
    .adderssPageTopPart{
     padding:2rem;
    }
