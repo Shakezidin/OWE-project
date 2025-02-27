@@ -173,6 +173,7 @@ const DealerTablePipeline = () => {
     });
   }
 
+
   const filterClose = () => {
     setFilterModal(false);
   };
@@ -284,7 +285,7 @@ const DealerTablePipeline = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'detailed_pipeline.csv');
+      link.setAttribute('download', 'Projects Data Entry & Aging Report.csv');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -320,7 +321,8 @@ const DealerTablePipeline = () => {
               }}
               onClick={handleClick}
             />
-            <h2>Pipeline</h2>
+            <h2>Projects Data Entry & Aging Report</h2>
+            
           </div>
           <div className="newp-filInp">
             <div className="inp-cont">
