@@ -249,4 +249,7 @@
     height: calc(60vh - 240px);
     padding-left: 1rem;
   }
+  .container{
+    height:calc(60vh - 112px);
+  }
 }
