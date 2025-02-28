@@ -165,9 +165,15 @@
         height: 76vh;
     }
     .newp-filInp{
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+        padding-left: 24px;
+    }
+    .newp-heading-container {
         flex-direction: column;
         gap: 10px;
-        align-items: flex-start;
+        align-items: start;
     }
 }
 

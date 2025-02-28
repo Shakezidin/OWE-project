@@ -162,7 +162,7 @@ const GeneralPage: React.FC<generalProps> = ({
     { label: 'Aurora ID', value: generalData?.dat_aurora_id || '' },
     {
       label: 'Site Capture URL',
-      value: (generalData?.site_capture_url) || '',
+      value: generalData?.site_capture_url || '',
       type: 'url',
     },
     // {
@@ -185,7 +185,7 @@ const GeneralPage: React.FC<generalProps> = ({
     datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
     datChangeLayout: { value: '', changed: false },
     datChangeProduction: { value: '', changed: false },
-});
+  });
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -194,67 +194,64 @@ const GeneralPage: React.FC<generalProps> = ({
     const { value } = e.target;
 
     setGeneralDatInfo((prevState) => {
-
-
       const updatedState = { ...prevState };
 
       switch (label) {
         case 'Module QTY':
-            updatedState.datModuleQTY.value = value;
-            updatedState.datModuleQTY.changed = true;
-            break;
+          updatedState.datModuleQTY.value = value;
+          updatedState.datModuleQTY.changed = true;
+          break;
         case 'Module Type':
-            updatedState.datModuleType.value = value;
-            updatedState.datModuleType.changed = true;
-            break;
+          updatedState.datModuleType.value = value;
+          updatedState.datModuleType.changed = true;
+          break;
         case 'Design Version':
-            updatedState.datDesignVersion.value = value;
-            updatedState.datDesignVersion.changed = true;
-            break;
+          updatedState.datDesignVersion.value = value;
+          updatedState.datDesignVersion.changed = true;
+          break;
         case 'Designer Name':
-            updatedState.datDesignerName.value = value;
-            updatedState.datDesignerName.changed = true;
-            break;
+          updatedState.datDesignerName.value = value;
+          updatedState.datDesignerName.changed = true;
+          break;
         case 'Aurora ID':
-            updatedState.datAuroraID.value = value;
-            updatedState.datAuroraID.changed = true;
-            break;
+          updatedState.datAuroraID.value = value;
+          updatedState.datAuroraID.changed = true;
+          break;
         case 'AC':
-            updatedState.datSystemSizeAC.value = value;
-            updatedState.datSystemSizeAC.changed = true;
-            break;
+          updatedState.datSystemSizeAC.value = value;
+          updatedState.datSystemSizeAC.changed = true;
+          break;
         case 'DC':
-            updatedState.datSystemSizeDC.value = value;
-            updatedState.datSystemSizeDC.changed = true;
-            break;
+          updatedState.datSystemSizeDC.value = value;
+          updatedState.datSystemSizeDC.changed = true;
+          break;
         case 'Change Order Required':
-            updatedState.datChangeOrderRequired.value = value;
-            updatedState.datChangeOrderRequired.changed = true;
-            break;
+          updatedState.datChangeOrderRequired.value = value;
+          updatedState.datChangeOrderRequired.changed = true;
+          break;
         case 'Inverter Type':
-            updatedState.datInverterType.value = value;
-            updatedState.datInverterType.changed = true;
-            break;
+          updatedState.datInverterType.value = value;
+          updatedState.datInverterType.changed = true;
+          break;
         case 'Battery Type':
-            updatedState.datBatteryType.value = value;
-            updatedState.datBatteryType.changed = true;
-            break;
+          updatedState.datBatteryType.value = value;
+          updatedState.datBatteryType.changed = true;
+          break;
         case 'Site Capture URL':
-            updatedState.datSiteCaptureURL.value = value;
-            updatedState.datSiteCaptureURL.changed = true;
-            break;
+          updatedState.datSiteCaptureURL.value = value;
+          updatedState.datSiteCaptureURL.changed = true;
+          break;
         case 'Layout':
-            updatedState.datChangeLayout.value = value;
-            updatedState.datChangeLayout.changed = true;
-            break;
+          updatedState.datChangeLayout.value = value;
+          updatedState.datChangeLayout.changed = true;
+          break;
         case 'Production':
-            updatedState.datChangeProduction.value = value;
-            updatedState.datChangeProduction.changed = true;
-            break;
+          updatedState.datChangeProduction.value = value;
+          updatedState.datChangeProduction.changed = true;
+          break;
         default:
-            return prevState;
-    }
-    
+          return prevState;
+      }
 
       return updatedState;
     });
@@ -266,26 +263,52 @@ const GeneralPage: React.FC<generalProps> = ({
       updateDatTool({
         project_id: currentGeneralId,
         general_dat_information: {
-          ...(generalDatInfo.datModuleQTY.changed && { dat_module_qty: Number(generalDatInfo.datModuleQTY.value) }),
-          ...(generalDatInfo.datModuleType.changed && { dat_module_type: generalDatInfo.datModuleType.value }),
-          ...(generalDatInfo.datDesignVersion.changed && { dat_design_version: Number(generalDatInfo.datDesignVersion.value) }),
-          ...(generalDatInfo.datDesignerName.changed && { dat_designer_name: generalDatInfo.datDesignerName.value }),
-          ...(generalDatInfo.datAuroraID.changed && { dat_aurora_id: generalDatInfo.datAuroraID.value }),
-          ...(generalDatInfo.datSystemSizeAC.changed && { dat_system_size_ac: generalDatInfo.datSystemSizeAC.value }),
-          ...(generalDatInfo.datSystemSizeDC.changed && { dat_system_size_dc: generalDatInfo.datSystemSizeDC.value }),
-          ...(generalDatInfo.datChangeOrderRequired.changed && { dat_change_order_required: generalDatInfo.datChangeOrderRequired.value }),
-          ...(generalDatInfo.datInverterType.changed && { dat_inverter_type: generalDatInfo.datInverterType.value }),
-          ...(generalDatInfo.datBatteryType.changed && { dat_battery_type: generalDatInfo.datBatteryType.value }),
-          ...(generalDatInfo.datSiteCaptureURL.changed && { dat_site_capture_url: generalDatInfo.datSiteCaptureURL.value }),
-          ...(generalDatInfo.datChangeLayout.changed && { dat_change_layout: generalDatInfo.datChangeLayout.value }),
-          ...(generalDatInfo.datChangeProduction.changed && { dat_change_production: generalDatInfo.datChangeProduction.value }),
+          ...(generalDatInfo.datModuleQTY.changed && {
+            dat_module_qty: Number(generalDatInfo.datModuleQTY.value),
+          }),
+          ...(generalDatInfo.datModuleType.changed && {
+            dat_module_type: generalDatInfo.datModuleType.value,
+          }),
+          ...(generalDatInfo.datDesignVersion.changed && {
+            dat_design_version: Number(generalDatInfo.datDesignVersion.value),
+          }),
+          ...(generalDatInfo.datDesignerName.changed && {
+            dat_designer_name: generalDatInfo.datDesignerName.value,
+          }),
+          ...(generalDatInfo.datAuroraID.changed && {
+            dat_aurora_id: generalDatInfo.datAuroraID.value,
+          }),
+          ...(generalDatInfo.datSystemSizeAC.changed && {
+            dat_system_size_ac: generalDatInfo.datSystemSizeAC.value,
+          }),
+          ...(generalDatInfo.datSystemSizeDC.changed && {
+            dat_system_size_dc: generalDatInfo.datSystemSizeDC.value,
+          }),
+          ...(generalDatInfo.datChangeOrderRequired.changed && {
+            dat_change_order_required:
+              generalDatInfo.datChangeOrderRequired.value,
+          }),
+          ...(generalDatInfo.datInverterType.changed && {
+            dat_inverter_type: generalDatInfo.datInverterType.value,
+          }),
+          ...(generalDatInfo.datBatteryType.changed && {
+            dat_battery_type: generalDatInfo.datBatteryType.value,
+          }),
+          ...(generalDatInfo.datSiteCaptureURL.changed && {
+            dat_site_capture_url: generalDatInfo.datSiteCaptureURL.value,
+          }),
+          ...(generalDatInfo.datChangeLayout.changed && {
+            dat_change_layout: generalDatInfo.datChangeLayout.value,
+          }),
+          ...(generalDatInfo.datChangeProduction.changed && {
+            dat_change_production: generalDatInfo.datChangeProduction.value,
+          }),
         },
-        
       })
-    ).then(()=>{
+    ).then(() => {
       toast.success('Data Updated Successfully');
     });
-    setGeneralDatInfo(prevState => ({
+    setGeneralDatInfo((prevState) => ({
       ...prevState,
       datModuleQTY: { ...prevState.datModuleQTY, changed: false },
       datModuleType: { ...prevState.datModuleType, changed: false },
@@ -294,20 +317,21 @@ const GeneralPage: React.FC<generalProps> = ({
       datAuroraID: { ...prevState.datAuroraID, changed: false },
       datSystemSizeAC: { ...prevState.datSystemSizeAC, changed: false },
       datSystemSizeDC: { ...prevState.datSystemSizeDC, changed: false },
-      datChangeOrderRequired: { ...prevState.datChangeOrderRequired, changed: false },
+      datChangeOrderRequired: {
+        ...prevState.datChangeOrderRequired,
+        changed: false,
+      },
       datInverterType: { ...prevState.datInverterType, changed: false },
       datBatteryType: { ...prevState.datBatteryType, changed: false },
       datSiteCaptureURL: { ...prevState.datSiteCaptureURL, changed: false },
       datChangeLayout: { ...prevState.datChangeLayout, changed: false },
       datChangeProduction: { ...prevState.datChangeProduction, changed: false },
     }));
-    
   };
   return (
     <div className={styles.genMain}>
       {loading ? (
         <div className={styles.loaderContainer}>
-          
           <MicroLoader />
         </div>
       ) : generalData ? (
@@ -330,7 +354,6 @@ const GeneralPage: React.FC<generalProps> = ({
             </div>
           </div>
 
-          
           <div className={styles.genSecRight}>
             <div className={styles.genSecRightHdr}>
               <p>DAT Information</p>
@@ -358,15 +381,12 @@ const GeneralPage: React.FC<generalProps> = ({
               </div>
             </div>
 
-            
             <div className={styles.genSecRightMain}>
               <div className={styles.genSecRightMainLft}>
-                
                 {datFields.map((field, index) => (
                   <InputField
                     key={index}
                     label={field.label}
-                    
                     value={
                       generalDatInfo[
                         `dat${field.label.replaceAll(' ', '')}` as GeneralDatInfoKeys
@@ -384,8 +404,14 @@ const GeneralPage: React.FC<generalProps> = ({
                   <label>System Size</label>
                   <div className={styles.acdc}>
                     {['AC', 'DC'].map((label) => (
-                      <div key={label} className={styles.acdcInp} style={{backgroundColor:isDatEditing? "#f5f5fd" : "",
-                        borderRadius: isDatEditing? "28px" : ""}}>
+                      <div
+                        key={label}
+                        className={styles.acdcInp}
+                        style={{
+                          backgroundColor: isDatEditing ? '#f5f5fd' : '',
+                          borderRadius: isDatEditing ? '28px' : '',
+                        }}
+                      >
                         <input
                           type="text"
                           placeholder="---"
@@ -412,12 +438,11 @@ const GeneralPage: React.FC<generalProps> = ({
               </div>
 
               <div className={styles.genSecRightMainRht}>
-                
                 {datRightFields.map((field, index) => (
                   <InputField
                     key={index}
                     label={field.label}
-                    placeholder='---'
+                    placeholder="---"
                     value={
                       generalDatInfo[
                         `dat${field.label.replaceAll(' ', '')}` as GeneralDatInfoKeys
@@ -434,57 +459,57 @@ const GeneralPage: React.FC<generalProps> = ({
                   <label>Changes</label>
                   <div className={styles.acdc}>
                     {['Layout', 'Production'].map((label) => (
-                      <div key={label} className={styles.acdcInp} style={{backgroundColor:isDatEditing? "#f5f5fd" : "",
-                        borderRadius: isDatEditing? "28px" : "",paddingTop:isDatEditing?"0px":"", paddingBottom:isDatEditing?"0px":"",}}>
+                      <div
+                        key={label}
+                        className={styles.acdcInp}
+                        style={{
+                          backgroundColor: isDatEditing ? '#f5f5fd' : '',
+                          borderRadius: isDatEditing ? '28px' : '',
+                          paddingTop: isDatEditing ? '0px' : '',
+                          paddingBottom: isDatEditing ? '0px' : '',
+                        }}
+                      >
                         <input
                           type="text"
-                          placeholder='---'
+                          placeholder="---"
                           value={
                             generalDatInfo[
                               `datChange${label}` as GeneralDatInfoKeys
                             ].value
-                            
                           }
                           className={`${styles.inputFieldDatt} ${isDatEditing ? styles.editablee : ''}`}
                           disabled={!isDatEditing}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             handleInputChange(e, label)
-                            
                           }
-                          
                         />
-                        <label style={{ fontWeight: 500 , paddingRight:"0.8rem"}}>{label}</label>
+                        <label
+                          style={{ fontWeight: 500, paddingRight: '0.8rem' }}
+                        >
+                          {label}
+                        </label>
                       </div>
                     ))}
                   </div>
                 </div>
 
-
-
-
                 <div>
                   <label> change Order Required</label>
                   <div className={styles.genSecRightMainRht}>
-                   
-                     
-                        <input
-                          type="text"
-                          placeholder='---'
-                          value={
-                            generalDatInfo[
-                              `datChangeOrderRequired` as GeneralDatInfoKeys
-                            ].value
-                            
-                          }
-                          className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
-                          disabled={!isDatEditing}
-                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            handleInputChange(e, "Change Order Required")
-                            
-                          }
-                          
-                        />
-                    
+                    <input
+                      type="text"
+                      placeholder="---"
+                      value={
+                        generalDatInfo[
+                          `datChangeOrderRequired` as GeneralDatInfoKeys
+                        ].value
+                      }
+                      className={`${styles.inputFieldDat} ${isDatEditing ? styles.editable : ''}`}
+                      disabled={!isDatEditing}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(e, 'Change Order Required')
+                      }
+                    />
                   </div>
                 </div>
               </div>

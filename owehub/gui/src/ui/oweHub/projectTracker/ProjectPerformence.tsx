@@ -39,6 +39,7 @@ import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints'
 import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
 import Slider from 'rc-slider';
 import useEscapeKey from '../../../hooks/useEscape';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 interface Option {
   value: string;
   label: string;
@@ -567,7 +568,7 @@ const ProjectPerformence = () => {
     },
     {
       id: '6',
-      title: 'MPU/FIN',
+      title: 'FIN',
       value: titleData.inspection_count,
       pending: 'inspection',
     },
@@ -690,7 +691,7 @@ const ProjectPerformence = () => {
     }
   }, [projectStatus, pipelineData]);
 
-  
+
   const isStaging = process.env.REACT_APP_ENV;
 
 
@@ -705,7 +706,10 @@ const ProjectPerformence = () => {
     navigate('/pipeline/pipeline_data', { state: { selectedDealer } });
   };
 
-  
+  const isMobile = useMatchMedia('(max-width: 767px)');
+
+
+
 
 
   return (
@@ -713,15 +717,33 @@ const ProjectPerformence = () => {
     <div className="project-main-wrp">
       <div className="project-container">
         <div className="project-heading pipeline-heading">
-          <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
+          <h2>{activeTab === 'Active Queue' ? 'Active' : 'Non-Active'}</h2>
           <div className="pipeline-header-btns">
             {(showNewPage) &&
-              <div
-                className='skygroup-btn'
-                onClick={handleNewPage}
-              >
-                <img src={ICONS.sky} alt='sky' />
-              </div>
+              <>
+                <div
+                  className='skygroup-btn'
+                  onClick={handleNewPage}
+                  data-tooltip-id={isMobile ? '' : 'dealer-filter'}
+                >
+                  <img src={ICONS.sky} alt='sky' />
+                </div>
+                <Tooltip
+                  style={{
+                    zIndex: 103,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: '400',
+                  }}
+                  offset={8}
+                  id="dealer-filter"
+                  place="bottom"
+                  content="Projects Data Entry & Aging Report"
+                  className="pagination-tooltip"
+                />
+              </>
             }
             {(showDropdown) && (
               <DropdownCheckbox
@@ -763,7 +785,7 @@ const ProjectPerformence = () => {
                 handleActiveTab('Hold & Jeopardy'), setPage(1);
               }}
             >
-              Hold & Jeopardy
+              Non-Active
             </button>
             <button
               disabled={loading || isLoading}
@@ -946,47 +968,47 @@ const ProjectPerformence = () => {
             </div>
 
             <div className="perf-export-btn relative pipline-export-btn">
-             
-                <div className='filterButtonAddition '>
 
-                  <div
-                    className="pipelineFilterLine"
-                    style={{ backgroundColor: '#377CF6' }}
-                    data-tooltip-id='filter'
-                    onClick={HandleFilterClick}
-                  >
-                    <img
-                      src={ICONS.fil_white}
-                      alt=""
-                      style={{ height: '15px', width: '15px', position: filterAplied ? 'relative' : 'static', left: filterAplied ? '5px' : '0px' }}
-                      className='filterImg'
+              <div className='filterButtonAddition '>
 
-
-                    />
-                    {filterAplied &&
-                      <div className='pipeLine-filter-ActiveSign'></div>
-                    }
-
-                  </div>
+                <div
+                  className="pipelineFilterLine"
+                  style={{ backgroundColor: '#377CF6' }}
+                  data-tooltip-id='filter'
+                  onClick={HandleFilterClick}
+                >
+                  <img
+                    src={ICONS.fil_white}
+                    alt=""
+                    style={{ height: '15px', width: '15px', position: filterAplied ? 'relative' : 'static', left: filterAplied ? '5px' : '0px' }}
+                    className='filterImg'
 
 
-                  <button
-                    disabled={isExportingData}
-                    onClick={ExportCsv}
-                    data-tooltip-id="export"
-                    className={`performance-exportbtn performance-exp-mob flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
-                  >
-                    {isExportingData ? (
-                      <MdDownloading
-                        className="downloading-animation"
-                        size={20}
-                      />
-                    ) : (
-                      <LuImport size={20} />
-                    )}
-                  </button>
+                  />
+                  {filterAplied &&
+                    <div className='pipeLine-filter-ActiveSign'></div>
+                  }
+
                 </div>
-           
+
+
+                <button
+                  disabled={isExportingData}
+                  onClick={ExportCsv}
+                  data-tooltip-id="export"
+                  className={`performance-exportbtn performance-exp-mob flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
+                >
+                  {isExportingData ? (
+                    <MdDownloading
+                      className="downloading-animation"
+                      size={20}
+                    />
+                  ) : (
+                    <LuImport size={20} />
+                  )}
+                </button>
+              </div>
+
 
               <Tooltip
                 style={{

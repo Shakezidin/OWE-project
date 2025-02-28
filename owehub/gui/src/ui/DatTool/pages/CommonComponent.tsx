@@ -329,24 +329,24 @@ const CommonComponent: React.FC<commonComponentProps> = ({
                 ))}
               </div>
               <div className={styles.gridWrapper}>
-              <a
-                href={integrations[2].link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.gOneRightBottomTxt}
-                // style={{ marginTop: '1.2rem' }}
-              >
-                <p className={styles.gOneRightBottomTxtImg}>
-                  <img
-                    src={integrations[2].icon}
-                    alt={`${integrations[2].name} img`}
-                  />
-                  {integrations[2].name}
-                </p>
-                <span>
-                  <FiArrowRight />
-                </span>
-              </a>
+                <a
+                  href={integrations[2].link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.gOneRightBottomTxt}
+                  // style={{ marginTop: '1.2rem' }}
+                >
+                  <p className={styles.gOneRightBottomTxtImg}>
+                    <img
+                      src={integrations[2].icon}
+                      alt={`${integrations[2].name} img`}
+                    />
+                    {integrations[2].name}
+                  </p>
+                  <span>
+                    <FiArrowRight />
+                  </span>
+                </a>
               </div>
             </div>
           </div>
