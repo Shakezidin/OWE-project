@@ -83,6 +83,8 @@ var (
 			RoleAccountExecutive,
 			RoleProjectManager,
 		}, GroupDealerAccounts: {
+			RoleAdmin,
+			RoleSalesManager,
 			RoleDealerOwner,
 			RoleRegionalManager,
 			RoleSalesManager,
