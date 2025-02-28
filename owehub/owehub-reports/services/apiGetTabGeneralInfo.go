@@ -342,70 +342,141 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 	if len(data) <= 0 {
 		err = fmt.Errorf("Dat info not found")
 		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Dat info not found", http.StatusOK, nil)
-		return
+		// appserver.FormAndSendHttpResp(resp, "Dat info not found", http.StatusOK, nil)
+		//return
 	}
 
-	// DAT Information
-	pDATModuleQty, ok := data[0]["module_quantity"].(int64)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT module quantity from db: %+v\n", data)
-	}
+	// if len(data) >= 0 {
+	// 	// DAT Information
+	// pDATModuleQty, ok := data[0]["module_quantity"].(int64)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT module quantity from db: %+v\n", data)
+	// }
 
-	pDATModuleType, ok := data[0]["module_type"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT module type from db: %+v\n", data)
-	}
+	// pDATModuleType, ok := data[0]["module_type"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT module type from db: %+v\n", data)
+	// }
 
-	pDATDesignVersion, ok := data[0]["design_version"].(int64)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT design version from db: %+v\n", data)
-	}
+	// pDATDesignVersion, ok := data[0]["design_version"].(int64)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT design version from db: %+v\n", data)
+	// }
 
-	pDATDesignerName, ok := data[0]["designer_name"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT designer name from db: %+v\n", data)
-	}
+	// pDATDesignerName, ok := data[0]["designer_name"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT designer name from db: %+v\n", data)
+	// }
 
-	pDATInverterType, ok := data[0]["inverter_type"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT inverter type from db: %+v\n", data)
-	}
+	// pDATInverterType, ok := data[0]["inverter_type"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT inverter type from db: %+v\n", data)
+	// }
 
-	pDATBatteryType, ok := data[0]["battery_type"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT battery type from db: %+v\n", data)
-	}
+	// pDATBatteryType, ok := data[0]["battery_type"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT battery type from db: %+v\n", data)
+	// }
 
-	pDATAuroraId, ok := data[0]["aurora_id"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT designer name from db: %+v\n", data)
-	}
+	// pDATAuroraId, ok := data[0]["aurora_id"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT designer name from db: %+v\n", data)
+	// }
 
-	pDATSysteSizeAC, ok := data[0]["system_size_ac"].(float64)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT system size AC from db: %+v\n", data)
-	}
+	// pDATSysteSizeAC, ok := data[0]["system_size_ac"].(float64)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT system size AC from db: %+v\n", data)
+	// }
 
-	pDATSysteSizeDC, ok := data[0]["system_size_dc"].(float64)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT system size DC from db: %+v\n", data)
-	}
+	// pDATSysteSizeDC, ok := data[0]["system_size_dc"].(float64)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT system size DC from db: %+v\n", data)
+	// }
 
-	pDATChangeLayout, ok := data[0]["changes_layout"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT changes from db: %+v\n", data)
-	}
+	// pDATChangeLayout, ok := data[0]["changes_layout"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT changes from db: %+v\n", data)
+	// }
 
-	// added
-	pDATChangeProduction, ok := data[0]["changes_production"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT changes from db: %+v\n", data)
-	}
+	// // added
+	// pDATChangeProduction, ok := data[0]["changes_production"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT changes from db: %+v\n", data)
+	// }
 
-	pDATChangeOrderRequired, ok := data[0]["changes_order_required"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT change order required from db: %+v\n", data)
+	// pDATChangeOrderRequired, ok := data[0]["changes_order_required"].(string)
+	// if !ok {
+	// 	log.FuncErrorTrace(0, "Failed to get DAT change order required from db: %+v\n", data)
+	// }
+	// }
+
+	// Declare variables outside the if block
+	var (
+		pDATModuleQty           int64
+		pDATModuleType          string
+		pDATDesignVersion       int64
+		pDATDesignerName        string
+		pDATInverterType        string
+		pDATBatteryType         string
+		pDATAuroraId            string
+		pDATSysteSizeAC         float64
+		pDATSysteSizeDC         float64
+		pDATChangeLayout        string
+		pDATChangeProduction    string
+		pDATChangeOrderRequired string
+	)
+
+	if len(data) > 0 { // Fixed: should be > 0 instead of >= 0
+		// DAT Information
+		var ok bool
+
+		if pDATModuleQty, ok = data[0]["module_quantity"].(int64); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT module quantity from db: %+v\n", data)
+		}
+
+		if pDATModuleType, ok = data[0]["module_type"].(string); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT module type from db: %+v\n", data)
+		}
+
+		if pDATDesignVersion, ok = data[0]["design_version"].(int64); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT design version from db: %+v\n", data)
+		}
+
+		if pDATDesignerName, ok = data[0]["designer_name"].(string); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT designer name from db: %+v\n", data)
+		}
+
+		if pDATInverterType, ok = data[0]["inverter_type"].(string); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT inverter type from db: %+v\n", data)
+		}
+
+		if pDATBatteryType, ok = data[0]["battery_type"].(string); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT battery type from db: %+v\n", data)
+		}
+
+		if pDATAuroraId, ok = data[0]["aurora_id"].(string); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT aurora ID from db: %+v\n", data)
+		}
+
+		if pDATSysteSizeAC, ok = data[0]["system_size_ac"].(float64); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT system size AC from db: %+v\n", data)
+		}
+
+		if pDATSysteSizeDC, ok = data[0]["system_size_dc"].(float64); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT system size DC from db: %+v\n", data)
+		}
+
+		if pDATChangeLayout, ok = data[0]["changes_layout"].(string); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT changes from db: %+v\n", data)
+		}
+
+		if pDATChangeProduction, ok = data[0]["changes_production"].(string); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT changes from db: %+v\n", data)
+		}
+
+		if pDATChangeOrderRequired, ok = data[0]["changes_order_required"].(string); !ok {
+			log.FuncErrorTrace(0, "Failed to get DAT change order required from db: %+v\n", data)
+		}
 	}
 
 	apiResponse = models.GetTabGeneralInfoResponse{
