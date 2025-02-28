@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 /******************************************************************************
@@ -119,47 +120,49 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		}
 	}
 
-	whereClause = fmt.Sprintf("WHERE (c.unique_id = '%s')", dataReq.ProjectId)
+	whereClause = fmt.Sprintf("WHERE (c.project_id = '%s')", dataReq.ProjectId)
 
 	// query to fetch data
 	query = fmt.Sprintf(`
 			SELECT
 			--general info
-				c.customer_name,
-				c.unique_id,
+				c.customer_name,			-- project_name
+				c.project_id,				-- project_Id
 				c.address,
 				c.email_address,
 				c.phone_number,
+
 			-- PV Modules info
-				ntp.inverter,
-				p.battery,
-				fire.ac_system_size,
-				ntp.battery_count,
+				p.pv_module_type,   				-- pv module type
+				p.pv_inverter_type, 			-- inverter
+				p.battery_type, 					-- battery
+				-- dc system size
+				-- ac system size
+				--  battery capacity
+
 			-- AHJ and Utility Info
-				ahj.ahj_link,
-				cad.install_site_capture,
-				utility.utility_portal,
-				c.record_url,
+				-- ahj,
+				-- utility,
+				c.office,                   	 -- branch name
+				c.finance_company_rel,			-- lender name
+				-- aurora link,
+				c.record_url,            		 -- tape url
+				c.install_site_capture,  		 -- site capture url
+
 			-- Contract Information
-				sales.contract_date,
-				p.pv_module_quantity,
-				p.pv_module_type,
-				p.pv_inverter_type,
-				p.battery_type,
-				prospect.annual_estimated_production
+				c.sale_date,               -- contract date
+				p.pv_module_quantity,      	 -- module quantity
+				p.pv_module_type,  	   		 -- pv module type
+				p.pv_inverter_type, 			 -- inverter type 
+				p.battery_type, 				-- battery type
+				-- ac/dc system size
+				c.contracted_system_size		 -- Total production
 			
-				
-			FROM customers_customers_schema as c
-			LEFT JOIN ntp_ntp_schema AS ntp ON c.record_id = ntp.record_id
+			FROM customers_customers_schema as c 
 			LEFT JOIN planset_cad_schema AS p ON c.record_id = p.record_id
-			LEFT JOIN fire_permits_permit_fin_schema AS fire ON c.record_id = fire.record_id
-			LEFT JOIN ahj_db_database_hub_schema AS ahj ON c.record_id = ahj.record_id
-			LEFT JOIN cad_cad_schema AS cad ON c.record_id = cad.record_id
-			LEFT JOIN utility_db_database_hub_schema AS utility ON c.record_id = utility.record_id
-			LEFT JOIN sales_metrics_schema AS sales ON c.record_id = sales.record_id
-			LEFT JOIN prospects_customers_schema AS prospect ON c.record_id = prospect.record_id
+
 			%s
-			ORDER BY c.unique_id;
+			ORDER BY c.project_id;
 		`, whereClause)
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
@@ -177,12 +180,13 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
+	// General Info
 	pName, ok := data[0]["customer_name"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get project name from db : %+v\n", data)
 	}
 
-	pId, ok := data[0]["unique_id"].(string)
+	pId, ok := data[0]["project_id"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get project ID from db: %+v\n", data)
 	}
@@ -202,12 +206,22 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		log.FuncErrorTrace(0, "Failed to get email ID from db: %+v\n", data)
 	}
 
-	//////////////////////////////////////
+	// pv module info
 	pPVModuleType, ok := data[0]["pv_module_type"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get PV module type from db: %+v\n", data)
 	}
 
+	pInverter, ok := data[0]["pv_inverter_type"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get inverter from db: %+v\n", data)
+	}
+
+	pBattery, ok := data[0]["battery_type"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get battery from db: %+v\n", data)
+	}
+	// not confirmed from 261 line to 275 line.
 	pDCSystemSize, ok := data[0]["dc_system_size"].(float64)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get DC system size from db: %+v\n", data)
@@ -223,37 +237,29 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		log.FuncErrorTrace(0, "Failed to get battery capacity from db: %+v\n", data)
 	}
 
-	pInverter, ok := data[0]["inverter"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get inverter from db: %+v\n", data)
-	}
-
-	pBattery, ok := data[0]["battery"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get battery from db: %+v\n", data)
-	}
-	/////////////////////////////////
-
+	// ahj and utility info
+	//not confirmed
 	pAHJ, ok := data[0]["ahj_link"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get AHJ from db: %+v\n", data)
 	}
-
+	//not confirmed
 	pUtility, ok := data[0]["utility_portal"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get utility from db: %+v\n", data)
 	}
 
-	pBranch, ok := data[0]["branch"].(string)
+	pBranch, ok := data[0]["office"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get branch from db: %+v\n", data)
 	}
 
-	pLender, ok := data[0]["lender"].(string)
+	pLender, ok := data[0]["finance_company_rel"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get lender from db: %+v\n", data)
 	}
 
+	// not confirmed
 	pAuroraLink, ok := data[0]["aurora_link"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get Aurora link from db: %+v\n", data)
@@ -269,8 +275,8 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		log.FuncErrorTrace(0, "Failed to get Site Capture URL from db: %+v\n", data)
 	}
 
-	////////////////////////////
-	pContractDate, ok := data[0]["contract_date"].(string)
+	// contract information
+	pContractDate, ok := data[0]["sale_date"].(time.Time)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get contract date from db: %+v\n", data)
 	}
@@ -293,59 +299,114 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get battery type from db: %+v\n", data)
 	}
+	// not confirmed
 	pAcDcSystemSize, ok := data[0]["system_size"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get ac dc system size from db: %+v\n", data)
 	}
-	// pTotalProduction, ok := data[0]["annual_estimated_production"].(float64)
-	// if !ok {
-	// 	log.FuncErrorTrace(0, "Failed to get total production from db: %+v\n", data)
-	// }
 
-	///////////////////////////////////
-	pDATModuleQty, ok := data[0]["dat_module_qty"].(int64)
+	pTotalProductionTape, ok := data[0]["contracted_system_size"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get total production from tape tb : %+v\n", data)
+	}
+
+	// retrieving DAT TOOL INFO from local database
+	query = fmt.Sprintf(` 
+		SELECT
+			dat.module_quantity,
+			dat.design_version,
+			dat.module_type,
+			dat.designer_name,
+			dat.inverter_type,
+			dat.aurora_id,
+			dat.battery_type,
+			dat.site_capture_url,
+			dat.system_size_ac,
+			dat.system_size_dc,
+			dat.changes_layout,
+			dat.changes_production,
+			dat.changes_order_required
+
+			FROM dat_information AS dat
+			INNER JOIN project2revision AS p ON dat.project_revision_id = p.id
+			WHERE p.project_id = '%s';
+		`, dataReq.ProjectId)
+
+	data, err = db.ReteriveFromDB(db.DatToolDB, query, nil)
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get data from Dat tool DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch data", http.StatusBadRequest, nil)
+		return
+	}
+
+	if len(data) <= 0 {
+		err = fmt.Errorf("Dat info not found")
+		log.FuncErrorTrace(0, "%v", err)
+		appserver.FormAndSendHttpResp(resp, "Dat info not found", http.StatusOK, nil)
+		return
+	}
+
+	// DAT Information
+	pDATModuleQty, ok := data[0]["module_quantity"].(int64)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get DAT module quantity from db: %+v\n", data)
 	}
 
-	pDATModuleType, ok := data[0]["dat_module_type"].(string)
+	pDATModuleType, ok := data[0]["module_type"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get DAT module type from db: %+v\n", data)
 	}
 
-	pDATDesignVersion, ok := data[0]["dat_design_version"].(int64)
+	pDATDesignVersion, ok := data[0]["design_version"].(int64)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get DAT design version from db: %+v\n", data)
 	}
 
-	pDATDesignerName, ok := data[0]["dat_designer_name"].(string)
+	pDATDesignerName, ok := data[0]["designer_name"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get DAT designer name from db: %+v\n", data)
 	}
 
-	pDATAuroraId, ok := data[0]["dat_aurora_id"].(string)
+	pDATInverterType, ok := data[0]["inverter_type"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get DAT inverter type from db: %+v\n", data)
+	}
+
+	pDATBatteryType, ok := data[0]["battery_type"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get DAT battery type from db: %+v\n", data)
+	}
+
+	pDATAuroraId, ok := data[0]["aurora_id"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get DAT designer name from db: %+v\n", data)
 	}
 
-	pDATSysteSizeAC, ok := data[0]["dat_system_size_ac"].(string)
+	pDATSysteSizeAC, ok := data[0]["system_size_ac"].(float64)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get DAT system size AC from db: %+v\n", data)
 	}
 
-	pDATSysteSizeDC, ok := data[0]["dat_system_size_dc"].(string)
+	pDATSysteSizeDC, ok := data[0]["system_size_dc"].(float64)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get DAT system size DC from db: %+v\n", data)
 	}
 
-	pDATChanges, ok := data[0]["dat_changes"].(string)
+	pDATChangeLayout, ok := data[0]["changes_layout"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get DAT changes from db: %+v\n", data)
 	}
 
-	pDATChangeOrder, ok := data[0]["dat_change_order"].(string)
+	// added
+	pDATChangeProduction, ok := data[0]["changes_production"].(string)
 	if !ok {
-		log.FuncErrorTrace(0, "Failed to get DAT change order from db: %+v\n", data)
+		log.FuncErrorTrace(0, "Failed to get DAT changes from db: %+v\n", data)
+	}
+
+	pDATChangeOrderRequired, ok := data[0]["changes_order_required"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get DAT change order required from db: %+v\n", data)
 	}
 
 	apiResponse = models.GetTabGeneralInfoResponse{
@@ -375,24 +436,29 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		SiteCaptureURL: pSiteCaptureURL,
 
 		// Contract information
-		ContractDate:    pContractDate,
-		ModuleQty:       pModuleQty,
-		ModuleType:      pModuleType,
-		InverterType:    pInverterType,
-		BatteryType:     pBatteryType,
-		AcDcSystemSize:  pAcDcSystemSize,
-		TotalProduction: pTotalProduction,
+		ContractDate:        pContractDate,
+		ModuleQty:           pModuleQty,
+		ModuleType:          pModuleType,
+		InverterType:        pInverterType,
+		BatteryType:         pBatteryType,
+		AcDcSystemSize:      pAcDcSystemSize,
+		TotalProductionTape: pTotalProductionTape,
 
 		// DAT information
 		DATModuleQty:     pDATModuleQty,
 		DATModuleType:    pDATModuleType,
 		DATDesignVersion: pDATDesignVersion,
 		DATDesignerName:  pDATDesignerName,
-		DATAuroraId:      pDATAuroraId,
-		DATSysteSizeAC:   pDATSysteSizeAC,
-		DATSysteSizeDC:   pDATSysteSizeDC,
-		DATChanges:       pDATChanges,
-		DATChangeOrder:   pDATChangeOrder,
+		DATInverterType:  pDATInverterType,
+		DATBatteryType:   pDATBatteryType,
+
+		DATAuroraId:            pDATAuroraId,
+		DATSysteSizeAC:         pDATSysteSizeAC,
+		DATSysteSizeDC:         pDATSysteSizeDC,
+		DATChangeLayout:        pDATChangeLayout,
+		DATChangeProduction:    pDATChangeProduction,
+		DATChangeOrderRequired: pDATChangeOrderRequired,
+		DATTotalProduction:     pTotalProduction,
 	}
 
 	appserver.FormAndSendHttpResp(resp, "Project Data", http.StatusOK, apiResponse, 0)
