@@ -35,8 +35,9 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 		whereEleList []interface{}
 		updateFields []string
 		recordCount  int64
-	// paginationClause string
-	// sortValue        string
+		// paginationClause string
+		// sortValue        string
+		//queryParameters []interface{}
 	)
 
 	log.EnterFn(0, "HandleUpdateDatToolRequest")
@@ -677,7 +678,7 @@ func HandleUpdateDatToolRequest(resp http.ResponseWriter, req *http.Request) {
 	// query
 	//query = fmt.Sprintf("UPDATE leads_info SET %s WHERE leads_id = $%d", strings.Join(updateFields, ", "), len(whereEleList))
 
-	//err, res := db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
+	//err, res := db.UpdateDataInDB(db.DatToolDB, query, whereEleList)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update data err: %v", err)
