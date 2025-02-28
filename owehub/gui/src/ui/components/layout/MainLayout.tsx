@@ -63,13 +63,17 @@ const MainLayout = () => {
 
   /** logout  */
   const logoutUser = (message?: string) => {
-    dispatch(activeSessionTimeout());
-    dispatch(logout());
-    filterAuthData();
-    navigate('/login');
-    toast.error(
-      message ? message : 'Session time expired. Please login again..'
-    );
+    // Ensure toast is shown before state changes
+    const showMessage = message || 'Session time expired. Please login again..';
+    toast.error(showMessage, {
+      toastId: 'session-timeout',
+      onClose: () => {
+        dispatch(activeSessionTimeout());
+        dispatch(logout());
+        filterAuthData();
+        navigate('/login');
+      }
+    });
   };
 
   /** check idle time  */
