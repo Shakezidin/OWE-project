@@ -320,7 +320,7 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 			dat.inverter_type,
 			dat.aurora_id,
 			dat.battery_type,
-			dat.site_capture_url,
+			-- dat.site_capture_url,
 			dat.system_size_ac,
 			dat.system_size_dc,
 			dat.changes_layout,
