@@ -56,7 +56,7 @@ func HandleTriggerRowDataUpdateRequest(resp http.ResponseWriter, req *http.Reque
 	}
 
 	// validate reqBody.Action
-	if reqBody.Action != "insert" && reqBody.Action != "update" &&
+	if reqBody.Action != "create" && reqBody.Action != "update" &&
 		reqBody.Action != "delete" && reqBody.Action != "refresh" {
 		err = fmt.Errorf("invalid action \"%s\" in trigger row data update request", reqBody.Action)
 		log.FuncErrorTrace(0, "%v", err)
