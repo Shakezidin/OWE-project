@@ -4,7 +4,10 @@ import { ICONS } from '../../../resources/icons/Icons';
 import { format } from 'date-fns';
 import CommonComponent from './CommonComponent';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { getNotesInfo, updateDatTool } from '../../../redux/apiActions/DatToolAction/datToolAction';
+import {
+  getNotesInfo,
+  updateDatTool,
+} from '../../../redux/apiActions/DatToolAction/datToolAction';
 import DataNotFound from '../../components/loader/DataNotFound';
 import MicroLoader from '../../components/loader/MicroLoader';
 import { time } from 'console';
@@ -21,7 +24,6 @@ interface Note {
 }
 
 const NotePage = ({ currentGeneralId }: any) => {
-
   //Api Integration
   const dispatch = useAppDispatch();
 
@@ -29,14 +31,19 @@ const NotePage = ({ currentGeneralId }: any) => {
     dispatch(getNotesInfo({ project_id: currentGeneralId }));
   }, [currentGeneralId]);
 
-  const { loading, notesData, error } = useAppSelector((state) => state.datSlice);
+  const { loading, notesData, error } = useAppSelector(
+    (state) => state.datSlice
+  );
 
-  const [selectedCategory, setSelectedCategory] = useState<string>('Structural');
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>('Structural');
   const [currentTime, setCurrentTime] = useState<string>('');
   const [notes, setNotes] = useState<Note[]>([
     {
       category: 'Structural',
-      text: notesData ?? 'Flat Roof (per watt): Additional cost for structural reinforcements required...',
+      text:
+        notesData ??
+        'Flat Roof (per watt): Additional cost for structural reinforcements required...',
     },
     {
       category: 'Electrical',
@@ -59,9 +66,8 @@ const NotePage = ({ currentGeneralId }: any) => {
       text: 'Important details and guidelines for installers to follow...',
     },
   ]);
-  const[myNotes,setMyNotes]=useState<Note[]>([]);
- 
-  
+  const [myNotes, setMyNotes] = useState<Note[]>([]);
+
   const [newNote, setNewNote] = useState<string>('');
 
   useEffect(() => {
@@ -79,10 +85,6 @@ const NotePage = ({ currentGeneralId }: any) => {
     };
   }, [notes]);
 
-
-
-
-
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
   };
@@ -99,24 +101,37 @@ const NotePage = ({ currentGeneralId }: any) => {
       //     timestamp: formattedTime
       //   }
       // ]);
-      setMyNotes(myNotes.map((note: any) => 
-        note.title === selectedCategory 
-          ? { ...note, description: [...note.description, { note: newNote, created_at: formattedTime }] } 
-          : note
-      ));
-      await dispatch(updateDatTool(
-              {project_id: currentGeneralId,notes_values : {title:selectedCategory,description: [{note:newNote,created_at:formattedTime}]}  }
-            ));
-      
+      setMyNotes(
+        myNotes.map((note: any) =>
+          note.title === selectedCategory
+            ? {
+                ...note,
+                description: [
+                  ...note.description,
+                  { note: newNote, created_at: formattedTime },
+                ],
+              }
+            : note
+        )
+      );
+      await dispatch(
+        updateDatTool({
+          project_id: currentGeneralId,
+          notes_values: {
+            title: selectedCategory,
+            description: [{ note: newNote, created_at: formattedTime }],
+          },
+        })
+      );
+
       setNewNote('');
     }
   };
 
-
-  useEffect(()=>{
+  useEffect(() => {
     setMyNotes(notesData);
-  },[notesData])
-  console.log("testttt")
+  }, [notesData]);
+  console.log('testttt');
   return (
     <div className={styles.genMain}>
       {loading ? (
@@ -135,61 +150,73 @@ const NotePage = ({ currentGeneralId }: any) => {
             {/* Sidebar */}
             <div className={styles.sidebarContainer}>
               <div className={styles.sidebar}>
-
                 {notesData.map((category: any, index: any) => (
                   <div
                     key={category.title}
-                    className={`${styles.sidebarItem} ${selectedCategory === category.title ? styles.sidebarItemActive : ''
-                      }`}
+                    className={`${styles.sidebarItem} ${
+                      selectedCategory === category.title
+                        ? styles.sidebarItemActive
+                        : ''
+                    }`}
                     onClick={() => handleCategoryClick(category.title)}
                   >
                     <div className={styles.categoryName}>{category.title}</div>
                     <div
-                      className={`${styles.categoryName1} ${selectedCategory === category.title
-                        ? styles.cat1Active
-                        : styles.cat1InActive
-                        }`}
+                      className={`${styles.categoryName1} ${
+                        selectedCategory === category.title
+                          ? styles.cat1Active
+                          : styles.cat1InActive
+                      }`}
                     >
                       {category.description[0].note.length > 75
                         ? category.description[0].note.slice(0, 75) + '...'
                         : category.description[0].note}
                     </div>
                     <div
-                      className={`${styles.categoryTime} ${selectedCategory === category.title ? styles.cat1Active : ''
-                        }`}
+                      className={`${styles.categoryTime} ${
+                        selectedCategory === category.title
+                          ? styles.cat1Active
+                          : ''
+                      }`}
                     >
-                      {format((category.description[0].created_at), 'dd MMM yyyy hh:mm a')}
+                      {format(
+                        category.description[0].created_at,
+                        'dd MMM yyyy hh:mm a'
+                      )}
                     </div>
                   </div>
                 ))}
-
               </div>
             </div>
 
             <div className={styles.notesPanel}>
               <div className={styles.notes}>
-                <div className={styles.notes_head} style={{ position: "sticky", top: "0" }}>
+                <div
+                  className={styles.notes_head}
+                  style={{ position: 'sticky', top: '0' }}
+                >
                   Notes
                 </div>
                 {myNotes?.length > 0 ? (
-  myNotes
-    .filter((note: any) => note.title === selectedCategory)
-    .map((note: any) => (
-      <div key={note.title} className={styles.multinotes}>
-        {note.description.map((desc: any, index: any) => (
-          <div key={index} className={styles.note}>
-            {desc.note}
-            <div className={styles.notes_currTime}>
-              {format(desc.created_at, 'dd MMM yyyy hh:mm a')}
-            </div>
-          </div>
-        ))}
-      </div>
-    ))
-) : (
-  <div className={styles.noNotesMessage}>No notes available for this category.</div>
-)}
-
+                  myNotes
+                    .filter((note: any) => note.title === selectedCategory)
+                    .map((note: any) => (
+                      <div key={note.title} className={styles.multinotes}>
+                        {note.description.map((desc: any, index: any) => (
+                          <div key={index} className={styles.note}>
+                            {desc.note}
+                            <div className={styles.notes_currTime}>
+                              {format(desc.created_at, 'dd MMM yyyy hh:mm a')}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ))
+                ) : (
+                  <div className={styles.noNotesMessage}>
+                    No notes available for this category.
+                  </div>
+                )}
               </div>
               <div className={styles.addNote}>
                 <textarea
@@ -212,7 +239,9 @@ const NotePage = ({ currentGeneralId }: any) => {
           </div>
         </>
       ) : (
-        <div style={{ display: 'flex', justifyContent: 'center' ,height:"70vh" }}>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', height: '70vh' }}
+        >
           <DataNotFound />
         </div>
       )}
