@@ -283,7 +283,7 @@
   flex-direction: row;
   align-items: center;
   gap: 18px;
-  padding: 48px 20px;
+  padding: 49px 20px;
   border-radius: 18px;
   background-color: #ffffff;
   width: 100%;
@@ -433,11 +433,11 @@
 .imageViewerContainer {
 }
 
-.UploadIconThumbnail:hover{
+.UploadIconThumbnail:hover {
   color: black;
-    transform: scale(1.05);
-    background-color: #d5e4ff;
-} 
+  transform: scale(1.05);
+  background-color: #d5e4ff;
+}
 .UploadIcon:hover {
   color: #fff;
   transform: scale(1.05);
@@ -778,20 +778,20 @@
   transition: transform 0.2s ease;
 }
 
-.deselectContainer{
+.deselectContainer {
   display: flex;
   gap: 8px;
   align-items: center;
   justify-content: center;
 }
 
-.deselectText{
+.deselectText {
   font-weight: 500;
   font-size: 14px;
   color: #fff;
 }
 
-.selectAllButton{
+.selectAllButton {
   font-weight: 500;
   font-size: 14px;
   color: #292929;
@@ -838,8 +838,8 @@
 }
 
 @media (min-width: 480px) and (max-width: 1025px) {
-  .uploadImage{
-    padding: 63px 20px;
+  .uploadImage {
+    padding: 64px 20px;
   }
 }
 @media (min-width: 480px) and (max-width: 840px) {
@@ -847,9 +847,10 @@
     margin-right: 0;
     padding: 0 0.8rem 0.8rem 0.8rem;
   }
-  .UploadIconContent{
+  .UploadIconContent {
     margin-right: 0px;
   }
-  .uploadImage{
-    padding: 52px 20px;  }
+  .uploadImage {
+    padding: 46px 20px;
+  }
 }
