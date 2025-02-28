@@ -18,7 +18,7 @@ import useWindowWidth from '../../../hooks/useWindowWidth';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import useAuth from '../../../hooks/useAuth';
-// import TrendingSection from './components/TrendingSection';
+import TrendingSection from './components/TrendingSection';
 interface Option {
   value: string;
   label: string;
@@ -676,9 +676,9 @@ const Summary_Dashboard = () => {
             )}
           </div>
 
-          {/* <div>
+          <div>
             <TrendingSection/>
-          </div> */}
+          </div> 
         </div>
       </div>
     </>
