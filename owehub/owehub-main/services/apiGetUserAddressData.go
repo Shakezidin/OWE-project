@@ -94,7 +94,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 			filter, whereEleList = PrepareAdminDlrAddressFilters(tableName, dataReq, false, false)
 		case string(types.RoleDealerOwner):
 			filter, whereEleList = PrepareAdminDlrAddressFilters(tableName, dataReq, false, false)
-		case string(types.RoleAccountManager), string(types.RoleAccountExecutive) , string(types.RoleProjectManager) :
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive), string(types.RoleProjectManager):
 			dealerNames, err := FetchProjectDealerForAmAndAe(dataReq.Email, role)
 			if err != nil {
 				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
@@ -180,37 +180,37 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 		Address, ok := item["address"].(string)
 		if !ok || Address == "" {
-			log.FuncErrorTrace(0, "Failed to get Address for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncWarnTrace(0, "Failed to get Address for Record ID %v. Item: %+v\n", UniqueId, item)
 			Address = ""
 		}
 
 		State, ok := item["state"].(string)
 		if !ok || State == "" {
-			log.FuncErrorTrace(0, "Failed to get State for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncWarnTrace(0, "Failed to get State for Record ID %v. Item: %+v\n", UniqueId, item)
 			State = ""
 		}
 
 		HomeOwner, ok := item["home_owner"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get HomeOwner for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncWarnTrace(0, "Failed to get HomeOwner for Record ID %v. Item: %+v\n", UniqueId, item)
 			HomeOwner = ""
 		}
 
 		Latitude, ok := item["address_lat"].(float64)
 		if !ok || Latitude == 0.0 {
-			log.FuncErrorTrace(0, "Failed to get latitude for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncWarnTrace(0, "Failed to get latitude for Record ID %v. Item: %+v\n", UniqueId, item)
 			Latitude = 0.0
 		}
 
 		Longitude, ok := item["address_lng"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Longitude for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncWarnTrace(0, "Failed to get Longitude for Record ID %v. Item: %+v\n", UniqueId, item)
 			Longitude = 0.0
 		}
 
 		ProjectStatus, ok := item["project_status"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get ProjectStatus for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncWarnTrace(0, "Failed to get ProjectStatus for Record ID %v. Item: %+v\n", UniqueId, item)
 			ProjectStatus = ""
 		}
 
