@@ -717,7 +717,7 @@ const ProjectPerformence = () => {
     <div className="project-main-wrp">
       <div className="project-container">
         <div className="project-heading pipeline-heading">
-          <h2>{activeTab === 'Active Queue' ? 'Active' : 'Non Active'}</h2>
+          <h2>{activeTab === 'Active Queue' ? 'Active' : 'Non-Active'}</h2>
           <div className="pipeline-header-btns">
             {(showNewPage) &&
               <>
@@ -785,7 +785,7 @@ const ProjectPerformence = () => {
                 handleActiveTab('Hold & Jeopardy'), setPage(1);
               }}
             >
-              Non Active
+              Non-Active
             </button>
             <button
               disabled={loading || isLoading}

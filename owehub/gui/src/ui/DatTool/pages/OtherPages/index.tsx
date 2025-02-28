@@ -6,9 +6,13 @@ import Select from '../../components/Select';
 import styles from '../../styles/OtherPage.module.css';
 import { InverterConfigParent, MpptKey, MpptConfig } from './types';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { getDropdownList, getOtherInfo, updateDatTool } from '../../../../redux/apiActions/DatToolAction/datToolAction';
+import {
+  getDropdownList,
+  getOtherInfo,
+  updateDatTool,
+} from '../../../../redux/apiActions/DatToolAction/datToolAction';
 import MicroLoader from '../../../components/loader/MicroLoader';
-import style2 from '../../styles/AdderssPage.module.css'
+import style2 from '../../styles/AdderssPage.module.css';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { toast } from 'react-toastify';
 
@@ -27,25 +31,45 @@ interface ModifiedFields {
 
 interface StringInverterProps {
   parentConfig: InverterConfigParent;
-  onParentChange: (field: "inverter" | "max", value: string | number) => void;
-  onConfigChange: (mppt: MpptKey, field: keyof MpptConfig, value: string) => void;
-  inverterOptions?: string[];  // Add this line
+  onParentChange: (field: 'inverter' | 'max', value: string | number) => void;
+  onConfigChange: (
+    mppt: MpptKey,
+    field: keyof MpptConfig,
+    value: string
+  ) => void;
+  inverterOptions?: string[]; // Add this line
 }
 
-type SectionKeys = 'electrical_equipment_info' | 'site_info' | 'existing_pv_system_info';
+type SectionKeys =
+  | 'electrical_equipment_info'
+  | 'site_info'
+  | 'existing_pv_system_info';
 
 // Configuration for integer fields
 const INTEGER_FIELDS: Record<string, string[]> = {
-  electrical_equipment_info: ['busbar_rating', 'main_breaker_rating', 'available_backfeed'],
+  electrical_equipment_info: [
+    'busbar_rating',
+    'main_breaker_rating',
+    'available_backfeed',
+  ],
   site_info: ['number_of_stories', 'points_of_interconnection'],
-  existing_pv_system_info: ['module_quantity', 'inverter1.quantity', 'inverter2.quantity', 'existing_calculated_backfeed_without_125']
+  existing_pv_system_info: [
+    'module_quantity',
+    'inverter1.quantity',
+    'inverter2.quantity',
+    'existing_calculated_backfeed_without_125',
+  ],
 };
 
 const convertToApiFormat = (field: string): string => {
   return field.toLowerCase().replace(/ /g, '_');
 };
 
-const convertValueType = (value: string, fieldName: string, sectionKey: string): string | number => {
+const convertValueType = (
+  value: string,
+  fieldName: string,
+  sectionKey: string
+): string | number => {
   // Type guard to check if sectionKey exists in INTEGER_FIELDS
   if (sectionKey in INTEGER_FIELDS) {
     const integerFields = INTEGER_FIELDS[sectionKey];
@@ -58,17 +82,18 @@ const convertValueType = (value: string, fieldName: string, sectionKey: string):
   return value;
 };
 
-const Card: React.FC<CardProps> = ({ 
-  title, 
-  fields, 
-  onSave, 
-  options, 
+const Card: React.FC<CardProps> = ({
+  title,
+  fields,
+  onSave,
+  options,
   currentGeneralId,
-  sectionKey 
+  sectionKey,
 }) => {
   const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [editedFields, setEditedFields] = useState<Record<string, string>>(fields);
+  const [editedFields, setEditedFields] =
+    useState<Record<string, string>>(fields);
   const [modifiedFields, setModifiedFields] = useState<ModifiedFields>({});
 
   useEffect(() => {
@@ -77,18 +102,18 @@ const Card: React.FC<CardProps> = ({
   }, [fields]);
 
   const handleFieldChange = (field: string, value: string): void => {
-    setEditedFields(prev => ({
+    setEditedFields((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
-  
+
     const apiFieldName = convertToApiFormat(field);
     // Now TypeScript knows sectionKey is a valid key
     const convertedValue = convertValueType(value, apiFieldName, sectionKey);
-    
-    setModifiedFields(prev => ({
+
+    setModifiedFields((prev) => ({
       ...prev,
-      [apiFieldName]: convertedValue
+      [apiFieldName]: convertedValue,
     }));
   };
 
@@ -97,16 +122,16 @@ const Card: React.FC<CardProps> = ({
       setIsEditing(false);
       return;
     }
-  
+
     try {
       // Type assertion to ensure the payload is correctly typed
       const payload = {
         project_id: currentGeneralId,
-        [sectionKey]: modifiedFields
+        [sectionKey]: modifiedFields,
       };
-  
+
       const response = await dispatch(updateDatTool(payload)).unwrap();
-      
+
       if (response) {
         toast.success('Data updated successfully!');
         onSave(editedFields);
@@ -119,7 +144,9 @@ const Card: React.FC<CardProps> = ({
     }
   };
 
-  const getOptionsForField = (key: string): Array<{ label: string; value: string }> => {
+  const getOptionsForField = (
+    key: string
+  ): Array<{ label: string; value: string }> => {
     const fieldOptions = options?.[key];
     if (!fieldOptions) return [];
     return fieldOptions.map((opt) => ({
@@ -144,10 +171,7 @@ const Card: React.FC<CardProps> = ({
             >
               <AiOutlineClose />
             </button>
-            <button
-              className={styles.saveButton}
-              onClick={handleSave}
-            >
+            <button className={styles.saveButton} onClick={handleSave}>
               <AiOutlineCheck />
             </button>
           </div>
@@ -191,10 +215,9 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-
 interface OtherInfoPageProps {
   currentGeneralId: string;
-  loading?:boolean;
+  loading?: boolean;
 }
 interface DropdownData {
   new_or_existing: string[];
@@ -213,8 +236,7 @@ interface DropdownData {
   points_of_interconnection: string[];
   inverter: string[];
 }
-const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
-
+const OtherInfoPage: React.FC<OtherInfoPageProps> = ({ currentGeneralId }) => {
   const [loading, setLoading] = useState(false);
   const [dropdownData, setDropdownData] = useState<DropdownData>({
     new_or_existing: [],
@@ -231,84 +253,84 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
     number_of_stories: [],
     trenching_required: [],
     points_of_interconnection: [],
-    inverter: []
+    inverter: [],
   });
-     const dispatch = useAppDispatch();
-     const { othersData } = useAppSelector((state) => state.datSlice);
-     useEffect(()=>{
-      dispatch(getOtherInfo({ project_id: currentGeneralId }));
-      console.log(othersData,"Others data ");
-    },[currentGeneralId]);
-    const [equipment, setEquipment] = useState({});
+  const dispatch = useAppDispatch();
+  const { othersData } = useAppSelector((state) => state.datSlice);
+  useEffect(() => {
+    dispatch(getOtherInfo({ project_id: currentGeneralId }));
+    console.log(othersData, 'Others data ');
+  }, [currentGeneralId]);
+  const [equipment, setEquipment] = useState({});
 
-    const [system, setSystem] = useState({});
-  
-    const [siteInfo, setSiteInfo] = useState({});
-    
-    const [pvInterconnection, setPvInterconnection] = useState({});
-    
-    const [essInterconnection, setEssInterconnection] = useState({});
-    
-  const [inverterConfigParent, setInverterConfigParent] = useState<InverterConfigParent>({
-    inverter: othersData?.inverterConfigParent?.inverter ?? '---',
-    max: Number(othersData?.inverterConfigParent?.max) || 0,
-    mppt1: {
-      s1: '---',
-      s2: '---'
-    },
-    mppt2: {
-      s1:'---',
-      s2: '---'
-    },
-    mppt3: {
-      s1:'---',
-      s2:'---'
-    },
-    mppt4: {
-      s1:'---',
-      s2:'---'
-    },
-    mppt5: {
-      s1:'---',
-      s2:'---'
-    },
-    mppt6: {
-      s1:'---',
-      s2:'---'
-    },
-    mppt7: {
-      s1:'---',
-      s2:'---'
-    },
-    mppt8: {
-      s1: '---',
-      s2:'---'
-    }
-  });
-  
+  const [system, setSystem] = useState({});
+
+  const [siteInfo, setSiteInfo] = useState({});
+
+  const [pvInterconnection, setPvInterconnection] = useState({});
+
+  const [essInterconnection, setEssInterconnection] = useState({});
+
+  const [inverterConfigParent, setInverterConfigParent] =
+    useState<InverterConfigParent>({
+      inverter: othersData?.inverterConfigParent?.inverter ?? '---',
+      max: Number(othersData?.inverterConfigParent?.max) || 0,
+      mppt1: {
+        s1: '---',
+        s2: '---',
+      },
+      mppt2: {
+        s1: '---',
+        s2: '---',
+      },
+      mppt3: {
+        s1: '---',
+        s2: '---',
+      },
+      mppt4: {
+        s1: '---',
+        s2: '---',
+      },
+      mppt5: {
+        s1: '---',
+        s2: '---',
+      },
+      mppt6: {
+        s1: '---',
+        s2: '---',
+      },
+      mppt7: {
+        s1: '---',
+        s2: '---',
+      },
+      mppt8: {
+        s1: '---',
+        s2: '---',
+      },
+    });
+
   const [roofCoverage, setRoofCoverage] = useState({});
-  
+
   const [measurement, setMeasurement] = useState({});
-  
+
   const [existingPV, setExistingPV] = useState({
     'Module Quantity': '---',
     'Model#': '---',
-    'Wattage': '---',
-    'Module Area':'---',
+    Wattage: '---',
+    'Module Area': '---',
     'Inverter 1 Quantity': '---',
     'Inverter 1 Model#': '---',
-    'Inverter 1 Output(A)':'---',
-    'Inverter 2 Quantity':'---',
-    'Inverter 2 Model#':  '---',
+    'Inverter 1 Output(A)': '---',
+    'Inverter 2 Quantity': '---',
+    'Inverter 2 Model#': '---',
     'Inverter 2 Output(A)': '---',
-    'Backfeed': '---',
+    Backfeed: '---',
   });
-
 
   useEffect(() => {
     // Start loading
     setLoading(true);
-  
+
     // If currentGeneralId exists, fetch other info
     // if (currentGeneralId) {
     //   // Fetch additional info for project
@@ -331,33 +353,45 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
     //       console.error("Error fetching data:", error);
     //     });
     // }
-  
+
     // Fetch dropdown list data
-    dispatch(getDropdownList({
-      drop_down_list: [
-        "new_or_existing", "panel_brand", "busbar_rating", "main_breaker_rating",
-        "system_phase", "system_voltage", "service_entrance", "service_rating",
-        "meter_enclosure_type", "pv_conduct_run", "drywall_cut_needed",
-        "number_of_stories", "trenching_required", "points_of_interconnection", "inverter"
-      ]
-    }))
+    dispatch(
+      getDropdownList({
+        drop_down_list: [
+          'new_or_existing',
+          'panel_brand',
+          'busbar_rating',
+          'main_breaker_rating',
+          'system_phase',
+          'system_voltage',
+          'service_entrance',
+          'service_rating',
+          'meter_enclosure_type',
+          'pv_conduct_run',
+          'drywall_cut_needed',
+          'number_of_stories',
+          'trenching_required',
+          'points_of_interconnection',
+          'inverter',
+        ],
+      })
+    )
       .unwrap()
       .then((data: DropdownData) => {
         setDropdownData(data);
       })
       .catch((error: any) => {
-        console.error("Error fetching dropdown list data:", error);
+        console.error('Error fetching dropdown list data:', error);
       })
       .finally(() => {
         // Stop loading after all async tasks are complete
         setLoading(false);
       });
-  
   }, [currentGeneralId, dispatch]);
-  
 
-
-  const getOptionsForCard = (cardType: string): Partial<Record<string, string[]>> => {
+  const getOptionsForCard = (
+    cardType: string
+  ): Partial<Record<string, string[]>> => {
     switch (cardType) {
       case 'equipment':
         return {
@@ -380,53 +414,63 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
           'Drywall Cut Needed': dropdownData.drywall_cut_needed || [],
           'Number of Stories': dropdownData.number_of_stories || [],
           'Trenching Required': dropdownData.trenching_required || [],
-          'Points of Interconnection': dropdownData.points_of_interconnection || [],
+          'Points of Interconnection':
+            dropdownData.points_of_interconnection || [],
         };
       default:
         return {};
     }
   };
-  
+
   useEffect(() => {
     if (othersData) {
       setEquipment({
         'New Or Existing': othersData?.equipment?.new_or_existing ?? '---',
         'Panel Brand': othersData?.equipment?.panel_brand ?? '---',
-        'Busbar Rating': othersData?.equipment?.busbar_rating?.toString() ?? '---',
-        'Main Breaker Rating': othersData?.equipment?.main_breaker_rating?.toString() ?? '---',
-        'Available Backfeed': othersData?.equipment?.available_backfeed?.toString() ?? '---',
+        'Busbar Rating':
+          othersData?.equipment?.busbar_rating?.toString() ?? '---',
+        'Main Breaker Rating':
+          othersData?.equipment?.main_breaker_rating?.toString() ?? '---',
+        'Available Backfeed':
+          othersData?.equipment?.available_backfeed?.toString() ?? '---',
         'Required Backfeed': othersData?.equipment?.required_backfeed ?? '---',
       });
-  
+
       setSystem({
         'System Phase': othersData?.system?.system_phase ?? '---',
         'System Voltage': othersData?.system?.system_voltage ?? '---',
         'Service Entrance': othersData?.system?.service_entrance ?? '---',
         'Service Rating': othersData?.system?.service_rating ?? '---',
-        'Meter Enclosure Type': othersData?.system?.meter_enclosure_type ?? '---',
+        'Meter Enclosure Type':
+          othersData?.system?.meter_enclosure_type ?? '---',
       });
-  
+
       setSiteInfo({
         'PV Conduit Run': othersData?.siteInfo?.pv_conduct_run ?? '---',
         'Drywall Cut Needed': othersData?.siteInfo?.drywall_cut_needed ?? '---',
-        'Number of Stories': othersData?.siteInfo?.number_of_stories?.toString() ?? '---',
+        'Number of Stories':
+          othersData?.siteInfo?.number_of_stories?.toString() ?? '---',
         'Trenching Required': othersData?.siteInfo?.trenching_required ?? '---',
-        'Points of Interconnection': othersData?.siteInfo?.points_of_interconnection?.toString() ?? '---',
+        'Points of Interconnection':
+          othersData?.siteInfo?.points_of_interconnection?.toString() ?? '---',
       });
-  
+
       setPvInterconnection({
         Type: othersData?.pvInterconnection?.type ?? '---',
-        'Supply/Load Side': othersData?.pvInterconnection?.supply_load_side ?? '---',
+        'Supply/Load Side':
+          othersData?.pvInterconnection?.supply_load_side ?? '---',
         Location: othersData?.pvInterconnection?.location ?? '---',
-        'Sub - Location Tap Details': othersData?.pvInterconnection?.sub_location_tap_details ?? '---',
+        'Sub - Location Tap Details':
+          othersData?.pvInterconnection?.sub_location_tap_details ?? '---',
       });
-  
+
       setEssInterconnection({
         'Backup Type': othersData?.essInterconnection?.backup_type ?? '---',
-        'Transfer Switch': othersData?.essInterconnection?.transfer_switch ?? '---',
+        'Transfer Switch':
+          othersData?.essInterconnection?.transfer_switch ?? '---',
         'Fed By': othersData?.essInterconnection?.fed_by ?? '---',
       });
-  
+
       setInverterConfigParent({
         inverter: othersData?.inverterConfigParent?.inverter ?? '---',
         max: Number(othersData?.inverterConfigParent?.max) || 0,
@@ -463,33 +507,45 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
           s2: othersData?.inverterConfigParent?.mppt8?.s2 ?? '---',
         },
       });
-  
+
       setRoofCoverage({
         'Total Roof Area': othersData?.roofCoverage?.total_roof_area ?? '---',
-        'Area of New Modules': othersData?.roofCoverage?.area_of_new_modules ?? '---',
-        'Area of EXST Modules': othersData?.roofCoverage?.area_of_exst_modules ?? '---',
-        'Coverage Percentage': othersData?.roofCoverage?.coverage_percentage ?? '50%',
+        'Area of New Modules':
+          othersData?.roofCoverage?.area_of_new_modules ?? '---',
+        'Area of EXST Modules':
+          othersData?.roofCoverage?.area_of_exst_modules ?? '---',
+        'Coverage Percentage':
+          othersData?.roofCoverage?.coverage_percentage ?? '50%',
       });
-  
+
       setMeasurement({
         Length: othersData?.measurement?.length ?? '---',
         Width: othersData?.measurement?.width ?? '---',
         Height: othersData?.measurement?.height ?? '---',
         Other: othersData?.measurement?.other ?? '---',
       });
-  
+
       setExistingPV({
-        'Module Quantity': othersData?.existingPV?.module_quantity?.toString() ?? '---',
+        'Module Quantity':
+          othersData?.existingPV?.module_quantity?.toString() ?? '---',
         'Model#': othersData?.existingPV?.model_number ?? '---',
-        'Wattage': othersData?.existingPV?.wattage ?? '---',
+        Wattage: othersData?.existingPV?.wattage ?? '---',
         'Module Area': othersData?.existingPV?.module_area ?? '---',
-        'Inverter 1 Quantity': othersData?.existingPV?.inverter1_info.quantity?.toString() ?? '---',
-        'Inverter 1 Model#': othersData?.existingPV?.inverter1_info.model_number ?? '---',
-        'Inverter 1 Output(A)': othersData?.existingPV?.inverter1_info.output_a ?? '---',
-        'Inverter 2 Quantity': othersData?.existingPV?.inverter2_info.quantity?.toString() ?? '---',
-        'Inverter 2 Model#': othersData?.existingPV?.inverter2_info.model_number ?? '---',
-        'Inverter 2 Output(A)': othersData?.existingPV?.inverter2_info.output_a ?? '---',
-        'Backfeed': othersData?.existingPV?.existing_calculated_backfeed_without_125?.toString() ?? '---',
+        'Inverter 1 Quantity':
+          othersData?.existingPV?.inverter1_info.quantity?.toString() ?? '---',
+        'Inverter 1 Model#':
+          othersData?.existingPV?.inverter1_info.model_number ?? '---',
+        'Inverter 1 Output(A)':
+          othersData?.existingPV?.inverter1_info.output_a ?? '---',
+        'Inverter 2 Quantity':
+          othersData?.existingPV?.inverter2_info.quantity?.toString() ?? '---',
+        'Inverter 2 Model#':
+          othersData?.existingPV?.inverter2_info.model_number ?? '---',
+        'Inverter 2 Output(A)':
+          othersData?.existingPV?.inverter2_info.output_a ?? '---',
+        Backfeed:
+          othersData?.existingPV?.existing_calculated_backfeed_without_125?.toString() ??
+          '---',
       });
     }
   }, [othersData]);
@@ -503,22 +559,22 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
       ) : othersData ? (
         <div className={styles.container}>
           <div className={styles.column}>
-          <Card
-  title="Electrical Equipment Info"
-  fields={equipment}
-  onSave={(fields) => {
-    setEquipment(fields as typeof equipment);
-  }}
-  options={getOptionsForCard('equipment')}
-  currentGeneralId={currentGeneralId}
-  sectionKey="electrical_equipment_info"
-/>
+            <Card
+              title="Electrical Equipment Info"
+              fields={equipment}
+              onSave={(fields) => {
+                setEquipment(fields as typeof equipment);
+              }}
+              options={getOptionsForCard('equipment')}
+              currentGeneralId={currentGeneralId}
+              sectionKey="electrical_equipment_info"
+            />
             <Card
               title="Electrical System Info"
               fields={system}
               onSave={(fields) => {
                 // console.log('electrical_system_info:', fields);
-                setSystem(fields as typeof system)
+                setSystem(fields as typeof system);
               }}
               currentGeneralId={currentGeneralId}
               sectionKey="electrical_system_info"
@@ -528,10 +584,9 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
               title="site_info"
               fields={siteInfo}
               onSave={(fields) => {
-                setSiteInfo(fields as typeof siteInfo)
-
+                setSiteInfo(fields as typeof siteInfo);
               }}
-             currentGeneralId={currentGeneralId}
+              currentGeneralId={currentGeneralId}
               sectionKey="site_Info"
               options={getOptionsForCard('siteInfo')}
             />
@@ -540,25 +595,25 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
               fields={pvInterconnection}
               currentGeneralId={currentGeneralId}
               sectionKey="pv_only_interconnection"
-              onSave={(fields) =>{
+              onSave={(fields) => {
                 // console.log('pv_only_interconnection:', fields);
-                setPvInterconnection(fields as typeof pvInterconnection)
+                setPvInterconnection(fields as typeof pvInterconnection);
               }}
             />
             <Card
               title="ESS Interconnection"
               fields={essInterconnection}
-                            currentGeneralId={currentGeneralId}
+              currentGeneralId={currentGeneralId}
               sectionKey="ess_interconnection"
-              onSave={(fields) =>{
+              onSave={(fields) => {
                 // console.log('ess_interconnection:', fields);
-                setEssInterconnection(fields as typeof essInterconnection)
+                setEssInterconnection(fields as typeof essInterconnection);
               }}
             />
           </div>
 
           <div className={styles.column}>
-          <StringInverterConfig
+            <StringInverterConfig
               currentGeneralId={currentGeneralId}
               parentConfig={inverterConfigParent}
               onParentChange={(field, value) =>
@@ -567,7 +622,11 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
                   [field]: value,
                 }))
               }
-              onConfigChange={(mppt: MpptKey, field: keyof MpptConfig, value: string) =>
+              onConfigChange={(
+                mppt: MpptKey,
+                field: keyof MpptConfig,
+                value: string
+              ) =>
                 setInverterConfigParent((prev) => ({
                   ...prev,
                   [mppt]: {
@@ -583,27 +642,35 @@ const OtherInfoPage: React.FC <OtherInfoPageProps>= ({currentGeneralId}) => {
               fields={roofCoverage}
               currentGeneralId={currentGeneralId}
               sectionKey="roof_coverage_calculator"
-              onSave={(fields) =>{
+              onSave={(fields) => {
                 // console.log('roof_coverage_calculator:', fields);
-                 setRoofCoverage(fields as typeof roofCoverage)
+                setRoofCoverage(fields as typeof roofCoverage);
               }}
             />
             <Card
               title="Measurement Conversion"
               fields={measurement}
-                            currentGeneralId={currentGeneralId}
+              currentGeneralId={currentGeneralId}
               sectionKey="measurement_conversion"
               onSave={(fields) => {
                 console.log('measurement_conversion:', fields);
-                setMeasurement(fields as typeof measurement)
+                setMeasurement(fields as typeof measurement);
               }}
             />
-            <ExistingPVSystemInfo currentGeneralId={currentGeneralId} fields={existingPV} onSave={setExistingPV} />
+            <ExistingPVSystemInfo
+              currentGeneralId={currentGeneralId}
+              fields={existingPV}
+              onSave={setExistingPV}
+            />
           </div>
         </div>
-      ): <div style={{ display: 'flex', justifyContent: 'center',height:"70vh" }}>
-      <DataNotFound />
-    </div>}
+      ) : (
+        <div
+          style={{ display: 'flex', justifyContent: 'center', height: '70vh' }}
+        >
+          <DataNotFound />
+        </div>
+      )}
     </div>
   );
 };
