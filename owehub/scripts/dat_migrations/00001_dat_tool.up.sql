@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS dat_information (
        inverter_type VARCHAR(255),
        aurora_id VARCHAR(255),
        battery_type VARCHAR(255),
-       --site_capture_url VARCHAR(255), not required now
+       site_capture_url VARCHAR(255), not required now
        system_size_ac DOUBLE PRECISION,
        system_size_dc DOUBLE PRECISION,
        changes_layout TEXT,
