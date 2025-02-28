@@ -656,13 +656,11 @@ func PipelineSurveyTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
-	if projectStatus != "'ACTIVE'" {
-		projectStatus = fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", projectStatus)
-	}
 
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Survey Queue' AS queue_status, count(survey.customer_unique_id) AS distinct_customer_count
+            'Survey Queue' AS queue_status, count(survey.
+                customer_unique_id) AS distinct_customer_count
         FROM
 	        survey_survey_schema AS survey
         LEFT JOIN customers_customers_schema AS cust
@@ -671,7 +669,7 @@ func PipelineSurveyTileData(filterUserQuery, projectStatus string) string {
 	        survey.project_status IN (%s) AND
 	        survey.app_status NOT IN ('Reschedule Complete','CANCEL', 'DUPLICATE', 'Complete')
 	        %v;
-        `, projectStatus, filterUserQuery)
+        `, addSurveyStatus(projectStatus), filterUserQuery)
 	return PipelineTileDataQuery
 }
 
@@ -682,10 +680,8 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
 
 	pvDateCheck := ""
 	if projectStatus == "'ACTIVE'" {
-		projectStatus = fmt.Sprintf(`'PTO''D (Service)', 'PTO''d (Audit)', 'PTO''d', %s`, projectStatus)
 		pvDateCheck = "AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')"
 	} else {
-		projectStatus = fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", projectStatus)
 	}
 
 	PipelineTileDataQuery := fmt.Sprintf(`
@@ -697,8 +693,8 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
             cad.active_inactive = 'Active'
             AND cad.plan_set_status != 'Plan Set Complete'
             AND cad.project_status_new IN (%v)
-             %s
-            %v`, projectStatus, pvDateCheck, filterUserQuery)
+            %s
+            %v`, addCADStatus(projectStatus), pvDateCheck, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -706,9 +702,6 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
 func PipelinePermitTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
-	}
-	if projectStatus != "'ACTIVE'" {
-		projectStatus = fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", projectStatus)
 	}
 
 	PipelineTileDataQuery := fmt.Sprintf(`
@@ -726,7 +719,7 @@ func PipelinePermitTileData(filterUserQuery, projectStatus string) string {
                     'DUPLICATE'
                     )                                       AND
                 permit.pv_approved IS NULL                  
-	   	        %v`, projectStatus, filterUserQuery)
+	   	        %v`, addPermitStatus(projectStatus), filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -753,7 +746,7 @@ func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 	        roofing.record_created_on IS NOT NULL		AND
 	        roofing.roof_work_needed_date IS NOT NULL 	AND
 	        roofing.work_completed_date IS NULL         
-            %v`, projectStatus, filterUserQuery)
+            %v`, addRoofingStatus(projectStatus), filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -761,11 +754,6 @@ func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
-	}
-	if projectStatus == "'ACTIVE'" {
-		projectStatus = "IN ('ACTIVE')"
-	} else {
-		projectStatus = "NOT IN ('ACTIVE', 'CANCEL', 'DUPLICATE', 'HOLD - CO Needed')"
 	}
 
 	PipelineTileDataQuery := fmt.Sprintf(`
@@ -780,7 +768,7 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
         WHERE
             install.project_status %s 
             AND install.app_status NOT IN ('Install Complete', 'CANCEL', 'DUPLICATE')      
-            %s`, projectStatus, filterUserQuery)
+            %s`, addInstallStatus(projectStatus), filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -829,12 +817,6 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
 		filterUserQuery = "AND " + filterUserQuery
 	}
 
-	if projectStatus != "'ACTIVE'" {
-		projectStatus = fmt.Sprintf(`NOT IN ('ACTIVE', 'PTO''D (Service)', 'PTO''d (Audit)', 'PTO''d', 'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 'LEGAL - Customer has an attorney involved', %s)`, projectStatus)
-	} else {
-		projectStatus = "IN ('ACTIVE')"
-	}
-
 	PipelineTileDataQuery := fmt.Sprintf(`
     SELECT 
         'Inspections Queue' AS queue_status, COUNT(DISTINCT (customer_unique_id)) AS distinct_customer_count
@@ -845,7 +827,7 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
     WHERE 
         fin.project_status  %v
     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
-    %v`, projectStatus, filterUserQuery)
+    %v`, addInspectionStatus(projectStatus), filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -853,13 +835,6 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
 func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
-	}
-
-	if projectStatus != "'ACTIVE'" {
-		projectStatus = fmt.Sprintf(`NOT IN ('ACTIVE', 'PTO''D (Service)', 'PTO''D (Audit)', 'PTO''D', 
-			'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 'LEGAL - Customer has an attorney involved', %s)`, projectStatus)
-	} else {
-		projectStatus = "IN ('ACTIVE')"
 	}
 
 	PipelineTileDataQuery := fmt.Sprintf(`
@@ -877,7 +852,7 @@ func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
                       'Needs Review', 'PTO Overdue', 'Ready to Submit', 'Pending Query', 
                       'Redlined', 'Query Resolved']
             )
-            %s`, projectStatus, filterUserQuery)
+            %s`, addActivationStatus(projectStatus), filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -886,6 +861,7 @@ func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, search
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
+
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
             cust.unique_id AS customer_unique_id,
@@ -916,7 +892,7 @@ func PipelineSurveyDataBelow(filterUserQuery, projectStatus, queueStatus, search
 	        survey.project_status IN (%v) AND
 	        survey.app_status NOT IN ('Reschedule Complete','CANCEL', 'DUPLICATE', 'Complete') 
 	        %v %v;
-        `, projectStatus, filterUserQuery, searchValue)
+        `, addSurveyStatus(projectStatus), filterUserQuery, searchValue)
 	return PipelineDataQuery
 }
 
@@ -959,11 +935,8 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
             AND cad.plan_set_status != 'Plan Set Complete'
             AND cad.project_status_new IN (%v)
             AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')
-            AND cad.plan_set_version NOT IN (
-			    'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5',
-			    'ABCAD 6', 'ABCAD 7', 'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
 	            %v %v
-            ;`, projectStatus, filterUserQuery, searchValue)
+            ;`, addCADStatus(projectStatus), filterUserQuery, searchValue)
 
 	return PipelineDataQuery
 }
@@ -1002,14 +975,11 @@ func PipelinePermitDataBelow(filterUserQuery, projectStatus, queueStatus, search
             permit.project_status IN (%v)               AND
             permit.app_status NOT IN (
                 'Approved - Permit in Hand',
-                'Approved - No Permit Required - Permitting Complete',
-                'AB Not Required - Permitting Complete',
-                'AB Permitting Complete ',
                 'CANCEL',
                 'DUPLICATE'
             )                                       AND
             permit.pv_approved IS NULL              
-            %v %v;`, projectStatus, filterUserQuery, searchValue)
+            %v %v;`, addPermitStatus(projectStatus), filterUserQuery, searchValue)
 
 	return PipelineDataQuery
 }
@@ -1045,7 +1015,7 @@ func PipelineRoofingDataBelow(filterUserQuery, projectStatus, queueStatus, searc
 	        roofing.record_created_on IS NOT NULL		AND
 	        roofing.roof_work_needed_date IS NOT NULL 	AND
 	        roofing.work_completed_date IS NULL         
-            %v %v;`, projectStatus, filterUserQuery, searchValue)
+            %v %v;`, addRoofingStatus(projectStatus), filterUserQuery, searchValue)
 
 	return PipelineDataQuery
 }
@@ -1084,11 +1054,10 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
         LEFT JOIN
             batteries_service_electrical_schema b ON cust.unique_id = b.customer_unique_id
         WHERE
-            install.project_status not in
-                ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND
+            install.project_status %s AND
             install.app_status not in
-                ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')     
-            %v %v;`, filterUserQuery, searchValue)
+                ('Install Complete', 'CANCEL', 'DUPLICATE')     
+            %v %v;`, addInstallStatus(projectStatus), filterUserQuery, searchValue)
 
 	return PipelineDataQuery
 }
@@ -1117,9 +1086,9 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
     LEFT JOIN customers_customers_schema cust ON cust.unique_id = fin.customer_unique_id
     LEFT JOIN pv_install_install_subcontracting_schema install ON install.customer_unique_id = fin.customer_unique_id
 	WHERE 
-        fin.project_status IN (%v)
+    fin.project_status  %v
     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
-    %v %v`, projectStatus, filterUserQuery, searchValue)
+    %v %v`, addInspectionStatus(projectStatus), filterUserQuery, searchValue)
 	return PipelineDataQuery
 }
 
@@ -1151,8 +1120,13 @@ func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, se
 		LEFT JOIN
 			pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
         WHERE
-	        pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')      
-            %v %v;`, filterUserQuery, searchValue)
+            pto.project_status %s 
+            AND pto.pto_app_status = ANY (
+                ARRAY['New: Pending Audit', 'Submitted', 'Resubmitted', 'Ready for Resubmission', 
+                      'Needs Review', 'PTO Overdue', 'Ready to Submit', 'Pending Query', 
+                      'Redlined', 'Query Resolved']
+            )
+            %v %v;`, addActivationStatus(projectStatus), filterUserQuery, searchValue)
 
 	return PipelineDataQuery
 }
@@ -1961,4 +1935,54 @@ GROUP BY %v
 	}
 
 	return query, "ntp"
+}
+func addCADStatus(projectStatus string) string {
+	if projectStatus == "'ACTIVE'" {
+		return fmt.Sprintf(`'PTO''D (Service)', 'PTO''d (Audit)', 'PTO''d', %s`, projectStatus)
+	}
+	return fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", projectStatus)
+}
+
+func addSurveyStatus(reqStatus string) string {
+	if reqStatus == "'ACTIVE'" {
+		return reqStatus
+	}
+	return fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", reqStatus)
+}
+
+func addPermitStatus(projectStatus string) string {
+	if projectStatus != "'ACTIVE'" {
+		return fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", projectStatus)
+	}
+	return projectStatus
+}
+
+func addRoofingStatus(projectStatus string) string {
+	if projectStatus != "'ACTIVE'" {
+		return fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", projectStatus)
+	}
+	return projectStatus
+}
+
+func addInstallStatus(projectStatus string) string {
+	if projectStatus == "'ACTIVE'" {
+		return "IN ('ACTIVE')"
+	}
+	return "NOT IN ('ACTIVE', 'CANCEL', 'DUPLICATE', 'HOLD - CO Needed')"
+}
+
+// addInspectionStatus or fin
+func addInspectionStatus(projectStatus string) string {
+	if projectStatus != "'ACTIVE'" {
+		return fmt.Sprintf(`NOT IN ('ACTIVE', 'PTO''D (Service)', 'PTO''d (Audit)', 'PTO''d', 'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 'LEGAL - Customer has an attorney involved', %s)`, projectStatus)
+	}
+	return "IN ('ACTIVE')"
+}
+
+func addActivationStatus(projectStatus string) string {
+	if projectStatus != "'ACTIVE'" {
+		return fmt.Sprintf(`NOT IN ('ACTIVE', 'PTO''D (Service)', 'PTO''D (Audit)', 'PTO''D', 
+			'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 'LEGAL - Customer has an attorney involved', %s)`, projectStatus)
+	}
+	return "IN ('ACTIVE')"
 }
