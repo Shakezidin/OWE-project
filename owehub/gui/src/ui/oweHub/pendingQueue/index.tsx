@@ -345,7 +345,7 @@ const PendingQueue = () => {
                 dataPending.map((item: any, index: number) => (
                   <tr key={index}>
                     <td>
-                      <div style={{ paddingBottom: '1.5rem' }}>
+                      <div>
                         <Link
                           to={`/project-management?project_id=${item.uninque_id}&customer-name=${item.home_owner}`}
                         >
@@ -388,31 +388,31 @@ const PendingQueue = () => {
                                   )}
                               </div>
                             </div>
+                            <p className='pend-project-ages'>Project ages: {"30"} days</p>
                           </div>
                         </Link>
                       </div>
                     </td>
                     <td>
-                      <div className="flex flex-auto items-center gap-2">
+                      <div className="">
                         {renderStatusCell(item, 'production', active)}
                       </div>
                     </td>
                     <td>
-                      <div className="flex flex-auto items-center gap-2">
+                      <div className="">
                         {renderStatusCell(item, 'finance_NTP', active)}
                       </div>
                     </td>
                     <td>
-                      <div className="flex flex-auto items-center gap-2">
+                      <div className="">
                         {renderStatusCell(item, 'utility_bill', active)}
                       </div>
                     </td>
                     <td>
-                      <div className="flex flex-auto items-center gap-2">
+                      <div className="">
                         {renderStatusCell(item, 'powerclerk', active)}
                       </div>
                     </td>
-                    <td>No Data</td>
                     <td>No Data</td>
                     <td>No Data</td>
                     <td>No Data</td>
@@ -530,11 +530,11 @@ const renderStatusCell = (
               : '#2EAF71'
         }
       />
-      <span style={{ fontWeight: 500, fontSize: 14 }}>
+      {/* <span style={{ fontWeight: 500, fontSize: 14 }}>
         {key
           .replace(/_/g, ' ')
           .replace(/\b\w/g, (char: any) => char.toUpperCase())}
-      </span>
+      </span> */}
     </div>
   );
 };

@@ -110,7 +110,8 @@
   cursor: default !important;
 }
 
-.outline_card_wrapper {
+
+/* .outline_card_wrapper {
   box-shadow: 2px 7px 12px rgba(172, 152, 99, 0.17);
   height: 35px;
   display: flex;
@@ -136,7 +137,7 @@
 .action_required_card {
   background-color: #fcece7;
   border: 2px solid #e14514;
-}
+} */
 
 .danger_card {
   border: 1px solid #e14514;

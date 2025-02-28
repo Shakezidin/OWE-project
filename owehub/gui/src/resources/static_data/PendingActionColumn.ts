@@ -74,13 +74,6 @@ export default [
       displayName: 'NTP Date',
       type: 'date',
       isCheckbox: false,
-    },
-    {
-      name: 'days_project_age',
-      displayName: 'Project Age (days)',
-      type: 'string',
-      isCheckbox: false,
-      isNotFilter: true,
-    },
+    }
   ];
   

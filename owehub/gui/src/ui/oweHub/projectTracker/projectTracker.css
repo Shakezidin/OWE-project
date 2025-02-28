@@ -173,6 +173,16 @@
   font-size: 12px;
 }
 
+.pend-project-ages{
+  margin-top: 10px;
+  font-weight: 500;
+  color: var(--input-border-color);
+}
+
+.pend-project-ages:hover{
+ text-decoration: underline;
+}
+
 .status-item.click:hover {
   color: white;
   background-color: #377cf6;
@@ -291,7 +301,7 @@
 .install-update {
   font-size: 12px;
   font-weight: 500;
-  /* width: 150px; */
+  margin-right: 5px;
   cursor: pointer;
   color: var(--input-border-color);
 }
