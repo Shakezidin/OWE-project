@@ -723,12 +723,18 @@ const ProjectPerformence = () => {
             {(showNewPage) &&
               <>
                 <div
-                  className='skygroup-btn'
+                  className="skygroup-btn"
                   onClick={handleNewPage}
                   data-tooltip-id={isMobile ? '' : 'dealer-filter'}
+                  style={{
+                    cursor: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'not-allowed' : 'pointer',
+                    pointerEvents: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'none' : 'auto',
+                    opacity: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 0.6 : 1, // Optional: Reduce opacity for a disabled effect
+                  }}
                 >
-                  <img src={ICONS.sky} alt='sky' />
+                  <img src={ICONS.sky} alt="sky" />
                 </div>
+
                 <Tooltip
                   style={{
                     zIndex: 103,
