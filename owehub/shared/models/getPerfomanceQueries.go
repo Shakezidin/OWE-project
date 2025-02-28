@@ -897,18 +897,15 @@ func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
             'Activation Queue' AS queue_status, 
-            COUNT(DISTINCT cust.unique_id) AS distinct_customer_count
+            COUNT(DISTINCT pto.customer_unique_id) AS distinct_customer_count
         FROM
-	        customers_customers_schema AS cust
-        LEFT JOIN
-	        pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
+	        pto_ic_schema AS pto 
+            LEFT JOIN customers_customers_schema cust
+			ON cust.unique_id  = pto.customer_unique_id
         WHERE
-            pto.project_status %s 
-            AND pto.pto_app_status = ANY (
-                ARRAY['New: Pending Audit', 'Submitted', 'Resubmitted', 'Ready for Resubmission', 
-                      'Needs Review', 'PTO Overdue', 'Ready to Submit', 'Pending Query', 
-                      'Redlined', 'Query Resolved']
-            )
+            pto.project_status %v 
+            AND pto.pto_app_status IN ('New: Pending Audit','Submitted','Resubmitted ','Ready for Resubmission','Needs Review','PTO Overdue', 
+            'Ready to Submit','Pending Query','Redlined','Query Resolved')
             %s`, addActivationStatus(projectStatus), filterUserQuery)
 
 	return PipelineTileDataQuery
@@ -1262,18 +1259,15 @@ func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, se
 			fin.pv_fin_date AS fin_pass_date,
 			fin.created_on AS fin_created_date
         FROM
-            customers_customers_schema AS cust
+            pto_ic_schema AS pto
         LEFT JOIN
-			fin_permits_fin_schema AS fin ON cust.our = fin.customer_unique_id
-		LEFT JOIN
-			pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
+                customers_customers_schema AS cust ON cust.unique_id = pto.customer_unique_id
+        LEFT JOIN
+			fin_permits_fin_schema AS fin ON fin.customer_unique_id = pto.customer_unique_id
         WHERE
-            pto.project_status %s 
-            AND pto.pto_app_status = ANY (
-                ARRAY['New: Pending Audit', 'Submitted', 'Resubmitted', 'Ready for Resubmission', 
-                      'Needs Review', 'PTO Overdue', 'Ready to Submit', 'Pending Query', 
-                      'Redlined', 'Query Resolved']
-            )
+            pto.project_status %v 
+            AND pto.pto_app_status IN ('New: Pending Audit','Submitted','Resubmitted ','Ready for Resubmission','Needs Review','PTO Overdue', 
+            'Ready to Submit','Pending Query','Redlined','Query Resolved')
             %v %v;`, addActivationStatus(projectStatus), filterUserQuery, searchValue)
 
 	return PipelineDataQuery
@@ -2129,8 +2123,8 @@ func addInspectionStatus(projectStatus string) string {
 
 func addActivationStatus(projectStatus string) string {
 	if projectStatus != "'ACTIVE'" {
-		return fmt.Sprintf(`NOT IN ('ACTIVE', 'PTO''D (Service)', 'PTO''D (Audit)', 'PTO''D', 
-			'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 'LEGAL - Customer has an attorney involved', %s)`, projectStatus)
+		return `NOT IN ('ACTIVE', 'PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d', 
+			'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 'LEGAL - Customer has an attorney involved')`
 	}
 	return "IN ('ACTIVE')"
 }
