@@ -25,23 +25,9 @@ services:
       - service-postgres
     environment:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=${SSL_MODE}
-      - MIGRATION_PATH=/migrations
     networks:
       owe_net:
         ipv4_address: 172.30.0.214
-
-  migrate-dat:
-    image: migrate_db_latest:v1
-    container_name: migrate_dat_db_latest_1
-    restart: on-failure
-    depends_on:
-      - service-postgres
-    environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DAT_DB}?sslmode=${SSL_MODE}
-      - MIGRATION_PATH=/dat_migrations
-    networks:
-      owe_net:
-        ipv4_address: 172.30.0.216
 
   ############### OWE HUB SCHEDULING #####################
   # service-owehub-scheduler:

@@ -14,7 +14,6 @@ type DbConfInfo struct {
 	HostName string `json:"hostName"`
 	Password string `json:"password"`
 	Username string `json:"username"`
-	DBName   string `json:"dbName"`
 }
 
 type DBConfigList struct {

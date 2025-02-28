@@ -111,7 +111,7 @@ func HandleGetProjectListRequest(resp http.ResponseWriter, req *http.Request) {
 	query = fmt.Sprintf(`
 			SELECT
 				c.customer_name,
-				c.project_id,
+				c.unique_id,
 				c.address
 			FROM customers_customers_schema as c
 			%s
@@ -135,7 +135,7 @@ func HandleGetProjectListRequest(resp http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
-		pId, ok := item["project_id"].(string)
+		pId, ok := item["unique_id"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get project id: %+v\n", item)
 			continue
