@@ -656,6 +656,10 @@ func PipelineSurveyTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
+	if projectStatus != "'ACTIVE'" {
+		projectStatus = fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", projectStatus)
+	}
+
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
             'Survey Queue' AS queue_status, count(survey.customer_unique_id) AS distinct_customer_count
@@ -664,7 +668,7 @@ func PipelineSurveyTileData(filterUserQuery, projectStatus string) string {
         LEFT JOIN customers_customers_schema AS cust
             ON survey.customer_unique_id = cust.unique_id
         WHERE
-	        survey.project_status IN (%v) AND
+	        survey.project_status IN (%s) AND
 	        survey.app_status NOT IN ('Reschedule Complete','CANCEL', 'DUPLICATE', 'Complete')
 	        %v;
         `, projectStatus, filterUserQuery)
@@ -675,20 +679,26 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
+
+	pvDateCheck := ""
+	if projectStatus == "'ACTIVE'" {
+		projectStatus = fmt.Sprintf(`'PTO''D (Service)', 'PTO''d (Audit)', 'PTO''d', %s`, projectStatus)
+		pvDateCheck = "AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')"
+	} else {
+		projectStatus = fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", projectStatus)
+	}
+
 	PipelineTileDataQuery := fmt.Sprintf(`
-        SELECT 'CAD Queue' AS queue_status ,COUNT(*) AS distinct_customer_count
-            FROM planset_cad_schema AS cad
+        SELECT 'CAD Queue' AS queue_status, COUNT(*) AS distinct_customer_count
+        FROM planset_cad_schema AS cad
         LEFT JOIN customers_customers_schema AS cust
             ON cad.our_number = cust.unique_id
         WHERE
             cad.active_inactive = 'Active'
             AND cad.plan_set_status != 'Plan Set Complete'
             AND cad.project_status_new IN (%v)
-            AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')
-            AND cad.plan_set_version NOT IN (
-                'ABCAD 1', 'ABCAD 2', 'ABCAD 3', 'ABCAD 4', 'ABCAD 5',
-                'ABCAD 6', 'ABCAD 7', 'ABCAD 8', 'ABCAD 9', 'ABCAD 10+')
-            %v`, projectStatus, filterUserQuery)
+             %s
+            %v`, projectStatus, pvDateCheck, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -697,9 +707,13 @@ func PipelinePermitTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
+	if projectStatus != "'ACTIVE'" {
+		projectStatus = fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", projectStatus)
+	}
+
 	PipelineTileDataQuery := fmt.Sprintf(`
            SELECT
-	   	        'Permit Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
+	   	        'Permit Queue' AS queue_status, count(cust.unique_id) AS distinct_customer_count
 	           FROM
 	   	        customers_customers_schema AS cust
 	           LEFT JOIN
@@ -708,9 +722,6 @@ func PipelinePermitTileData(filterUserQuery, projectStatus string) string {
 	   	        permit.project_status IN (%v)               AND
 	   	        permit.app_status NOT IN (
                     'Approved - Permit in Hand',
-                    'Approved - No Permit Required - Permitting Complete',
-                    'AB Not Required - Permitting Complete',
-                    'AB Permitting Complete ',
                     'CANCEL',
                     'DUPLICATE'
                     )                                       AND
@@ -724,6 +735,10 @@ func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
+	if projectStatus != "'ACTIVE'" {
+		projectStatus = fmt.Sprintf("'HOLD - CO Needed', 'HOLD - Exceptions', %s", projectStatus)
+	}
+
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
             'Roofing Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
@@ -747,19 +762,25 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
+	if projectStatus == "'ACTIVE'" {
+		projectStatus = "IN ('ACTIVE')"
+	} else {
+		projectStatus = "NOT IN ('ACTIVE', 'CANCEL', 'DUPLICATE', 'HOLD - CO Needed')"
+	}
+
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Install (Scheduling) Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
+            'Install (Scheduling) Queue' AS queue_status, 
+            COUNT(DISTINCT cust.unique_id) AS distinct_customer_count
         FROM
-	        customers_customers_schema AS cust
+            customers_customers_schema AS cust
         LEFT JOIN
-            pv_install_install_subcontracting_schema AS install ON cust.our = install.customer_unique_id
+            pv_install_install_subcontracting_schema AS install 
+            ON cust.our = install.customer_unique_id
         WHERE
-	        install.project_status not in
-                ('BLOCKED', 'CANCEL', 'DUPLICATE','COMPETING')                          AND
-            install.app_status not in
-                ('Install Complete', 'CANCEL', 'DUPLICATE','Install Fix Complete')      
-            %v`, filterUserQuery)
+            install.project_status %s 
+            AND install.app_status NOT IN ('Install Complete', 'CANCEL', 'DUPLICATE')      
+            %s`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -807,6 +828,13 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
+
+	if projectStatus != "'ACTIVE'" {
+		projectStatus = fmt.Sprintf(`NOT IN ('ACTIVE', 'PTO''D (Service)', 'PTO''d (Audit)', 'PTO''d', 'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 'LEGAL - Customer has an attorney involved', %s)`, projectStatus)
+	} else {
+		projectStatus = "IN ('ACTIVE')"
+	}
+
 	PipelineTileDataQuery := fmt.Sprintf(`
     SELECT 
         'Inspections Queue' AS queue_status, COUNT(DISTINCT (customer_unique_id)) AS distinct_customer_count
@@ -815,7 +843,7 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
     LEFT JOIN 
         customers_customers_schema AS cust ON fin.customer_unique_id = cust.unique_id
     WHERE 
-        fin.project_status IN (%v)
+        fin.project_status  %v
     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
     %v`, projectStatus, filterUserQuery)
 
@@ -826,16 +854,30 @@ func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
+
+	if projectStatus != "'ACTIVE'" {
+		projectStatus = fmt.Sprintf(`NOT IN ('ACTIVE', 'PTO''D (Service)', 'PTO''D (Audit)', 'PTO''D', 
+			'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 'LEGAL - Customer has an attorney involved', %s)`, projectStatus)
+	} else {
+		projectStatus = "IN ('ACTIVE')"
+	}
+
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Activation Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
+            'Activation Queue' AS queue_status, 
+            COUNT(DISTINCT cust.unique_id) AS distinct_customer_count
         FROM
 	        customers_customers_schema AS cust
         LEFT JOIN
 	        pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
         WHERE
-	        pto.pto_app_status NOT IN ('PTO','DUPLICATE', '')   
-            %v`, filterUserQuery)
+            pto.project_status %s 
+            AND pto.pto_app_status = ANY (
+                ARRAY['New: Pending Audit', 'Submitted', 'Resubmitted', 'Ready for Resubmission', 
+                      'Needs Review', 'PTO Overdue', 'Ready to Submit', 'Pending Query', 
+                      'Redlined', 'Query Resolved']
+            )
+            %s`, projectStatus, filterUserQuery)
 
 	return PipelineTileDataQuery
 }
