@@ -3,6 +3,5 @@
 FROM migrate/migrate:v4.15.2
 
 COPY ./migrations /migrations
-COPY ./dat_migrations /dat_migrations
 
-ENTRYPOINT ["sh", "-c", "migrate -path ${MIGRATION_PATH} -database ${DATABASE_URL} up"]
+ENTRYPOINT ["sh", "-c", "migrate -path /migrations -database ${DATABASE_URL} up"]

@@ -58,28 +58,25 @@ type GetTabGeneralInfoResponse struct {
 	//aurora link remaining
 
 	// Contract Information
-	ContractDate        time.Time `json:"contract_date"`
-	ModuleQty           int64     `json:"module_qty"`
-	ModuleType          int64     `json:"module_type"`
-	InverterType        string    `json:"inverter_type"`
-	BatteryType         string    `json:"battery_type"`
-	AcDcSystemSize      string    `json:"ac_dc_system_size"`
-	TotalProductionTape string    `json:"total_production_tape"` // annual production of contract information
+	ContractDate    string      `json:"contract_date"`
+	ModuleQty       int64       `json:"module_qty"`
+	ModuleType      int64       `json:"module_type"`
+	InverterType    string      `json:"inverter_type"`
+	BatteryType     string      `json:"battery_type"`
+	AcDcSystemSize  string      `json:"ac_dc_system_size"`
+	TotalProduction interface{} `json:"total_production"` // annual production
+	// ac to dc size remaining.
 
 	// DAT Information
-	DATModuleQty           int64       `json:"dat_module_qty"`
-	DATModuleType          string      `json:"dat_module_type"`
-	DATDesignVersion       int64       `json:"dat_design_version"`
-	DATDesignerName        string      `json:"dat_designer_name"`
-	DATInverterType        string      `json:"dat_inverter_type"`
-	DATBatteryType         string      `json:"dat_battery_type"`
-	DATAuroraId            string      `json:"dat_aurora_id"`
-	DATSysteSizeAC         float64     `json:"dat_system_size_ac"`
-	DATSysteSizeDC         float64     `json:"dat_system_size_dc"`
-	DATChangeLayout        string      `json:"dat_change_layout"`
-	DATChangeProduction    string      `json:"dat_change_production"`
-	DATChangeOrderRequired string      `json:"dat_change_order_required"`
-	DATTotalProduction     interface{} `json:"dat_total_production"`
+	DATModuleQty     int64  `json:"dat_module_qty"`  // doubt (repeat)
+	DATModuleType    string `json:"dat_module_type"` // doubt
+	DATDesignVersion int64  `json:"dat_design_version"`
+	DATDesignerName  string `json:"dat_designer_name"`
+	DATAuroraId      string `json:"dat_aurora_id"`
+	DATSysteSizeAC   string `json:"dat_system_size_ac"` // doubt
+	DATSysteSizeDC   string `json:"dat_system_size_dc"` // doubt
+	DATChanges       string `json:"dat_changes"`
+	DATChangeOrder   string `json:"dat_change_order"`
 }
 
 // Structural tab structs
@@ -272,10 +269,7 @@ type ExistingPvInfo struct {
 
 // //////// DROP DOWN Request RESPONSE STRUCTURE ///////////////////////////////////////////////
 type DropdownRequest struct {
-	//DropDownList []string `json:"drop_down_list"`
-	Structure     string `json:"structure"`
-	RoofType      string `json:"roof_type"`
-	RackingMethod string `json:"racking_method"`
+	DropDownList []string `json:"drop_down_list"`
 }
 type DropdownResponse struct {
 	Data map[string][]interface{} `json:"data"`

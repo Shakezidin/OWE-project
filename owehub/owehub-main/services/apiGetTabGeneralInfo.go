@@ -8,7 +8,6 @@
 package services
 
 import (
-	auroraclient "OWEApp/owehub-reports/auroraclients"
 	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -34,8 +33,6 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		data        []map[string]interface{}
 		query       string
 		whereClause string
-		//dataReqAurora models.AuroraRetrieveDesignSummaryRequest
-		auroraApiResp interface{}
 	)
 
 	log.EnterFn(0, "HandleGetTabGeneralInfoRequest")
@@ -61,62 +58,6 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 		log.FuncErrorTrace(0, "Failed to unmarshal get tab genral info request err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get tab genreal info Request body", http.StatusInternalServerError, nil)
 		return
-	}
-
-	if len(dataReq.ProjectId) <= 0 {
-		err = fmt.Errorf("invalid project ID %s", dataReq.ProjectId)
-		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "Invalid project ID, update failed", http.StatusBadRequest, nil)
-		return
-	}
-
-	//get aurora retrieve design summary
-	retrieveAuroraDesignSummaryApi := auroraclient.RetrieveDesignSummaryApi{
-		Id: dataReq.Id,
-	}
-
-	auroraApiResp, err = retrieveAuroraDesignSummaryApi.Call()
-
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to retrieve aurora design summary err %v", err)
-		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
-		return
-	}
-
-	// Convert auroraApiResp to JSON for easier manipulation
-	auroraRespBytes, err := json.Marshal(auroraApiResp)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to marshal aurora response err %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to process aurora response", http.StatusInternalServerError, nil)
-		return
-	}
-
-	// Convert JSON to map for easy access
-	var auroraRespMap map[string]interface{}
-	err = json.Unmarshal(auroraRespBytes, &auroraRespMap)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to parse aurora response err %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to parse aurora response", http.StatusInternalServerError, nil)
-		return
-	}
-
-	// Extract only annual production from aurora
-	//var extractedData map[string]interface{}
-	var pTotalProduction interface{}
-
-	if design, ok := auroraRespMap["design"].(map[string]interface{}); ok {
-		if energyProduction, exists := design["energy_production"].(map[string]interface{}); exists {
-			if annual, found := energyProduction["annual"]; found {
-				// extractedData = map[string]interface{}{
-				// 	"annual": annual,
-				// }
-				if annualValue, ok := annual.(float64); ok {
-					pTotalProduction = annualValue
-				} else if annualValue, ok := annual.(int); ok {
-					pTotalProduction = float64(annualValue) // ✅ Convert int to float64
-				}
-			}
-		}
 	}
 
 	whereClause = fmt.Sprintf("WHERE (c.unique_id = '%s')", dataReq.ProjectId)
@@ -150,6 +91,7 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 			
 				
 			FROM customers_customers_schema as c
+			%s
 			LEFT JOIN ntp_ntp_schema AS ntp ON c.record_id = ntp.record_id
 			LEFT JOIN planset_cad_schema AS p ON c.record_id = p.record_id
 			LEFT JOIN fire_permits_permit_fin_schema AS fire ON c.record_id = fire.record_id
@@ -158,7 +100,6 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 			LEFT JOIN utility_db_database_hub_schema AS utility ON c.record_id = utility.record_id
 			LEFT JOIN sales_metrics_schema AS sales ON c.record_id = sales.record_id
 			LEFT JOIN prospects_customers_schema AS prospect ON c.record_id = prospect.record_id
-			%s
 			ORDER BY c.unique_id;
 		`, whereClause)
 
@@ -173,7 +114,7 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 	if len(data) <= 0 {
 		err = fmt.Errorf("project info not found")
 		log.FuncErrorTrace(0, "%v", err)
-		appserver.FormAndSendHttpResp(resp, "project not found", http.StatusOK, nil)
+		appserver.FormAndSendHttpResp(resp, "project not found", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -297,10 +238,10 @@ func HandleGetTabGeneralInfoRequest(resp http.ResponseWriter, req *http.Request)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get ac dc system size from db: %+v\n", data)
 	}
-	// pTotalProduction, ok := data[0]["annual_estimated_production"].(float64)
-	// if !ok {
-	// 	log.FuncErrorTrace(0, "Failed to get total production from db: %+v\n", data)
-	// }
+	pTotalProduction, ok := data[0]["annual_estimated_production"].(float64)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to get total production from db: %+v\n", data)
+	}
 
 	///////////////////////////////////
 	pDATModuleQty, ok := data[0]["dat_module_qty"].(int64)

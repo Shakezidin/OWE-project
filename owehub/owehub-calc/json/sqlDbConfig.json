@@ -3,20 +3,12 @@
     {
       "hostName": "service-postgres:5432",
       "username": "OwePostgres",
-      "password": "OwePostgres",
-      "dbname": "owe_db"
+      "password": "OwePostgres"
     },
     {
       "hostName": "66.42.100.177:5432",
       "username": "OwePostgres",
-      "password": "OwePostgres",
-      "dbname": "owe_db"
-    },
-    {
-      "hostName": "service-postgres:5432",
-      "username": "OwePostgres",
-      "password": "OwePostgres",
-      "dbname": "dat_tool_db"
+      "password": "OwePostgres"
     }
   ]
 }

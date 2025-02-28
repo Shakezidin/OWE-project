@@ -2,7 +2,6 @@ drop database IF EXISTS owe_db WITH (FORCE);
 
 /* create databases */
 create database owe_db;
-CREATE DATABASE dat_tool_db;
 
 \c owe_db;
 
