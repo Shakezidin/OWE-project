@@ -23,7 +23,7 @@ const colors = {
   NTP: '#73A4FF',
   Install: '#FF7CFF',
   Battery: '#FCC40B',
-  Cancel: '#E1D6FB',
+  Cancel: '#A984FE',
 } as const;
 
 type FilterType = keyof typeof colors | 'All';
@@ -323,8 +323,9 @@ const HistoricalTrends: React.FC = () => {
   const [dealerOption, setDealerOption] = useState<Option[]>([]);
   const [isFetched, setIsFetched] = useState(false);
   const toggleFilter = (filter: FilterType) => {
-    setSelectedFilter(filter === 'All' ? 'All' : filter);
+    setSelectedFilter((prevFilter) => (prevFilter === filter ? 'All' : filter));
   };
+
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
     newFormData?.dealer_name?.map((value: string) => ({
       value,
@@ -358,47 +359,47 @@ const HistoricalTrends: React.FC = () => {
       selectedYearsSet.has(entry.name.split(' ')[1])
     );
   };
-//   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-//     const wrapper = document.querySelector('.chart-wrapper .recharts-surface');
-//     const chartWrapper = document.querySelector('.chart-wrapper');
-//     const yAxis = document.querySelector(
-//       '.chart-wrapper .recharts-yAxis'
-//     ) as HTMLElement | null;
+  //   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  //     const wrapper = document.querySelector('.chart-wrapper .recharts-surface');
+  //     const chartWrapper = document.querySelector('.chart-wrapper');
+  //     const yAxis = document.querySelector(
+  //       '.chart-wrapper .recharts-yAxis'
+  //     ) as HTMLElement | null;
 
-//     if (yAxis) {
-//       // Create white background rectangle to prevent content bleed
-//       const rect = document.createElementNS(
-//         'http://www.w3.org/2000/svg',
-//         'rect'
-//       );
-//       const yAxisHeight = yAxis.getBoundingClientRect().height;
-//       const yAxisWidth = yAxis.getBoundingClientRect().width;
+  //     if (yAxis) {
+  //       // Create white background rectangle to prevent content bleed
+  //       const rect = document.createElementNS(
+  //         'http://www.w3.org/2000/svg',
+  //         'rect'
+  //       );
+  //       const yAxisHeight = yAxis.getBoundingClientRect().height;
+  //       const yAxisWidth = yAxis.getBoundingClientRect().width;
 
-//       rect.setAttribute('x', '0');
-//       rect.setAttribute('y', '0');
-//       rect.setAttribute('width', yAxisWidth.toString());
-//       rect.setAttribute('height', yAxisHeight.toString());
-//       rect.setAttribute('fill', 'white');
-//       rect.setAttribute('class', 'y-axis-background');
-//       rect.setAttribute('zIndex', '500');
+  //       rect.setAttribute('x', '0');
+  //       rect.setAttribute('y', '0');
+  //       rect.setAttribute('width', yAxisWidth.toString());
+  //       rect.setAttribute('height', yAxisHeight.toString());
+  //       rect.setAttribute('fill', 'white');
+  //       rect.setAttribute('class', 'y-axis-background');
+  //       rect.setAttribute('zIndex', '500');
 
-//       //   // Remove existing background if present
-//       //   const existingRect = yAxis.querySelector('.y-axis-background');
-//       //   if (existingRect) existingRect.remove();
+  //       //   // Remove existing background if present
+  //       //   const existingRect = yAxis.querySelector('.y-axis-background');
+  //       //   if (existingRect) existingRect.remove();
 
-//       yAxis.insertBefore(rect, yAxis.firstChild);
+  //       yAxis.insertBefore(rect, yAxis.firstChild);
 
-//       // Fix Y-axis position
-//       yAxis.style.transform = `translateX(${e.currentTarget.scrollLeft}px)`;
-//     }
-//   };
-const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const yAxis = document.querySelector('.chart-wrapper .recharts-yAxis') as HTMLElement | null;
-    
-    if (yAxis) {
-      yAxis.style.transform = `translateX(${e.currentTarget.scrollLeft}px)`;
-    }
-  };
+  //       // Fix Y-axis position
+  //       yAxis.style.transform = `translateX(${e.currentTarget.scrollLeft}px)`;
+  //     }
+  //   };
+  // const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  //     const yAxis = document.querySelector('.chart-wrapper .recharts-yAxis') as HTMLElement | null;
+
+  //     if (yAxis) {
+  //       yAxis.style.transform = `translateX(${e.currentTarget.scrollLeft}px)`;
+  //     }
+  //   };
   const CustomTooltip: React.FC<{
     active?: boolean;
     payload?: Array<{
@@ -411,7 +412,15 @@ const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
   }> = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="custom-tooltippp" style={{borderRadius: '5px', padding: '10px'}}>
+        <div
+          className="custom-tooltippp"
+          style={{
+            borderRadius: '5px',
+            padding: '10px',
+            fontSize: '12px',
+            fontWeight: 500,
+          }}
+        >
           {payload.map((entry, index) => (
             <p key={index} style={{ color: entry.color }}>
               {`${entry.name}: ${entry.value}`}
@@ -423,6 +432,7 @@ const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     return null;
   };
 
+ 
   // Handle mouse move to update hover position
   const handleMouseMove = useCallback((state: any) => {
     if (state.isTooltipActive && state.activeTooltipIndex !== undefined) {
@@ -432,7 +442,63 @@ const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
       setHoverX(null); // Reset when not hovering
     }
   }, []);
+  // Fix Y-axis position or enable full chart scrolling
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const scrollLeft = e.currentTarget.scrollLeft;
+    const yAxis = document.querySelector('.chart-wrapper .recharts-yAxis') as HTMLElement | null;
 
+    if (yAxis) {
+      yAxis.style.transform = `translateX(${scrollLeft}px)`;
+      yAxis.style.zIndex = '10';
+    }
+  }, []);
+
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .chart-wrapper {
+        overflow-x: auto;
+        overflow-y: hidden;
+        width: 100%;
+        position: relative;
+        white-space: nowrap;
+      }
+      .chart-wrapper .recharts-yAxis {
+        position: relative;
+        z-index: 10;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
+
+  // Add CSS to make sure the chart container is properly styled
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+          .chart-wrapper {
+            position: relative;
+            overflow-x: auto;
+            overflow-y: hidden;
+          }
+          .chart-wrapper .recharts-yAxis {
+            position: relative;
+            z-index: 10;
+          }
+          .chart-wrapper .y-axis-background {
+            z-index: 5;
+          }
+        `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
   return (
     <div className="historical-trends">
       <h2>Historical Trends</h2>
@@ -450,10 +516,11 @@ const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
           {Object.keys(colors).map((filter) => (
             <button
               key={filter}
-              className={`filter-button ${selectedFilter === filter ? 'active' : ''}`}
+              className={`filter-button ${selectedFilter === filter ? 'active' : 'inactive'}`}
               onClick={() => toggleFilter(filter as keyof typeof colors)}
             >
-              <span className={`color-dot ${filter.toLowerCase()}`}></span>
+              <span className={`color-dot ${filter.toLowerCase()}`} />{' '}
+              {/* Always visible */}
               {filter}
             </button>
           ))}
@@ -468,7 +535,7 @@ const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
               onChange={(value: any) => setDays(value)}
               value={days}
               controlStyles={{ marginTop: 0, minHeight: 30 }}
-            //   menuWidth={'120px'}
+              //   menuWidth={'120px'}
               menuListStyles={{ fontWeight: 400 }}
               singleValueStyles={{ fontWeight: 400 }}
             />
@@ -494,6 +561,7 @@ const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         </div>
       </div>
 
+      {/* Chart */}
       {/* Chart */}
       <div className="chart-container">
         <div
@@ -523,10 +591,10 @@ const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
                 />
                 <YAxis
                   tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}
+                  axisLine={{ stroke: '#rgb(69, 133, 247)' }}
+                  tickLine={{ stroke: 'rgb(69, 133, 247)' }}
                 />
-                 <Tooltip
-                  content={<CustomTooltip />}
-                 />
+                <Tooltip content={<CustomTooltip />} />
                 {Object.keys(colors).map((filter) => (
                   <Line
                     key={filter}
@@ -551,18 +619,10 @@ const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
                 />
                 <YAxis
                   tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}
-                  style={{
-                    position: 'sticky',
-                    left: 0,
-                    backgroundColor: 'white',
-                    zIndex: 1,
-                    paddingRight: '10px',
-                  }}
+                  axisLine={{ stroke: '#e0e0e0' }}
+                  tickLine={{ stroke: '#e0e0e0' }}
                 />
-                <Tooltip
-                  content={<CustomTooltip />}
-                 />
-              
+                <Tooltip content={<CustomTooltip />} />
                 <Area
                   type="monotone"
                   dataKey={selectedFilter}

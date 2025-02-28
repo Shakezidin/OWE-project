@@ -10,7 +10,7 @@
 .historical-trends h2 {
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 25px;
 }
 
 .overview-title {
@@ -18,7 +18,7 @@
     margin-right: -125px;
     margin-left: 19px;
     color: #101828;
-    font-weight: 600;
+    font-weight: 500;
   }
 /* Top Section: Filters + Dropdowns */
 .top-section {
@@ -106,13 +106,10 @@
   background-color: #FCC40B;
 }
 .color-dot.cancel {
-  background-color: #E1D6FB !important;
+  background-color: #A984FE!important;
 }
 
-/* Hide dot when button is selected */
-.filter-button.active .color-dot {
-  display: none;
-}
+ 
 
 /* Dropdowns */
 /* Right Side (Dropdowns + Zoom) */
@@ -192,12 +189,12 @@
   }
   
   .chart-wrapper::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #4610c2;
     border-radius: 4px;
   }
   
   .chart-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #1135b8;
   }
   
  
