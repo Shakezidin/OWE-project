@@ -39,17 +39,23 @@ interface GeneralData {
   inverter_type: string;
   battery_type: string;
   ac_dc_system_size: string;
-  total_production: number;
+  total_production_tape: string;
   dat_module_qty: number;
   dat_module_type: string;
   dat_design_version: number;
   dat_designer_name: string;
   dat_aurora_id: string;
-  dat_system_size_ac: string;
-  dat_system_size_dc: string;
-  dat_changes: string;
-  dat_change_order: string;
+  dat_system_size_ac: number; // Changed to number for consistency
+  dat_system_size_dc: number; // Changed to number for consistency
+  dat_changes: {
+    layout: string; // Replaces dat_change_layout
+    production: string; // Replaces dat_change_production
+    order_required: string; // Replaces dat_change_order_required
+  };
+  dat_change_order: string; // Replaces dat_change_order_required
 }
+
+
 interface generalProps {
   generalData: GeneralData | null;
   loading: boolean;
@@ -134,7 +140,7 @@ const GeneralPage: React.FC<generalProps> = ({
     },
     {
       label: 'Total Production',
-      value: generalData?.total_production?.toString() || '0',
+      value: generalData?.total_production_tape?.toString() || '0',
     },
   ];
 
@@ -160,11 +166,11 @@ const GeneralPage: React.FC<generalProps> = ({
     },
     { label: 'Designer Name', value: generalData?.dat_designer_name || '' },
     { label: 'Aurora ID', value: generalData?.dat_aurora_id || '' },
-    {
-      label: 'Site Capture URL',
-      value: generalData?.site_capture_url || '',
-      type: 'url',
-    },
+    // {
+    //   label: 'Site Capture URL',
+    //   value: generalData?.site_capture_url || '',
+    //   type: 'url',
+    // },
     // {
     //   label: 'Change Order Required',
     //   value: generalData?.dat_change_order || 'N/A',
@@ -182,7 +188,7 @@ const GeneralPage: React.FC<generalProps> = ({
     datChangeOrderRequired: { value: '', changed: false },
     datInverterType: { value: datFields[2].value, changed: false },
     datBatteryType: { value: datFields[3].value, changed: false },
-    datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
+    // datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
     datChangeLayout: { value: '', changed: false },
     datChangeProduction: { value: '', changed: false },
   });
@@ -237,10 +243,10 @@ const GeneralPage: React.FC<generalProps> = ({
           updatedState.datBatteryType.value = value;
           updatedState.datBatteryType.changed = true;
           break;
-        case 'Site Capture URL':
-          updatedState.datSiteCaptureURL.value = value;
-          updatedState.datSiteCaptureURL.changed = true;
-          break;
+        // case 'Site Capture URL':
+        //   updatedState.datSiteCaptureURL.value = value;
+        //   updatedState.datSiteCaptureURL.changed = true;
+        //   break;
         case 'Layout':
           updatedState.datChangeLayout.value = value;
           updatedState.datChangeLayout.changed = true;
@@ -294,9 +300,9 @@ const GeneralPage: React.FC<generalProps> = ({
           ...(generalDatInfo.datBatteryType.changed && {
             dat_battery_type: generalDatInfo.datBatteryType.value,
           }),
-          ...(generalDatInfo.datSiteCaptureURL.changed && {
-            dat_site_capture_url: generalDatInfo.datSiteCaptureURL.value,
-          }),
+          // ...(generalDatInfo.datSiteCaptureURL.changed && {
+          //   dat_site_capture_url: generalDatInfo.datSiteCaptureURL.value,
+          // }),
           ...(generalDatInfo.datChangeLayout.changed && {
             dat_change_layout: generalDatInfo.datChangeLayout.value,
           }),
@@ -323,7 +329,7 @@ const GeneralPage: React.FC<generalProps> = ({
       },
       datInverterType: { ...prevState.datInverterType, changed: false },
       datBatteryType: { ...prevState.datBatteryType, changed: false },
-      datSiteCaptureURL: { ...prevState.datSiteCaptureURL, changed: false },
+      // datSiteCaptureURL: { ...prevState.datSiteCaptureURL, changed: false },
       datChangeLayout: { ...prevState.datChangeLayout, changed: false },
       datChangeProduction: { ...prevState.datChangeProduction, changed: false },
     }));
