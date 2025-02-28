@@ -791,7 +791,7 @@ func PipelineRoofingTileData(filterUserQuery, projectStatus string) string {
 
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
-            'Roofing Queue' AS queue_status, count(distinct(cust.unique_id)) AS distinct_customer_count
+            'Roofing Queue' AS queue_status, count(cust.unique_id) AS distinct_customer_count
         FROM
 	        customers_customers_schema AS cust
         LEFT JOIN
@@ -816,7 +816,7 @@ func PipelineInstallTileData(filterUserQuery, projectStatus string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
             'Install (Scheduling) Queue' AS queue_status, 
-            COUNT(DISTINCT cust.unique_id) AS distinct_customer_count
+            COUNT(cust.unique_id) AS distinct_customer_count
         FROM
             customers_customers_schema AS cust
         LEFT JOIN
@@ -876,7 +876,7 @@ func PipelineInspectionTileData(filterUserQuery, projectStatus string) string {
 
 	PipelineTileDataQuery := fmt.Sprintf(`
     SELECT 
-        'Inspections Queue' AS queue_status, COUNT(DISTINCT (customer_unique_id)) AS distinct_customer_count
+        'Inspections Queue' AS queue_status, COUNT(customer_unique_id) AS distinct_customer_count
     FROM 
         fin_permits_fin_schema AS fin
     LEFT JOIN 
@@ -897,7 +897,7 @@ func PipelineActivationTileData(filterUserQuery, projectStatus string) string {
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT
             'Activation Queue' AS queue_status, 
-            COUNT(DISTINCT pto.customer_unique_id) AS distinct_customer_count
+            COUNT(pto.customer_unique_id) AS distinct_customer_count
         FROM
 	        pto_ic_schema AS pto 
             LEFT JOIN customers_customers_schema cust
@@ -956,7 +956,6 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
-            DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
             cust.dealer,
@@ -1135,7 +1134,6 @@ func PipelineRoofingDataBelow(filterUserQuery, projectStatus, queueStatus, searc
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
-            DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
             cust.dealer,
@@ -1171,7 +1169,6 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
-            DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
             cust.dealer,
@@ -1213,7 +1210,6 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
 	}
 	PipelineDataQuery := fmt.Sprintf(`
     SELECT
-		DISTINCT ON (fin.customer_unique_id)
         fin.customer_unique_id AS customer_unique_id,
         cust.customer_name AS home_owner,
         cust.dealer,
@@ -1243,7 +1239,6 @@ func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, se
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
-            DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
             cust.dealer,
