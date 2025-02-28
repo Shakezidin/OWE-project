@@ -116,7 +116,7 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 			return
 		} else if len(data) == 0 {
 			tileData := models.GetPendingQueueTileResp{}
-			log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+			log.FuncWarnTrace(0, "empty data set from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
 			return
 		}
@@ -152,7 +152,7 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		return
 	} else if len(data) == 0 {
 		tileData := models.GetPendingQueueTileResp{}
-		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		log.FuncWarnTrace(0, "empty data set from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
 		return
 	}
