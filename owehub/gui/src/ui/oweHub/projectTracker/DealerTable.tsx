@@ -63,26 +63,26 @@ const DealerTablePipeline = () => {
   );
   const formattedFilters = filters
     ? filters.map((filter) => {
-        if (filter.Column === 'jeopardy_date') {
-          return {
-            column: 'jeopardy_date',
-            operation: filter.Data !== 'yes' ? 'isnull' : 'isnotnull',
-          };
-        } else if (filter.start_date !== '' && filter.end_date !== '') {
-          return {
-            column: filter.Column,
-            operation: 'btw',
-            start_date: filter.start_date,
-            end_date: filter.end_date,
-          };
-        } else {
-          return {
-            column: filter.Column,
-            operation: filter.Operation,
-            data: filter.Data,
-          };
-        }
-      })
+      if (filter.Column === 'jeopardy_date') {
+        return {
+          column: 'jeopardy_date',
+          operation: filter.Data !== 'yes' ? 'isnull' : 'isnotnull',
+        };
+      } else if (filter.start_date !== '' && filter.end_date !== '') {
+        return {
+          column: filter.Column,
+          operation: 'btw',
+          start_date: filter.start_date,
+          end_date: filter.end_date,
+        };
+      } else {
+        return {
+          column: filter.Column,
+          operation: filter.Operation,
+          data: filter.Data,
+        };
+      }
+    })
     : [];
 
   const dispatch = useAppDispatch();
@@ -98,13 +98,13 @@ const DealerTablePipeline = () => {
             formattedFilters && formattedFilters.length > 0
               ? formattedFilters
               : [
-                  { column: 'unique_id', operation: 'cont', data: searchTerm },
-                  {
-                    column: 'customer_name',
-                    operation: 'cont',
-                    data: searchTerm,
-                  },
-                ],
+                { column: 'unique_id', operation: 'cont', data: searchTerm },
+                {
+                  column: 'customer_name',
+                  operation: 'cont',
+                  data: searchTerm,
+                },
+              ],
           sort_by: '',
           sort_order: '',
         },
@@ -148,6 +148,16 @@ const DealerTablePipeline = () => {
         return sortDirection === 'asc'
           ? numericAValue - numericBValue
           : numericBValue - numericAValue;
+      } else if (sortKey === 'days_pto' || sortKey === 'days_install' || sortKey === 'days_permits' || sortKey === 'days_ntp' || sortKey === 'days_project_age') {
+        const extractNumber = (value: string) =>
+          parseInt(value.match(/\d+/)?.[0] || '0', 10);
+
+        const numericAValue = extractNumber(aValue);
+        const numericBValue = extractNumber(bValue);
+
+        return sortDirection === 'asc'
+          ? numericAValue - numericBValue
+          : numericBValue - numericAValue;
       } else if (sortKey === 'jeopardy_date') {
         const aValue = String(a[sortKey]);
         const bValue = String(b[sortKey]);
@@ -159,7 +169,8 @@ const DealerTablePipeline = () => {
         return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
-      } else {
+      }
+      else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
           typeof aValue === 'number' ? aValue : parseFloat(aValue);
@@ -200,13 +211,13 @@ const DealerTablePipeline = () => {
             formattedFilters && formattedFilters.length > 0
               ? formattedFilters
               : [
-                  { column: 'unique_id', operation: 'cont', data: searchTerm },
-                  {
-                    column: 'customer_name',
-                    operation: 'cont',
-                    data: searchTerm,
-                  },
-                ],
+                { column: 'unique_id', operation: 'cont', data: searchTerm },
+                {
+                  column: 'customer_name',
+                  operation: 'cont',
+                  data: searchTerm,
+                },
+              ],
           sort_by: '',
           sort_order: '',
         },
@@ -274,8 +285,8 @@ const DealerTablePipeline = () => {
           item.days_ntp,
           item.days_permits,
           item.days_install,
-          item.days_pto,   
-          
+          item.days_pto,
+
         ]
       );
 
@@ -322,7 +333,7 @@ const DealerTablePipeline = () => {
               onClick={handleClick}
             />
             <h2>Projects Data Entry & Aging Report</h2>
-            
+
           </div>
           <div className="newp-filInp">
             <div className="inp-cont">
@@ -470,7 +481,7 @@ const DealerTablePipeline = () => {
                       isAllRowsSelected={false}
                       isAnyRowSelected={false}
                       selectAllChecked={false}
-                      setSelectAllChecked={() => {}}
+                      setSelectAllChecked={() => { }}
                       selectedRows={selectedRows}
                       setSelectedRows={setSelectedRows}
                       sortKey={item.name}
@@ -511,33 +522,33 @@ const DealerTablePipeline = () => {
                       <td>
                         {item.survey_final_completion_date
                           ? format(
-                              parseISO(item.survey_final_completion_date),
-                              'dd-MM-yyyy'
-                            )
+                            parseISO(item.survey_final_completion_date),
+                            'dd-MM-yyyy'
+                          )
                           : '-'}
                       </td>
                       <td>
                         {item.ntp_complete_date
                           ? format(
-                              parseISO(item.ntp_complete_date),
-                              'dd-MM-yyyy'
-                            )
+                            parseISO(item.ntp_complete_date),
+                            'dd-MM-yyyy'
+                          )
                           : '-'}
                       </td>
                       <td>
                         {item.permit_submit_date
                           ? format(
-                              parseISO(item.permit_submit_date),
-                              'dd-MM-yyyy'
-                            )
+                            parseISO(item.permit_submit_date),
+                            'dd-MM-yyyy'
+                          )
                           : '-'}
                       </td>
                       <td>
                         {item.permit_approval_date
                           ? format(
-                              parseISO(item.permit_approval_date),
-                              'dd-MM-yyyy'
-                            )
+                            parseISO(item.permit_approval_date),
+                            'dd-MM-yyyy'
+                          )
                           : '-'}
                       </td>
                       <td>
@@ -548,9 +559,9 @@ const DealerTablePipeline = () => {
                       <td>
                         {item.ic_approval_date
                           ? format(
-                              parseISO(item.ic_approval_date),
-                              'dd-MM-yyyy'
-                            )
+                            parseISO(item.ic_approval_date),
+                            'dd-MM-yyyy'
+                          )
                           : '-'}
                       </td>
                       <td>{item.rep_2 || '-'}</td>
@@ -572,21 +583,21 @@ const DealerTablePipeline = () => {
                       <td>
                         {item.fin_complete_date
                           ? format(
-                              parseISO(item.fin_complete_date),
-                              'dd-MM-yyyy'
-                            )
+                            parseISO(item.fin_complete_date),
+                            'dd-MM-yyyy'
+                          )
                           : '-'}
                       </td>
 
                       <td>
                         {item.jeopardy_date === undefined ||
-                        item.jeopardy_date === null
+                          item.jeopardy_date === null
                           ? 'N/A'
                           : item.jeopardy_date === true
                             ? 'Yes'
                             : 'No'}
                       </td>
-       
+
                       <td>{item.days_project_age}</td>
                       <td>{item.days_ntp}</td>
                       <td>{item.days_permits}</td>
@@ -599,8 +610,8 @@ const DealerTablePipeline = () => {
           )}
         </div>
         {cuurentPageData &&
-        cuurentPageData?.length > 0 &&
-        !pipelineData.loading ? (
+          cuurentPageData?.length > 0 &&
+          !pipelineData.loading ? (
           <div className="page-heading-container">
             <p className="page-heading">
               {startIndex} - {endIndex > totalCount! ? totalCount : endIndex} of{' '}

@@ -304,9 +304,9 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 		// Unmarshal the JSONB data into the TablesPermissions field
 		var tablePermissions []models.GetTablePermission
-		err = json.Unmarshal(tablesPermissionsJSON, &tablePermissions)
-		if err != nil {
-			log.FuncWarnTrace(0, "Failed to unmarshall table permission data err: %v", err)
+		unmarshallerr := json.Unmarshal(tablesPermissionsJSON, &tablePermissions)
+		if unmarshallerr != nil {
+			log.FuncWarnTrace(0, "Failed to unmarshall table permission data err: %v", unmarshallerr)
 		}
 
 		// Assign Manager Name
