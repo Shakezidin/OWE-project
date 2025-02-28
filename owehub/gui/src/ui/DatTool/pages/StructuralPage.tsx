@@ -184,7 +184,8 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     Record<string, string | number>
   >({});
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
-  const [viewerImageInfo, setViewerImageInfo] = useState<ViewerImageInfo | null>(null);
+  const [viewerImageInfo, setViewerImageInfo] =
+    useState<ViewerImageInfo | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [structuralInfoStates, setStructuralInfoStates] = useState<string[]>(
     []
@@ -201,7 +202,12 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
   // } | null>(null);
   useEffect(() => {
     const initializeData = () => {
-      dispatch(getStructuralInfo({ project_id: currentGeneralId,id :"0633f086-6c83-422a-80da-97b51a404c43"}));
+      dispatch(
+        getStructuralInfo({
+          project_id: currentGeneralId,
+          id: '0633f086-6c83-422a-80da-97b51a404c43',
+        })
+      );
       dispatch(
         getDropdownList({
           drop_down_list: [
@@ -314,19 +320,26 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
           if (!mpData[activeStructuralState]) {
             // These might be the minimum required fields for a new structural state
             const requiredFields = ['structure', 'roof_type', 'sheathing_type'];
-            const missingFields = requiredFields.filter(field => !updates[field]);
-            
+            const missingFields = requiredFields.filter(
+              (field) => !updates[field]
+            );
+
             if (missingFields.length > 0) {
               // If critical fields are missing, notify user but allow continuation
-              toast.warning(`Missing recommended fields: ${missingFields.join(', ')}`);
+              toast.warning(
+                `Missing recommended fields: ${missingFields.join(', ')}`
+              );
             }
           }
-          
+
           // Map field names appropriately and convert types
           const modifiedFields = Object.keys(updates).reduce(
             (acc, key) => {
               // For new states or modified fields, include them
-              if (!mpData[activeStructuralState] || updates[key] !== mpData[activeStructuralState]?.[key]) {
+              if (
+                !mpData[activeStructuralState] ||
+                updates[key] !== mpData[activeStructuralState]?.[key]
+              ) {
                 // Special field name mapping
                 if (key === 'roof_material') {
                   acc['structural_roof_material'] = updates[key];
@@ -352,7 +365,10 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
           );
 
           // Always proceed with the update for new states, even if no fields were explicitly modified
-          if (Object.keys(modifiedFields).length > 0 || !mpData[activeStructuralState]) {
+          if (
+            Object.keys(modifiedFields).length > 0 ||
+            !mpData[activeStructuralState]
+          ) {
             success = await handleUpdate('structural_info', modifiedFields);
             if (success) {
               // Update mpData with the new or updated state
@@ -473,7 +489,6 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       setIsUploading(false);
     }
   };
-  
 
   const onImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files ? Array.from(event.target.files) : [];
@@ -492,13 +507,17 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       );
 
       setUploadedImages((prevImages) => [...prevImages, ...newImages]);
-      
+
       // If viewer is open, update its images too
       if (viewerImageInfo) {
-        setViewerImageInfo(prev => prev ? {
-          ...prev,
-          allImages: [...prev.allImages, ...newImages]
-        } : null);
+        setViewerImageInfo((prev) =>
+          prev
+            ? {
+                ...prev,
+                allImages: [...prev.allImages, ...newImages],
+              }
+            : null
+        );
       }
     } catch (error) {
       console.error('Upload failed:', error);
@@ -512,33 +531,35 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     try {
       const imageToRemove = uploadedImages[index];
       const s3Client = s3Upload('/datTool-images');
-      
+
       // Extract the key from the URL
       const urlParts = imageToRemove.url.split('/datTool-images/');
       if (urlParts.length !== 2) {
         throw new Error('Invalid S3 URL format');
       }
       const key = `datTool-images/${urlParts[1]}`;
-      
+
       // Delete from S3
       await s3Client.deleteFile(key);
-      
+
       // Update local state
-      setUploadedImages(prev => prev.filter((_, i) => i !== index));
-      
+      setUploadedImages((prev) => prev.filter((_, i) => i !== index));
+
       // Update viewer state if open
       if (viewerImageInfo) {
-        setViewerImageInfo(prev => {
+        setViewerImageInfo((prev) => {
           if (!prev) return null;
           const newImages = prev.allImages.filter((_, i) => i !== index);
-          return newImages.length > 0 ? {
-            ...prev,
-            mainUrl: newImages[0].url,
-            allImages: newImages
-          } : null;
+          return newImages.length > 0
+            ? {
+                ...prev,
+                mainUrl: newImages[0].url,
+                allImages: newImages,
+              }
+            : null;
         });
       }
-  
+
       // Only show toast if skipToast is false
       if (!skipToast) {
         toast.success('Image deleted successfully');
@@ -550,11 +571,11 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
       }
     }
   };
-  
+
   const handleMultipleImageRemove = async (indices: number[]) => {
     try {
       const s3Client = s3Upload('/datTool-images');
-      
+
       // Delete all images from S3
       for (const index of indices) {
         const imageToRemove = uploadedImages[index];
@@ -564,23 +585,27 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
           await s3Client.deleteFile(key);
         }
       }
-      
+
       // Update local state (filter out all deleted indices)
-      setUploadedImages(prev => prev.filter((_, i) => !indices.includes(i)));
-      
+      setUploadedImages((prev) => prev.filter((_, i) => !indices.includes(i)));
+
       // Update viewer state if open
       if (viewerImageInfo) {
-        setViewerImageInfo(prev => {
+        setViewerImageInfo((prev) => {
           if (!prev) return null;
-          const newImages = prev.allImages.filter((_, i) => !indices.includes(i));
-          return newImages.length > 0 ? {
-            ...prev,
-            mainUrl: newImages[0].url,
-            allImages: newImages
-          } : null;
+          const newImages = prev.allImages.filter(
+            (_, i) => !indices.includes(i)
+          );
+          return newImages.length > 0
+            ? {
+                ...prev,
+                mainUrl: newImages[0].url,
+                allImages: newImages,
+              }
+            : null;
         });
       }
-      
+
       // Single toast with number of deleted images
       toast.success(`${indices.length} images deleted successfully`);
     } catch (error) {
@@ -596,27 +621,27 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
     const lastState = structuralInfoStates[structuralInfoStates.length - 1];
     const newStateNumber = parseInt(lastState.replace('MP', '')) + 1;
     const newState = `MP${newStateNumber}`;
-    
+
     // Initialize the new state with default values or clone from the last state
     const lastStateData = mpData[lastState] || {};
-    
+
     // Create a deep copy of the last state's data for the new state
     const newStateData = { ...lastStateData };
-    
+
     // Update the mpData with the new state
-    setMpData(prev => ({
+    setMpData((prev) => ({
       ...prev,
-      [newState]: newStateData
+      [newState]: newStateData,
     }));
-    
-    setStructuralInfoStates(prev => [...prev, newState]);
+
+    setStructuralInfoStates((prev) => [...prev, newState]);
     setActiveStructuralState(newState);
-    
+
     // Set temp values to the new state's data
     setTempSelectedValues(newStateData);
-    
+
     // Enable edit mode
-    setEditStates(prev => ({ ...prev, structuralInfo: true }));
+    setEditStates((prev) => ({ ...prev, structuralInfo: true }));
   };
 
   const handleDeleteState = async (stateToDelete: string) => {
@@ -718,7 +743,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
   const handleViewImage = (mainUrl: string) => {
     setViewerImageInfo({
       mainUrl,
-      allImages: uploadedImages
+      allImages: uploadedImages,
     });
   };
 
@@ -728,7 +753,7 @@ const StructuralPage: React.FC<StructuralPageProps> = ({
 
   return (
     <div>
-{viewerImageInfo && (
+      {viewerImageInfo && (
         <ImageViewer
           viewerImageInfo={viewerImageInfo}
           onClose={closeViewer}
