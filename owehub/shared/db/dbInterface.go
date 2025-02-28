@@ -23,6 +23,7 @@ var (
 const (
 	OweHubDbIndex  uint8 = 0
 	RowDataDBIndex uint8 = 1
+	DatToolDB      uint8 = 2
 
 	OWEDB                            string = "owe_db"
 	RowDataApiSecret                 string = "XEBLLtt1nlfwa0uQL1tEMlGG"
@@ -107,7 +108,7 @@ func InitDBConnection() (err error) {
 	for _, dbConfig := range types.CommGlbCfg.DbConfList.DBConfigs {
 
 		connStr := fmt.Sprintf("postgres://%v:%v@%v/%v?sslmode=disable",
-			dbConfig.Username, dbConfig.Password, dbConfig.HostName, OWEDB)
+			dbConfig.Username, dbConfig.Password, dbConfig.HostName, dbConfig.DBName)
 
 		log.FuncInfoTrace(0, "Connection String is %s", connStr)
 		var retry int = 1

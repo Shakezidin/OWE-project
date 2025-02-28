@@ -77,7 +77,7 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 		}
 
 		for i, row := range data {
-			log.FuncErrorTrace(0, "Processing row %d: %v", i, row)
+			// log.FuncDebugTrace(0, "Processing row %d: %v", i, row)
 
 			if dbTables, ok := row["db_tables"]; ok {
 				var tableName string
