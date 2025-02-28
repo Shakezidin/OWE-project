@@ -182,3 +182,13 @@
   text-anchor: middle; /* Centers the text horizontally */
   dominant-baseline: central; /* Centers the text vertically */
 }
+
+
+.sc-app-container {
+  width: 600px;
+  height: 500px;
+}
+.graph-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+}

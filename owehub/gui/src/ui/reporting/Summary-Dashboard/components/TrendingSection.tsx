@@ -332,30 +332,39 @@ const HistoricalTrends: React.FC = () => {
     const wrapper = document.querySelector('.chart-wrapper .recharts-surface');
     const chartWrapper = document.querySelector('.chart-wrapper');
     const yAxis = document.querySelector('.chart-wrapper .recharts-yAxis') as HTMLElement | null;
-    
+
     if (yAxis) {
       // Create white background rectangle to prevent content bleed
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       const yAxisHeight = yAxis.getBoundingClientRect().height;
+
+      // Add some extra padding
+      const extraHeight = 50;
+      const totalHeight = yAxisHeight + extraHeight;
+
+      rect.setAttribute('height', totalHeight.toString());
       const yAxisWidth = yAxis.getBoundingClientRect().width;
-      
+
       rect.setAttribute('x', '0');
       rect.setAttribute('y', '0');
       rect.setAttribute('width', yAxisWidth.toString());
-      rect.setAttribute('height', yAxisHeight.toString());
+      rect.setAttribute('height', totalHeight.toString());
       rect.setAttribute('fill', 'white');
       rect.setAttribute('class', 'y-axis-background');
-      
-    //   // Remove existing background if present
-    //   const existingRect = yAxis.querySelector('.y-axis-background');
-    //   if (existingRect) existingRect.remove();
-      
+
+      //   // Remove existing background if present
+      //   const existingRect = yAxis.querySelector('.y-axis-background');
+      //   if (existingRect) existingRect.remove();
+
       yAxis.insertBefore(rect, yAxis.firstChild);
-      
+
       // Fix Y-axis position
       yAxis.style.transform = `translateX(${e.currentTarget.scrollLeft}px)`;
     }
   };
+
+  const width = getFilteredData().length * 100 < 400 ? 400 : getFilteredData().length * 100;
+
 
   return (
     <div className="historical-trends">
@@ -411,9 +420,9 @@ const HistoricalTrends: React.FC = () => {
 
       {/* Chart */}
       <div className="chart-container">
-        <div 
-          className="chart-wrapper" 
-          style={{ 
+        <div
+          className="chart-wrapper"
+          style={{
             overflowX: 'auto',
             overflowY: 'hidden',
             width: '100%',
@@ -427,24 +436,18 @@ const HistoricalTrends: React.FC = () => {
           >
             {selectedFilter === 'All' ? (
               <LineChart
+                width={width}
+                height={300}
                 data={getFilteredData()}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
               >
-                <CartesianGrid stroke="#e0e0e0" strokeDasharray="4 4" />
-                <XAxis
-                  dataKey="name"
-                  tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}
-                />
-                <YAxis 
-                  tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}
-                  style={{ 
-                    position: 'sticky', 
-                    left: 0,
-                    backgroundColor: 'white',
-                    zIndex: 1,
-                    paddingRight: '10px'
-                  }}
-                />
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name"  tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}/>
                 {Object.keys(colors).map((filter) => (
                   <Line
                     key={filter}
@@ -455,27 +458,23 @@ const HistoricalTrends: React.FC = () => {
                     dot={false}
                   />
                 ))}
+                <YAxis tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}/>
               </LineChart>
             ) : (
               <AreaChart
+                width={width}
+                height={300}
                 data={getFilteredData()}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
               >
                 <CartesianGrid stroke="#e0e0e0" strokeDasharray="4 4" />
-                <XAxis
-                  dataKey="name"
-                  tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}
-                />
-                <YAxis 
-                  tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}
-                  style={{ 
-                    position: 'sticky', 
-                    left: 0,
-                    backgroundColor: 'white',
-                    zIndex: 1,
-                    paddingRight: '10px'
-                  }}
-                />
+                <XAxis dataKey="name" tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}/>
+
                 <Area
                   type="monotone"
                   dataKey={selectedFilter}
@@ -483,6 +482,7 @@ const HistoricalTrends: React.FC = () => {
                   fill={colors[selectedFilter as keyof typeof colors]}
                   fillOpacity={0.3}
                 />
+                <YAxis tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}/>
               </AreaChart>
             )}
           </ResponsiveContainer>
