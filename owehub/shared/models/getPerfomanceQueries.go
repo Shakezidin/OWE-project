@@ -1180,21 +1180,15 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
             cust.total_system_cost AS contract_total,
             cust.contracted_system_size AS system_size,
             install.created_on AS pv_install_created_date,
-			b.battery_installation_date AS battery_scheduled_date,
-			b.completion_date AS battery_complete_date,
+			--b.battery_installation_date AS battery_scheduled_date,
+			--b.completion_date AS battery_complete_date,
 			install.pv_completion_date AS install_completed_date,
-			permit.pv_approved AS permit_approval_date,
-			ic.ic_approved_date AS ic_approval_date
+			--permit.pv_approved AS permit_approval_date,
+			--ic.ic_approved_date AS ic_approval_date
         FROM
             customers_customers_schema AS cust
         LEFT JOIN
-            permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
-        LEFT JOIN
-            ic_ic_pto_schema AS ic ON cust.unique_id = ic.customer_unique_id
-        LEFT JOIN
             pv_install_install_subcontracting_schema AS install ON cust.unique_id = install.customer_unique_id
-        LEFT JOIN
-            batteries_service_electrical_schema b ON cust.unique_id = b.customer_unique_id
         WHERE
             install.project_status %s AND
             install.app_status not in
@@ -1221,11 +1215,10 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
         cust.total_system_cost AS contract_total,
         cust.contracted_system_size AS system_size,
         fin.created_on AS fin_created_date,
-        fin.pv_fin_date AS fin_pass_date,
-        install.pv_completion_date AS install_completed_date
+        fin.pv_fin_date AS fin_pass_date
+        --install.pv_completion_date AS install_completed_date
     FROM fin_permits_fin_schema AS fin
     LEFT JOIN customers_customers_schema cust ON cust.unique_id = fin.customer_unique_id
-    LEFT JOIN pv_install_install_subcontracting_schema install ON install.customer_unique_id = fin.customer_unique_id
 	WHERE 
     fin.project_status  %v
     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
@@ -1250,15 +1243,13 @@ func PipelineActivationDataBelow(filterUserQuery, projectStatus, queueStatus, se
             cust.total_system_cost AS contract_total,
             cust.contracted_system_size AS system_size,
             pto.submitted AS pto_submitted_date,
-			pto.pto_granted AS pto_granted_new,
-			fin.pv_fin_date AS fin_pass_date,
-			fin.created_on AS fin_created_date
+			pto.pto_granted AS pto_granted_new
+			--fin.pv_fin_date AS fin_pass_date,
+			--fin.created_on AS fin_created_date
         FROM
             pto_ic_schema AS pto
         LEFT JOIN
                 customers_customers_schema AS cust ON cust.unique_id = pto.customer_unique_id
-        LEFT JOIN
-			fin_permits_fin_schema AS fin ON fin.customer_unique_id = pto.customer_unique_id
         WHERE
             pto.project_status %v 
             AND pto.pto_app_status IN ('New: Pending Audit','Submitted','Resubmitted ','Ready for Resubmission','Needs Review','PTO Overdue', 
