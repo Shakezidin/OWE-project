@@ -47,11 +47,14 @@ interface GeneralData {
   dat_aurora_id: string;
   dat_system_size_ac: number; // Changed to number for consistency
   dat_system_size_dc: number; // Changed to number for consistency
-  dat_changes: {
-    layout: string; // Replaces dat_change_layout
-    production: string; // Replaces dat_change_production
-    order_required: string; // Replaces dat_change_order_required
-  };
+  // dat_changes: {
+  //   layout: string; // Replaces dat_change_layout
+  //   production: string; // Replaces dat_change_production
+  //   order_required: string; // Replaces dat_change_order_required
+  // };
+  dat_change_layout:string,
+  dat_change_order_required:string,
+  dat_change_production:string,
   dat_change_order: string; // Replaces dat_change_order_required
 }
 
@@ -143,7 +146,6 @@ const GeneralPage: React.FC<generalProps> = ({
       value: generalData?.total_production_tape?.toString() || '0',
     },
   ];
-
   const datFields = [
     {
       label: 'Module QTY',
@@ -185,13 +187,31 @@ const GeneralPage: React.FC<generalProps> = ({
     datSystemSizeAC: { value: '', changed: false },
     datSystemSizeDC: { value: '', changed: false },
     datChanges: { value: '', changed: false },
-    datChangeOrderRequired: { value: '', changed: false },
+    datChangeOrderRequired: { value:'', changed: false },
     datInverterType: { value: datFields[2].value, changed: false },
     datBatteryType: { value: datFields[3].value, changed: false },
     // datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
     datChangeLayout: { value: '', changed: false },
     datChangeProduction: { value: '', changed: false },
   });
+  useEffect(()=>{
+    setGeneralDatInfo({
+      datModuleQTY: { value: datFields[0].value, changed: false },
+      datModuleType: { value: datFields[1].value, changed: false },
+      datDesignVersion: { value: datRightFields[0].value, changed: false },
+      datDesignerName: { value: datRightFields[1].value, changed: false },
+      datAuroraID: { value: datRightFields[2].value, changed: false },
+      datSystemSizeAC: { value: '', changed: false },
+      datSystemSizeDC: { value: '', changed: false },
+      datChanges: { value: '', changed: false },
+      datChangeOrderRequired: { value: generalData?.dat_change_order_required || "", changed: false },
+      datInverterType: { value: datFields[2].value, changed: false },
+      datBatteryType: { value: datFields[3].value, changed: false },
+      // datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
+      datChangeLayout: { value: generalData?.dat_change_layout || "", changed: false },
+      datChangeProduction: { value: generalData?.dat_change_production|| "", changed: false },
+    })
+  },[generalData]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
