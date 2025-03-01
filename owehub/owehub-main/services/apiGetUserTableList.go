@@ -71,7 +71,7 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, allTableQuery, nil)
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get User table list data from DB err: %v", err)
+			//log.FuncErrorTrace(0, "Failed to get User table list data from DB err: %v", err)
 			appserver.FormAndSendHttpResp(resp, "Failed to get User table list data from DB", http.StatusBadRequest, nil)
 			return
 		}
