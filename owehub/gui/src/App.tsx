@@ -69,13 +69,14 @@ import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
 import Summary_Dashboard from './ui/reporting/Summary-Dashboard/Summary_Dashboard';
 import DatTool from './ui/DatTool/DatTool';
 import DealerTablePipeline from './ui/oweHub/projectTracker/DealerTable';
+import { useDBStatusMonitor } from './hooks/useDBStatusMonitor';
 
 function App() {
   // Add console log suppression at the start of App component
   if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
-    console.log = () => {};
-    console.error = () => {};
-    console.warn = () => {};
+  console.log = () => {};
+  console.error = () => {};
+  console.warn = () => {};
   }
 
   const dispatch = useAppDispatch();
@@ -83,6 +84,8 @@ function App() {
     (state: RootState) => state.auth
   );
   const isStaging = process.env.REACT_APP_ENV;
+    const { dbStatus } = useDBStatusMonitor();
+  
 
   useEffect(() => {
     dispatch(initializeAuth());
@@ -149,14 +152,14 @@ function App() {
             isAuthenticated ? (
               <Navigate to={ROUTES.PEINDING_QUEUE} />
             ) : (
-              <LoginPage />
+              <LoginPage dbStatus={dbStatus} />
             )
           }
         />
 
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
-        <Route element={<MainLayout />}>
+        <Route element={<MainLayout dbStatus={dbStatus} />}>
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           <Route path={ROUTES.MAP_ADDRESS} element={<MyMap />} />
           <Route path={ROUTES.CALCULATOR} element={<LoanCalculator />} />

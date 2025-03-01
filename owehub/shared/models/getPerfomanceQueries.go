@@ -1169,6 +1169,7 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
 	}
 	PipelineDataQuery := fmt.Sprintf(`
         SELECT
+            DISTINCT ON (cust.unique_id)
             cust.unique_id AS customer_unique_id,
             cust.customer_name AS home_owner,
             cust.dealer,
@@ -2102,7 +2103,7 @@ func addInstallStatus(projectStatus string) string {
 // addInspectionStatus or fin
 func addInspectionStatus(projectStatus string) string {
 	if projectStatus != "'ACTIVE'" {
-		return fmt.Sprintf(`NOT IN ('ACTIVE', 'PTO''D (Service)', 'PTO''d (Audit)', 'PTO''d', 'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 'LEGAL - Customer has an attorney involved', %s)`, projectStatus)
+		return fmt.Sprintf(`NOT IN ('ACTIVE', 'PTO''d (Service)', 'PTO''d (Audit)', 'PTO''d', 'UNRESPONSIVE', 'CANCEL', 'DUPLICATE', 'ARM', 'LEGAL - Customer has an attorney involved', %s)`, projectStatus)
 	}
 	return "IN ('ACTIVE')"
 }
