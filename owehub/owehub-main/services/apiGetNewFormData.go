@@ -118,7 +118,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		case "users":
 			query = "SELECT name as data FROM " + db.TableName_users_details
 		case "dealer_name":
-			if role == string(types.RoleAccountManager) || role == string(types.RoleAccountExecutive)  || role == string(types.RoleProjectManager){
+			if role == string(types.RoleAccountManager) || role == string(types.RoleAccountExecutive) || role == string(types.RoleProjectManager) {
 				accountName, err := fetchAmAeName(email)
 				if err != nil {
 					appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
@@ -152,6 +152,8 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 	LEFT JOIN pv_install_install_subcontracting_schema pis ON cs.unique_id = pis.customer_unique_id
 	where pis.pv_completion_date IS NOT NULL`
 			dbIndex = db.RowDataDBIndex
+		case "recruiter":
+			query = "SELECT recruiter as data FROM sales_partner_dbhub_schema"
 		default:
 			log.FuncErrorTrace(0, "Invalid table name provided: %v", tableName)
 			responseData[tableName] = nil

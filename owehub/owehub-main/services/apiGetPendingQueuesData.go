@@ -100,7 +100,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			return
 		} else if len(data) == 0 {
 			tileData := models.GetPendingQueueTileResp{}
-			log.FuncWarnTrace(0, "empty data set from DB err: %v", err)
+			log.FuncWarnTrace(0, "No sales partner data found for user (Email: %s, Role: %s). Possible reason: No matching records in the database.", dataReq.Email, userRole)
 			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
 			return
 		}
@@ -117,7 +117,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			return
 		} else if len(data) == 0 {
 			tileData := models.GetPendingQueueTileResp{}
-			log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+			log.FuncWarnTrace(0, "No sales partner data found for user (Email: %s, Role: %s). Possible reason: No matching records in the database.", dataReq.Email, userRole)
 			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
 			return
 		}
@@ -154,7 +154,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			return
 		} else if len(data) == 0 {
 			tileData := models.GetPendingQueueTileResp{}
-			log.FuncWarnTrace(0, "empty data set from DB err: %v", err)
+			log.FuncWarnTrace(0, "No pending queue co data found for user (Email: %s, Role: %s). Possible reason: No matching records in the database.", dataReq.Email, userRole)
 			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
 			return
 		}
@@ -167,7 +167,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			return
 		} else if len(data) == 0 {
 			tileData := models.GetPendingQueueTileResp{}
-			log.FuncWarnTrace(0, "empty data set from DB err: %v", err)
+			log.FuncWarnTrace(0, "No pending queue ntp data found for user (Email: %s, Role: %s). Possible reason: No matching records in the database.", dataReq.Email, userRole)
 			appserver.FormAndSendHttpResp(resp, "pending queue Data", http.StatusOK, tileData, RecordCount)
 			return
 		}
