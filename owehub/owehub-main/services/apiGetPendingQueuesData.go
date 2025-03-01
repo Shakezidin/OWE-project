@@ -184,6 +184,14 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			// continue
 		}
 
+		var projectAgeDays string
+		if UniqueId != "" {
+			projectAgeDays, err = getProjectAgeDays(UniqueId)
+			if err != nil {
+				log.FuncWarnTrace(0, "Failed to get project age days for %s: %v", UniqueId, err)
+			}
+		}
+
 		if val, ok := item["change_order_status"].(string); ok {
 			Co = val
 		} else {
@@ -226,19 +234,74 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		FinanceCreditApprovalLoanorLease, _ := getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD, prospectId)
 		FinanceAgreementCompletedLoanorLease, _ := getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD, prospectId)
 		OWEDocumentsCompleted, _ := getPendingQueueStringValue(item, "owe_documents_completed", ntpD, prospectId)
+
+		// Add the new field extraction from the DB result - direct extraction
+		soldDate := ""
+		if val, ok := item["sold_date"].(string); ok && val != "" {
+			soldDate = val
+		} else if val, ok := item["sold_date"].(time.Time); ok {
+			soldDate = val.Format("2006-01-02")
+		}
+
+		appStatus := ""
+		if val, ok := item["app_status"].(string); ok {
+			appStatus = val
+		}
+
+		projectStatus := ""
+		if val, ok := item["project_status"].(string); ok {
+			projectStatus = val
+		}
+
+		salesRep := ""
+		if val, ok := item["sales_rep"].(string); ok {
+			salesRep = val
+		}
+
+		setter := ""
+		if val, ok := item["setter"].(string); ok {
+			setter = val
+		}
+
+		ntpDelayedBy := ""
+		if val, ok := item["ntp_delayed_by"].(string); ok {
+			ntpDelayedBy = val
+		}
+
+		ntpDelayNotes := ""
+		if val, ok := item["ntp_delay_notes"].(string); ok {
+			ntpDelayNotes = val
+		}
+
 		CoStatus, _ := getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
 		PendingQueue := models.GetPendingQueue{
 			UniqueId:  UniqueId,
 			HomeOwner: HomeOwner,
 			Co: models.PendingQueueCo{
-				CoStatus: CoStatus,
-				CO:       Co,
+				CoStatus:       CoStatus,
+				CO:             Co,
+				SoldDate:       soldDate,
+				AppStatus:      appStatus,
+				ProjectStatus:  projectStatus,
+				SalesRep:       salesRep,
+				Setter:         setter,
+				NtpDelayedBy:   ntpDelayedBy,
+				NtpDelayNotes:  ntpDelayNotes,
+				ProjectAgeDays: projectAgeDays,
 			},
 			Ntp: models.PendingQueueNTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
 				FinanceNTPOfProject:          FinanceNTPOfProject,
 				UtilityBillUploaded:          UtilityBillUploaded,
 				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
+				SoldDate:                     soldDate,
+				AppStatus:                    appStatus,
+				ProjectStatus:                projectStatus,
+				SalesRep:                     salesRep,
+				Setter:                       setter,
+				NtpDelayedBy:                 ntpDelayedBy,
+				NtpDelayNotes:                ntpDelayNotes,
+				ProjectAgeDays:               projectAgeDays,
 			},
 			Qc: models.PendingQueueQC{
 				PowerClerk:                           PowerClerk,
@@ -258,4 +321,32 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 	paginatedData := Paginate(pendingqueueList.PendingQueueList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", len(paginatedData), paginatedData)
 	appserver.FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, paginatedData, RecordCount)
+}
+
+// ..function to fetch project age days
+func getProjectAgeDays(uniqueId string) (string, error) {
+	var projectAgeDays string
+
+	query := fmt.Sprintf("SELECT project_age_days FROM aging_report WHERE unique_id = '%s'", uniqueId)
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get project_age_days for UniqueId %v. Error: %v", uniqueId, err)
+		return "", err
+	}
+
+	if len(data) == 0 {
+		return "", nil
+	}
+
+	if val, ok := data[0]["project_age_days"].(string); ok && val != "" {
+		projectAgeDays = val
+	} else if val, ok := data[0]["project_age_days"].(int); ok {
+		projectAgeDays = fmt.Sprintf("%d", val)
+	} else if val, ok := data[0]["project_age_days"].(int64); ok {
+		projectAgeDays = fmt.Sprintf("%d", val)
+	} else if val, ok := data[0]["project_age_days"].(float64); ok {
+		projectAgeDays = fmt.Sprintf("%.0f", val) // Format as integer
+	}
+
+	return projectAgeDays, nil
 }
