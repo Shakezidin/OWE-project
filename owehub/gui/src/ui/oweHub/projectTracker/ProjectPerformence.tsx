@@ -698,7 +698,8 @@ const ProjectPerformence = () => {
   const showNewPage =
     role === TYPE_OF_USER.DEALER_OWNER ||
     role === TYPE_OF_USER.REGIONAL_MANGER ||
-    (role === TYPE_OF_USER.SALES_REPRESENTATIVE && isStaging === 'staging');
+    (role === TYPE_OF_USER.SALES_REPRESENTATIVE) || (role === TYPE_OF_USER.SALE_MANAGER) || (role === TYPE_OF_USER.ADMIN);
+
 
 
   const navigate = useNavigate();
@@ -717,17 +718,23 @@ const ProjectPerformence = () => {
     <div className="project-main-wrp">
       <div className="project-container">
         <div className="project-heading pipeline-heading">
-          <h2>{activeTab === 'Active Queue' ? 'Active' : 'Non Active'}</h2>
+          <h2>{activeTab === 'Active Queue' ? 'Active' : 'Non-Active'}</h2>
           <div className="pipeline-header-btns">
             {(showNewPage) &&
               <>
                 <div
-                  className='skygroup-btn'
+                  className="skygroup-btn"
                   onClick={handleNewPage}
                   data-tooltip-id={isMobile ? '' : 'dealer-filter'}
+                  style={{
+                    cursor: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'not-allowed' : 'pointer',
+                    pointerEvents: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'none' : 'auto',
+                    opacity: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 0.6 : 1, // Optional: Reduce opacity for a disabled effect
+                  }}
                 >
-                  <img src={ICONS.sky} alt='sky' />
+                  <img src={ICONS.sky} alt="sky" />
                 </div>
+
                 <Tooltip
                   style={{
                     zIndex: 103,
@@ -785,7 +792,7 @@ const ProjectPerformence = () => {
                 handleActiveTab('Hold & Jeopardy'), setPage(1);
               }}
             >
-              Non Active
+              Non-Active
             </button>
             <button
               disabled={loading || isLoading}

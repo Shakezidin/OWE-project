@@ -86,8 +86,21 @@ export const LoginPage = () => {
     }
   }, [authData]);
 
-
-
+  useEffect(() => {
+    
+    // Check for timeout flag in sessionStorage
+    const sessionTimeout = sessionStorage.getItem('sessionTimeout');
+    const logoutMessage = sessionStorage.getItem('logoutMessage');
+    
+    if (sessionTimeout === 'true' && logoutMessage) {
+      toast.error(logoutMessage, {
+        toastId: 'session-timeout'
+      });
+      // Clear the message and flag to prevent showing it again on refresh
+      sessionStorage.removeItem('logoutMessage');
+      sessionStorage.removeItem('sessionTimeout');
+    }
+  }, []);
 
   /** email validation */
   const isValidEmail = (email: string) => {
