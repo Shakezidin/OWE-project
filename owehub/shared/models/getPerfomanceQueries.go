@@ -968,21 +968,19 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
             cust.contracted_system_size AS system_size,
             cust.customer_name AS home_owner,
 	        cad.record_created_on AS cad_ready,
-	        cad.pv_install_completed_date AS cad_complete_date,
-	    CASE
-		    WHEN (survey.reschedule_needed_on_date IS NOT NULL
-			    AND survey.twond_visit_date IS NULL)
-			    THEN NULL
-		    WHEN survey.twond_visit_date IS NOT NULL
-			    THEN survey.twond_completion_date
-		    ELSE survey.survey_completion_date
-	    END AS survey_final_completion_date
+	        cad.pv_install_completed_date AS cad_complete_date
+-- 	    CASE
+-- 		    WHEN (survey.reschedule_needed_on_date IS NOT NULL
+-- 			    AND survey.twond_visit_date IS NULL)
+-- 			    THEN NULL
+-- 		    WHEN survey.twond_visit_date IS NOT NULL
+-- 			    THEN survey.twond_completion_date
+-- 		    ELSE survey.survey_completion_date
+-- 	    END AS survey_final_completion_date
         FROM
 	        planset_cad_schema AS cad
         LEFT JOIN
 	        customers_customers_schema AS cust ON cad.our_number = cust.unique_id
-        LEFT JOIN
-	        survey_survey_schema AS survey ON cad.our_number = survey.customer_unique_id
         WHERE
 	        cad.active_inactive = 'Active'
             AND cad.plan_set_status != 'Plan Set Complete'
@@ -1183,7 +1181,7 @@ func PipelineInstallDataBelow(filterUserQuery, projectStatus, queueStatus, searc
             install.created_on AS pv_install_created_date,
 			--b.battery_installation_date AS battery_scheduled_date,
 			--b.completion_date AS battery_complete_date,
-			install.pv_completion_date AS install_completed_date,
+			install.pv_completion_date AS install_completed_date
 			--permit.pv_approved AS permit_approval_date,
 			--ic.ic_approved_date AS ic_approval_date
         FROM
