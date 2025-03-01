@@ -708,6 +708,7 @@ const ProjectPerformence = () => {
   };
 
   const isMobile = useMatchMedia('(max-width: 767px)');
+  const [isNewHovered, setIsNewHovered] = useState(false);
 
 
 
@@ -720,6 +721,21 @@ const ProjectPerformence = () => {
         <div className="project-heading pipeline-heading">
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Non-Active'}</h2>
           <div className="pipeline-header-btns">
+
+            {(showDropdown) && (
+              <DropdownCheckbox
+                label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
+                placeholder="Search partners"
+                selectedOptions={selectedDealer}
+                options={dealerOption}
+                onChange={(val) => {
+                  setSelectedDealer(val);
+                  setPage(1);
+                }}
+                disabled={loading || isLoading}
+              />
+
+            )}
             {(showNewPage) &&
               <>
                 <div
@@ -731,9 +747,12 @@ const ProjectPerformence = () => {
                     pointerEvents: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'none' : 'auto',
                     opacity: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 0.6 : 1, // Optional: Reduce opacity for a disabled effect
                   }}
+                  onMouseEnter={() => setIsNewHovered(true)}
+                  onMouseLeave={() => setIsNewHovered(false)}
                 >
-                  <img src={ICONS.sky} alt="sky" />
+                  <img src={isNewHovered ? ICONS.sky : ICONS.skyBlue} alt="sky" />
                 </div>
+
 
                 <Tooltip
                   style={{
@@ -752,20 +771,6 @@ const ProjectPerformence = () => {
                 />
               </>
             }
-            {(showDropdown) && (
-              <DropdownCheckbox
-                label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
-                placeholder="Search partners"
-                selectedOptions={selectedDealer}
-                options={dealerOption}
-                onChange={(val) => {
-                  setSelectedDealer(val);
-                  setPage(1);
-                }}
-                disabled={loading || isLoading}
-              />
-
-            )}
             <button
               disabled={loading || isLoading}
               className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
