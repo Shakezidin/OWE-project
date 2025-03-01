@@ -289,7 +289,7 @@ const data: DataPoint[] = [
     NTP: 1879,
     Install: 2946,
     Battery: 1938,
-    Cancel: 1470,
+    Cancel: 970,
   },
   {
     name: 'Dec 2022',
@@ -534,6 +534,8 @@ const HistoricalTrends: React.FC = () => {
                 ))}
                 <YAxis tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}/>
                 <Tooltip content={<CustomTooltip />} />
+                 {/* Dynamic Hover Line */}
+      {hoverX && <ReferenceLine x={hoverX} stroke="blue" strokeWidth={2} strokeDasharray="5 5" />}
               </LineChart>
             ) : (
               <AreaChart
