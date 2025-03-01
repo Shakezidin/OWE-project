@@ -2630,4 +2630,5 @@
 }
 .skygroup-btn:hover{
   background-color: #377CF6;
+  transform: scale(1.05);
 }

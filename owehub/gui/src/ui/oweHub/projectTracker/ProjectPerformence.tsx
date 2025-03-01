@@ -722,20 +722,6 @@ const ProjectPerformence = () => {
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Non-Active'}</h2>
           <div className="pipeline-header-btns">
 
-            {(showDropdown) && (
-              <DropdownCheckbox
-                label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
-                placeholder="Search partners"
-                selectedOptions={selectedDealer}
-                options={dealerOption}
-                onChange={(val) => {
-                  setSelectedDealer(val);
-                  setPage(1);
-                }}
-                disabled={loading || isLoading}
-              />
-
-            )}
             {(showNewPage) &&
               <>
                 <div
@@ -771,6 +757,22 @@ const ProjectPerformence = () => {
                 />
               </>
             }
+
+            {(showDropdown) && (
+              <DropdownCheckbox
+                label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
+                placeholder="Search partners"
+                selectedOptions={selectedDealer}
+                options={dealerOption}
+                onChange={(val) => {
+                  setSelectedDealer(val);
+                  setPage(1);
+                }}
+                disabled={loading || isLoading}
+              />
+
+            )}
+
             <button
               disabled={loading || isLoading}
               className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
