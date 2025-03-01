@@ -119,7 +119,7 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Designation
 	Designation, designationOk := data[0]["user_designation"].(string)
 	if !designationOk || Designation == "" {
-		log.FuncErrorTrace(0, "Failed to get Designation for email: %+v\n", emailId)
+		log.FuncWarnTrace(0, "Failed to get Designation for email: %+v\n", emailId)
 		Designation = ""
 	}
 
@@ -140,27 +140,27 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// PasswordChangeReq
 	PasswordChangeReq, passOk := data[0]["password_change_required"].(bool)
 	if !passOk {
-		log.FuncErrorTrace(0, "Failed to get PasswordChangeReq for email: %+v\n", emailId)
+		log.FuncWarnTrace(0, "Failed to get PasswordChangeReq for email: %+v\n", emailId)
 	}
 
 	// ReportingManager
 	ReportingManager, managerOk := data[0]["reporting_manager"].(string)
 	if !managerOk || ReportingManager == "" {
-		log.FuncErrorTrace(0, "Failed to get ReportingManager for email: %+v\n", emailId)
+		log.FuncWarnTrace(0, "Failed to get ReportingManager for email: %+v\n", emailId)
 		ReportingManager = ""
 	}
 
 	// DealerOwner
 	DealerOwner, dealerownerOk := data[0]["dealer_owner"].(string)
 	if !dealerownerOk || DealerOwner == "" {
-		log.FuncErrorTrace(0, "Failed to get DealerOwner for email: %+v\n", emailId)
+		log.FuncWarnTrace(0, "Failed to get DealerOwner for email: %+v\n", emailId)
 		DealerOwner = ""
 	}
 
 	// Profiletatus
 	Profiletatus, statusOk := data[0]["user_status"].(string)
 	if !statusOk || Profiletatus == "" {
-		log.FuncErrorTrace(0, "Failed to get Profiletatus for email: %+v\n", emailId)
+		log.FuncWarnTrace(0, "Failed to get Profiletatus for email: %+v\n", emailId)
 		Profiletatus = ""
 	}
 
@@ -245,7 +245,7 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var tablePermissions []models.GetTablePermission
 	err = json.Unmarshal(tablesPermissionsJSON, &tablePermissions)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshall table permission data err: %v", err)
+		log.FuncWarnTrace(0, "Failed to unmarshall table permission data err: %v", err)
 	}
 
 	userData := models.GetUsersData{

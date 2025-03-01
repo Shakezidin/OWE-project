@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './HistoricalTrends.css';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import DropdownCheckbox from '../../../components/DropdownCheckBox';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import {
   LineChart,
   Line,
@@ -12,14 +14,16 @@ import {
   ResponsiveContainer,
   Legend,
   CartesianGrid,
+  Tooltip,
+  ReferenceLine,
 } from 'recharts';
 
 const colors = {
-  Sales: '#20c6c6',
-  NTP: '#627ef7',
-  Install: '#ec5df7',
-  Battery: '#e5b600',
-  Cancel: '#E1D6FB',
+  Sales: '#37DFD9',
+  NTP: '#73A4FF',
+  Install: '#FF7CFF',
+  Battery: '#FCC40B',
+  Cancel: '#A984FE',
 } as const;
 
 type FilterType = keyof typeof colors | 'All';
@@ -285,7 +289,7 @@ const data: DataPoint[] = [
     NTP: 1879,
     Install: 2946,
     Battery: 1938,
-    Cancel: 1470,
+    Cancel: 970,
   },
   {
     name: 'Dec 2022',
@@ -313,12 +317,39 @@ const Days = [
 const HistoricalTrends: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('All');
   const [selectedYear, setSelectedYear] = useState<Option[]>([]);
+  const [hoverX, setHoverX] = useState<number | null>(null); // Track hover position
   const [days, setDays] = useState<Option>({ label: '30 Days', value: '30' });
-
+  const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
+  const [dealerOption, setDealerOption] = useState<Option[]>([]);
+  const [isFetched, setIsFetched] = useState(false);
   const toggleFilter = (filter: FilterType) => {
-    setSelectedFilter(filter === 'All' ? 'All' : filter);
+    setSelectedFilter((prevFilter) => (prevFilter === filter ? 'All' : filter));
   };
 
+  const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
+    newFormData?.dealer_name?.map((value: string) => ({
+      value,
+      label: value,
+    }));
+
+  const getNewFormData = async () => {
+    const tableData = {
+      tableNames: ['dealer_name'],
+    };
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    if (res.status > 200) {
+      return;
+    }
+    if (res.data?.dealer_name) {
+      setSelectedDealer(leaderDealer(res.data));
+      setDealerOption(leaderDealer(res.data));
+    }
+    setIsFetched(true);
+  };
+
+  useEffect(() => {
+    getNewFormData();
+  }, []);
   // Function to filter data based on selected years
   const getFilteredData = () => {
     if (selectedYear.length === 0) return data;
@@ -332,30 +363,71 @@ const HistoricalTrends: React.FC = () => {
     const wrapper = document.querySelector('.chart-wrapper .recharts-surface');
     const chartWrapper = document.querySelector('.chart-wrapper');
     const yAxis = document.querySelector('.chart-wrapper .recharts-yAxis') as HTMLElement | null;
-    
+
     if (yAxis) {
       // Create white background rectangle to prevent content bleed
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       const yAxisHeight = yAxis.getBoundingClientRect().height;
+
+      // Add some extra padding
+      const extraHeight = 50;
+      const totalHeight = yAxisHeight + extraHeight;
+
+      rect.setAttribute('height', totalHeight.toString());
       const yAxisWidth = yAxis.getBoundingClientRect().width;
-      
+
       rect.setAttribute('x', '0');
       rect.setAttribute('y', '0');
       rect.setAttribute('width', yAxisWidth.toString());
-      rect.setAttribute('height', yAxisHeight.toString());
+      rect.setAttribute('height', totalHeight.toString());
       rect.setAttribute('fill', 'white');
       rect.setAttribute('class', 'y-axis-background');
-      
-    //   // Remove existing background if present
-    //   const existingRect = yAxis.querySelector('.y-axis-background');
-    //   if (existingRect) existingRect.remove();
-      
+
+      //   // Remove existing background if present
+      //   const existingRect = yAxis.querySelector('.y-axis-background');
+      //   if (existingRect) existingRect.remove();
+
       yAxis.insertBefore(rect, yAxis.firstChild);
-      
+
       // Fix Y-axis position
       yAxis.style.transform = `translateX(${e.currentTarget.scrollLeft}px)`;
     }
+    return null;
   };
+
+  const width = getFilteredData().length * 100 < 420 ? 420 : getFilteredData().length * 100;
+  const CustomTooltip: React.FC<{
+    active?: boolean;
+    payload?: Array<{
+      name: string;
+      value: number;
+      color: string;
+      dataKey: string;
+    }>;
+    label?: string;
+  }> = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          className="custom-tooltippp"
+          style={{
+            borderRadius: '5px',
+            padding: '10px',
+            fontSize: '12px',
+            fontWeight: 500,
+          }}
+        >
+          {payload.map((entry, index) => (
+            <p key={index} style={{ color: entry.color }}>
+              {`${entry.name}: ${entry.value}`}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
 
   return (
     <div className="historical-trends">
@@ -374,10 +446,11 @@ const HistoricalTrends: React.FC = () => {
           {Object.keys(colors).map((filter) => (
             <button
               key={filter}
-              className={`filter-button ${selectedFilter === filter ? 'active' : ''}`}
+              className={`filter-button ${selectedFilter === filter ? 'active' : 'inactive'}`}
               onClick={() => toggleFilter(filter as keyof typeof colors)}
             >
-              <span className={`color-dot ${filter.toLowerCase()}`}></span>
+              <span className={`color-dot ${filter.toLowerCase()}`} />{' '}
+              {/* Always visible */}
               {filter}
             </button>
           ))}
@@ -391,10 +464,19 @@ const HistoricalTrends: React.FC = () => {
               options={Days}
               onChange={(value: any) => setDays(value)}
               value={days}
-              controlStyles={{ marginTop: 0, minHeight: 30, minWidth: 120 }}
-              menuWidth={'120px'}
+              controlStyles={{ marginTop: 0, minHeight: 30 }}
+              //   menuWidth={'120px'}
               menuListStyles={{ fontWeight: 400 }}
               singleValueStyles={{ fontWeight: 400 }}
+            />
+            <DropdownCheckbox
+              label={selectedDealer.length === 1 ? 'Partner' : 'Partners'}
+              placeholder={'Search partners'}
+              selectedOptions={selectedDealer}
+              options={dealerOption}
+              onChange={(val) => {
+                setSelectedDealer(val);
+              }}
             />
 
             {/* Years Dropdown */}
@@ -410,14 +492,15 @@ const HistoricalTrends: React.FC = () => {
       </div>
 
       {/* Chart */}
+      {/* Chart */}
       <div className="chart-container">
-        <div 
-          className="chart-wrapper" 
-          style={{ 
+        <div
+          className="chart-wrapper"
+          style={{
             overflowX: 'auto',
             overflowY: 'hidden',
             width: '100%',
-            position: 'relative'
+            position: 'relative',
           }}
           onScroll={handleScroll}
         >
@@ -427,24 +510,18 @@ const HistoricalTrends: React.FC = () => {
           >
             {selectedFilter === 'All' ? (
               <LineChart
+                width={width}
+                height={300}
                 data={getFilteredData()}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
               >
-                <CartesianGrid stroke="#e0e0e0" strokeDasharray="4 4" />
-                <XAxis
-                  dataKey="name"
-                  tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}
-                />
-                <YAxis 
-                  tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}
-                  style={{ 
-                    position: 'sticky', 
-                    left: 0,
-                    backgroundColor: 'white',
-                    zIndex: 1,
-                    paddingRight: '10px'
-                  }}
-                />
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name"  tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}/>
                 {Object.keys(colors).map((filter) => (
                   <Line
                     key={filter}
@@ -455,27 +532,26 @@ const HistoricalTrends: React.FC = () => {
                     dot={false}
                   />
                 ))}
+                <YAxis tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}/>
+                <Tooltip content={<CustomTooltip />} />
+                 {/* Dynamic Hover Line */}
+      {hoverX && <ReferenceLine x={hoverX} stroke="blue" strokeWidth={2} strokeDasharray="5 5" />}
               </LineChart>
             ) : (
               <AreaChart
+                width={width}
+                height={300}
                 data={getFilteredData()}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
               >
                 <CartesianGrid stroke="#e0e0e0" strokeDasharray="4 4" />
-                <XAxis
-                  dataKey="name"
-                  tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}
-                />
-                <YAxis 
-                  tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}
-                  style={{ 
-                    position: 'sticky', 
-                    left: 0,
-                    backgroundColor: 'white',
-                    zIndex: 1,
-                    paddingRight: '10px'
-                  }}
-                />
+                <XAxis dataKey="name" tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}/>
+                <Tooltip content={<CustomTooltip />} />
                 <Area
                   type="monotone"
                   dataKey={selectedFilter}
@@ -483,12 +559,12 @@ const HistoricalTrends: React.FC = () => {
                   fill={colors[selectedFilter as keyof typeof colors]}
                   fillOpacity={0.3}
                 />
+                <YAxis tick={{ fontSize: 14, fill: '#767676', fontWeight: 500 }}/>
               </AreaChart>
             )}
           </ResponsiveContainer>
         </div>
       </div>
-
     </div>
   );
 };
