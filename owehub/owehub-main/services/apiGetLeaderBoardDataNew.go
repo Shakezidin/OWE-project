@@ -93,6 +93,37 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	LeaderBoardList := models.GetLeaderBoardList{}
 
+	if len(dataReq.Recruiters) > 0 {
+		var items []string
+		joinNames := joinNames(dataReq.Recruiters)
+		recruiterQuery := fmt.Sprintf(`SELECT sales_partner_name from sales_partner_dbhub_schema where recruiter IN (%v)`, joinNames)
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, recruiterQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Error retrieving sales_partner_name with role %v and email %v with errd %v", dataReq.Role, dataReq.Email, err)
+			appserver.FormAndSendHttpResp(resp, "Failed to fetch sales_partner_name", http.StatusBadRequest, nil)
+			return
+		}
+
+		if len(data) == 0 {
+			LeaderBoardList.TopLeaderBoardList = []models.CombinedResult{}
+			LeaderBoardList.LeaderBoardList = []models.CombinedResult{}
+
+			log.FuncErrorTrace(0, "no dealer available for recruiter with role = %v and email = %v", dataReq.Role, dataReq.Email)
+			appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
+			return
+		}
+
+		for _, item := range data {
+			name, ok := item["sales_partner_name"].(string)
+			if !ok {
+				log.FuncErrorTrace(0, "Failed to get sales_partner_name item for Item: %+v\n", item)
+				continue
+			}
+			items = append(items, name)
+		}
+		dataReq.DealerName = items
+	}
+
 	if dataReq.Role == string(types.RoleAdmin) || dataReq.Role == string(types.RoleFinAdmin) ||
 		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) ||
 		dataReq.Role == string(types.RoleProjectManager) ||
@@ -512,7 +543,6 @@ func combineResults(saleCancelData, installBatteryData, ntpData []map[string]int
 		totalNtp += ntp
 	}
 
-	partnerIndex := 1 // Initialize partner counter
 	// Convert map to slice and handle highlighting
 	for _, result := range combinedMap {
 
@@ -520,9 +550,6 @@ func combineResults(saleCancelData, installBatteryData, ntpData []map[string]int
 			if result.Name != HighLightDlrName {
 				if value, exists := dealerCoded[result.Name]; exists && value != "" {
 					result.Name = value
-				} else {
-					result.Name = fmt.Sprintf("partner_%d", partnerIndex)
-					partnerIndex++ // Increment for the next missing dealer
 				}
 			}
 		}

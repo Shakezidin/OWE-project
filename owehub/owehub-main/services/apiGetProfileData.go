@@ -237,15 +237,19 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// tablesPermissions
-	tablesPermissionsJSON, Ok := data[0]["tables_permissions"].([]byte)
-	if !Ok || tablesPermissionsJSON == nil {
-		tablesPermissionsJSON = nil
-	}
-	// Unmarshal the JSONB data into the TablesPermissions field
 	var tablePermissions []models.GetTablePermission
-	err = json.Unmarshal(tablesPermissionsJSON, &tablePermissions)
-	if err != nil {
-		log.FuncWarnTrace(0, "Failed to unmarshall table permission data err: %v", err)
+
+	if tablesPermissionsRaw, exists := data[0]["tables_permissions"]; exists && tablesPermissionsRaw != nil {
+		if tablesPermissionsJSON, ok := tablesPermissionsRaw.([]byte); ok {
+			if len(tablesPermissionsJSON) > 0 {
+				err = json.Unmarshal(tablesPermissionsJSON, &tablePermissions)
+				if err != nil {
+					log.FuncWarnTrace(0, "Failed to unmarshal table permission data err: %v", err)
+				}
+			}
+		} else {
+			log.FuncWarnTrace(0, "Invalid type for tables_permissions, expected []byte but got: %T", tablesPermissionsRaw)
+		}
 	}
 
 	userData := models.GetUsersData{
