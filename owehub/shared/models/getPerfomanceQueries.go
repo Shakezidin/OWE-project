@@ -338,22 +338,10 @@ func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
             customers_customers_schema.unique_id,
             ntp_ntp_schema.change_order_status,
             customers_customers_schema.customer_name AS home_owner,
-            ntp_ntp_schema.ntp_complete_date AS ntp_date,
-
-            ntp_ntp_schema.sale_date  AS sold_date,
-            ntp_ntp_schema.app_status,
-            ntp_ntp_schema.project_status,
-            ntp_ntp_schema.sales_rep,
-            sales_metrics_schema.setter,
-            --ntp_ntp_schema.deal_type as deal_type
-            ntp_ntp_schema.pending_ntp_date as ntp_date ,
-            ntp_ntp_schema.ntp_delayed_by,
-            ntp_ntp_schema.ntp_delay_notes
-
+            ntp_ntp_schema.ntp_complete_date AS ntp_date
      FROM ntp_ntp_schema
      LEFT JOIN customers_customers_schema
         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
-     LEFT JOIN sales_metrics_schema ON ntp_ntp_schema.unique_id = sales_metrics_schema.unique_id
         AND customers_customers_schema.unique_id != ''
      WHERE ntp_ntp_schema.project_status NOT IN (
         'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED',
@@ -377,34 +365,17 @@ func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
 	filtersBuilder.WriteString(fmt.Sprintf(`
         SELECT
             customers_customers_schema.unique_id,
-            ntp_ntp_schema.change_order_status,
+            ntp_ntp_schema.production_discrepancy,
+            ntp_ntp_schema.finance_ntp_of_project,
+            ntp_ntp_schema.utility_bill_uploaded,
+            ntp_ntp_schema.powerclerk_signatures_complete,
             customers_customers_schema.customer_name AS home_owner,
-            ntp_ntp_schema.ntp_complete_date AS ntp_date,
-
-            ntp_ntp_schema.sale_date  AS sold_date,
-            ntp_ntp_schema.app_status,
-            ntp_ntp_schema.project_status,
-            ntp_ntp_schema.sales_rep,
-            sales_metrics_schema.setter,
-            --ntp_ntp_schema.deal_type as deal_type
-            ntp_ntp_schema.pending_ntp_date as ntp_date ,
-            ntp_ntp_schema.ntp_delayed_by,
-            ntp_ntp_schema.ntp_delay_notes
-
-     FROM ntp_ntp_schema
-     LEFT JOIN customers_customers_schema
-        ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
-    LEFT JOIN sales_metrics_schema ON ntp_ntp_schema.unique_id = sales_metrics_schema.unique_id
-
-        AND customers_customers_schema.unique_id != ''
-     WHERE ntp_ntp_schema.project_status NOT IN (
-        'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED',
-        'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
-     )
-     AND ntp_ntp_schema.app_status IN (
-        'Pending NTP Review', 'Pending QC', 'Pending NTP',
-        'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
-     ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
+            ntp_ntp_schema.ntp_complete_date AS ntp_date
+        FROM ntp_ntp_schema
+	 LEFT JOIN customers_customers_schema ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+     AND customers_customers_schema.unique_id != ''
+	 WHERE ntp_ntp_schema.app_status IN ('Pending NTP Review','Pending QC','Pending NTP','Pending NTP - Change Order','Under Review')
+     AND ntp_ntp_schema.project_status NOT IN ('HOLD',E'PTO\'d (Service)', E'PTO\'d (Audit)','BLOCKED','JEOPARDY','CANCEL','DUPLICATE','COMPETING')
      %v %v
     `, filterUserQuery, searchValue))
 
@@ -1247,6 +1218,7 @@ func PipelineInspectionDataBelow(filterUserQuery, projectStatus, queueStatus, se
         --install.pv_completion_date AS install_completed_date
     FROM fin_permits_fin_schema AS fin
     LEFT JOIN customers_customers_schema cust ON cust.unique_id = fin.customer_unique_id
+	WHERE
     fin.project_status  %v
     AND fin.app_status NOT IN ('FIN Complete', 'DUPLICATE')
     %v %v`, addInspectionStatus(projectStatus), filterUserQuery, searchValue)
