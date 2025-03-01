@@ -87,7 +87,6 @@ var (
 			RoleSalesManager,
 			RoleDealerOwner,
 			RoleRegionalManager,
-			RoleSalesManager,
 			RoleSalesRep,
 		},
 	}

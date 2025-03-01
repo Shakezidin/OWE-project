@@ -156,7 +156,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
 		return
 	} else if len(data) == 0 {
-		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		log.FuncWarnTrace(0, "empty data set from DB : %v", data)
 		appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 		return
 	}
@@ -179,7 +179,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 	}
 	if len(data) == 0 {
-		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		log.FuncWarnTrace(0, "empty data set from DB err: %v", data)
 		appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 		return
 	}
@@ -192,7 +192,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
 		return
 	} else if len(data) == 0 {
-		log.FuncErrorTrace(0, "empty data set from DB err: %v", err)
+		log.FuncWarnTrace(0, "empty data set from DB err: %v", data)
 		appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 		return
 	}

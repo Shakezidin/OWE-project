@@ -63,13 +63,16 @@ const MainLayout = () => {
 
   /** logout  */
   const logoutUser = (message?: string) => {
+    const showMessage = message || 'Session time expired. Please login again..';
+    // Save message to sessionStorage
+    sessionStorage.setItem('logoutMessage', showMessage);
+    // Save a flag to indicate timeout occurred
+    sessionStorage.setItem('sessionTimeout', 'true');
+    
     dispatch(activeSessionTimeout());
     dispatch(logout());
     filterAuthData();
     navigate('/login');
-    toast.error(
-      message ? message : 'Session time expired. Please login again..'
-    );
   };
 
   /** check idle time  */
