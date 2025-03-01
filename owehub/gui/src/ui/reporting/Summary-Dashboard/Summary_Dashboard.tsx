@@ -676,9 +676,9 @@ const Summary_Dashboard = () => {
             )}
           </div>
 
-          {/* <div>
+          <div>
             <TrendingSection/>
-          </div>  */}
+          </div> 
         </div>
       </div>
     </>

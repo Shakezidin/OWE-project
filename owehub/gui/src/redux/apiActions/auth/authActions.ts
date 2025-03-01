@@ -68,7 +68,16 @@ export const checkDBStatus = async () => {
   try {
     const response = await axios.post(`${BASE_URL}/is_owedb_ready`, {});
     console.log(response.data, "DB Status Response");
-    return response.data.data.is_up; // Return the response to be used elsewhere
+    
+    // Handle different possible response formats
+    if (response.data?.data?.is_up === true) {
+      return true;
+    } else if (response.data?.status === 200 && 
+              response.data?.message === "Historical Data Status") {
+      return true;
+    }
+    
+    return false; // Default to false if response format doesn't match expected
   } catch (error) {
     console.error("Error in checking DB status:", error);
     return false; // Return false if an error occurs
