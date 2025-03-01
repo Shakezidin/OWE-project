@@ -194,7 +194,7 @@ func ReteriveFromDB(dbIdx uint8, query string,
 
 	rows, err := con.CtxH.Query(query, whereEleList...)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to ReteriveData from query %v whereParams %+v error = %v", query, whereEleList, err)
+		log.FuncErrorTrace(0, "Failed To Execute Query: %v whereParams %+v error = %v", query, whereEleList, err)
 		return nil, err
 	}
 	defer rows.Close() //Important: Prevent connection leak!
@@ -254,7 +254,7 @@ func ExecQueryDB(dbIdx uint8, query string) (err error) {
 
 	_, err = con.CtxH.Exec(query)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to ReteriveData from query %v error = %v", query, err)
+		log.FuncErrorTrace(0, "Failed To Execute Query: %v error = %v", query, err)
 		return err
 	}
 	return err
