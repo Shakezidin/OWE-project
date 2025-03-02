@@ -13,6 +13,8 @@ import { Tooltip } from 'react-tooltip';
 import FilterHoc from '../../components/FilterModal/FilterHoc';
 import { ICONS } from '../../../resources/icons/Icons';
 import PendingActionColumn from '../../../resources/static_data/PendingActionColumn';
+import { MdDownloading } from 'react-icons/md';
+import { LuImport } from 'react-icons/lu';
 
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
@@ -315,6 +317,44 @@ const PendingQueue = () => {
                   className="filter-line"
                 />
               </div>
+              {/* <button
+                disabled={isExportingData}
+                onClick={ExportCsv}
+                data-tooltip-id="export"
+                className={`performance-exportbtn performance-exp-mob flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
+              >
+                {isExportingData ? (
+                  <MdDownloading className="downloading-animation" size={20} />
+                ) : (
+                  <LuImport size={20} />
+                )}
+              </button> */}
+              <div data-tooltip-id='pend-down'>
+              <button
+                // disabled={isExportingData}
+                // onClick={ExportCsv}
+                data-tooltip-id="export"
+                style={{marginTop: "6px"}}
+                className={`performance-exportbtn performance-exp-mob flex items-center justify-center pipeline-export`}
+              >
+                  <LuImport size={20} />
+              </button>
+              </div>
+              <Tooltip
+                  style={{
+                    zIndex: 103,
+                    background: '#f7f7f7',
+                    color: '#000',
+                    fontSize: 12,
+                    paddingBlock: 4,
+                    fontWeight: '400',
+                  }}
+                  offset={8}
+                  id="pend-down"
+                  place="top"
+                  content="Export"
+                  className="filter-line"
+                />
             </div>
           </div>
         </div>
@@ -388,7 +428,9 @@ const PendingQueue = () => {
                                   )}
                               </div>
                             </div>
-                            <p className='pend-project-ages'>Project ages: {"30"} days</p>
+                            <p className="pend-project-ages">
+                              Project ages: {'30'} days
+                            </p>
                           </div>
                         </Link>
                       </div>
