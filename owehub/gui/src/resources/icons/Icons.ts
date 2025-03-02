@@ -186,6 +186,8 @@ import Whats_Send from '../../resources/assets/Whats_Send.svg';
 import sky from '../../resources/assets/sky.svg';
 import skyfilter from '../../resources/assets/skyfilter.svg';
 import pendingAction from '../../resources/assets/pending action.svg';
+import skyBlue from './skyBlue.svg';
+
 
 
 
@@ -390,5 +392,6 @@ export const ICONS = {
   DatTape: DatTape,
   Whats_Send:Whats_Send,
   sky:sky,
-  skyfilter:skyfilter
+  skyfilter:skyfilter,
+  skyBlue:skyBlue
 };

@@ -43,6 +43,7 @@ func UpsertSalesPartnersFromOweDb(recordIds ...string) error {
 		{"sales_partner_name", "sales_partner_name"},
 		{"account_manager", "account_manager2"},
 		{"account_executive", "account_executive"},
+		{"recruiter", "recruiter"},
 	}
 	for _, recordId := range recordIds {
 		whereEleList = append(whereEleList, recordId)

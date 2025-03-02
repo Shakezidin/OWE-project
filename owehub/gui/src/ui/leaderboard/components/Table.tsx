@@ -567,12 +567,14 @@ const Table = ({
   setSelectedRangeDate,
   selectedRangeDate,
   selectDealer,
+  selectedRecruiter,
   exportPdf,
   isExporting,
   resetDealer,
   isFetched,
   tableData,
   isLoading,
+
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
@@ -590,6 +592,7 @@ const Table = ({
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
   selectDealer: { label: string; value: string }[];
+  selectedRecruiter: { label: string; value: string }[];
   exportPdf: () => void;
   isExporting: boolean;
   count: number;
@@ -766,6 +769,7 @@ const Table = ({
 
     const getAllLeaders = await postCaller('get_leaderboardcsvdownload', {
       dealer_names: selectDealer.map((item) => item.value),
+      recruiter:selectedRecruiter.map((item) => item.value), 
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
       group_by: groupBy,

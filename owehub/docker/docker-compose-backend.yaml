@@ -68,28 +68,28 @@ services:
   #   privileged: true
 
   ############## OWE HUB CALC #####################
-  service-owehub-calc:
-    restart: always
-    image: owehub-calc:v1
-    container_name: owehub-calc_1
-    networks:
-      owe_net:
-        ipv4_address: 172.30.0.213
-    ports:
-      - "31021:8080"
-    environment:
-      SELF_CFG_PATH: "json/"
-      ANLF_SVC_ADDR:
-      OAUTH2_SUPPORT: "NO"
-      OPEN_HTTP_STD_PORT: "NO"
-      HTTPS_SUPPORT: "NO"
-      HTTP_READ_HEADER_TIMEOUT: "10"
-    depends_on:
-      - service-postgres
-      - migrate
-    volumes:
-      - /var/log/owe/:/var/log/owe/
-    privileged: true
+  #service-owehub-calc:
+  #  restart: always
+  #  image: owehub-calc:v1
+  #  container_name: owehub-calc_1
+  #  networks:
+  #    owe_net:
+  #      ipv4_address: 172.30.0.213
+  #  ports:
+  #    - "31021:8080"
+  #  environment:
+  #    SELF_CFG_PATH: "json/"
+  #    ANLF_SVC_ADDR:
+  #    OAUTH2_SUPPORT: "NO"
+  #    OPEN_HTTP_STD_PORT: "NO"
+  #    HTTPS_SUPPORT: "NO"
+  #    HTTP_READ_HEADER_TIMEOUT: "10"
+  #  depends_on:
+  #    - service-postgres
+  #    - migrate
+  #  volumes:
+  #    - /var/log/owe/:/var/log/owe/
+  #  privileged: true
 
   ############## OWE HUB MAIN #####################
   service-owehub-main:

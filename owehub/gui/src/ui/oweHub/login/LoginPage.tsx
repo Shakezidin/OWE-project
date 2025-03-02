@@ -27,8 +27,11 @@ import useWindowWidth from '../../../hooks/useWindowWidth';
 import { encryptData, decryptData } from '../../../utiles/Encryption';
 import { checkDBStatus } from '../../../redux/apiActions/auth/authActions';
 
+interface LoginPageProps {
+  dbStatus: boolean;
+}
 
-export const LoginPage = () => {
+export const LoginPage = ({ dbStatus }: LoginPageProps) => {
   const { authData, saveAuthData } = useAuth();
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState<Credentials>({
@@ -45,7 +48,6 @@ export const LoginPage = () => {
   };
 
   const [showPassword, setShowPassword] = useState(false);
-  const [dbStatus, setDbStatus] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state: RootState) => state.auth);
 
@@ -56,15 +58,6 @@ export const LoginPage = () => {
     }));
   };
 
-  /** check DB is down or not */
-  useEffect(() => {
-    const fetchDBStatus = async () => {
-      const status = await checkDBStatus();
-      setDbStatus(status);
-    };
-
-    fetchDBStatus();
-  }, []);
 
 
   /** handle local storage */

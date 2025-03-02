@@ -22,7 +22,7 @@ export interface LoginResponse {
   message: string;
 }
 
- // Logout utility function
+// Logout utility function
 const logoutUser = () => {
   localStorage.removeItem('token'); // Clear the token
   localStorage.removeItem('userName');
@@ -70,21 +70,22 @@ export const postCaller = async (
 
     if (isAxiosError(error)) {
       if (error.response) {
-        if (error.response.status === 401 ) {
+        if (error.response.status === 401) {
           setTimeout(() => {
             logoutUser();
           }, 2000);
+          return
         }
 
         return error.response.data;
       }
 
       // handle network error
-     if (error.message)
-      return new Error(JSON.stringify(error.message));
+      if (error.message)
+        return new Error(JSON.stringify(error.message));
       console.log(error)
     }
-    
+
 
     throw new Error('Failed to fetch data');
   }
@@ -112,10 +113,11 @@ export const configPostCaller = async (
 
     if (isAxiosError(error)) {
       if (error.response) {
-        if (error.response.status === 401 ) {
+        if (error.response.status === 401) {
           setTimeout(() => {
             logoutUser();
           }, 2000);
+          return;
         }
         return error.response.data;
       }
@@ -150,10 +152,11 @@ export const reportingCaller = async (
 
     if (isAxiosError(error)) {
       if (error.response) {
-        if (error.response.status === 401 ) {
+        if (error.response.status === 401) {
           setTimeout(() => {
             logoutUser();
           }, 2000);
+          return
         }
         return error.response.data;
       }

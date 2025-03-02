@@ -248,12 +248,12 @@ const Summary_Dashboard = () => {
 
     const amData: Option[] = res?.data?.account_manager
       ? [
-          { label: 'OWE', value: 'All' },
-          ...(res.data.account_manager as string[]).map((state) => ({
-            label: state,
-            value: state,
-          })),
-        ]
+        { label: 'OWE', value: 'All' },
+        ...(res.data.account_manager as string[]).map((state) => ({
+          label: state,
+          value: state,
+        })),
+      ]
       : [{ label: 'OWE', value: 'All' }];
     setAM(amData);
     setDrop(false);
@@ -318,6 +318,7 @@ const Summary_Dashboard = () => {
     'Batteries Installed',
     'Install Ct',
   ];
+  const isStaging = process.env.REACT_APP_ENV;
 
   return (
     <>
@@ -675,10 +676,11 @@ const Summary_Dashboard = () => {
               </div>
             )}
           </div>
-
-          <div>
-            <TrendingSection/>
-          </div> 
+          {isStaging === 'staging' &&
+            <div>
+              <TrendingSection />
+            </div>
+          }
         </div>
       </div>
     </>

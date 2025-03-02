@@ -12,10 +12,8 @@ import {
   logout,
   setToken,
 } from '../../../redux/apiSlice/authSlice/authSlice';
-import { toast } from 'react-toastify';
 import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePassword';
-import { checkUserExists, checkDBStatus } from '../../../redux/apiActions/auth/authActions';
-import { useDBStatusMonitor } from '../../../hooks/useDBStatusMonitor';
+import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 import useAuth from '../../../hooks/useAuth';
@@ -24,14 +22,17 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import Cookies from 'js-cookie';
 import DatHeader from './DatHeader';
 
-const MainLayout = () => {
+
+interface MainLayoutProps {
+  dbStatus: boolean;
+}
+
+const MainLayout = ({ dbStatus }: MainLayoutProps) => {
   const { authData, filterAuthData } = useAuth();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
-  // const [dbStatus, setDbStatus] = useState<boolean>(true);
-  const { dbStatus } = useDBStatusMonitor();
 
   const [toggleOpen, setToggleOpen] = useState<boolean>(true);
   const isAuthenticated = useSelector(
@@ -68,7 +69,7 @@ const MainLayout = () => {
     sessionStorage.setItem('logoutMessage', showMessage);
     // Save a flag to indicate timeout occurred
     sessionStorage.setItem('sessionTimeout', 'true');
-    
+
     dispatch(activeSessionTimeout());
     dispatch(logout());
     filterAuthData();
@@ -91,7 +92,7 @@ const MainLayout = () => {
   useEffect(() => {
     const email = authData?.email;
 
-    if (email) {
+    if (isAuthenticated && email) {
       dispatch(checkUserExists(email))
         .then((response: any) => {
           if (response.payload) {
@@ -121,7 +122,7 @@ const MainLayout = () => {
   const [refreshDat, setRefreshDat] = useState<boolean>(false);
 
   return isAuthenticated ? (
-    
+
     <div className="main-container">
       {!dbStatus && (
         <div className="laydbDownLabel">
@@ -168,7 +169,7 @@ const MainLayout = () => {
           }}
         >
           <div className={`${!dbStatus ? 'dbdown-children-container' : ''} children-container`}>
-            <Outlet context={{dbStatus,refreshDat,setRefreshDat, activeMenu, setActiveMenu }} />
+            <Outlet context={{ dbStatus, refreshDat, setRefreshDat, activeMenu, setActiveMenu }} />
           </div>
         </div>
         {isOpenChangePassword && (
