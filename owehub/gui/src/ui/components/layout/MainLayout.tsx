@@ -27,7 +27,7 @@ interface MainLayoutProps {
   dbStatus: boolean;
 }
 
- const MainLayout = ({ dbStatus }: MainLayoutProps) => {
+const MainLayout = ({ dbStatus }: MainLayoutProps) => {
   const { authData, filterAuthData } = useAuth();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ interface MainLayoutProps {
     sessionStorage.setItem('logoutMessage', showMessage);
     // Save a flag to indicate timeout occurred
     sessionStorage.setItem('sessionTimeout', 'true');
-    
+
     dispatch(activeSessionTimeout());
     dispatch(logout());
     filterAuthData();
@@ -122,10 +122,10 @@ interface MainLayoutProps {
   const [refreshDat, setRefreshDat] = useState<boolean>(false);
 
   return isAuthenticated ? (
-    
+
     <div className="main-container">
-    {!dbStatus && (
-          <div className="laydbDownLabel">
+      {!dbStatus && (
+        <div className="laydbDownLabel">
           <span className="dbDownLabelText">
             ⚠️ Our website is under maintenance. Some features may not be available. ⚠️
           </span>
@@ -169,7 +169,7 @@ interface MainLayoutProps {
           }}
         >
           <div className={`${!dbStatus ? 'dbdown-children-container' : ''} children-container`}>
-            <Outlet context={{dbStatus,refreshDat,setRefreshDat, activeMenu, setActiveMenu }} />
+            <Outlet context={{ dbStatus, refreshDat, setRefreshDat, activeMenu, setActiveMenu }} />
           </div>
         </div>
         {isOpenChangePassword && (
