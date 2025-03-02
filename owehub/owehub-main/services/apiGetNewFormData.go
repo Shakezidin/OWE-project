@@ -153,7 +153,8 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 	where pis.pv_completion_date IS NOT NULL`
 			dbIndex = db.RowDataDBIndex
 		case "recruiter":
-			query = "SELECT recruiter as data FROM sales_partner_dbhub_schema"
+			query = `SELECT DISTINCT recruiter as data FROM sales_partner_dbhub_schema
+						WHERE recruiter IS NOT NULL AND recruiter <> '';`
 		default:
 			log.FuncErrorTrace(0, "Invalid table name provided: %v", tableName)
 			responseData[tableName] = nil

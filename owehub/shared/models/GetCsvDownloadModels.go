@@ -14,6 +14,7 @@ type GetCsvDownload struct {
 	PageNumber        int      `json:"page_number"`
 	PageSize          int      `json:"page_size"`
 	DealerNames       []string `json:"dealer_names"`
+	Recruiters        []string `json:"recruiter"`
 	UniqueIds         []string `json:"unique_ids"`
 	SelectedMilestone string   `json:"selected_milestone"`
 	GroupBy           string   `json:"group_by"`

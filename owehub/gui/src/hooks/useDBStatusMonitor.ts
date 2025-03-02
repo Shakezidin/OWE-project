@@ -1,118 +1,70 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { checkDBStatus } from '../redux/apiActions/auth/authActions';
 
-interface DBStatusHistory {
-  status: boolean;
-  timestamp: number;
-  checkDuration: number;
-}
-
-interface UseDBStatusMonitorOptions {
-  minInterval?: number;
-  maxInterval?: number;
-  backoffFactor?: number;
-  checksPerAttempt?: number;
-  checkTimeout?: number;
-  maxErrorStreak?: number;
-  onStatusChange?: (status: boolean) => void;
-}
-
-export const useDBStatusMonitor = ({
-  minInterval = 20000,
-  maxInterval = 300000,
-  backoffFactor = 1.5,
-  checksPerAttempt = 3,
-  checkTimeout = 5000,
-  maxErrorStreak = 5,
-  onStatusChange
-}: UseDBStatusMonitorOptions = {}) => {
+export const useDBStatusMonitor = () => {
   const [dbStatus, setDbStatus] = useState<boolean>(true);
-  const [statusHistory, setStatusHistory] = useState<DBStatusHistory[]>([]);
-  const [errorStreak, setErrorStreak] = useState(0);
-  const [nextCheckTime, setNextCheckTime] = useState<number>(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const retryCountRef = useRef<number>(0);
+  const isRetryingRef = useRef<boolean>(false);
 
-  const checkDBStatusWithTimeout = useCallback(async (): Promise<boolean> => {
-    const timeoutPromise = new Promise<boolean>((_, reject) => 
-      setTimeout(() => reject(new Error('DB check timeout')), checkTimeout)
-    );
-    return Promise.race([checkDBStatus(), timeoutPromise]);
-  }, [checkTimeout]);
+  const clearTimers = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current);
+  };
 
-  useEffect(() => {
-    let checkInterval = minInterval;
-    let timeoutId: NodeJS.Timeout | undefined;
+  const startRetries = () => {
+    isRetryingRef.current = true;
+    retryCountRef.current = 0;
 
-    const fetchDBStatus = async () => {
-      const startTime = Date.now();
-      let successCount = 0;
-
-      for (let i = 0; i < checksPerAttempt; i++) {
-        try {
-          const status = await checkDBStatusWithTimeout();
-          if (status) {
-            successCount++;
-            if (errorStreak > 0) setErrorStreak(0);
-          }
-          
-          // Add delay between checks
-          if (i < checksPerAttempt - 1) {
-            await new Promise(r => setTimeout(r, 1000));
-          }
-        } catch (error) {
-          const newErrorStreak = errorStreak + 1;
-          setErrorStreak(newErrorStreak);
-          
-          if (newErrorStreak >= maxErrorStreak) {
-            console.error(`Critical: Database unreachable for ${maxErrorStreak} consecutive checks`);
-          }
+    const attemptRetry = async () => {
+      const isUp = await checkDBStatus();
+      if (isUp) {
+        setDbStatus(true);
+        retryCountRef.current = 0;
+        isRetryingRef.current = false;
+        startMonitoring();
+      } else {
+        retryCountRef.current += 1;
+        if (retryCountRef.current < 3) {
+          retryTimeoutRef.current = setTimeout(attemptRetry, 15000); // Retry after 15 seconds
+        } else {
+          setDbStatus(false); // After 3 failed retries
+          retryCountRef.current = 0;
+          isRetryingRef.current = false;
+          startMonitoring(10 * 60 * 1000); // Pause for 10 minutes before next check
         }
       }
-
-      const newStatus = successCount >= Math.ceil(checksPerAttempt / 2);
-      const checkDuration = Date.now() - startTime;
-
-      // Update status history
-      setStatusHistory(prev => [...prev.slice(-9), {
-        status: newStatus,
-        timestamp: Date.now(),
-        checkDuration
-      }]);
-
-      // Update status if changed
-      if (dbStatus !== newStatus) {
-        setDbStatus(newStatus);
-        onStatusChange?.(newStatus);
-      }
-
-      // Adjust check interval with exponential backoff
-      checkInterval = newStatus
-        ? Math.min(checkInterval * backoffFactor, maxInterval)
-        : minInterval;
-
-      setNextCheckTime(Date.now() + checkInterval);
-      timeoutId = setTimeout(fetchDBStatus, checkInterval);
     };
 
-    // Initial check
-    fetchDBStatus();
+    attemptRetry();
+  };
+
+  const monitorDB = async () => {
+    if (isRetryingRef.current) return; // Avoid overlap if retrying
+    const isUp = await checkDBStatus();
+    if (!isUp) {
+      startRetries(); // Start retry attempts if failed
+    } else {
+      setDbStatus(true);
+    }
+  };
+
+  const startMonitoring = (intervalTime: number = 10 * 60 * 1000) => {
+    clearTimers();
+    intervalRef.current = setInterval(monitorDB, intervalTime);
+  };
+
+  useEffect(() => {
+    monitorDB(); // Initial check
+    startMonitoring(); // Start regular 10-minute checks
 
     return () => {
-      if (timeoutId) clearTimeout(timeoutId);
+      clearTimers();
     };
-  }, [
-    checkDBStatusWithTimeout,
-    checksPerAttempt,
-    maxErrorStreak,
-    minInterval,
-    maxInterval,
-    backoffFactor,
-    onStatusChange
-  ]);
+  }, []);
 
-  return {
-    dbStatus,
-    statusHistory,
-    errorStreak,
-    nextCheckTime,
-  };
+  return { dbStatus };
 };
+
+
