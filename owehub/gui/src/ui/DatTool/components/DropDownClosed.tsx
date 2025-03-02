@@ -15,8 +15,8 @@ const DropDownClosed: React.FC<DropDownClosed> = ({setShowMore,showMore,mappedDa
         <div className={style2.textContentDiv}> 
           <img src={searchIcon} alt="" className={style2.searchImg}/>
           <div className={style2.textDiv}> 
-          <p className={style2.text1}>{mappedDataList?.find(item => item.projectID === currentGeneralId)?.name || 'No Project Found'}</p>
-          <p className={style2.text2}>{mappedDataList?.find(item => item.projectID === currentGeneralId)?.projectID || 'NA'}</p>
+          <p className={style2.text1}>{mappedDataList.find(item => item.projectID === currentGeneralId)?.name || 'No Project Found'}</p>
+          <p className={style2.text2}>{mappedDataList.find(item => item.projectID === currentGeneralId)?.projectID || 'NA'}</p>
           </div>
         </div>
 
