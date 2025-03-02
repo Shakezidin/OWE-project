@@ -351,11 +351,11 @@ const EditModal = ({
                     <tr>
                       <th>Months</th>
                       <th>Project Sold</th>
-                      <th>mw Sold</th>
+                      <th>mW Sold</th>
                       <th>NTP</th>
                       <th>mW NTP</th>
                       <th>Install CT</th>
-                      <th>mw Installed</th>
+                      <th>mW Installed</th>
                       <th>Batteries Installed</th>
                     </tr>
                   </thead>
@@ -407,7 +407,7 @@ const EditModal = ({
                               </td>
 
                               <td
-                                className={`${isPastMonth || prevYear ? 'viraj' : ''}`}
+                                className={`${(isPastMonth || prevYear) ? 'viraj' : ''}`}
                               >
                                 {!showInput[row.month]?.showprojectSold && (
                                   <div

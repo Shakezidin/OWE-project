@@ -69,20 +69,25 @@ import CompletedFirstTime from './ui/reporting/CompletedFirstTime';
 import Summary_Dashboard from './ui/reporting/Summary-Dashboard/Summary_Dashboard';
 import DatTool from './ui/DatTool/DatTool';
 import DealerTablePipeline from './ui/oweHub/projectTracker/DealerTable';
+import { useDBStatusMonitor } from './hooks/useDBStatusMonitor';
 
 function App() {
   // Add console log suppression at the start of App component
-  // if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
-  //   console.log = () => {};
-  //   console.error = () => {};
-  //   console.warn = () => {};
-  // }
+  if (
+    process.env.NODE_ENV === 'production' ||
+    process.env.NODE_ENV === 'development'
+  ) {
+    console.log = () => {};
+    console.error = () => {};
+    console.warn = () => {};
+  }
 
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
     (state: RootState) => state.auth
   );
   const isStaging = process.env.REACT_APP_ENV;
+  const { dbStatus } = useDBStatusMonitor();
 
   useEffect(() => {
     dispatch(initializeAuth());
@@ -131,13 +136,7 @@ function App() {
           path="/"
           element={
             isAuthenticated ? (
-              <Navigate
-                to={
-                  role_name === TYPE_OF_USER.DB_USER
-                    ? ROUTES.PEINDING_QUEUE
-                    : ROUTES.PEINDING_QUEUE
-                }
-              />
+              <Navigate to={ROUTES.PEINDING_QUEUE} />
             ) : (
               <Navigate to="/login" />
             )
@@ -149,14 +148,14 @@ function App() {
             isAuthenticated ? (
               <Navigate to={ROUTES.PEINDING_QUEUE} />
             ) : (
-              <LoginPage />
+              <LoginPage dbStatus={dbStatus} />
             )
           }
         />
 
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
-        <Route element={<MainLayout />}>
+        <Route element={<MainLayout dbStatus={dbStatus} />}>
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           <Route path={ROUTES.MAP_ADDRESS} element={<MyMap />} />
           <Route path={ROUTES.CALCULATOR} element={<LoanCalculator />} />
@@ -260,8 +259,10 @@ function App() {
           />
           <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} /> */}
           <Route path={ROUTES.DAT_TOOL} element={<DatTool />} />
-          <Route path={ROUTES.DEALERDATA_PIPELINE} element={<DealerTablePipeline />} />
- 
+          <Route
+            path={ROUTES.DEALERDATA_PIPELINE}
+            element={<DealerTablePipeline />}
+          />
 
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
         </Route>

@@ -11,6 +11,7 @@ type GetLeaderBoardRequest struct {
 	Role       string
 	Email      string
 	DealerName []string `json:"dealer"`
+	Recruiters []string `json:"recruiter"`
 	Type       string   `json:"type"`
 	StartDate  string   `json:"start_date"`
 	EndDate    string   `json:"end_date"`

@@ -119,19 +119,19 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 
 	switch dataReq.SelectedMilestone {
 	case "survey":
-		pipelineQuery = models.PipelineSurveyDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+		pipelineQuery = models.PipelineSurveyCsvData(roleFilter, projectStatus, queueStatus, searchValue)
 	case "cad":
-		pipelineQuery = models.PipelineCadDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+		pipelineQuery = models.PipelineCadCsvData(roleFilter, projectStatus, queueStatus, searchValue)
 	case "permit":
-		pipelineQuery = models.PipelinePermitDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+		pipelineQuery = models.PipelinePermitCsvData(roleFilter, projectStatus, queueStatus, searchValue)
 	case "roof":
-		pipelineQuery = models.PipelineRoofingDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+		pipelineQuery = models.PipelineRoofingCsvData(roleFilter, projectStatus, queueStatus, searchValue)
 	case "install":
-		pipelineQuery = models.PipelineInstallDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+		pipelineQuery = models.PipelineInstallCsvData(roleFilter, projectStatus, queueStatus, searchValue)
 	case "inspection":
-		pipelineQuery = models.PipelineInspectionDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+		pipelineQuery = models.PipelineInspectionCsvData(roleFilter, projectStatus, queueStatus, searchValue)
 	case "activation":
-		pipelineQuery = models.PipelineActivationDataBelow(roleFilter, projectStatus, queueStatus, searchValue)
+		pipelineQuery = models.PipelineActivationCsvData(roleFilter, projectStatus, queueStatus, searchValue)
 	default:
 		log.FuncErrorTrace(0, "Invalid Milestone %v selected", dataReq.SelectedMilestone)
 		appserver.FormAndSendHttpResp(resp, "Please select a valid milestone", http.StatusBadRequest, nil)

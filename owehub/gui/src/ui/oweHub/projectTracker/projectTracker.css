@@ -173,6 +173,16 @@
   font-size: 12px;
 }
 
+.pend-project-ages{
+  margin-top: 10px;
+  font-weight: 500;
+  color: var(--input-border-color);
+}
+
+.pend-project-ages:hover{
+ text-decoration: underline;
+}
+
 .status-item.click:hover {
   color: white;
   background-color: #377cf6;
@@ -237,7 +247,6 @@
 }
 
 .project-info-details {
-  width: 230px;
   line-height: 10px;
 }
 
@@ -292,7 +301,7 @@
 .install-update {
   font-size: 12px;
   font-weight: 500;
-  /* width: 150px; */
+  margin-right: 5px;
   cursor: pointer;
   color: var(--input-border-color);
 }
@@ -466,6 +475,7 @@
   margin-right: 12px;
 }
 
+
 .project-card-container-1::-webkit-scrollbar {
   height: 10px;
 }
@@ -489,6 +499,38 @@
 }
 
 .project-card-container-1::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+.pendingActionTable{
+  overflow-x: scroll;
+  scroll-behavior: smooth;
+}
+
+.pendingActionTable::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+
+.pendingActionTable::-webkit-scrollbar {
+  display: initial;
+}
+
+.pendingActionTable::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+
+.pendingActionTable::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.pendingActionTable::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+
+.pendingActionTable::-webkit-scrollbar-corner {
   background-color: transparent;
 }
 
@@ -2617,16 +2659,18 @@
   border: 1px solid rgb(255, 255, 255);
 }
 .skygroup-btn{
-  background-color: #377CF6;
+  background-color: #ffffff;
   height: 36px;
   width: 36px;
-  border-radius: 7px;
+  border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  border: 1px solid #377CF6;
   transition: all 0.3s ease;
 }
 .skygroup-btn:hover{
-  transform: scale(1.06);
+  background-color: #377CF6;
+  transform: scale(1.05);
 }
