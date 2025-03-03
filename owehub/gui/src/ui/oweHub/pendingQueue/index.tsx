@@ -10,7 +10,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { Tooltip } from 'react-tooltip';
- 
+
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search);
@@ -23,13 +23,13 @@ const PendingQueue = () => {
   const [totalcount, setTotalcount] = useState(0);
   const [pre, setPre] = useState(false);
   const itemsPerPage = 10;
- 
+
   useEffect(() => {
     (async () => {
       setLoad(true);
       try {
         const data = await postCaller('get_pendingqueuestiledata', {});
- 
+
         if (data.status > 201) {
           toast.error(data.message);
           return;
@@ -42,7 +42,7 @@ const PendingQueue = () => {
       }
     })();
   }, []);
- 
+
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -67,7 +67,7 @@ const PendingQueue = () => {
       }
     })();
   }, [page, itemsPerPage, debouncedSearch, active]);
- 
+
   const getStatusColor = (status: string) => {
     if (status === 'Pending (Action Required)') {
       return styles.action_required_card;
@@ -81,13 +81,13 @@ const PendingQueue = () => {
         return styles.default_card;
     }
   };
- 
+
   const totalPages = Math.ceil(totalcount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
- 
+
   console.log(dataPending, 'dataPending');
- 
+
   return (
     <>
       <div
@@ -196,7 +196,7 @@ const PendingQueue = () => {
           )}
         </div>
       }
- 
+
       <div
         className="project-container pend-actions-cont"
         style={{ marginTop: '1.2rem', padding: 0 }}
@@ -254,7 +254,7 @@ const PendingQueue = () => {
                   const input = e.target.value;
                   // Allow only alphanumeric and spaces
                   const regex = /^[a-zA-Z0-9\s]*$/;
- 
+
                   if (regex.test(input)) {
                     // Only update state if input is valid
                     setSearch(input);
@@ -264,7 +264,7 @@ const PendingQueue = () => {
             </div>
           </div>
         </div>
- 
+
         <div className="performance-milestone-table pendingActionTable">
           <table>
             <thead>
@@ -302,7 +302,7 @@ const PendingQueue = () => {
                           to={`/project-management?project_id=${item.uninque_id}&customer-name=${item.home_owner}`}
                         >
                           <div >
- 
+
                             <div
                               className="project-info-details deco-text"
                               style={{ flexShrink: 0 }}
@@ -340,8 +340,8 @@ const PendingQueue = () => {
                                 }
                               </div>
                             </div>
- 
- 
+
+
                           </div>
                         </Link>
                         <div
@@ -393,7 +393,7 @@ const PendingQueue = () => {
                               ) {
                                 return null;
                               }
- 
+
                               return (
                                 <div
                                   key={key}
@@ -452,7 +452,7 @@ const PendingQueue = () => {
                 {endIndex > totalcount ? totalcount : endIndex} of {totalcount}{' '}
                 item
               </p>
- 
+
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}
@@ -469,5 +469,5 @@ const PendingQueue = () => {
     </>
   );
 };
- 
+
 export default PendingQueue;
