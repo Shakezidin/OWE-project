@@ -402,11 +402,9 @@ const Banner: React.FC<BannerProps> = ({
       </div>
 
       {(role === 'Admin' ||
-        role === TYPE_OF_USER.FINANCE_ADMIN ||
-        role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-        role === TYPE_OF_USER.ACCOUNT_MANAGER ||
-        role === TYPE_OF_USER.PROJECT_MANAGER ||
-        (role === TYPE_OF_USER.DEALER_OWNER )) && (
+        role === TYPE_OF_USER.FINANCE_ADMIN 
+        
+        ) && (
         <div
           className="dealer-dropdown-filter"
           style={{ zIndex: 100, marginRight: '135px' }}
