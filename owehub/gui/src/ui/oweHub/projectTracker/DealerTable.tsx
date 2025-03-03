@@ -615,11 +615,11 @@ const DealerTablePipeline = () => {
                             : 'No'}
                       </td>
 
-                      <td>{item.days_project_age}</td>
-                      <td>{item.days_ntp}</td>
-                      <td>{item.days_permits}</td>
-                      <td>{item.days_install}</td>
-                      <td>{item.days_pto}</td>
+                      <td>{(item.days_project_age) ? (item.days_project_age) : '-'}</td>
+                      <td>{item.days_ntp ? item.days_ntp : '-'}</td>
+                      <td>{item.days_permits ? item.days_permits : '-'}</td>
+                      <td>{item.days_install ? item.days_install : '-'}</td>
+                      <td>{item.days_pto ? item.days_pto : '-'}</td>
                     </tr>
                   ))}
               </tbody>
