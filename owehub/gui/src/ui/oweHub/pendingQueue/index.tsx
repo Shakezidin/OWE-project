@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import styles from './styles/index.module.css';
 import Input from '../../components/text_input/Input';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
@@ -10,12 +10,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { Tooltip } from 'react-tooltip';
-import FilterHoc from '../../components/FilterModal/FilterHoc';
-import { ICONS } from '../../../resources/icons/Icons';
-import PendingActionColumn from '../../../resources/static_data/PendingActionColumn';
-import { MdDownloading } from 'react-icons/md';
-import { LuImport } from 'react-icons/lu';
-
+ 
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search);
@@ -28,13 +23,13 @@ const PendingQueue = () => {
   const [totalcount, setTotalcount] = useState(0);
   const [pre, setPre] = useState(false);
   const itemsPerPage = 10;
-
+ 
   useEffect(() => {
     (async () => {
       setLoad(true);
       try {
         const data = await postCaller('get_pendingqueuestiledata', {});
-
+ 
         if (data.status > 201) {
           toast.error(data.message);
           return;
@@ -47,7 +42,7 @@ const PendingQueue = () => {
       }
     })();
   }, []);
-
+ 
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -72,7 +67,7 @@ const PendingQueue = () => {
       }
     })();
   }, [page, itemsPerPage, debouncedSearch, active]);
-
+ 
   const getStatusColor = (status: string) => {
     if (status === 'Pending (Action Required)') {
       return styles.action_required_card;
@@ -86,38 +81,15 @@ const PendingQueue = () => {
         return styles.default_card;
     }
   };
-
+ 
   const totalPages = Math.ceil(totalcount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-
+ 
   console.log(dataPending, 'dataPending');
-
-  const [filterModal, setFilterModal] = React.useState<boolean>(false);
-  const [filter, setFilters] = useState(false);
-  const filterClose = () => {
-    setFilterModal(false);
-  };
-  const fetchFunction = (req: any) => {
-    setPage(1);
-    setFilters(req.filters);
-  };
-  const open = () => {
-    setFilterModal(true);
-  };
-
+ 
   return (
     <>
-      <FilterHoc
-        isOpen={filterModal}
-        handleClose={filterClose}
-        resetOnChange={false}
-        columns={PendingActionColumn}
-        page_number={page}
-        page_size={20}
-        fetchFunction={fetchFunction}
-        isNew={true}
-      />
       <div
         style={{ borderRadius: 16 }}
         className="flex items-center bg-white px2 justify-between"
@@ -191,10 +163,10 @@ const PendingQueue = () => {
                   onClick={
                     pre
                       ? () => {
-                          setActive('qc');
-                          setPage(1);
-                          setSearch('');
-                        }
+                        setActive('qc');
+                        setPage(1);
+                        setSearch('');
+                      }
                       : undefined
                   }
                 >
@@ -224,7 +196,7 @@ const PendingQueue = () => {
           )}
         </div>
       }
-
+ 
       <div
         className="project-container pend-actions-cont"
         style={{ marginTop: '1.2rem', padding: 0 }}
@@ -282,100 +254,37 @@ const PendingQueue = () => {
                   const input = e.target.value;
                   // Allow only alphanumeric and spaces
                   const regex = /^[a-zA-Z0-9\s]*$/;
-
+ 
                   if (regex.test(input)) {
                     // Only update state if input is valid
                     setSearch(input);
                   }
                 }}
               />
-              <div
-                className="filter-line"
-                onClick={open}
-                style={{ backgroundColor: '#377cf6', marginTop: '5.5px' }}
-                data-tooltip-id="pend-action-filter"
-              >
-                <img
-                  src={ICONS.FILTERACTIVE}
-                  height={15}
-                  width={15}
-                  alt="pending actions table filter"
-                />
-                <Tooltip
-                  style={{
-                    zIndex: 103,
-                    background: '#f7f7f7',
-                    color: '#000',
-                    fontSize: 12,
-                    paddingBlock: 4,
-                    fontWeight: '400',
-                  }}
-                  offset={8}
-                  id="pend-action-filter"
-                  place="top"
-                  content="Filter"
-                  className="filter-line"
-                />
-              </div>
-              {/* <button
-                disabled={isExportingData}
-                onClick={ExportCsv}
-                data-tooltip-id="export"
-                className={`performance-exportbtn performance-exp-mob flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
-              >
-                {isExportingData ? (
-                  <MdDownloading className="downloading-animation" size={20} />
-                ) : (
-                  <LuImport size={20} />
-                )}
-              </button> */}
-              <div data-tooltip-id='pend-down'>
-              <button
-                // disabled={isExportingData}
-                // onClick={ExportCsv}
-                data-tooltip-id="export"
-                style={{marginTop: "6px"}}
-                className={`performance-exportbtn performance-exp-mob flex items-center justify-center pipeline-export`}
-              >
-                  <LuImport size={20} />
-              </button>
-              </div>
-              <Tooltip
-                  style={{
-                    zIndex: 103,
-                    background: '#f7f7f7',
-                    color: '#000',
-                    fontSize: 12,
-                    paddingBlock: 4,
-                    fontWeight: '400',
-                  }}
-                  offset={8}
-                  id="pend-down"
-                  place="top"
-                  content="Export"
-                  className="filter-line"
-                />
             </div>
           </div>
         </div>
-
-        <div className="pendingActionTable">
+ 
+        <div className="performance-milestone-table pendingActionTable">
           <table>
             <thead>
               <tr>
-                {PendingActionColumn.map((item, index) => (
-                  <th>
-                    <p className={styles['pend-header-txt']} key={index}>
-                      {item.displayName}
-                    </p>
-                  </th>
-                ))}
+                <th style={{ padding: '0px' }}>
+                  <div className="milestone-header">
+                    <div className="project-info">
+                      <p>Project Info</p>
+                    </div>
+                    <div className="header-milestone">
+                      <p> Checklist Details</p>
+                    </div>
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={14}>
+                  <td colSpan={6}>
                     <div className="flex items-center justify-center">
                       <MicroLoader />
                     </div>
@@ -384,89 +293,148 @@ const PendingQueue = () => {
               ) : dataPending.length ? (
                 dataPending.map((item: any, index: number) => (
                   <tr key={index}>
-                    <td>
-                      <div>
+                    <td style={{ padding: '0px' }}>
+                      <div
+                        className="milestone-data"
+                        style={{ paddingBottom: '1.5rem' }}
+                      >
                         <Link
                           to={`/project-management?project_id=${item.uninque_id}&customer-name=${item.home_owner}`}
                         >
-                          <div>
+                          <div >
+ 
                             <div
                               className="project-info-details deco-text"
                               style={{ flexShrink: 0 }}
                             >
-                              <h3 className="customer-name">
+                              <h3 className={`customer-name`}>
                                 {item.home_owner}
                               </h3>
-                              <div className="flex items-center gap-2">
-                                <p className="install-update">
+                              <div style={{ display: 'flex',flexDirection:"row",alignItems:"center", gap: 10, }}>
+                                <p className={`install-update`}>
                                   {item.uninque_id}
                                 </p>
-                                {item.ntp.finance_NTP === 'Completed' &&
-                                  item.ntp.powerclerk === 'Completed' &&
-                                  item.ntp.production === 'Completed' &&
-                                  item.ntp.utility_bill === 'Completed' && (
-                                    <>
-                                      <AiFillMinusCircle
-                                        size={22}
-                                        color={'#EBA900'}
-                                        data-tooltip-id={item.uninque_id}
-                                      />
-                                      <Tooltip
-                                        style={{
-                                          zIndex: 999,
-                                          background: '#555',
-                                          color: '#f7f7f7',
-                                          fontSize: 12,
-                                          paddingBlock: 4,
-                                        }}
-                                        offset={8}
-                                        id={item.uninque_id}
-                                        place="right"
-                                        content="Pending"
-                                      />
-                                    </>
-                                  )}
+                                {((item.ntp.finance_NTP === "Completed") && (item.ntp.powerclerk === "Completed") && (item.ntp.production === "Completed") && (item.ntp.utility_bill === "Completed")) &&
+                                  <>
+                                    <AiFillMinusCircle
+                                      size={22}
+                                      className=""
+                                      // style={{ flexShrink: 0, marginTop: "-4px" }}
+                                      color={'#EBA900'}
+                                      data-tooltip-id={item.uninque_id}
+                                    />
+                                    <Tooltip
+                                      style={{
+                                        zIndex: 999,
+                                        background: "#555",
+                                        color: '#f7f7f7',
+                                        fontSize: 12,
+                                        paddingBlock: 4,
+                                      }}
+                                      offset={8}
+                                      id={item.uninque_id}
+                                      place="right"
+                                      content="Pending"
+                                    />
+                                  </>
+                                }
                               </div>
                             </div>
-                            <p className="pend-project-ages">
-                              Project ages: {'30'} days
-                            </p>
+ 
+ 
                           </div>
                         </Link>
+                        <div
+                          style={{ gap: 20 }}
+                          className="flex flex-auto items-center"
+                        >
+                          {active === 'co' ? (
+                            item.co.co_status ? (
+                              <div
+                                className={`items-center  ${getStatusColor(item.co.co_status)} ${styles.outline_card_wrapper}`}
+                              >
+                                <AiFillMinusCircle
+                                  size={24}
+                                  className="mr1"
+                                  style={{ flexShrink: 0 }}
+                                  color={
+                                    item.co.co_status ===
+                                      'Pending (Action Required)'
+                                      ? '#E14514'
+                                      : item.co.co_status === 'Pending'
+                                        ? '#EBA900'
+                                        : '#2EAF71'
+                                  }
+                                />
+                                <span
+                                  style={{
+                                    fontWeight: 500,
+                                    fontSize: 14,
+                                  }}
+                                >
+                                  {item.co.co
+                                    .replace(/_/g, ' ')
+                                    .replace(/\b\w/g, (char: any) =>
+                                      char.toUpperCase()
+                                    )}
+                                </span>
+                              </div>
+                            ) : (
+                              <p className="no-data">No data available</p>
+                            )
+                          ) : (
+                            Object.keys(item[active] || {}).map((key) => {
+                              if (
+                                (active === 'ntp' &&
+                                  key === 'action_required_count') ||
+                                (active === 'qc' &&
+                                  key === 'qc_action_required_count') ||
+                                item[active][key] === ''
+                              ) {
+                                return null;
+                              }
+ 
+                              return (
+                                <div
+                                  key={key}
+                                  className={`items-center ${getStatusColor(item[active][key])} ${styles.outline_card_wrapper}`}
+                                >
+                                  <AiFillMinusCircle
+                                    size={24}
+                                    className="mr1"
+                                    color={
+                                      item[active][key] ===
+                                        'Pending (Action Required)'
+                                        ? '#E14514'
+                                        : item[active][key] === 'Pending'
+                                          ? '#EBA900'
+                                          : '#2EAF71'
+                                    }
+                                  />
+                                  <span
+                                    style={{
+                                      fontWeight: 500,
+                                      fontSize: 14,
+                                    }}
+                                  >
+                                    {key
+                                      .replace(/_/g, ' ')
+                                      .replace(/\b\w/g, (char) =>
+                                        char.toUpperCase()
+                                      )}
+                                  </span>
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
                       </div>
                     </td>
-                    <td>
-                      <div className="">
-                        {renderStatusCell(item, 'production', active)}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="">
-                        {renderStatusCell(item, 'finance_NTP', active)}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="">
-                        {renderStatusCell(item, 'utility_bill', active)}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="">
-                        {renderStatusCell(item, 'powerclerk', active)}
-                      </div>
-                    </td>
-                    <td>No Data</td>
-                    <td>No Data</td>
-                    <td>No Data</td>
-                    <td>No Data</td>
-                    <td>No Data</td>
-                    <td>No Data</td>
-                    <td>No Data</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3}>
+                  <td>
                     <div className="flex items-center justify-center">
                       <DataNotFound />
                     </div>
@@ -476,7 +444,6 @@ const PendingQueue = () => {
             </tbody>
           </table>
         </div>
-
         <div className="page-heading-container">
           {dataPending?.length > 0 ? (
             <>
@@ -485,7 +452,7 @@ const PendingQueue = () => {
                 {endIndex > totalcount ? totalcount : endIndex} of {totalcount}{' '}
                 item
               </p>
-
+ 
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}
@@ -502,83 +469,5 @@ const PendingQueue = () => {
     </>
   );
 };
-
-const getStatusColor = (status: string) => {
-  if (status === 'Pending (Action Required)') {
-    return styles.action_required_card;
-  }
-  switch (status) {
-    case 'Pending':
-      return styles.warning_card;
-    case 'Completed':
-      return styles.success_card;
-    default:
-      return styles.default_card;
-  }
-};
-
-const getCoStatusColor = (co_status: string) => {
-  return getStatusColor(co_status);
-};
-
-const renderStatusCell = (
-  item: any,
-  key: string,
-  active: 'all' | 'ntp' | 'co' | 'qc'
-) => {
-  if (active === 'co') {
-    return item.co.co_status ? (
-      <div
-        className={`items-center ${getCoStatusColor(item.co.co_status)} ${styles.outline_card_wrapper}`}
-      >
-        <AiFillMinusCircle
-          size={24}
-          className="mr1"
-          color={
-            item.co.co_status === 'Pending (Action Required)'
-              ? '#E14514'
-              : item.co.co_status === 'Pending'
-                ? '#EBA900'
-                : '#2EAF71'
-          }
-        />
-        <span style={{ fontWeight: 500, fontSize: 14 }}>
-          {item.co.co
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (char: any) => char.toUpperCase())}
-        </span>
-      </div>
-    ) : (
-      <p className="no-data">No data available</p>
-    );
-  }
-
-  if (!item[active] || !item[active][key]) {
-    return <p className="no-data">No data available</p>;
-  }
-
-  return (
-    <div
-      className={`items-center ${getStatusColor(item[active][key])} ${styles.outline_card_wrapper}`}
-    >
-      <AiFillMinusCircle
-        size={24}
-        className="mr1"
-        color={
-          item[active][key] === 'Pending (Action Required)'
-            ? '#E14514'
-            : item[active][key] === 'Pending'
-              ? '#EBA900'
-              : '#2EAF71'
-        }
-      />
-      {/* <span style={{ fontWeight: 500, fontSize: 14 }}>
-        {key
-          .replace(/_/g, ' ')
-          .replace(/\b\w/g, (char: any) => char.toUpperCase())}
-      </span> */}
-    </div>
-  );
-};
-
+ 
 export default PendingQueue;
