@@ -415,21 +415,7 @@ const Banner: React.FC<BannerProps> = ({
               className="dealer-dropdown-filter"
               style={{
                 zIndex: 100,
-                marginRight: isMobile
-                  ? (selectedRecruiter?.length > 0 && selectDealer?.length === 0)
-                    ? '73px'
-                    : (selectedRecruiter?.length === 0 && selectDealer?.length === 0)
-                      ? '80px'
-                      : (selectedRecruiter?.length > 0 && selectDealer?.length > 0)
-                        ? '87px'
-                        : '89px'
-                  : (selectedRecruiter?.length > 0 && selectDealer?.length === 0)
-                    ? '118px'
-                    : (selectedRecruiter?.length === 0 && selectDealer?.length === 0)
-                      ? '115px'
-                      : (selectedRecruiter?.length > 0 && selectDealer?.length > 0)
-                        ? '138px'
-                        : '135px'
+                marginRight: isMobile ? '90px' : '135px'
               }}
 
               ref={recruiterDropdownRef}
@@ -563,7 +549,7 @@ const Banner: React.FC<BannerProps> = ({
           (role === TYPE_OF_USER.DEALER_OWNER && groupBy === 'dealer')) && (
             <div
               className="dealer-dropdown-filter"
-              style={{ zIndex: 100 }}
+              style={{ zIndex: 100, minWidth: isMobile ? '80px' : '127px' }}
               ref={partnerDropdownRef}
             >
               {!isGenerating ? (
