@@ -9,6 +9,9 @@ import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints'
 import { FaChevronDown } from 'react-icons/fa';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import useAuth from '../../../hooks/useAuth';
+import { Tooltip } from 'react-tooltip';
+import useMatchMedia from '../../../hooks/useMatchMedia';
+
 
 interface BannerProps {
   selectDealer: { label: string; value: string }[];
@@ -142,6 +145,7 @@ const Banner: React.FC<BannerProps> = ({
       }
     }
   }, [refetch, role]);
+  const isMobile = useMatchMedia('(max-width: 767px)');
 
   useEffect(() => {
     if (details?.dealer_id) {
@@ -244,10 +248,10 @@ const Banner: React.FC<BannerProps> = ({
         <div
           className={
             role !== 'Admin' &&
-            role !== TYPE_OF_USER.FINANCE_ADMIN &&
-            role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-            role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
-            role !== TYPE_OF_USER.PROJECT_MANAGER
+              role !== TYPE_OF_USER.FINANCE_ADMIN &&
+              role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+              role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+              role !== TYPE_OF_USER.PROJECT_MANAGER
               ? 'radiant-anime'
               : 'radiant-anime-2'
           }
@@ -274,9 +278,9 @@ const Banner: React.FC<BannerProps> = ({
                 <img
                   src={
                     role === 'Admin' ||
-                    role === TYPE_OF_USER.FINANCE_ADMIN ||
-                    role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-                    role === TYPE_OF_USER.ACCOUNT_MANAGER
+                      role === TYPE_OF_USER.FINANCE_ADMIN ||
+                      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                      role === TYPE_OF_USER.ACCOUNT_MANAGER
                       ? details?.dealer_logo || ICONS.OWEBanner
                       : details?.dealer_logo || ICONS.BannerLogo
                   }
@@ -289,25 +293,25 @@ const Banner: React.FC<BannerProps> = ({
               role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
               role === TYPE_OF_USER.ACCOUNT_MANAGER ||
               role === TYPE_OF_USER.PROJECT_MANAGER) && (
-              <img
-                src={
-                  role === 'Admin' ||
-                  role === TYPE_OF_USER.FINANCE_ADMIN ||
-                  role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-                  role === TYPE_OF_USER.ACCOUNT_MANAGER
-                    ? details?.dealer_logo || ICONS.OWEBanner
-                    : details?.dealer_logo || ICONS.BannerLogo
-                }
-                style={{ maxWidth: 132, maxHeight: 180 }}
-                alt="solar-name-icon"
-              />
-            )}
+                <img
+                  src={
+                    role === 'Admin' ||
+                      role === TYPE_OF_USER.FINANCE_ADMIN ||
+                      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                      role === TYPE_OF_USER.ACCOUNT_MANAGER
+                      ? details?.dealer_logo || ICONS.OWEBanner
+                      : details?.dealer_logo || ICONS.BannerLogo
+                  }
+                  style={{ maxWidth: 132, maxHeight: 180 }}
+                  alt="solar-name-icon"
+                />
+              )}
             <div className="">
               {role !== 'Admin' &&
-              role !== TYPE_OF_USER.FINANCE_ADMIN &&
-              role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-              role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
-              role !== TYPE_OF_USER.PROJECT_MANAGER ? (
+                role !== TYPE_OF_USER.FINANCE_ADMIN &&
+                role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+                role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+                role !== TYPE_OF_USER.PROJECT_MANAGER ? (
                 <h1 className="solar-heading">
                   {details?.daeler_name || 'N/A'}
                 </h1>
@@ -317,10 +321,10 @@ const Banner: React.FC<BannerProps> = ({
                 </h1>
               )}
               {role !== 'Admin' &&
-              role !== TYPE_OF_USER.FINANCE_ADMIN &&
-              role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-              role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
-              role !== TYPE_OF_USER.PROJECT_MANAGER ? (
+                role !== TYPE_OF_USER.FINANCE_ADMIN &&
+                role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+                role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+                role !== TYPE_OF_USER.PROJECT_MANAGER ? (
                 <div className="flex items-center ">
                   <img src={ICONS.OWEBannerLogo} alt="" />
                   <p className="left-ban-des">
@@ -332,19 +336,19 @@ const Banner: React.FC<BannerProps> = ({
           </div>
 
           {role !== 'Admin' &&
-          role !== TYPE_OF_USER.FINANCE_ADMIN &&
-          role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-          role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
-          role !== TYPE_OF_USER.PROJECT_MANAGER ? (
+            role !== TYPE_OF_USER.FINANCE_ADMIN &&
+            role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+            role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+            role !== TYPE_OF_USER.PROJECT_MANAGER ? (
             <div className="straight-line"></div>
           ) : null}
           {/* right side  */}
           <div className="flex items-center banner-right">
             {role !== 'Admin' &&
-            role !== TYPE_OF_USER.FINANCE_ADMIN &&
-            role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-            role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
-            role !== TYPE_OF_USER.PROJECT_MANAGER ? (
+              role !== TYPE_OF_USER.FINANCE_ADMIN &&
+              role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+              role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+              role !== TYPE_OF_USER.PROJECT_MANAGER ? (
               <div className="banner-names flex flex-column">
                 <div>
                   <p className="owner-heading">Owner Name</p>
@@ -363,10 +367,10 @@ const Banner: React.FC<BannerProps> = ({
             <div
               className={
                 role !== 'Admin' &&
-                role !== TYPE_OF_USER.FINANCE_ADMIN &&
-                role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-                role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
-                role !== TYPE_OF_USER.PROJECT_MANAGER
+                  role !== TYPE_OF_USER.FINANCE_ADMIN &&
+                  role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+                  role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+                  role !== TYPE_OF_USER.PROJECT_MANAGER
                   ? 'banner-trophy'
                   : 'user-trophy'
               }
@@ -401,224 +405,291 @@ const Banner: React.FC<BannerProps> = ({
         </div>
       </div>
 
-      {(role === 'Admin' ||
-        role === TYPE_OF_USER.FINANCE_ADMIN 
-        
+      <div className='dropdowns-lbd-new'>
+
+        {(role === 'Admin' ||
+          role === TYPE_OF_USER.FINANCE_ADMIN
+
         ) && (
-        <div
-          className="dealer-dropdown-filter"
-          style={{ zIndex: 100, marginRight: '135px' }}
-          ref={recruiterDropdownRef}
-        >
-          {!isGenerating ? (
             <div
-              onClick={() => !isLoading && setIsOpenn(!isOpenn)}
-              className={`dealer-toggler pointer flex items-center ${
-                isOpenn ? 'open' : ''
-              } ${isLoading ? 'dealer-toggler-load' : ''}`}
-            >
-              <span>
-                {selectedRecruiter?.length ?? '0'}{' '}
-                <span>
-                  {selectedRecruiter?.length > 1 ? 'Recruiters' : 'Recruiter'}
-                </span>
-              </span>
-              <FaChevronDown className="ml1 fa-chevron-down" />
-            </div>
-          ) : null}
+              className="dealer-dropdown-filter"
+              style={{
+                zIndex: 100,
+                marginRight: isMobile
+                  ? (selectedRecruiter?.length > 0 && selectDealer?.length === 0)
+                    ? '73px'
+                    : (selectedRecruiter?.length === 0 && selectDealer?.length === 0)
+                      ? '80px'
+                      : (selectedRecruiter?.length > 0 && selectDealer?.length > 0)
+                        ? '87px'
+                        : '89px'
+                  : (selectedRecruiter?.length > 0 && selectDealer?.length === 0)
+                    ? '118px'
+                    : (selectedRecruiter?.length === 0 && selectDealer?.length === 0)
+                      ? '115px'
+                      : (selectedRecruiter?.length > 0 && selectDealer?.length > 0)
+                        ? '138px'
+                        : '135px'
+              }}
 
-          {isOpenn && (
-            <div
-              className=" scrollbar dealer-dropdown dropdown-menu "
-              style={{ overflowX: 'clip' }}
+              ref={recruiterDropdownRef}
             >
-              <div className="searchBox">
-                <input
-                  type="text"
-                  className="input leaderboard-input"
-                  placeholder="Search Recuriters"
-                  style={{ width: '100%' }}
-                  value={search}
-                  disabled={isLoading}
-                  onChange={(e) => {
-                    // Remove any non-alphanumeric characters
-                    const sanitizedValue = e.target.value.replace(
-                      /[^a-zA-Z0-9 _-]/g,
-                      ''
-                    );
-                    setSearch(sanitizedValue);
-
-                    if (sanitizedValue.trim()) {
-                      const filtered = leaderRecruiter(newFormData)?.filter(
-                        (item) =>
-                          item?.value
-                            .toLowerCase()
-                            .includes(sanitizedValue.toLowerCase().trim())
-                      );
-                      setOptions([...filtered]);
-                    } else {
-                      setOptions(leaderRecruiter(newFormData));
-                    }
-                  }}
-                />
-              </div>
-              {!search.trim() && (
-                <div className="dropdown-item">
-                  <input
-                    type="checkbox"
-                    style={{ flexShrink: 0 }}
-                    checked={
-                      leaderRecruiter(newFormData)?.length ===
-                      selectedRecruiter?.length
-                    }
-                    onChange={() => {
-                      setSelectDealer([]); // Clear dealers
-                      if (options.length === selectedRecruiter?.length) {
-                        setSelectedRecruiter([]);
-                      } else {
-                        setSelectedRecruiter([...options]);
-                      }
-                    }}
-                  />
-                  All
-                </div>
-              )}
-              {options?.length ? (
-                options?.map?.((option, ind) => (
-                  <div key={ind} className="dropdown-item">
-                    <input
-                      type="checkbox"
-                      style={{ flexShrink: 0 }}
-                      disabled={isLoading}
-                      checked={selectedRecruiter?.some(
-                        (item) => item.value === option.value
-                      )}
-                      onChange={() => handleChangee(option)}
-                    />
-                    <span className="dropdown-text">{option.label}</span>
-                  </div>
-                ))
-              ) : (
+              {!isGenerating ? (
                 <div
-                  className="text-center"
-                  style={{ fontSize: 14, color: '#000' }}
+                  onClick={() => !isLoading && setIsOpenn(!isOpenn)}
+                  className={`dealer-toggler pointer flex items-center ${isOpenn ? 'open' : ''
+                    } ${isLoading ? 'dealer-toggler-load' : ''}`}
                 >
-                  No Data Found
+                  <span>
+                    {selectedRecruiter?.length ?? '0'}{' '}
+                    <span>
+                      {selectedRecruiter?.length > 1 ? 'Recruiters' : 'Recruiter'}
+                    </span>
+                  </span>
+                  <FaChevronDown className="ml1 fa-chevron-down" />
+                </div>
+              ) : null}
+
+              {isOpenn && (
+                <div
+                  className=" scrollbar dealer-dropdown dropdown-menu "
+                  style={{ overflowX: 'clip' }}
+                >
+                  <div className="searchBox">
+                    <input
+                      type="text"
+                      className="input leaderboard-input"
+                      placeholder="Search Recuriters"
+                      style={{ width: '100%' }}
+                      value={search}
+                      disabled={isLoading}
+                      onChange={(e) => {
+                        // Remove any non-alphanumeric characters
+                        const sanitizedValue = e.target.value.replace(
+                          /[^a-zA-Z0-9 _-]/g,
+                          ''
+                        );
+                        setSearch(sanitizedValue);
+
+                        if (sanitizedValue.trim()) {
+                          const filtered = leaderRecruiter(newFormData)?.filter(
+                            (item) =>
+                              item?.value
+                                .toLowerCase()
+                                .includes(sanitizedValue.toLowerCase().trim())
+                          );
+                          setOptions([...filtered]);
+                        } else {
+                          setOptions(leaderRecruiter(newFormData));
+                        }
+                      }}
+                    />
+                  </div>
+                  {!search.trim() && (
+                    <div className="dropdown-item">
+                      <input
+                        type="checkbox"
+                        style={{ flexShrink: 0 }}
+                        checked={
+                          leaderRecruiter(newFormData)?.length ===
+                          selectedRecruiter?.length
+                        }
+                        onChange={() => {
+                          setSelectDealer([]); // Clear dealers
+                          if (options.length === selectedRecruiter?.length) {
+                            setSelectedRecruiter([]);
+                          } else {
+                            setSelectedRecruiter([...options]);
+                          }
+                        }}
+                      />
+                      All
+                    </div>
+                  )}
+                  {options?.length ? (
+                    options?.map?.((option, ind) => (
+                      <div key={ind} className="dropdown-item">
+                        <input
+                          type="checkbox"
+                          style={{ flexShrink: 0 }}
+                          disabled={isLoading}
+                          checked={selectedRecruiter?.some(
+                            (item) => item.value === option.value
+                          )}
+                          onChange={() => handleChangee(option)}
+                        />
+                        {/* <span className="dropdown-text" data-tooltip-id={option.label.length > 13 ? option.label : ''}>
+                          {option.label}
+                        </span> */}
+                        <span className="dropdown-text" data-tooltip-id={option.label.length > 13 ? option.label : ''}>
+                          {option.label.length > 13 ? option.label.substring(0, 13) + "..." : option.label}
+                        </span>
+                        {option.label.length > 13 && (
+                          <Tooltip
+                            style={{
+                              zIndex: 20,
+                              background: "#f7f7f7",
+                              color: "#292b2e",
+                              fontSize: 12,
+                              paddingBlock: 4,
+                            }}
+                            offset={8}
+                            id={option.label}
+                            place="bottom"
+                            content={option.label}
+                          />
+                        )}
+
+                      </div>
+                    ))
+                  ) : (
+                    <div
+                      className="text-center"
+                      style={{ fontSize: 14, color: '#000' }}
+                    >
+                      No Data Found
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           )}
-        </div>
-      )}
 
-      {(role === 'Admin' ||
-        role === TYPE_OF_USER.FINANCE_ADMIN ||
-        role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-        role === TYPE_OF_USER.ACCOUNT_MANAGER ||
-        role === TYPE_OF_USER.PROJECT_MANAGER ||
-        (role === TYPE_OF_USER.DEALER_OWNER && groupBy === 'dealer')) && (
-        <div
-          className="dealer-dropdown-filter"
-          style={{ zIndex: 100 }}
-          ref={partnerDropdownRef}
-        >
-          {!isGenerating ? (
+        {(role === 'Admin' ||
+          role === TYPE_OF_USER.FINANCE_ADMIN ||
+          role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+          role === TYPE_OF_USER.ACCOUNT_MANAGER ||
+          role === TYPE_OF_USER.PROJECT_MANAGER ||
+          (role === TYPE_OF_USER.DEALER_OWNER && groupBy === 'dealer')) && (
             <div
-              onClick={() => !isLoading && setIsOpen(!isOpen)}
-              className={`dealer-toggler pointer flex items-center ${
-                isOpen ? 'open' : ''
-              } ${isLoading ? 'dealer-toggler-load' : ''}`}
+              className="dealer-dropdown-filter"
+              style={{ zIndex: 100 }}
+              ref={partnerDropdownRef}
             >
-              <span>
-                {selectDealer?.length ?? '0'}{' '}
-                <span>{selectDealer?.length > 1 ? 'Partners' : 'Partner'}</span>
-              </span>
-              <FaChevronDown className="ml1 fa-chevron-down" />
-            </div>
-          ) : null}
-
-          {isOpen && (
-            <div
-              className=" scrollbar dealer-dropdown dropdown-menu "
-              style={{ overflowX: 'clip' }}
-            >
-              <div className="searchBox">
-                <input
-                  type="text"
-                  className="input leaderboard-input"
-                  placeholder="Search Partners"
-                  style={{ width: '100%' }}
-                  value={search}
-                  disabled={isLoading}
-                  onChange={(e) => {
-                    // Remove any non-alphanumeric characters
-                    const sanitizedValue = e.target.value.replace(
-                      /[^a-zA-Z0-9 _-]/g,
-                      ''
-                    );
-                    setSearch(sanitizedValue);
-
-                    if (sanitizedValue.trim()) {
-                      const filtered = leaderDealer(newFormData)?.filter(
-                        (item) =>
-                          item?.value
-                            .toLowerCase()
-                            .includes(sanitizedValue.toLowerCase().trim())
-                      );
-                      setOpts([...filtered]);
-                    } else {
-                      setOpts(leaderDealer(newFormData));
-                    }
-                  }}
-                />
-              </div>
-              {!search.trim() && (
-                <div className="dropdown-item">
-                  <input
-                    type="checkbox"
-                    style={{ flexShrink: 0 }}
-                    checked={
-                      leaderDealer(newFormData)?.length === selectDealer?.length
-                    }
-                    onChange={() => {
-                      setSelectedRecruiter([]); // Clear recruiters
-                      if (opts.length === selectDealer?.length) {
-                        setSelectDealer([]);
-                      } else {
-                        setSelectDealer([...opts]);
-                      }
-                    }}
-                  />
-                  All
-                </div>
-              )}
-              {opts?.length ? (
-                opts?.map?.((option, ind) => (
-                  <div key={ind} className="dropdown-item">
-                    <input
-                      type="checkbox"
-                      style={{ flexShrink: 0 }}
-                      disabled={isLoading}
-                      checked={selectDealer?.some(
-                        (item) => item.value === option.value
-                      )}
-                      onChange={() => handleChange(option)}
-                    />
-                    <span className="dropdown-text">{option.label}</span>
-                  </div>
-                ))
-              ) : (
+              {!isGenerating ? (
                 <div
-                  className="text-center"
-                  style={{ fontSize: 14, color: '#000' }}
+                  onClick={() => !isLoading && setIsOpen(!isOpen)}
+                  className={`dealer-toggler pointer flex items-center ${isOpen ? 'open' : ''
+                    } ${isLoading ? 'dealer-toggler-load' : ''}`}
                 >
-                  No Data Found
+                  <span>
+                    {selectDealer?.length ?? '0'}{' '}
+                    <span>{selectDealer?.length > 1 ? 'Partners' : 'Partner'}</span>
+                  </span>
+                  <FaChevronDown className="ml1 fa-chevron-down" />
+                </div>
+              ) : null}
+
+              {isOpen && (
+                <div
+                  className=" scrollbar dealer-dropdown dropdown-menu "
+                  style={{ overflowX: 'clip' }}
+                >
+                  <div className="searchBox">
+                    <input
+                      type="text"
+                      className="input leaderboard-input"
+                      placeholder="Search Partners"
+                      style={{ width: '100%' }}
+                      value={search}
+                      disabled={isLoading}
+                      onChange={(e) => {
+                        // Remove any non-alphanumeric characters
+                        const sanitizedValue = e.target.value.replace(
+                          /[^a-zA-Z0-9 _-]/g,
+                          ''
+                        );
+                        setSearch(sanitizedValue);
+
+                        if (sanitizedValue.trim()) {
+                          const filtered = leaderDealer(newFormData)?.filter(
+                            (item) =>
+                              item?.value
+                                .toLowerCase()
+                                .includes(sanitizedValue.toLowerCase().trim())
+                          );
+                          setOpts([...filtered]);
+                        } else {
+                          setOpts(leaderDealer(newFormData));
+                        }
+                      }}
+                    />
+                  </div>
+                  {!search.trim() && (
+                    <div className="dropdown-item">
+                      <input
+                        type="checkbox"
+                        style={{ flexShrink: 0 }}
+                        checked={
+                          leaderDealer(newFormData)?.length === selectDealer?.length
+                        }
+                        onChange={() => {
+                          setSelectedRecruiter([]); // Clear recruiters
+                          if (opts.length === selectDealer?.length) {
+                            setSelectDealer([]);
+                          } else {
+                            setSelectDealer([...opts]);
+                          }
+                        }}
+                      />
+                      All
+                    </div>
+                  )}
+                  {opts?.length ? (
+                    opts?.map?.((option, ind) => (
+                      <div key={ind} className="dropdown-item">
+                        <input
+                          type="checkbox"
+                          style={{ flexShrink: 0 }}
+                          disabled={isLoading}
+                          checked={selectDealer?.some(
+                            (item) => item.value === option.value
+                          )}
+                          onChange={() => handleChange(option)}
+                        />
+                        {/* <span className="dropdown-text" data-tooltip-id={option.label.length > 13 ? option.label : ''}>
+                          {option.label}
+                        </span> */}
+                        <span
+                          className="dropdown-text"
+                          data-tooltip-id={option.label.length > 10 ? `tooltip-${option.label}` : ''} // Ensure unique tooltip ID
+                        >
+                          {option.label.length > 15 ? option.label.substring(0, 15) + "..." : option.label}
+                        </span>
+                        {option.label.length > 11 && (
+                          <Tooltip
+                            style={{
+                              zIndex: 20,
+                              background: "#f7f7f7",
+                              color: "#292b2e",
+                              fontSize: 12,
+                              paddingBlock: 4,
+                              width: "140px",
+                            }}
+                            offset={8}
+                            id={`tooltip-${option.label}`} // Ensure ID matches data-tooltip-id
+                            place="bottom"
+                            content={option.label}
+                          />
+                        )}
+
+                     
+
+                      </div>
+                    ))
+                  ) : (
+                    <div
+                      className="text-center"
+                      style={{ fontSize: 14, color: '#000' }}
+                    >
+                      No Data Found
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           )}
-        </div>
-      )}
+      </div>
 
       {showModal && (
         <EditModal
