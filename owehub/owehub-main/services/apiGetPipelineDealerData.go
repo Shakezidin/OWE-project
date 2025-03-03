@@ -184,8 +184,8 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 			appserver.FormAndSendHttpResp(resp, "pipeline Data", http.StatusOK, pipelineDealerDataList, RecordCount)
 			return
 		}
-		data = PaginateData(data, dataReq.RequestParams)
 		RecordCount = int64(len(data))
+		data = PaginateData(data, dataReq.RequestParams)
 	}
 
 	for _, item := range data {
