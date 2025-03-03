@@ -386,7 +386,7 @@ func FilterAgRpDataForDealerData(req []Filter, alldata []map[string]interface{})
 		switch value.Column {
 		case "days_pending_ntp", "days_pending_permits", "days_pending_install", "days_pending_pto", "project_age":
 			// Handle numeric filters
-			conditions = append(conditions, fmt.Sprintf("%s %s $%d", value.Column, operator, paramIndex))
+			conditions = append(conditions, fmt.Sprintf("CAST(%s AS INTEGER) %s $%d", value.Column, operator, paramIndex))
 			whereEleList = append(whereEleList, value.Data)
 		default:
 			// Handle string filters (LIKE, ILIKE, etc.)
