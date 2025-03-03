@@ -129,6 +129,23 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	var ageingReportFilter []Filter
+	var updatedFilters []Filter
+
+	for _, val := range dataReq.RequestParams.Filters {
+		if val.Column == "days_pending_ntp" || val.Column == "days_pending_permits" ||
+			val.Column == "days_pending_install" || val.Column == "days_pending_pto" ||
+			val.Column == "project_age" {
+
+			ageingReportFilter = append(ageingReportFilter, val)
+		} else {
+			updatedFilters = append(updatedFilters, val)
+		}
+	}
+
+	// Replace original Filters slice with updated version
+	dataReq.RequestParams.Filters = updatedFilters
+
 	/* Base query */
 	pipelineDealerQuery = models.PipelineDealerDataQuery(roleFilter)
 
@@ -155,10 +172,10 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	RecordCount = int64(len(data))
-	if len(dataReq.Fields) <= 0 {
+	if len(ageingReportFilter) <= 0 {
 		data = PaginateData(data, dataReq.RequestParams)
 	} else {
-		data, err = FilterAgRpDataForDealerData(dataReq, data)
+		data, err = FilterAgRpDataForDealerData(ageingReportFilter, data)
 		if err != nil {
 			log.FuncErrorTrace(0, "error while calling FilterAgRpData : %v", err)
 		}
@@ -343,58 +360,77 @@ func getAgingReportForDealerData(AgRp []models.PipelineDealerData) ([]models.Pip
 	return AgRp, nil
 }
 
-func FilterAgRpDataForDealerData(req PipelineByDealerReq, alldata []map[string]interface{}) ([]map[string]interface{}, error) {
-
+func FilterAgRpDataForDealerData(req []Filter, alldata []map[string]interface{}) ([]map[string]interface{}, error) {
 	var (
-		conditions []string
-		result     []map[string]interface{}
-		uniqueIds  = make(map[string]struct{})
-		err        error
+		conditions   []string
+		whereEleList []interface{}
+		result       []map[string]interface{}
+		uniqueIds    = make(map[string]struct{})
+		err          error
 	)
 
-	log.EnterFn(0, "FilterAgRpData")
-	defer func() { log.ExitFn(0, "FilterAgRpData", err) }()
+	log.EnterFn(0, "FilterAgRpDataForDealerData")
+	defer func() { log.ExitFn(0, "FilterAgRpDataForDealerData", err) }()
 
-	if req.Fields == nil || len(req.Fields) <= 0 {
-		return alldata, err
+	if len(req) == 0 {
+		return alldata, nil
 	}
 
-	baseQuery := "SELECT unique_id\n FROM aging_report %s \n"
-	for _, value := range req.Fields {
-		conditions = append(conditions, fmt.Sprintf("(%s AS INTEGER)  BETWEEN %d AND %d", value, req.ProjectPendingStartDate, req.ProjectPendingEndDate))
-	}
-	conditionsStr := "\nWHERE CAST " + strings.Join(conditions, " \nAND CAST ")
-	query := fmt.Sprintf(baseQuery, conditionsStr)
+	baseQuery := "SELECT unique_id FROM aging_report"
 
-	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{})
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get FilterAgRpData data from db err: %v", err)
-		return alldata, err
-	}
-	// Collect unique IDs into a map for efficient lookup
-	for _, value := range data {
-		if id, ok := value["unique_id"]; ok {
-			if strID, ok := id.(string); ok {
-				uniqueIds[strID] = struct{}{}
-			} else {
-				log.FuncErrorTrace(0, "[FilterAgRpData] unexpected type for unique_id: %T", id)
-			}
-		} else {
-			log.FuncErrorTrace(0, "[FilterAgRpData] unique_id not found in data")
+	// Dynamically construct WHERE conditions
+	for _, value := range req {
+		operator := GetFilterDBMappedOperator(string(value.Operation))
+		paramIndex := len(whereEleList) + 1
+
+		switch value.Column {
+		case "days_pending_ntp", "days_pending_permits", "days_pending_install", "days_pending_pto", "project_age":
+			// Handle numeric filters
+			conditions = append(conditions, fmt.Sprintf("CAST(%s AS INTEGER) %s $%d", value.Column, operator, paramIndex))
+			whereEleList = append(whereEleList, value.Data)
+		default:
+			// Handle string filters (LIKE, ILIKE, etc.)
+			modifiedValue := GetFilterModifiedValue(string(value.Operation), value.Data.(string))
+			conditions = append(conditions, fmt.Sprintf("LOWER(%s) %s LOWER($%d)", value.Column, operator, paramIndex))
+			whereEleList = append(whereEleList, modifiedValue)
 		}
 	}
 
-	// Filter the original data based on the fetched unique IDs
+	// Combine conditions into SQL query
+	var query string
+	if len(conditions) > 0 {
+		query = fmt.Sprintf("%s WHERE %s", baseQuery, strings.Join(conditions, " AND "))
+	} else {
+		query = baseQuery // No filters applied
+	}
+
+	// Retrieve filtered unique_ids
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get FilterAgRpDataForDealerData from DB err: %v", err)
+		return alldata, err
+	}
+
+	// Collect unique IDs for filtering
+	for _, value := range data {
+		if id, ok := value["unique_id"].(string); ok {
+			uniqueIds[id] = struct{}{}
+		} else {
+			log.FuncErrorTrace(0, "Unexpected type for unique_id: %T", value["unique_id"])
+		}
+	}
+
+	// Filter `alldata` based on retrieved unique IDs
 	for _, item := range alldata {
 		if uniqueId, ok := item["unique_id"].(string); ok {
 			if _, exists := uniqueIds[uniqueId]; exists {
 				result = append(result, item)
 			}
 		} else {
-			log.FuncErrorTrace(0, "[FilterAgRpData] customer_unique_id not found or invalid in alldata")
+			log.FuncErrorTrace(0, "Missing or invalid unique_id in alldata")
 		}
 	}
 
-	log.FuncInfoTrace(0, "FilterAgRpData filtered result count: %d", len(result))
+	log.FuncInfoTrace(0, "Filtered result count: %d", len(result))
 	return result, nil
 }

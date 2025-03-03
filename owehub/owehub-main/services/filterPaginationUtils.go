@@ -20,12 +20,12 @@ type FilterOperator string
 type DataType string
 
 const (
-	Equal            FilterOperator = "eq"        // equals
+	Equal            FilterOperator = "eqs"       // equals
 	NotEqual         FilterOperator = "neq"       // not equals
-	LessThan         FilterOperator = "lt"        // less than
-	LessThanEqual    FilterOperator = "lte"       // less than or equal
-	GreaterThan      FilterOperator = "gt"        // greater than
-	GreaterThanEqual FilterOperator = "gte"       // greater than or equal
+	LessThan         FilterOperator = "lst"       // less than
+	LessThanEqual    FilterOperator = "lsteqs"    // less than or equal
+	GreaterThan      FilterOperator = "grt"       // greater than
+	GreaterThanEqual FilterOperator = "grteqs"    // greater than or equal
 	StartsWith       FilterOperator = "sw"        // starts with
 	EndsWith         FilterOperator = "ew"        // ends with
 	Contain          FilterOperator = "cont"      // Contain

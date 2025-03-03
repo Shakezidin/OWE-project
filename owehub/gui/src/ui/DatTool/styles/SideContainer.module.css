@@ -252,4 +252,7 @@
   .container{
     height:calc(60vh - 112px);
   }
+  .dataBoxWrapper{
+    padding-left:0;
+  }
 }

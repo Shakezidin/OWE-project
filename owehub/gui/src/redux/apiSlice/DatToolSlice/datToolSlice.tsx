@@ -197,7 +197,7 @@ interface GeneralData {
   inverter_type: string;
   battery_type: string;
   ac_dc_system_size: string;
-  total_production: number;
+  total_production_tape: string;
   dat_module_qty: number;
   dat_module_type: string;
   dat_design_version: number;

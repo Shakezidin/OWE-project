@@ -12,6 +12,10 @@ import useAuth from '../../../hooks/useAuth';
 
 interface BannerProps {
   selectDealer: { label: string; value: string }[];
+  selectedRecruiter: { label: string; value: string }[];
+  setSelectedRecruiter: React.Dispatch<
+    React.SetStateAction<{ label: string; value: string }[]>
+  >;
   setSelectDealer: React.Dispatch<
     React.SetStateAction<{ label: string; value: string }[]>
   >;
@@ -26,6 +30,8 @@ interface BannerProps {
 const Banner: React.FC<BannerProps> = ({
   selectDealer,
   setSelectDealer,
+  selectedRecruiter,
+  setSelectedRecruiter,
   isShowDropdown,
   setIsFetched,
   isGenerating,
@@ -39,12 +45,16 @@ const Banner: React.FC<BannerProps> = ({
   const [vdealer, setVdealer] = useState('');
   const [refetch, setRefetch] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenn, setIsOpenn] = useState(false);
   const [search, setSearch] = useState('');
   const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
+  const [options, setOptions] = useState<{ label: string; value: string }[]>(
+    []
+  );
   const { authData, getUpdatedAuthData } = useAuth();
   const [isAuthenticated, setAuthenticated] = useState(false);
   const tableData = {
-    tableNames: ['dealer_name'],
+    tableNames: ['dealer_name', 'recruiter'],
   };
   const role = authData?.role;
 
@@ -59,6 +69,15 @@ const Banner: React.FC<BannerProps> = ({
       value,
       label: value,
     }));
+
+  const leaderRecruiter = (
+    newFormData: any
+  ): { value: string; label: string }[] =>
+    newFormData?.recruiter?.map((value: string) => ({
+      value,
+      label: value,
+    }));
+
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     if (res.status > 200) {
@@ -66,7 +85,9 @@ const Banner: React.FC<BannerProps> = ({
     }
     setNewFormData(res.data);
     setSelectDealer(leaderDealer(res.data));
+
     setOpts(leaderDealer(res.data));
+    setOptions(leaderRecruiter(res.data));
     setIsFetched(true);
   };
   useEffect(() => {
@@ -87,7 +108,7 @@ const Banner: React.FC<BannerProps> = ({
       role !== 'Admin' &&
       role !== TYPE_OF_USER.FINANCE_ADMIN &&
       role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-      role !== TYPE_OF_USER.ACCOUNT_MANAGER && 
+      role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
       role !== TYPE_OF_USER.PROJECT_MANAGER &&
       isAuthenticated
     ) {
@@ -151,8 +172,11 @@ const Banner: React.FC<BannerProps> = ({
     }
   }, [details]);
 
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const recruiterDropdownRef = useRef<HTMLDivElement | null>(null);
+  const partnerDropdownRef = useRef<HTMLDivElement | null>(null);
+
   const handleChange = (opt: { label: string; value: string }) => {
+    setSelectedRecruiter([]); // Clear recruiters when a dealer is selected
     const isExist = selectDealer.some((item) => item.value === opt.value);
     if (isExist) {
       setSelectDealer((prev) =>
@@ -162,12 +186,31 @@ const Banner: React.FC<BannerProps> = ({
       setSelectDealer((prev) => [...prev, opt]);
     }
   };
+  const handleChangee = (opt: { label: string; value: string }) => {
+    setSelectDealer([]); // Clear dealers when a recruiter is selected
+    const isExist = selectedRecruiter.some((item) => item.value === opt.value);
+    if (isExist) {
+      setSelectedRecruiter((prev) =>
+        prev.filter((item) => item.value !== opt.value)
+      );
+    } else {
+      setSelectedRecruiter((prev) => [...prev, opt]);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        recruiterDropdownRef.current &&
+        !recruiterDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpenn(false);
+        setOptions(leaderRecruiter(newFormData));
+        setSearch('');
+      }
+      if (
+        partnerDropdownRef.current &&
+        !partnerDropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
         setOpts(leaderDealer(newFormData));
@@ -177,6 +220,7 @@ const Banner: React.FC<BannerProps> = ({
 
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
+        setIsOpenn(false);
         setIsOpen(false);
       }
     };
@@ -243,7 +287,8 @@ const Banner: React.FC<BannerProps> = ({
             {(role === TYPE_OF_USER.FINANCE_ADMIN ||
               role === TYPE_OF_USER.ADMIN ||
               role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-              role === TYPE_OF_USER.ACCOUNT_MANAGER || role === TYPE_OF_USER.PROJECT_MANAGER) && (
+              role === TYPE_OF_USER.ACCOUNT_MANAGER ||
+              role === TYPE_OF_USER.PROJECT_MANAGER) && (
               <img
                 src={
                   role === 'Admin' ||
@@ -261,7 +306,8 @@ const Banner: React.FC<BannerProps> = ({
               {role !== 'Admin' &&
               role !== TYPE_OF_USER.FINANCE_ADMIN &&
               role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-              role !== TYPE_OF_USER.ACCOUNT_MANAGER && role!== TYPE_OF_USER.PROJECT_MANAGER ? (
+              role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+              role !== TYPE_OF_USER.PROJECT_MANAGER ? (
                 <h1 className="solar-heading">
                   {details?.daeler_name || 'N/A'}
                 </h1>
@@ -273,7 +319,8 @@ const Banner: React.FC<BannerProps> = ({
               {role !== 'Admin' &&
               role !== TYPE_OF_USER.FINANCE_ADMIN &&
               role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-              role !== TYPE_OF_USER.ACCOUNT_MANAGER && role!== TYPE_OF_USER.PROJECT_MANAGER ? (
+              role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+              role !== TYPE_OF_USER.PROJECT_MANAGER ? (
                 <div className="flex items-center ">
                   <img src={ICONS.OWEBannerLogo} alt="" />
                   <p className="left-ban-des">
@@ -287,7 +334,8 @@ const Banner: React.FC<BannerProps> = ({
           {role !== 'Admin' &&
           role !== TYPE_OF_USER.FINANCE_ADMIN &&
           role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-          role !== TYPE_OF_USER.ACCOUNT_MANAGER && role !== TYPE_OF_USER.PROJECT_MANAGER ? (
+          role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+          role !== TYPE_OF_USER.PROJECT_MANAGER ? (
             <div className="straight-line"></div>
           ) : null}
           {/* right side  */}
@@ -295,7 +343,8 @@ const Banner: React.FC<BannerProps> = ({
             {role !== 'Admin' &&
             role !== TYPE_OF_USER.FINANCE_ADMIN &&
             role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-            role !== TYPE_OF_USER.ACCOUNT_MANAGER && role !== TYPE_OF_USER.PROJECT_MANAGER ? (
+            role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+            role !== TYPE_OF_USER.PROJECT_MANAGER ? (
               <div className="banner-names flex flex-column">
                 <div>
                   <p className="owner-heading">Owner Name</p>
@@ -316,7 +365,8 @@ const Banner: React.FC<BannerProps> = ({
                 role !== 'Admin' &&
                 role !== TYPE_OF_USER.FINANCE_ADMIN &&
                 role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-                role !== TYPE_OF_USER.ACCOUNT_MANAGER && role !== TYPE_OF_USER.PROJECT_MANAGER
+                role !== TYPE_OF_USER.ACCOUNT_MANAGER &&
+                role !== TYPE_OF_USER.PROJECT_MANAGER
                   ? 'banner-trophy'
                   : 'user-trophy'
               }
@@ -352,14 +402,125 @@ const Banner: React.FC<BannerProps> = ({
       </div>
 
       {(role === 'Admin' ||
+        role === TYPE_OF_USER.FINANCE_ADMIN 
+        
+        ) && (
+        <div
+          className="dealer-dropdown-filter"
+          style={{ zIndex: 100, marginRight: '135px' }}
+          ref={recruiterDropdownRef}
+        >
+          {!isGenerating ? (
+            <div
+              onClick={() => !isLoading && setIsOpenn(!isOpenn)}
+              className={`dealer-toggler pointer flex items-center ${
+                isOpenn ? 'open' : ''
+              } ${isLoading ? 'dealer-toggler-load' : ''}`}
+            >
+              <span>
+                {selectedRecruiter?.length ?? '0'}{' '}
+                <span>
+                  {selectedRecruiter?.length > 1 ? 'Recruiters' : 'Recruiter'}
+                </span>
+              </span>
+              <FaChevronDown className="ml1 fa-chevron-down" />
+            </div>
+          ) : null}
+
+          {isOpenn && (
+            <div
+              className=" scrollbar dealer-dropdown dropdown-menu "
+              style={{ overflowX: 'clip' }}
+            >
+              <div className="searchBox">
+                <input
+                  type="text"
+                  className="input leaderboard-input"
+                  placeholder="Search Recuriters"
+                  style={{ width: '100%' }}
+                  value={search}
+                  disabled={isLoading}
+                  onChange={(e) => {
+                    // Remove any non-alphanumeric characters
+                    const sanitizedValue = e.target.value.replace(
+                      /[^a-zA-Z0-9 _-]/g,
+                      ''
+                    );
+                    setSearch(sanitizedValue);
+
+                    if (sanitizedValue.trim()) {
+                      const filtered = leaderRecruiter(newFormData)?.filter(
+                        (item) =>
+                          item?.value
+                            .toLowerCase()
+                            .includes(sanitizedValue.toLowerCase().trim())
+                      );
+                      setOptions([...filtered]);
+                    } else {
+                      setOptions(leaderRecruiter(newFormData));
+                    }
+                  }}
+                />
+              </div>
+              {!search.trim() && (
+                <div className="dropdown-item">
+                  <input
+                    type="checkbox"
+                    style={{ flexShrink: 0 }}
+                    checked={
+                      leaderRecruiter(newFormData)?.length ===
+                      selectedRecruiter?.length
+                    }
+                    onChange={() => {
+                      setSelectDealer([]); // Clear dealers
+                      if (options.length === selectedRecruiter?.length) {
+                        setSelectedRecruiter([]);
+                      } else {
+                        setSelectedRecruiter([...options]);
+                      }
+                    }}
+                  />
+                  All
+                </div>
+              )}
+              {options?.length ? (
+                options?.map?.((option, ind) => (
+                  <div key={ind} className="dropdown-item">
+                    <input
+                      type="checkbox"
+                      style={{ flexShrink: 0 }}
+                      disabled={isLoading}
+                      checked={selectedRecruiter?.some(
+                        (item) => item.value === option.value
+                      )}
+                      onChange={() => handleChangee(option)}
+                    />
+                    <span className="dropdown-text">{option.label}</span>
+                  </div>
+                ))
+              ) : (
+                <div
+                  className="text-center"
+                  style={{ fontSize: 14, color: '#000' }}
+                >
+                  No Data Found
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {(role === 'Admin' ||
         role === TYPE_OF_USER.FINANCE_ADMIN ||
         role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-        role === TYPE_OF_USER.ACCOUNT_MANAGER || role === TYPE_OF_USER.PROJECT_MANAGER  ||
+        role === TYPE_OF_USER.ACCOUNT_MANAGER ||
+        role === TYPE_OF_USER.PROJECT_MANAGER ||
         (role === TYPE_OF_USER.DEALER_OWNER && groupBy === 'dealer')) && (
         <div
           className="dealer-dropdown-filter"
           style={{ zIndex: 100 }}
-          ref={dropdownRef}
+          ref={partnerDropdownRef}
         >
           {!isGenerating ? (
             <div
@@ -391,7 +552,10 @@ const Banner: React.FC<BannerProps> = ({
                   disabled={isLoading}
                   onChange={(e) => {
                     // Remove any non-alphanumeric characters
-                    const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9 _-]/g, '');
+                    const sanitizedValue = e.target.value.replace(
+                      /[^a-zA-Z0-9 _-]/g,
+                      ''
+                    );
                     setSearch(sanitizedValue);
 
                     if (sanitizedValue.trim()) {
@@ -417,6 +581,7 @@ const Banner: React.FC<BannerProps> = ({
                       leaderDealer(newFormData)?.length === selectDealer?.length
                     }
                     onChange={() => {
+                      setSelectedRecruiter([]); // Clear recruiters
                       if (opts.length === selectDealer?.length) {
                         setSelectDealer([]);
                       } else {
@@ -454,6 +619,7 @@ const Banner: React.FC<BannerProps> = ({
           )}
         </div>
       )}
+
       {showModal && (
         <EditModal
           onClose={() => setShowModal(false)}
