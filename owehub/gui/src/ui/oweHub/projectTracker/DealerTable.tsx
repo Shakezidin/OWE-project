@@ -131,58 +131,6 @@ const DealerTablePipeline = () => {
 
   const cuurentPageData = pipelineData.list?.slice();
 
-  // if (sortKey) {
-  //   cuurentPageData?.sort((a: any, b: any) => {
-  //     console.log(sortKey, 'first time');
-  //     const aValue = a[sortKey];
-  //     const bValue = b[sortKey];
-
-  //     if (sortKey === 'system_size' || sortKey === 'contract_amount') {
-  //       const numericAValue = aValue
-  //         ? parseFloat(aValue.replace(/[^0-9.]/g, ''))
-  //         : 0;
-  //       const numericBValue = bValue
-  //         ? parseFloat(bValue.replace(/[^0-9.]/g, ''))
-  //         : 0;
-
-  //       return sortDirection === 'asc'
-  //         ? numericAValue - numericBValue
-  //         : numericBValue - numericAValue;
-  //     } else if (sortKey === 'days_pto' || sortKey === 'days_install' || sortKey === 'days_permits' || sortKey === 'days_ntp' || sortKey === 'days_project_age') {
-  //       const extractNumber = (value: string) =>
-  //         parseInt(value.match(/\d+/)?.[0] || '0', 10);
-
-  //       const numericAValue = extractNumber(aValue);
-  //       const numericBValue = extractNumber(bValue);
-
-  //       return sortDirection === 'asc'
-  //         ? numericAValue - numericBValue
-  //         : numericBValue - numericAValue;
-  //     } else if (sortKey === 'jeopardy_date') {
-  //       const aValue = String(a[sortKey]);
-  //       const bValue = String(b[sortKey]);
-
-  //       return sortDirection === 'asc'
-  //         ? aValue.localeCompare(bValue)
-  //         : bValue.localeCompare(aValue);
-  //     } else if (typeof aValue === 'string' && typeof bValue === 'string') {
-  //       return sortDirection === 'asc'
-  //         ? aValue.localeCompare(bValue)
-  //         : bValue.localeCompare(aValue);
-  //     }
-  //     else {
-  //       // Ensure numeric values for arithmetic operations
-  //       const numericAValue =
-  //         typeof aValue === 'number' ? aValue : parseFloat(aValue);
-  //       const numericBValue =
-  //         typeof bValue === 'number' ? bValue : parseFloat(bValue);
-
-  //       return sortDirection === 'asc'
-  //         ? numericAValue - numericBValue
-  //         : numericBValue - numericAValue;
-  //     }
-  //   });
-  // }
   if (sortKey) {
     // Mapping backend keys to actual sorting keys
     const sortKeyMapping: Record<string, string> = {
