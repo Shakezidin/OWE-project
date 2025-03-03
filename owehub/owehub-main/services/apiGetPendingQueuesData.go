@@ -380,7 +380,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	if dataReq.SelectedPendingStage == "co" {
-		query := models.PendingActionPageCoQuery(roleFilter, searchValue)
+		query := models.PendingActionPageCoQueryNew(roleFilter, searchValue)
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
@@ -393,7 +393,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 			return
 		}
 	} else {
-		query := models.PendingActionPageNtpQuery(roleFilter, searchValue)
+		query := models.PendingActionPageNtpQueryNew(roleFilter, searchValue)
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)

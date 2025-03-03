@@ -338,6 +338,35 @@ func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
             customers_customers_schema.unique_id,
             ntp_ntp_schema.change_order_status,
             customers_customers_schema.customer_name AS home_owner,
+            ntp_ntp_schema.ntp_complete_date AS ntp_date
+     FROM ntp_ntp_schema
+     LEFT JOIN customers_customers_schema
+        ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+        AND customers_customers_schema.unique_id != ''
+     WHERE ntp_ntp_schema.project_status NOT IN (
+        'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED',
+        'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
+     )
+     AND ntp_ntp_schema.app_status IN (
+        'Pending NTP Review', 'Pending QC', 'Pending NTP',
+        'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
+     ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
+     %v %v
+    `, filterUserQuery, searchValue))
+
+	return filtersBuilder.String()
+}
+
+func PendingActionPageCoQueryNew(filterUserQuery, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery = "AND " + filterUserQuery
+	}
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(fmt.Sprintf(`
+        SELECT
+            customers_customers_schema.unique_id,
+            ntp_ntp_schema.change_order_status,
+            customers_customers_schema.customer_name AS home_owner,
             ntp_ntp_schema.ntp_complete_date AS ntp_date,
 
             ntp_ntp_schema.sale_date  AS sold_date,
@@ -370,6 +399,31 @@ func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
 }
 
 func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
+	if filterUserQuery != "" {
+		filterUserQuery = "AND " + filterUserQuery
+	}
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(fmt.Sprintf(`
+        SELECT
+            customers_customers_schema.unique_id,
+            ntp_ntp_schema.production_discrepancy,
+            ntp_ntp_schema.finance_ntp_of_project,
+            ntp_ntp_schema.utility_bill_uploaded,
+            ntp_ntp_schema.powerclerk_signatures_complete,
+            customers_customers_schema.customer_name AS home_owner,
+            ntp_ntp_schema.ntp_complete_date AS ntp_date
+        FROM ntp_ntp_schema
+	 LEFT JOIN customers_customers_schema ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+     AND customers_customers_schema.unique_id != ''
+	 WHERE ntp_ntp_schema.app_status IN ('Pending NTP Review','Pending QC','Pending NTP','Pending NTP - Change Order','Under Review')
+     AND ntp_ntp_schema.project_status NOT IN ('HOLD',E'PTO\'d (Service)', E'PTO\'d (Audit)','BLOCKED','JEOPARDY','CANCEL','DUPLICATE','COMPETING')
+     %v %v
+    `, filterUserQuery, searchValue))
+
+	return filtersBuilder.String()
+}
+
+func PendingActionPageNtpQueryNew(filterUserQuery, searchValue string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
