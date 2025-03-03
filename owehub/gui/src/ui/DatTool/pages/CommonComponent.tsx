@@ -288,10 +288,18 @@ const CommonComponent: React.FC<commonComponentProps> = ({
                 <div key={index} className={styles.gOneRightTptxt}>
                   <p>{info.label}</p>
                   <div className={styles.gOneRightTopDesc}>
-                    <p>{info.value}</p>
-                    <span>
-                      <FiArrowRight />
-                    </span>
+                    <p>---</p>
+                    <a
+                      href={info.value}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      // className={styles.gOneRightBottomTxt}
+                      // style={{ marginTop: '1.2rem' }}
+                    >
+                      <span>
+                        <FiArrowRight />
+                      </span>
+                    </a>
                   </div>
                 </div>
               ))}

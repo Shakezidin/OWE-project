@@ -137,3 +137,16 @@
 
   }
 }
+
+@media(min-height:1025px)
+{
+  .contentContainer{
+    overflow-y: unset;
+  }
+  .sidebar{
+    max-height: 60vh;
+  }
+  .layoutContainer{
+    overflow-y: hidden;
+  }
+}

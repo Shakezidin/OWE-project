@@ -12,6 +12,8 @@ const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 const LEADS_BASE_URL = `${process.env.REACT_APP_LEADS_URL}`;
 const REPORT_BASE_URL = `${process.env.REACT_APP_REPORT_URL}`;
 const CONFIG_URL = `https://staging.owe-hub.com/api/owe-calc-service/v1`;
+const test_url = `http://155.138.239.170:31024/owe-reports-service/v1/`;
+
 // authService.ts
 export interface LoginResponse {
   email_id: string;
@@ -29,7 +31,6 @@ const logoutUser = () => {
   localStorage.removeItem('role');
   window.location.href = '/login'; // Redirect to the login page
 };
-
 
 export const login = async (
   credentials: Credentials
@@ -74,18 +75,16 @@ export const postCaller = async (
           setTimeout(() => {
             logoutUser();
           }, 2000);
-          return
+          return;
         }
 
         return error.response.data;
       }
 
       // handle network error
-      if (error.message)
-        return new Error(JSON.stringify(error.message));
-      console.log(error)
+      if (error.message) return new Error(JSON.stringify(error.message));
+      console.log(error);
     }
-
 
     throw new Error('Failed to fetch data');
   }
@@ -141,8 +140,14 @@ export const reportingCaller = async (
     },
   };
   try {
+    // Fix the URL construction by ensuring no double slashes
+    const baseUrl = hasChangedBaseUrl ? test_url : REPORT_BASE_URL;
+    const cleanEndpoint = endpoint.startsWith('/')
+      ? endpoint.substring(1)
+      : endpoint;
+
     const response: AxiosResponse = await axios.post(
-      `${REPORT_BASE_URL}/${endpoint}`,
+      `${baseUrl}${baseUrl.endsWith('/') ? '' : '/'}${cleanEndpoint}`,
       postData,
       config
     );
@@ -156,7 +161,7 @@ export const reportingCaller = async (
           setTimeout(() => {
             logoutUser();
           }, 2000);
-          return
+          return { error: 'Authentication failed' }; // Add a return value
         }
         return error.response.data;
       }

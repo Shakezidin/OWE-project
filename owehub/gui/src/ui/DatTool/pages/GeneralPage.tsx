@@ -39,17 +39,27 @@ interface GeneralData {
   inverter_type: string;
   battery_type: string;
   ac_dc_system_size: string;
-  total_production: number;
+  total_production_tape: string;
   dat_module_qty: number;
   dat_module_type: string;
   dat_design_version: number;
   dat_designer_name: string;
   dat_aurora_id: string;
-  dat_system_size_ac: string;
-  dat_system_size_dc: string;
-  dat_changes: string;
-  dat_change_order: string;
+  dat_system_size_ac: number; // Changed to number for consistency
+  dat_system_size_dc: number; // Changed to number for consistency
+  // dat_changes: {
+  //   layout: string; // Replaces dat_change_layout
+  //   production: string; // Replaces dat_change_production
+  //   order_required: string; // Replaces dat_change_order_required
+  // };
+  dat_change_layout: string;
+  dat_change_production: string;
+  dat_change_order_required: string;
+  dat_inverter_type: string; // Added based on API response
+  dat_battery_type: string; // Added based on API response
+  dat_total_production: number; // Added based on API response
 }
+
 interface generalProps {
   generalData: GeneralData | null;
   loading: boolean;
@@ -134,10 +144,9 @@ const GeneralPage: React.FC<generalProps> = ({
     },
     {
       label: 'Total Production',
-      value: generalData?.total_production?.toString() || '0',
+      value: generalData?.total_production_tape?.toString() || '0',
     },
   ];
-
   const datFields = [
     {
       label: 'Module QTY',
@@ -148,8 +157,8 @@ const GeneralPage: React.FC<generalProps> = ({
       label: 'Module Type',
       value: generalData?.dat_module_type || '',
     },
-    { label: 'Inverter Type', value: generalData?.inverter_type || '' },
-    { label: 'Battery Type', value: generalData?.battery_type || '' },
+    { label: 'Inverter Type', value: generalData?.dat_inverter_type || '' },
+    { label: 'Battery Type', value: generalData?.dat_battery_type || '' },
   ];
 
   const datRightFields = [
@@ -160,11 +169,11 @@ const GeneralPage: React.FC<generalProps> = ({
     },
     { label: 'Designer Name', value: generalData?.dat_designer_name || '' },
     { label: 'Aurora ID', value: generalData?.dat_aurora_id || '' },
-    {
-      label: 'Site Capture URL',
-      value: generalData?.site_capture_url || '',
-      type: 'url',
-    },
+    // {
+    //   label: 'Site Capture URL',
+    //   value: generalData?.site_capture_url || '',
+    //   type: 'url',
+    // },
     // {
     //   label: 'Change Order Required',
     //   value: generalData?.dat_change_order || 'N/A',
@@ -182,10 +191,51 @@ const GeneralPage: React.FC<generalProps> = ({
     datChangeOrderRequired: { value: '', changed: false },
     datInverterType: { value: datFields[2].value, changed: false },
     datBatteryType: { value: datFields[3].value, changed: false },
-    datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
+    // datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
     datChangeLayout: { value: '', changed: false },
     datChangeProduction: { value: '', changed: false },
+    datTotalProduction: {
+      value: generalData?.dat_total_production || 0,
+      changed: false,
+    },
   });
+  useEffect(() => {
+    setGeneralDatInfo({
+      datModuleQTY: { value: datFields[0].value, changed: false },
+      datModuleType: { value: datFields[1].value, changed: false },
+      datDesignVersion: { value: datRightFields[0].value, changed: false },
+      datDesignerName: { value: datRightFields[1].value, changed: false },
+      datAuroraID: { value: datRightFields[2].value, changed: false },
+      datSystemSizeAC: {
+        value: generalData?.dat_system_size_ac?.toString() || '0',
+        changed: false,
+      },
+      datSystemSizeDC: {
+        value: generalData?.dat_system_size_dc?.toString() || '0',
+        changed: false,
+      },
+      datChanges: { value: '', changed: false },
+      datChangeOrderRequired: {
+        value: generalData?.dat_change_order_required || '',
+        changed: false,
+      },
+      datInverterType: { value: datFields[2].value, changed: false },
+      datBatteryType: { value: datFields[3].value, changed: false },
+      // datSiteCaptureURL: { value: datRightFields[3].value, changed: false },
+      datChangeLayout: {
+        value: generalData?.dat_change_layout || '',
+        changed: false,
+      },
+      datChangeProduction: {
+        value: generalData?.dat_change_production || '',
+        changed: false,
+      },
+      datTotalProduction: {
+        value: generalData?.dat_total_production || 0,
+        changed: false,
+      },
+    });
+  }, [generalData]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -237,10 +287,10 @@ const GeneralPage: React.FC<generalProps> = ({
           updatedState.datBatteryType.value = value;
           updatedState.datBatteryType.changed = true;
           break;
-        case 'Site Capture URL':
-          updatedState.datSiteCaptureURL.value = value;
-          updatedState.datSiteCaptureURL.changed = true;
-          break;
+        // case 'Site Capture URL':
+        //   updatedState.datSiteCaptureURL.value = value;
+        //   updatedState.datSiteCaptureURL.changed = true;
+        //   break;
         case 'Layout':
           updatedState.datChangeLayout.value = value;
           updatedState.datChangeLayout.changed = true;
@@ -279,10 +329,10 @@ const GeneralPage: React.FC<generalProps> = ({
             dat_aurora_id: generalDatInfo.datAuroraID.value,
           }),
           ...(generalDatInfo.datSystemSizeAC.changed && {
-            dat_system_size_ac: generalDatInfo.datSystemSizeAC.value,
+            dat_system_size_ac: Number(generalDatInfo.datSystemSizeAC.value),
           }),
           ...(generalDatInfo.datSystemSizeDC.changed && {
-            dat_system_size_dc: generalDatInfo.datSystemSizeDC.value,
+            dat_system_size_dc: Number(generalDatInfo.datSystemSizeDC.value),
           }),
           ...(generalDatInfo.datChangeOrderRequired.changed && {
             dat_change_order_required:
@@ -294,9 +344,9 @@ const GeneralPage: React.FC<generalProps> = ({
           ...(generalDatInfo.datBatteryType.changed && {
             dat_battery_type: generalDatInfo.datBatteryType.value,
           }),
-          ...(generalDatInfo.datSiteCaptureURL.changed && {
-            dat_site_capture_url: generalDatInfo.datSiteCaptureURL.value,
-          }),
+          // ...(generalDatInfo.datSiteCaptureURL.changed && {
+          //   dat_site_capture_url: generalDatInfo.datSiteCaptureURL.value,
+          // }),
           ...(generalDatInfo.datChangeLayout.changed && {
             dat_change_layout: generalDatInfo.datChangeLayout.value,
           }),
@@ -323,7 +373,7 @@ const GeneralPage: React.FC<generalProps> = ({
       },
       datInverterType: { ...prevState.datInverterType, changed: false },
       datBatteryType: { ...prevState.datBatteryType, changed: false },
-      datSiteCaptureURL: { ...prevState.datSiteCaptureURL, changed: false },
+      // datSiteCaptureURL: { ...prevState.datSiteCaptureURL, changed: false },
       datChangeLayout: { ...prevState.datChangeLayout, changed: false },
       datChangeProduction: { ...prevState.datChangeProduction, changed: false },
     }));
@@ -433,7 +483,7 @@ const GeneralPage: React.FC<generalProps> = ({
                 </div>
                 <div>
                   <p>Total Production</p>
-                  <p>27835</p>
+                  <p>{generalData?.dat_total_production || '---'}</p>
                 </div>
               </div>
 
