@@ -707,11 +707,11 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
 		filterUserQuery = "AND " + filterUserQuery
 	}
 
-	pvDateCheck := ""
-	if projectStatus == "'ACTIVE'" {
-		pvDateCheck = "AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')"
-	} else {
-	}
+	// pvDateCheck := ""
+	// if projectStatus == "'ACTIVE'" {
+	// 	pvDateCheck = "AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')"
+	// } else {
+	// }
 
 	PipelineTileDataQuery := fmt.Sprintf(`
         SELECT 'CAD Queue' AS queue_status, COUNT(*) AS distinct_customer_count
@@ -722,8 +722,8 @@ func PipelineCadTileData(filterUserQuery, projectStatus string) string {
             cad.active_inactive = 'Active'
             AND cad.plan_set_status != 'Plan Set Complete'
             AND cad.project_status_new IN (%v)
-            %s
-            %v`, addCADStatus(projectStatus), pvDateCheck, filterUserQuery)
+            AND (cad.pv_install_completed_date IS NULL OR cad.pv_install_completed_date = '')
+            %v`, addCADStatus(projectStatus), filterUserQuery)
 
 	return PipelineTileDataQuery
 }
@@ -929,14 +929,6 @@ func PipelineCadDataBelow(filterUserQuery, projectStatus, queueStatus, searchVal
             cust.customer_name AS home_owner,
 	        cad.record_created_on AS cad_ready,
 	        cad.pv_install_completed_date AS cad_complete_date
--- 	    CASE
--- 		    WHEN (survey.reschedule_needed_on_date IS NOT NULL
--- 			    AND survey.twond_visit_date IS NULL)
--- 			    THEN NULL
--- 		    WHEN survey.twond_visit_date IS NOT NULL
--- 			    THEN survey.twond_completion_date
--- 		    ELSE survey.survey_completion_date
--- 	    END AS survey_final_completion_date
         FROM
 	        planset_cad_schema AS cad
         LEFT JOIN
