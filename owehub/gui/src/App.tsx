@@ -73,10 +73,13 @@ import { useDBStatusMonitor } from './hooks/useDBStatusMonitor';
 
 function App() {
   // Add console log suppression at the start of App component
-  if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
-    console.log = () => { };
-    console.error = () => { };
-    console.warn = () => { };
+  if (
+    process.env.NODE_ENV === 'production' ||
+    process.env.NODE_ENV === 'development'
+  ) {
+    console.log = () => {};
+    console.error = () => {};
+    console.warn = () => {};
   }
 
   const dispatch = useAppDispatch();
@@ -85,7 +88,6 @@ function App() {
   );
   const isStaging = process.env.REACT_APP_ENV;
   const { dbStatus } = useDBStatusMonitor();
-
 
   useEffect(() => {
     dispatch(initializeAuth());
@@ -134,9 +136,7 @@ function App() {
           path="/"
           element={
             isAuthenticated ? (
-              <Navigate
-                to={ROUTES.PEINDING_QUEUE}
-              />
+              <Navigate to={ROUTES.PEINDING_QUEUE} />
             ) : (
               <Navigate to="/login" />
             )
@@ -259,8 +259,10 @@ function App() {
           />
           <Route path={ROUTES.SUMMARY_DASBOARD} element={<Summary_Dashboard />} /> */}
           <Route path={ROUTES.DAT_TOOL} element={<DatTool />} />
-          <Route path={ROUTES.DEALERDATA_PIPELINE} element={<DealerTablePipeline />} />
-
+          <Route
+            path={ROUTES.DEALERDATA_PIPELINE}
+            element={<DealerTablePipeline />}
+          />
 
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
         </Route>

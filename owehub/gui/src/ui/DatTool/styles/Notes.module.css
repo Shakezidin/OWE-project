@@ -284,3 +284,10 @@ margin-right: 1.2rem;
   }
   
 }
+
+@media (min-height:1025px)
+{
+  .notesPanel,.appContainer{
+    max-height:50vh;
+  }
+}
