@@ -404,7 +404,7 @@ var apiRoutes = appserver.ApiRoutes{
 		[]types.UserGroup{types.GroupEveryOne},
 	}, {
 		strings.ToUpper("POST"),
-		"/owe-main-service/v1/get_pendingqueuesdata",
+		"/owe-main-service/v1/get_new_pendingqueuesdata",
 		apiHandler.HandleGetNewPendingQuesDataRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
