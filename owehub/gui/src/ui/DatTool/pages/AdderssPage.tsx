@@ -35,7 +35,7 @@ function AdderssPage({
   changeInQuantity,
   setChangeInQuantity,
 }: any) {
-  const [adderValues, setAdderValues] = useState({
+  const [adderValues, setAdderValues] = useState({ //THIS IS A STATE FOR MANAGING THE DATA PASSING INTO UPDATE API
     category_title: '',
     component_updates: [
       {
@@ -46,16 +46,19 @@ function AdderssPage({
   });
   const dispatch = useAppDispatch();
   const addersData = useAppSelector((state) => state.datSlice.addersData);
-  useEffect(() => {
+  useEffect(() => {       //dispatching DAT ADDERSS DATA
     dispatch(getDatAddersInfo({ project_id: currentGeneralId }));
   }, [currentGeneralId]);
+  
+
+  //leftPartObj contains all the data in left side of DATTOOL ADDERSS
   const leftPartObj: CategoryItem[] =
     addersData?.categories?.map((category: any) => ({
       text: category?.title ?? 'N/A',
       cost: category?.cost ?? 0,
     })) ?? [];
 
-  const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0); //This stores the index of current field in LEFT OBJ
   useEffect(() => {
     if (leftPartObj) {
       setAdderValues((prevValues) => ({
@@ -337,7 +340,7 @@ function AdderssPage({
     await dispatch(
       updateDatTool({ project_id: currentGeneralId, adder_values: adderValues })
     ).then(() => {
-      toast.success('Adder values updated successfully');
+      toast.success(`${leftPartObj[currentSectionIndex].text} values updated successfully`);
     });
   };
 

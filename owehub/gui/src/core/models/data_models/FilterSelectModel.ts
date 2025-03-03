@@ -77,11 +77,11 @@ export const getOperationsForPipelineColumnType = (columnType: string) => {
     options.push({ value: 'cont', label: 'Contains' });
   }
   if (columnType === 'number') {
-    options.push({ value: 'eq', label: 'Equals' });
-    options.push({ value: 'gt', label: 'Greater Than' });
-    options.push({ value: 'gte', label: 'Greater Than Equals To' });
-    options.push({ value: 'lt', label: 'Less Than' });
-    options.push({ value: 'lte', label: 'Less Than Equals To' });
+    options.push({ value: 'eqs', label: 'Equals' });
+    options.push({ value: 'grt', label: 'Greater Than' });
+    options.push({ value: 'grteqs', label: 'Greater Than Equals To' });
+    options.push({ value: 'lst', label: 'Less Than' });
+    options.push({ value: 'lsteqs', label: 'Less Than Equals To' });
   }
   if (columnType === 'date') {
     options.push({ value: 'btw', label: 'Between' });
