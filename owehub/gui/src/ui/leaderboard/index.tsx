@@ -58,6 +58,9 @@ const Index = () => {
   const [selectDealer, setSelectDealer] = useState<
     { label: string; value: string }[]
   >([]);
+  const [selectRecruiter, setSelectRecruiter] = useState<
+  { label: string; value: string }[]
+>([]);
   const [dealer, setDealer] = useState<any>({});
   const topCards = useRef<HTMLDivElement | null>(null);
   const leaderboard = useRef<HTMLDivElement | null>(null);
@@ -134,6 +137,7 @@ const Index = () => {
               role === TYPE_OF_USER.DEALER_OWNER && groupBy !== 'dealer'
                 ? []
                 : selectDealer.map((item) => item.value),
+            recruiter:selectRecruiter.map((item) => item.value),    
             group_by: groupBy,
           });
           console.log(
@@ -163,6 +167,7 @@ const Index = () => {
     activeHead,
     selectedRangeDate,
     selectDealer,
+    selectRecruiter,
     groupBy,
     isAuthenticated,
     isFetched,
@@ -249,6 +254,7 @@ const Index = () => {
     const getAllLeaders = await postCaller('get_perfomance_leaderboard_data', {
       type: activeHead,
       dealer: selectDealer.map((item) => item.value),
+      recruiter:selectRecruiter.map((item) => item.value),
       page_size: count,
       page_number: 1,
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
@@ -311,6 +317,8 @@ const Index = () => {
         <Banner
           selectDealer={selectDealer}
           setSelectDealer={setSelectDealer}
+          selectedRecruiter={selectRecruiter}
+          setSelectedRecruiter={setSelectRecruiter}
           groupBy={groupBy}
           isShowDropdown={isShowDropdown}
           setIsFetched={setIsFetched}
@@ -349,6 +357,7 @@ const Index = () => {
         groupBy={groupBy}
         setDealer={setDealer}
         selectDealer={selectDealer}
+        selectedRecruiter={selectRecruiter}
         page={page}
         setPage={setPage}
       />
