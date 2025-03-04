@@ -61,28 +61,35 @@ const DealerTablePipeline = () => {
     }, 800),
     []
   );
+ 
   const formattedFilters = filters
     ? filters.map((filter) => {
-        if (filter.Column === 'jeopardy_date') {
-          return {
-            column: 'jeopardy_date',
-            operation: filter.Data !== 'yes' ? 'isnull' : 'isnotnull',
-          };
-        } else if (filter.start_date !== '' && filter.end_date !== '') {
-          return {
-            column: filter.Column,
-            operation: 'btw',
-            start_date: filter.start_date,
-            end_date: filter.end_date,
-          };
-        } else {
-          return {
-            column: filter.Column,
-            operation: filter.Operation,
-            data: filter.Data,
-          };
-        }
-      })
+      if (filter.Column === 'jeopardy_date') {
+        return {
+          column: 'jeopardy_date',
+          operation: filter.Data !== 'yes' ? 'isnull' : 'isnotnull',
+        };
+      } else if (filter.start_date !== '' && filter.end_date !== '') {
+        return {
+          column: filter.Column,
+          operation: 'btw',
+          start_date: filter.start_date,
+          end_date: filter.end_date,
+        };
+      }else if (filter.data1 !== '' && filter.data2 !== '') {
+        return {
+          column: filter.Column,
+          operation: 'btw',
+          "Data": [filter.data1, filter.data2],
+        };
+      } else {
+        return {
+          column: filter.Column,
+          operation: filter.Operation,
+          data: filter.Data,
+        };
+      }
+    })
     : [];
 
   const dispatch = useAppDispatch();
@@ -119,7 +126,7 @@ const DealerTablePipeline = () => {
       setTotalCount(pipelineData.data.count);
     }
   }, [pipelineData]);
-  console.log(sortDirection, sortKey, 'shjdg');
+
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -145,8 +152,7 @@ const DealerTablePipeline = () => {
     const actualSortKey = sortKeyMapping[sortKey] || sortKey;
 
     cuurentPageData?.sort((a: any, b: any) => {
-      console.log(sortDirection, actualSortKey, 'Sorting with mapped key');
-
+     
       const aValue = a[actualSortKey];
       const bValue = b[actualSortKey];
 

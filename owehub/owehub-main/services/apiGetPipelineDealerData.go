@@ -385,9 +385,19 @@ func FilterAgRpDataForDealerData(req []Filter, alldata []map[string]interface{})
 
 		switch value.Column {
 		case "days_pending_ntp", "days_pending_permits", "days_pending_install", "days_pending_pto", "project_age":
-			// Handle numeric filters
+			if value.Operation == "btw" {
+				if numRange, ok := value.Data.([]interface{}); ok && len(numRange) == 2 {
+					conditions = append(conditions, fmt.Sprintf("CAST(%s AS INTEGER) %s $%d AND $%d", value.Column, operator, paramIndex, paramIndex+1))
+					whereEleList = append(whereEleList, numRange[0], numRange[1])
+					continue
+				} else {
+					log.FuncErrorTrace(0, "Invalid numeric range format for column: %s", value.Column)
+					continue
+				}
+			}
 			conditions = append(conditions, fmt.Sprintf("CAST(%s AS INTEGER) %s $%d", value.Column, operator, paramIndex))
 			whereEleList = append(whereEleList, value.Data)
+
 		default:
 			// Handle string filters (LIKE, ILIKE, etc.)
 			modifiedValue := GetFilterModifiedValue(string(value.Operation), value.Data.(string))

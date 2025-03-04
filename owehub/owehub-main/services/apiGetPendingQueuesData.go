@@ -507,6 +507,18 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 			ntpDelayNotes = val
 		}
 
+		dealType := ""
+		if val, ok := item["deal_type"].(string); ok {
+			dealType = val
+		}
+
+		coType := ""
+		if val, ok := item["co_notes"].(string); ok {
+			coType = val
+		} else {
+			coType = "Please see plan set for CO notes!"
+		}
+
 		CoStatus, _ := getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
 		PendingQueue := models.GetPendingQueue{
 			UniqueId:  UniqueId,
@@ -522,6 +534,8 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 				NtpDelayedBy:   ntpDelayedBy,
 				NtpDelayNotes:  ntpDelayNotes,
 				ProjectAgeDays: projectAgeDays,
+				DealType:       dealType,
+				CoNotes:        coType,
 			},
 			Ntp: models.PendingQueueNTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
@@ -536,6 +550,8 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 				NtpDelayedBy:                 ntpDelayedBy,
 				NtpDelayNotes:                ntpDelayNotes,
 				ProjectAgeDays:               projectAgeDays,
+				DealType:                     dealType,
+				CoNotes:                      coType,
 			},
 			Qc: models.PendingQueueQC{
 				PowerClerk:                           PowerClerk,
@@ -551,10 +567,15 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	RecordCount = int64(len(pendingqueueList.PendingQueueList))
-
-	paginatedData := Paginate(pendingqueueList.PendingQueueList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
-	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", len(paginatedData), paginatedData)
-	appserver.FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, paginatedData, RecordCount)
+	// It supports pagination for normal requests and returns all data when the export button is clicked
+	var finalData []models.GetPendingQueue
+	if dataReq.IsExport {
+		finalData = pendingqueueList.PendingQueueList
+	} else {
+		finalData = Paginate(pendingqueueList.PendingQueueList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+	}
+	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", len(finalData), finalData)
+	appserver.FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, finalData, RecordCount)
 }
 
 // ..function to fetch project age days

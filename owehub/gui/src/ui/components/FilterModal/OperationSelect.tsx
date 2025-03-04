@@ -14,13 +14,20 @@ const OperationSelect: React.FC<{
   errors: Record<string, string>;
   index: number;
   isNew?: boolean;
-}> = ({isNew, options, columnType, value, onChange, errors, index }) => {
+  selected?: string;
+}> = ({isNew, options, columnType, value, onChange, errors, index, selected }) => {
   const operations = isNew ? getOperationsForPipelineColumnType(columnType) : getOperationsForColumnType(columnType);
+
+  console.log(selected, "sadjghjhasgdj")
 
   return (
     <div className="">
       <SelectOption
-        options={operations}
+        options={
+          (selected === 'contracted_system_size')
+            ? operations.filter(op => op.value !== 'btw')
+            : operations
+        }
         value={operations.find((el) => el.value === value)}
         onChange={(selectedOption: any) => {
           onChange(selectedOption.value);
