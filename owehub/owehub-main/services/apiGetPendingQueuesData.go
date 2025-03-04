@@ -551,10 +551,15 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	RecordCount = int64(len(pendingqueueList.PendingQueueList))
-
-	paginatedData := Paginate(pendingqueueList.PendingQueueList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
-	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", len(paginatedData), paginatedData)
-	appserver.FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, paginatedData, RecordCount)
+	// It supports pagination for normal requests and returns all data when the export button is clicked
+	var finalData []models.GetPendingQueue
+	if dataReq.IsExport {
+		finalData = pendingqueueList.PendingQueueList
+	} else {
+		finalData = Paginate(pendingqueueList.PendingQueueList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+	}
+	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", len(finalData), finalData)
+	appserver.FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, finalData, RecordCount)
 }
 
 // ..function to fetch project age days
