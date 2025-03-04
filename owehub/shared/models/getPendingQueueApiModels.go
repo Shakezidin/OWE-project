@@ -42,6 +42,8 @@ type PendingQueueNTP struct {
 	NtpDelayedBy   string `json:"ntp_delayed_by"`
 	NtpDelayNotes  string `json:"ntp_delay_notes"`
 	ProjectAgeDays string `json:"project_age_days"`
+	DealType       string `json:"deal_type"`
+	CoNotes        string `json:"co_notes"`
 }
 
 type PendingQueueCo struct {
@@ -57,6 +59,8 @@ type PendingQueueCo struct {
 	NtpDelayedBy   string `json:"ntp_delayed_by"`
 	NtpDelayNotes  string `json:"ntp_delay_notes"`
 	ProjectAgeDays string `json:"project_age_days"`
+	DealType       string `json:"deal_type"`
+	CoNotes        string `json:"co_notes"`
 }
 
 type GetPendingQueue struct {

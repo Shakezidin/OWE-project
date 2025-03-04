@@ -507,6 +507,18 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 			ntpDelayNotes = val
 		}
 
+		dealType := ""
+		if val, ok := item["deal_type"].(string); ok {
+			ntpDelayNotes = val
+		}
+
+		coType := ""
+		if val, ok := item["co_notes"].(string); ok {
+			ntpDelayNotes = val
+		} else {
+			coType = "Please see plan set for CO notes!"
+		}
+
 		CoStatus, _ := getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
 		PendingQueue := models.GetPendingQueue{
 			UniqueId:  UniqueId,
@@ -522,6 +534,8 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 				NtpDelayedBy:   ntpDelayedBy,
 				NtpDelayNotes:  ntpDelayNotes,
 				ProjectAgeDays: projectAgeDays,
+				DealType:       dealType,
+				CoNotes:        coType,
 			},
 			Ntp: models.PendingQueueNTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
@@ -536,6 +550,8 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 				NtpDelayedBy:                 ntpDelayedBy,
 				NtpDelayNotes:                ntpDelayNotes,
 				ProjectAgeDays:               projectAgeDays,
+				DealType:                     dealType,
+				CoNotes:                      coType,
 			},
 			Qc: models.PendingQueueQC{
 				PowerClerk:                           PowerClerk,
