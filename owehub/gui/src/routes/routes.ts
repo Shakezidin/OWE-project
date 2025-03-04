@@ -120,4 +120,5 @@ export const ROUTES = {
   SUMMARY_DASBOARD: '/summary-dashboard',
   DAT_TOOL: '/dat_tool',
   DEALERDATA_PIPELINE: '/pipeline/pipeline_data',
+  TABLE_VIEW: '/tape_view_refresh',
 };

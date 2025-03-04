@@ -4,6 +4,8 @@ export interface FilterModel {
   Data: string;
   start_date?: string;
   end_date?: string;
+  data1?: string;
+  data2?: string;
 }
 export interface Column {
   name: string;
@@ -82,6 +84,7 @@ export const getOperationsForPipelineColumnType = (columnType: string) => {
     options.push({ value: 'grteqs', label: 'Greater Than Equals To' });
     options.push({ value: 'lst', label: 'Less Than' });
     options.push({ value: 'lsteqs', label: 'Less Than Equals To' });
+    options.push({ value: 'btw', label: 'Between' });
   }
   if (columnType === 'date') {
     options.push({ value: 'btw', label: 'Between' });
