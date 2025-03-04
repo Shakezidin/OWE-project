@@ -76,13 +76,16 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	createUserReq.Password = "Welcome@123"
 	createUserReq.PasswordChangeReq = true
 
-	if createUserReq.TablesPermissions != nil {
+	if createUserReq.TablesPermissions != nil && len(createUserReq.TablesPermissions) > 0 {
 		tablesPermissionsJSON, err = json.Marshal(createUserReq.TablesPermissions)
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to marshall table permission while create user,  err: %v", err)
-			appserver.FormAndSendHttpResp(resp, "Failed to marshall table permissions", http.StatusBadRequest, nil)
+			log.FuncErrorTrace(0, "Failed to marshal table permission while creating user, err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to marshal table permissions", http.StatusBadRequest, nil)
 			return
 		}
+	} else {
+		// Ensure the value is valid JSON (empty array instead of null)
+		tablesPermissionsJSON = nil
 	}
 
 	hashedPassBytes, err := GenerateHashPassword(createUserReq.Password)
