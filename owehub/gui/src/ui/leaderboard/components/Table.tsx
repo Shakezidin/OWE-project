@@ -37,7 +37,7 @@ import { toZonedTime } from 'date-fns-tz';
 import { MdDownloading } from 'react-icons/md';
 import { monthDateFormat } from '../../../utiles/formatDate';
 import { Tooltip } from 'react-tooltip';
-
+import { LuImport } from 'react-icons/lu';
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
   rank: number;
@@ -857,7 +857,8 @@ const Table = ({
             {isExporting || isExportingData ? (
               <MdDownloading className="downloading-animation" size={20} />
             ) : (
-              <FaUpload size={12} />
+                <LuImport size={18} className="dealer-mob-upload" />
+            
             )}
             <span>
               {' '}

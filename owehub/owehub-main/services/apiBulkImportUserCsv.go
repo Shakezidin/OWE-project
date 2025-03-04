@@ -206,7 +206,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 			continue
 		}
 
-			/**************************** if Reporting  Manager is required ****************************/
+		/**************************** if Reporting  Manager is required ****************************/
 
 		if possibleRgnMngrRoles, ok := reportingMngrMapping[types.UserRoles(CreateBulkUserReq.RoleName)]; ok {
 			if reportingManagerEmail == "" {
@@ -318,7 +318,6 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 
 	appserver.FormAndSendHttpResp(resp, "Bulk import completed", http.StatusOK, result)
 }
-
 
 /************************************* Helper functions *************************************/
 
