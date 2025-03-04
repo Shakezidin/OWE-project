@@ -146,6 +146,7 @@ const PendingQueue = () => {
       'App Status',
       'Project Status',
       'Sales Rep',
+      'Setter'
     ];
 
     const getAllData = await postCaller('get_new_pendingqueuesdata', {
