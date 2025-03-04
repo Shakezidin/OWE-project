@@ -44,6 +44,7 @@ type PendingQueueNTP struct {
 	ProjectAgeDays string `json:"project_age_days"`
 	DealType       string `json:"deal_type"`
 	CoNotes        string `json:"co_notes"`
+	NtpDate        string `json:"ntp_date"`
 }
 
 type PendingQueueCo struct {
@@ -65,6 +66,7 @@ type PendingQueueCo struct {
 	ProjectAgeDays string `json:"project_age_days"`
 	DealType       string `json:"deal_type"`
 	CoNotes        string `json:"co_notes"`
+	NtpDate        string `json:"ntp_date"`
 }
 
 type GetPendingQueue struct {

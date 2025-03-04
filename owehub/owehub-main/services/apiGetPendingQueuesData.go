@@ -540,6 +540,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 				ProjectAgeDays:               projectAgeDays,
 				DealType:                     dealType,
 				CoNotes:                      coType,
+				NtpDate:                      ntpD,
 			},
 			Ntp: models.PendingQueueNTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
@@ -556,6 +557,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 				ProjectAgeDays:               projectAgeDays,
 				DealType:                     dealType,
 				CoNotes:                      coType,
+				NtpDate:                      ntpD,
 			},
 			Qc: models.PendingQueueQC{
 				PowerClerk:                           PowerClerk,
