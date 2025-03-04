@@ -38,6 +38,8 @@ interface FilterModel {
   type?: string;
   start_date?: string;
   end_date?: string;
+  data1?: string;
+  data2?: string;
 }
 interface Option {
   value: string;
@@ -59,16 +61,13 @@ const FilterModal: React.FC<TableProps> = ({
 }) => {
   const dispatch = useAppDispatch();
 
-  const data = {
-    start: '',
-    end: '',
-  };
   const [filters, setFilters] = useState<FilterModel[]>([
-    { Column: '', Operation: '', Data: '', start_date: '', end_date: '' },
+    { Column: '', Operation: '', Data: '', start_date: '', end_date: '', data1: '', data2: '' },
   ]);
 
+
   const [applyFilters, setApplyFilters] = useState<FilterModel[]>([
-    { Column: '', Operation: '', Data: '', start_date: '', end_date: '' },
+    { Column: '', Operation: '', Data: '', start_date: '', end_date: '', data1: '', data2: '' },
   ]);
   const [errors, setErrors] = useState<ErrorState>({});
   const options: Option[] = columns
@@ -77,6 +76,8 @@ const FilterModal: React.FC<TableProps> = ({
       value: column.filter ? column.filter : column.name,
       label: column.displayName,
     }));
+
+    console.log(options, "sdjhsjgd")
 
   const { pathname } = useLocation();
   const init = useRef(true);
@@ -100,7 +101,7 @@ const FilterModal: React.FC<TableProps> = ({
           Operation: '',
           Data: '',
           start_date: '',
-          end_date: ''
+          end_date: '', data1: '', data2: ''
         }));
       setFilters(resetFilters);
       setApplyFilters(resetFilters);
@@ -129,6 +130,8 @@ const FilterModal: React.FC<TableProps> = ({
         Column: '',
         Operation: '',
         Data: '',
+        data1: '',
+        data2: '',
       }));
     setFilters(resetFilters);
     setErrors({});
@@ -147,7 +150,7 @@ const FilterModal: React.FC<TableProps> = ({
   const handleAddRow = () => {
     setFilters([
       ...filters,
-      { Column: '', Operation: '', Data: '', start_date: '', end_date: '' },
+      { Column: '', Operation: '', Data: '', start_date: '', end_date: '', data1: '', data2: '' },
     ]);
   };
 
@@ -162,7 +165,9 @@ const FilterModal: React.FC<TableProps> = ({
             Operation: '',
             Data: '',
             start_date: '',
-            end_date: ''
+            end_date: '',
+            data1: '',
+            data2: ''
           }));
         setFilters(resetFilters);
         setApplyFilters(resetFilters);
@@ -198,12 +203,14 @@ const FilterModal: React.FC<TableProps> = ({
     newRules[index].Data = '';
     newRules[index].start_date = '';
     newRules[index].end_date = '';
+    newRules[index].data1 = '';
+    newRules[index].data2 = '';
     setFilters(newRules);
   };
   const handleDataChange = (
     index: number,
     value: string,
-    type: 'number' | 'date' | 'boolean' | 'text' | 'start' | 'end'
+    type: 'number' | 'date' | 'boolean' | 'text' | 'start' | 'end' | 'data1' | 'data2'
   ) => {
     const newFilters = [...filters];
 
@@ -213,10 +220,18 @@ const FilterModal: React.FC<TableProps> = ({
     } else if (type === 'end') {
       newFilters[index].end_date = value;
       newFilters[index].Data = ''; // Clear Data when setting end_date
+    } if (type === 'data1') {
+      newFilters[index].data1 = value;
+      newFilters[index].Data = ''; // Clear Data when setting start_date
+    } else if (type === 'data2') {
+      newFilters[index].data2 = value;
+      newFilters[index].Data = ''; // Clear Data when setting end_date
     } else {
       newFilters[index].Data = value;
       newFilters[index].start_date = ''; // Clear start_date for non-date types
-      newFilters[index].end_date = ''; // Clear end_date for non-date types
+      newFilters[index].end_date = '';
+      newFilters[index].data1 = '';// Clear end_date for non-date types
+      newFilters[index].data2 = '';
     }
 
     newFilters[index].type = type;
@@ -245,14 +260,24 @@ const FilterModal: React.FC<TableProps> = ({
     // Validation
     const newErrors: ErrorState = {};
     filters.forEach((filter, index) => {
+      console.log((!filter.Data && filter.Operation === 'Operation' && (filter.type === 'text') && (filter.data1 === '' || filter.data2 === '')), "dfhjds")
+
       if (!filter.Column) {
         newErrors[`column${index}`] = `Please provide Column Name`;
       }
       if (!filter.Operation) {
         newErrors[`operation${index}`] = `Please provide Operation`;
       }
-
-      if (!filter.Data && filter.type !== 'date' && (filter.start_date === '' || filter.end_date === '')) {
+      if (
+        filter.data1 !== '' &&
+        filter.data2 !== '' &&
+        !isNaN(Number(filter.data1)) &&
+        !isNaN(Number(filter.data2)) &&
+        Number(filter.data1) > Number(filter.data2)
+      ) {
+        newErrors[`data${index}`] = `First Data should be greater than Second Data`;
+      }
+      if (!filter.Data && (filter.type !== 'date') && (filter.start_date === '' || filter.end_date === '') && (filter.data1 === '' || filter.data2 === '')) {
         newErrors[`data${index}`] = `Please provide Data`;
       }
     });
@@ -282,10 +307,15 @@ const FilterModal: React.FC<TableProps> = ({
               : filter.end_date;
         }
 
+        if (isNew) {
+          filterModel.data1 = filter.data1;
+          filterModel.data2 = filter.data2;
+        }
+
         return filterModel;
       });
 
-      console.log(formattedFilters, "format filter")
+
 
       const req = {
         page_number: page_number,
@@ -308,7 +338,6 @@ const FilterModal: React.FC<TableProps> = ({
   };
 
   const isMobile = useMatchMedia('(max-width: 767px)');
-
 
   return (
     <div className="transparent-model">
@@ -348,8 +377,8 @@ const FilterModal: React.FC<TableProps> = ({
                       style={{
                         width: isMobile
                           ? '100%'
-                          : (type === 'date' && isNew === true)
-                            ? '25%'
+                          : ((type === 'date' && isNew === true) || (type === 'number' && filter.Operation === 'btw' && isNew === true))
+                            ? '23%'
                             : '',
                       }}
 
@@ -386,8 +415,8 @@ const FilterModal: React.FC<TableProps> = ({
                       style={{
                         width: isMobile
                           ? '100%'
-                          : (type === 'date' && isNew === true)
-                            ? '25%'
+                          : ((type === 'date' && isNew === true) || (type === 'number' && filter.Operation === 'btw' && isNew === true))
+                            ? '23%'
                             : '',
                       }}
 
@@ -415,6 +444,7 @@ const FilterModal: React.FC<TableProps> = ({
                         errors={errors}
                         index={index}
                         isNew={isNew}
+                        selected={filter.Column}
                       />
                     </div>
 
@@ -423,9 +453,9 @@ const FilterModal: React.FC<TableProps> = ({
                       style={{
 
                         paddingRight:
-                          type === 'date' && isNew === true ? '10px' : '',
+                          ((type === 'date' && isNew === true) || (type === 'number' && filter.Operation === 'btw' && isNew === true)) ? '7px' : '',
                         width:
-                          (type === 'date' && isNew === true) ? '40%' : '',
+                          ((type === 'date' && isNew === true) || (type === 'number' && filter.Operation === 'btw' && isNew === true)) ? '40%' : '',
                       }}
                     >
                       {type === 'boolean' ? (
@@ -448,6 +478,77 @@ const FilterModal: React.FC<TableProps> = ({
                         />
                       ) : (
                         <>
+                          {type === 'number' && filter.Operation === 'btw' && isNew === true && (
+                            <>
+                              <div
+                                style={{
+
+                                  display:
+                                    type === 'number' && filter.Operation === 'btw' && isNew === true ? 'flex' : '',
+                                  gap:
+                                    type === 'number' && filter.Operation === 'btw' && isNew === true ? '6px' : '',
+
+                                }}
+                              >
+                                <Input
+                                  width={'2px'}
+                                  type="number"
+                                  label="From"
+                                  name="data1"
+                                  onKeyUp={(e) => {
+                                    if (e.key === 'Enter') {
+                                      applyFilter();
+                                    }
+                                  }}
+                                  value={filter.data1 || ''}
+                                  onChange={(e: any) => {
+                                    handleDataChange(
+                                      index,
+                                      e.target.value,
+                                      'data1'
+                                    ); // Use 'start' type
+                                    if (filter.data1 !== '' && filter.data2 !== '') {
+                                      setErrors({
+                                        ...errors,
+                                        [`data${index}`]: '',
+                                      });
+                                    }
+
+                                  }}
+                                  placeholder={'Enter'}
+                                />
+                                <Input
+                                  width='18%'
+                                  min={filter.data1}
+                                  disabled={filter.data1 === ''}
+                                  type="number"
+                                  label="To"
+                                  name="data2"
+                                  onKeyUp={(e) => {
+                                    if (e.key === 'Enter') {
+                                      applyFilter();
+                                    }
+                                  }}
+                                  value={filter.data2 || ''}
+                                  onChange={(e: any) => {
+                                    handleDataChange(
+                                      index,
+                                      e.target.value,
+                                      'data2'
+                                    ); // Use 'end' type
+                                    if (filter.data1 !== '' && filter.data2 !== '') {
+                                      setErrors({
+                                        ...errors,
+                                        [`data${index}`]: '',
+                                      });
+                                    }
+
+                                  }}
+                                  placeholder={'Enter'}
+                                />
+                              </div>
+                            </>
+                          )}
                           {type === 'date' && isNew === true && (
                             <>
                               <div
@@ -517,7 +618,7 @@ const FilterModal: React.FC<TableProps> = ({
                               </div>
                             </>
                           )}
-                          {!(type === 'date' && isNew === true) && (
+                          {!((type === 'date' && isNew === true) || (type === 'number' && filter.Operation === 'btw' && isNew === true)) && (
                             <>
                               <Input
 
@@ -554,6 +655,7 @@ const FilterModal: React.FC<TableProps> = ({
                       <div
                         className="fildelb-btn"
                         onClick={() => handleRemoveRow(index)}
+                        style={{ paddingLeft: (type === 'number' && filter.Operation === 'btw' && isNew === true) ? '19px' : '' }}
                       >
                         <img src={ICONS.deleteIcon} alt="" />
                       </div>
