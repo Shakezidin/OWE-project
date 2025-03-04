@@ -14,6 +14,7 @@ import Calendar from '../ui/Calendar/PerformanceCalendar';
 import LeadManagementDashboard from '../ui/leadmanagement/LeadManagementDashboard';
 import Summary_Dashboard from '../ui/reporting/Summary-Dashboard/Summary_Dashboard';
 import ChatBot from '../ui/oweHub/chatbot/ChatBot';
+import TableView from '../ui/TapeViewUpdate';
 const exceptDB = Object.values(TYPE_OF_USER).filter(
   (item) => item !== 'DB User'
 );
@@ -23,6 +24,13 @@ export default [
     element: Leaderboard,
     available: exceptDB,
     stagingOnly: false,
+  },
+
+  {
+    route: ROUTES.TABLE_VIEW,
+    element: TableView,
+    available: TYPE_OF_USER.ADMIN,
+    stagingOnly: true,
   },
 
   {

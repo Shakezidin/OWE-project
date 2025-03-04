@@ -15,6 +15,7 @@ type PendingQueueReq struct {
 	SelectedPendingStage string `json:"selected_pending_stage"`
 	StartDate            string `json:"start_date"`
 	EndDate              string `json:"end_date"`
+	IsExport             bool   `json:"isExport"`
 }
 
 type PendingQueueQC struct {

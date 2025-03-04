@@ -31,6 +31,8 @@ func GetFilterDBMappedOperator(operation string) string {
 		return ">="
 	case "stw", "edw", "cont":
 		return "ILIKE"
+	case "btw":
+		return "BETWEEN"
 	default:
 		return "="
 	}
