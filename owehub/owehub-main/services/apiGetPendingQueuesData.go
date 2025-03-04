@@ -509,12 +509,12 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 
 		dealType := ""
 		if val, ok := item["deal_type"].(string); ok {
-			ntpDelayNotes = val
+			dealType = val
 		}
 
 		coType := ""
 		if val, ok := item["co_notes"].(string); ok {
-			ntpDelayNotes = val
+			coType = val
 		} else {
 			coType = "Please see plan set for CO notes!"
 		}
