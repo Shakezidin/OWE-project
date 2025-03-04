@@ -90,7 +90,7 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			query = `
 				SELECT t.team_id, t.team_name, COUNT(tm.user_id) AS member_count
 				FROM teams t
-				JOIN team_members tm ON tm.team_id = t.team_id
+				LEFT JOIN team_members tm ON tm.team_id = t.team_id
 				WHERE t.partner_id IN (
 					SELECT partner_id FROM sales_partner_dbhub_schema WHERE sales_partner_name = ANY($1)
 				)
