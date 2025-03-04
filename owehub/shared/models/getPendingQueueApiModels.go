@@ -47,8 +47,12 @@ type PendingQueueNTP struct {
 }
 
 type PendingQueueCo struct {
-	CO       string `json:"co"`
-	CoStatus string `json:"co_status"`
+	CO                           string `json:"co"`
+	CoStatus                     string `json:"co_status"`
+	ProductionDiscrepancy        string `json:"production"`
+	FinanceNTPOfProject          string `json:"finance_NTP"`
+	UtilityBillUploaded          string `json:"utility_bill"`
+	PowerClerkSignaturesComplete string `json:"powerclerk"`
 
 	// New  fields
 	SoldDate       string `json:"sold_date"`
