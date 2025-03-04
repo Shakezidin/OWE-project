@@ -469,7 +469,7 @@ func PendingActionPageNtpQueryNew(filterUserQuery, searchValue string) string {
      )
       AND ntp_ntp_schema.app_status IN (
         'Pending NTP Review', 'Pending QC', 'Pending NTP',
-        'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
+        'Pending NTP - Change Order', 'Under Review'
     )
      %v %v
     `, filterUserQuery, searchValue))
