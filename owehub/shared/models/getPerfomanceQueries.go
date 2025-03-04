@@ -375,7 +375,7 @@ func PendingActionPageCoQueryNew(filterUserQuery, searchValue string) string {
             ntp_ntp_schema.sales_rep,
             sales_metrics_schema.setter,
             --ntp_ntp_schema.deal_type as deal_type
-            ntp_ntp_schema.pending_ntp_date as ntp_date ,
+            ntp_ntp_schema.pending_ntp_date,
             ntp_ntp_schema.ntp_delayed_by,
             ntp_ntp_schema.ntp_delay_notes
 
@@ -445,7 +445,7 @@ func PendingActionPageNtpQueryNew(filterUserQuery, searchValue string) string {
             ntp_ntp_schema.sales_rep,
             sales_metrics_schema.setter,
             --ntp_ntp_schema.deal_type as deal_type
-            ntp_ntp_schema.pending_ntp_date as ntp_date ,
+            ntp_ntp_schema.pending_ntp_date,
             ntp_ntp_schema.ntp_delayed_by,
             ntp_ntp_schema.ntp_delay_notes
 
