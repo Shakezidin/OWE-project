@@ -314,6 +314,12 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		result.Successful++
+
+		err = SendMailToClient(CreateBulkUserReq.EmailId, CreateBulkUserReq.Name)
+		if err != nil {
+			// Log the error, but continue processing
+			log.FuncErrorTrace(0, "Failed to send email with err: %v", err)
+		}
 	}
 
 	appserver.FormAndSendHttpResp(resp, "Bulk import completed", http.StatusOK, result)
