@@ -286,26 +286,27 @@ const PendingQueue = () => {
         resetOnChange={false}
         columns={
           active === 'co'
-            ? PendingActionColumn.filter(
-                (col) =>
-                  ![
-                    'production',
-                    'utility_bill',
-                    'powerclerk',
-                    'finance_NTP',
-                  ].includes(col.name)
-              ).concat([
-                PendingActionColumn[1],
-                {
-                  name: 'co_request',
-                  displayName: 'CO Request',
-                  type: 'string',
-                  isCheckbox: false,
-                  filter: 'co_request',
-                },
-              ])
+            ? (() => {
+                const filteredColumns = PendingActionColumn.filter(
+                  (col) =>
+                    !['utility_bill', 'powerclerk', 'finance_NTP'].includes(col.name) // Removing unwanted columns
+                );
+        
+                return [
+                  filteredColumns[0], 
+                  {
+                    name: 'co_request',
+                    displayName: 'CO Request',
+                    type: 'string',
+                    isCheckbox: false,
+                    filter: 'co_request',
+                  },
+                  ...filteredColumns.slice(1),
+                ];
+              })()
             : PendingActionColumn
         }
+        
         page_number={page}
         page_size={20}
         fetchFunction={fetchFunction}
