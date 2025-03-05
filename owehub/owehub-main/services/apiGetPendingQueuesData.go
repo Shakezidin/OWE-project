@@ -707,6 +707,26 @@ func getFilterModifiedValue(operation, data string) string {
 // It processes each filter, checks the respective field, and returns the filtered list.
 // The function avoids duplicate entries by tracking processed UniqueIds.
 func filterByNtpStatus(pendingQueueList []models.GetPendingQueue, filters []models.Filter) []models.GetPendingQueue {
+	// check if any of the filters match expected columns; otherwise, return the full list
+	validColumns := map[string]bool{
+		"production":   true,
+		"powerclerk":   true,
+		"finance_NTP":  true,
+		"utility_bill": true,
+	}
+
+	hasValidFilter := false
+	for _, filter := range filters {
+		if validColumns[filter.Column] {
+			hasValidFilter = true
+			break
+		}
+	}
+
+	if !hasValidFilter {
+		return pendingQueueList
+	}
+
 	var filteredData []models.GetPendingQueue
 	seen := make(map[string]bool)
 
@@ -720,7 +740,7 @@ func filterByNtpStatus(pendingQueueList []models.GetPendingQueue, filters []mode
 
 		for _, item := range pendingQueueList {
 			itemID := item.UniqueId // Using UniqueId to track duplicates
-			if seen[itemID] {       // skip if already added
+			if seen[itemID] {       // Skip if already added
 				continue
 			}
 
@@ -756,5 +776,6 @@ func filterByNtpStatus(pendingQueueList []models.GetPendingQueue, filters []mode
 			}
 		}
 	}
+
 	return filteredData
 }
