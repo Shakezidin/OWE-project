@@ -39,9 +39,14 @@ const PendingQueue = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExportingData, setIsExporting] = useState(false);
   const [exportShow, setExportShow] = useState<boolean>(false);
+  const [selectedRowData, setSelectedRowData] = useState<any>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = (rowData: any) => {
+    setSelectedRowData(rowData);
+    setIsModalOpen(true);
+  };
+  
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
@@ -205,7 +210,8 @@ const PendingQueue = () => {
     setIsExporting(false);
     setExportShow(false);
   };
-
+ 
+  
   const filteredColumns =
     active === 'co'
       ? [
@@ -673,7 +679,7 @@ const PendingQueue = () => {
                             item,
                             'co_status',
                             active,
-                            openModal
+                            () => openModal(item)
                           )}
                         </div>
                       </td>
@@ -681,12 +687,8 @@ const PendingQueue = () => {
                       <>
                         <td>
                           <div className="">
-                            {renderStatusCell(
-                              item,
-                              'production',
-                              active,
-                              openModal
-                            )}
+                          {renderStatusCell(item, 'production', active, () => openModal(item))}
+
                           </div>
                         </td>
                         <td>
@@ -695,7 +697,7 @@ const PendingQueue = () => {
                               item,
                               'finance_NTP',
                               active,
-                              openModal
+                              () => openModal(item)
                             )}
                           </div>
                         </td>
@@ -705,7 +707,7 @@ const PendingQueue = () => {
                               item,
                               'utility_bill',
                               active,
-                              openModal
+                              () => openModal(item)
                             )}
                           </div>
                         </td>
@@ -715,7 +717,7 @@ const PendingQueue = () => {
                               item,
                               'powerclerk',
                               active,
-                              openModal
+                              () => openModal(item)
                             )}
                           </div>
                         </td>
@@ -844,12 +846,13 @@ const PendingQueue = () => {
         </div>
       </div>
       {isModalOpen && (
-        <PendModal
-          closeModal={closeModal}
-          active={active}
-          cuurentPageData={cuurentPageData}
-        />
-      )}
+  <PendModal
+    closeModal={closeModal}
+    active={active}
+    currentRowData={selectedRowData}
+  />
+)}
+
     </>
   );
 };
