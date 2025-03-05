@@ -106,8 +106,8 @@ const PendingQueue = () => {
     setFilterModal(true);
   };
 
-  const cuurentPageData = dataPending && dataPending?.slice();
-
+  const cuurentPageData = Array.isArray(dataPending) ? dataPending.slice() : [];
+ 
   const ExportCsv = async () => {
     setIsExporting(true);
 
@@ -787,22 +787,22 @@ const PendingQueue = () => {
                     <td>
                       <p className={styles['pend-header-txt']}>
                         {active === 'ntp'
-                          ? item.ntp.loan_type
-                            ? item.ntp.loan_type
+                          ? item.ntp.deal_type
+                            ? item.ntp.deal_type
                             : '-'
-                          : item.co.loan_type
-                            ? item.co.loan_type
+                          : item.co.deal_type
+                            ? item.co.deal_type
                             : '-'}
                       </p>
                     </td>
                     <td>
                       <p className={styles['pend-header-txt']}>
                         {active === 'ntp'
-                          ? item.ntp.ntp_complete_date
-                            ? item.ntp.ntp_complete_date
+                          ? item.ntp.ntp_date
+                            ? item.ntp.ntp_date
                             : '-'
-                          : item.co.ntp_complete_date
-                            ? item.co.ntp_complete_date
+                          : item.co.ntp_date
+                            ? item.co.ntp_date
                             : '-'}
                       </p>
                     </td>
@@ -810,7 +810,7 @@ const PendingQueue = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3}>
+                  <td colSpan={14}>
                     <div className="flex items-center justify-center">
                       <DataNotFound />
                     </div>
