@@ -570,7 +570,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	RecordCount = int64(len(pendingqueueList.PendingQueueList))
 
-	if dataReq.Filters != nil {
+	if len(dataReq.Filters) != 0 {
 		pendingqueueList.PendingQueueList = filterByNtpStatus(pendingqueueList.PendingQueueList, dataReq.Filters)
 		RecordCount = int64(len(pendingqueueList.PendingQueueList))
 	}
@@ -616,7 +616,7 @@ func getProjectAgeDays(uniqueId string) (string, error) {
 }
 
 func buildFilterQuery(filters []models.Filter) string {
-	if filters == nil {
+	if len(filters) == 0 {
 		return ""
 	}
 	var conditions []string
