@@ -569,6 +569,12 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	RecordCount = int64(len(pendingqueueList.PendingQueueList))
+
+	if dataReq.Filters != nil {
+		pendingqueueList.PendingQueueList = filterByNtpStatus(pendingqueueList.PendingQueueList, dataReq.Filters)
+		RecordCount = int64(len(pendingqueueList.PendingQueueList))
+	}
+
 	// It supports pagination for normal requests and returns all data when the export button is clicked
 	var finalData []models.GetPendingQueue
 	if dataReq.IsExport {
@@ -576,6 +582,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 	} else {
 		finalData = Paginate(pendingqueueList.PendingQueueList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	}
+
 	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", len(finalData), finalData)
 	appserver.FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, finalData, RecordCount)
 }
@@ -609,15 +616,14 @@ func getProjectAgeDays(uniqueId string) (string, error) {
 }
 
 func buildFilterQuery(filters []models.Filter) string {
+	if filters == nil {
+		return ""
+	}
 	var conditions []string
 
 	// mapping column names to their respective tables
 	columnMap := map[string]string{
 		"uninque_id":        "customers_customers_schema.unique_id",
-		"production":        "ntp_ntp_schema.production_discrepancy",
-		"finance_NTP":       "ntp_ntp_schema.finance_ntp_of_project",
-		"utility_bill":      "ntp_ntp_schema.utility_bill_uploaded",
-		"powerclerk":        "ntp_ntp_schema.powerclerk_signatures_complete",
 		"customer_name":     "customers_customers_schema.customer_name",
 		"ntp_complete_date": "ntp_ntp_schema.ntp_complete_date",
 		"sold_date":         "ntp_ntp_schema.sale_date",
@@ -695,4 +701,60 @@ func getFilterModifiedValue(operation, data string) string {
 	default:
 		return data
 	}
+}
+
+// filterByNtpStatus filters the pending queue list based on NTP "production", "powerclerk "finance_NTP", "utility_bill".
+// It processes each filter, checks the respective field, and returns the filtered list.
+// The function avoids duplicate entries by tracking processed UniqueIds.
+func filterByNtpStatus(pendingQueueList []models.GetPendingQueue, filters []models.Filter) []models.GetPendingQueue {
+	var filteredData []models.GetPendingQueue
+	seen := make(map[string]bool)
+
+	for _, filter := range filters {
+		filterData, ok := filter.Data.(string)
+		if !ok || filterData == "" {
+			continue
+		}
+		filterData = strings.ToLower(filterData)
+		col := filter.Column
+
+		for _, item := range pendingQueueList {
+			itemID := item.UniqueId // Using UniqueId to track duplicates
+			if seen[itemID] {       // skip if already added
+				continue
+			}
+
+			var isCompleted, isPending bool
+
+			switch col {
+			case "production":
+				isCompleted = item.Ntp.ProductionDiscrepancy == "Completed"
+				isPending = item.Ntp.ProductionDiscrepancy == "Pending" || item.Ntp.ProductionDiscrepancy == "Pending (Action Required)"
+			case "powerclerk":
+				isCompleted = item.Ntp.PowerClerkSignaturesComplete == "Completed"
+				isPending = item.Ntp.PowerClerkSignaturesComplete == "Pending" || item.Ntp.PowerClerkSignaturesComplete == "Pending (Action Required)"
+			case "finance_NTP":
+				isCompleted = item.Ntp.FinanceNTPOfProject == "Completed"
+				isPending = item.Ntp.FinanceNTPOfProject == "Pending" || item.Ntp.FinanceNTPOfProject == "Pending (Action Required)"
+			case "utility_bill":
+				isCompleted = item.Ntp.UtilityBillUploaded == "Completed"
+				isPending = item.Ntp.UtilityBillUploaded == "Pending" || item.Ntp.UtilityBillUploaded == "Pending (Action Required)"
+			default:
+				isCompleted = item.Ntp.ProductionDiscrepancy == "Completed" || item.Ntp.PowerClerkSignaturesComplete == "Completed" || item.Ntp.FinanceNTPOfProject == "Completed" || item.Ntp.UtilityBillUploaded == "Completed"
+				isPending = item.Ntp.ProductionDiscrepancy == "Pending" || item.Ntp.ProductionDiscrepancy == "Pending (Action Required)" ||
+					item.Ntp.PowerClerkSignaturesComplete == "Pending" || item.Ntp.PowerClerkSignaturesComplete == "Pending (Action Required)" ||
+					item.Ntp.FinanceNTPOfProject == "Pending" || item.Ntp.FinanceNTPOfProject == "Pending (Action Required)" ||
+					item.Ntp.UtilityBillUploaded == "Pending" || item.Ntp.UtilityBillUploaded == "Pending (Action Required)"
+			}
+
+			if filterData == "complete" && isCompleted {
+				filteredData = append(filteredData, item)
+				seen[itemID] = true
+			} else if (filterData == "pending" || filterData == "pending (action required)" || filterData == "action req.") && isPending {
+				filteredData = append(filteredData, item)
+				seen[itemID] = true
+			}
+		}
+	}
+	return filteredData
 }
