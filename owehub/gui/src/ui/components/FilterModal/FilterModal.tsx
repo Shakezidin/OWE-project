@@ -77,7 +77,7 @@ const FilterModal: React.FC<TableProps> = ({
       label: column.displayName,
     }));
 
-    console.log(options, "sdjhsjgd")
+  
 
   const { pathname } = useLocation();
   const init = useRef(true);

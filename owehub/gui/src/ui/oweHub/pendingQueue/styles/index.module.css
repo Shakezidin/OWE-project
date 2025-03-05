@@ -329,4 +329,5 @@
   resize: none; /* Prevent resizing */
   font-size: 12x;
   margin: 10px 0;
+  outline: none;
 }

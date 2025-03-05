@@ -78,7 +78,7 @@ const PendingQueue = () => {
           toast.error(data.message);
           return;
         }
-        console.log(data?.dbRecCount, 'totalcount');
+
         setDataPending(data.data);
         setTotalcount(data?.dbRecCount || 0);
         setLoading(false);
@@ -88,20 +88,6 @@ const PendingQueue = () => {
       }
     })();
   }, [page, itemsPerPage, debouncedSearch, active, filters]);
-
-  // const getStatusColor = (status: string) => {
-  //   if (status === 'Pending (Action Required)') {
-  //     return styles.action_required_card;
-  //   }
-  //   switch (status) {
-  //     case 'Pending':
-  //       return styles.warning_card;
-  //     case 'Completed':
-  //       return styles.success_card;
-  //     default:
-  //       return styles.default_card;
-  //   }
-  // };
 
   const totalPages = Math.ceil(totalcount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
@@ -115,39 +101,47 @@ const PendingQueue = () => {
     setPage(1);
     setFilters(req.filters);
   };
-  console.log(filters, '----filter');
+
   const open = () => {
     setFilterModal(true);
   };
 
-  const cuurentPageData = dataPending.slice();
-  console.log(cuurentPageData, 'cuurentPageData');
-
-  const handleSort = (key: any) => {
-    if (sortKey === key) {
-      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
-    } else {
-      setSortKey(key);
-      setSortDirection('asc');
-    }
-  };
+  const cuurentPageData = dataPending && dataPending?.slice();
 
   const ExportCsv = async () => {
     setIsExporting(true);
-    const headers = [
-      'Project ID',
-      'Home Owner',
-      'Project Ages',
-      'Production',
-      'Finance NTP',
-      'Utility Bill',
-      'Power Clerk',
-      'Sold Date',
-      'App Status',
-      'Project Status',
-      'Sales Rep',
-      'Setter'
-    ];
+
+    const headers =
+      active === 'co'
+        ? [
+            'Project ID',
+            'Home Owner',
+            'Project Ages',
+            'CO Request',
+            'Sold Date',
+            'App Status',
+            'Project Status',
+            'Sales Rep',
+            'Setter',
+            'Deal Type',
+            'NTP Date',
+          ]
+        : [
+            'Project ID',
+            'Home Owner',
+            'Project Ages',
+            'Production',
+            'Finance NTP',
+            'Utility Bill',
+            'Power Clerk',
+            'Sold Date',
+            'App Status',
+            'Project Status',
+            'Sales Rep',
+            'Setter',
+            'Deal Type',
+            'NTP Date',
+          ];
 
     const getAllData = await postCaller('get_new_pendingqueuesdata', {
       page_size: totalcount,
@@ -156,24 +150,44 @@ const PendingQueue = () => {
       unique_ids: [debouncedSearch],
       isExport: true,
     });
+
     if (getAllData.status > 201) {
       toast.error(getAllData.message);
       return;
     }
-    const csvData = getAllData?.data?.map?.((item: any) => [
-      item.uninque_id,
-      item.home_owner,
-      active === 'ntp' ? item.ntp.project_age_days : item.co.project_age_days,
-      active === 'ntp' ? item.ntp.production : item.co.production,
-      active === 'ntp' ? item.ntp.finance_NTP : item.co.finance_NTP,
-      active === 'ntp' ? item.ntp.utility_bill : item.co.utility_bill,
-      active === 'ntp' ? item.ntp.powerclerk : item.co.powerclerk,
-      active === 'ntp' ? item.ntp.sold_date : item.co.sold_date,
-      active === 'ntp' ? item.ntp.app_status : item.co.app_status,
-      active === 'ntp' ? item.ntp.project_status : item.co.project_status,
-      active === 'ntp' ? item.ntp.sales_rep : item.co.sales_rep,
-      active === 'ntp' ? item.ntp.setter : item.co.setter,
-    ]);
+
+    const csvData = getAllData?.data?.map?.((item: any) =>
+      active === 'co'
+        ? [
+            item.uninque_id,
+            item.home_owner,
+            item.co.project_age_days,
+            item.co.co_status,
+            item.co.sold_date,
+            item.co.app_status,
+            item.co.project_status,
+            item.co.sales_rep,
+            item.co.setter,
+            item.co.deal_type,
+            item.co.ntp_date,
+          ]
+        : [
+            item.uninque_id,
+            item.home_owner,
+            item.ntp.project_age_days,
+            item.ntp.production,
+            item.ntp.finance_NTP,
+            item.ntp.utility_bill,
+            item.ntp.powerclerk,
+            item.ntp.sold_date,
+            item.ntp.app_status,
+            item.ntp.project_status,
+            item.ntp.sales_rep,
+            item.ntp.setter,
+            item.ntp.deal_type,
+            item.ntp.ntp_date,
+          ]
+    );
 
     const csvRows = [headers, ...csvData];
 
@@ -187,9 +201,76 @@ const PendingQueue = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
     setIsExporting(false);
     setExportShow(false);
   };
+
+  const filteredColumns =
+    active === 'co'
+      ? [
+          PendingActionColumn[0],
+          {
+            name: 'co_status',
+            displayName: 'CO Request',
+            type: 'string',
+            isCheckbox: false,
+            filter: 'co_status',
+          },
+          ...PendingActionColumn.slice(1).filter(
+            (item) =>
+              ![
+                'production',
+                'finance_NTP',
+                'utility_bill',
+                'powerclerk',
+              ].includes(item.name)
+          ),
+        ]
+      : PendingActionColumn;
+
+  const handleSort = (key: any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+
+  if (sortKey) {
+    console.log(sortKey, 'ejghefe');
+    cuurentPageData.sort((a: any, b: any) => {
+      const aValue =
+        sortKey === 'uninque_id'
+          ? a[sortKey]
+          : active === 'ntp'
+            ? a.ntp[sortKey]
+            : a.co[sortKey];
+      const bValue =
+        sortKey === 'uninque_id'
+          ? b[sortKey]
+          : active === 'ntp'
+            ? b.ntp[sortKey]
+            : b.co[sortKey];
+
+      console.log(a[sortKey], cuurentPageData, 'shgdhs');
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue =
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue =
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
+          ? numericAValue - numericBValue
+          : numericBValue - numericAValue;
+      }
+    });
+  }
 
   return (
     <>
@@ -197,7 +278,28 @@ const PendingQueue = () => {
         isOpen={filterModal}
         handleClose={filterClose}
         resetOnChange={false}
-        columns={PendingActionColumn}
+        columns={
+          active === 'co'
+            ? PendingActionColumn.filter(
+                (col) =>
+                  ![
+                    'production',
+                    'utility_bill',
+                    'powerclerk',
+                    'finance_NTP',
+                  ].includes(col.name)
+              ).concat([
+                PendingActionColumn[1],
+                {
+                  name: 'co_request',
+                  displayName: 'CO Request',
+                  type: 'string',
+                  isCheckbox: false,
+                  filter: 'co_request',
+                },
+              ])
+            : PendingActionColumn
+        }
         page_number={page}
         page_size={20}
         fetchFunction={fetchFunction}
@@ -442,7 +544,7 @@ const PendingQueue = () => {
           <table>
             <thead>
               <tr>
-                {PendingActionColumn?.map((item, key) => (
+                {filteredColumns?.map((item, key) => (
                   <SortableHeader
                     key={key}
                     isCheckbox={item.isCheckbox}
@@ -564,55 +666,71 @@ const PendingQueue = () => {
                         </Link>
                       </div>
                     </td>
-                    <td>
-                      <div className="">
-                        {renderStatusCell(
-                          item,
-                          'production',
-                          active,
-                          openModal
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="">
-                        {renderStatusCell(
-                          item,
-                          'finance_NTP',
-                          active,
-                          openModal
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="">
-                        {renderStatusCell(
-                          item,
-                          'utility_bill',
-                          active,
-                          openModal
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="">
-                        {renderStatusCell(
-                          item,
-                          'powerclerk',
-                          active,
-                          openModal
-                        )}
-                      </div>
-                    </td>
+                    {active === 'co' ? (
+                      <td>
+                        <div className="">
+                          {renderStatusCell(
+                            item,
+                            'co_status',
+                            active,
+                            openModal
+                          )}
+                        </div>
+                      </td>
+                    ) : (
+                      <>
+                        <td>
+                          <div className="">
+                            {renderStatusCell(
+                              item,
+                              'production',
+                              active,
+                              openModal
+                            )}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="">
+                            {renderStatusCell(
+                              item,
+                              'finance_NTP',
+                              active,
+                              openModal
+                            )}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="">
+                            {renderStatusCell(
+                              item,
+                              'utility_bill',
+                              active,
+                              openModal
+                            )}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="">
+                            {renderStatusCell(
+                              item,
+                              'powerclerk',
+                              active,
+                              openModal
+                            )}
+                          </div>
+                        </td>
+                      </>
+                    )}
+
                     <td>
                       <p className={styles['pend-header-txt']}>
                         {active === 'ntp'
                           ? item.ntp.sold_date
                             ? item.ntp.sold_date
-                            : 'No Data'
+                            : '-'
                           : item.co.sold_date
                             ? item.co.sold_date
-                            : 'No Data'}
+                            : '-'}
                       </p>
                     </td>
                     <td>
@@ -620,10 +738,10 @@ const PendingQueue = () => {
                         {active === 'ntp'
                           ? item.ntp.app_status
                             ? item.ntp.app_status
-                            : 'No Data'
+                            : '-'
                           : item.co.app_status
                             ? item.co.app_status
-                            : 'No Data'}
+                            : '-'}
                       </p>
                     </td>
                     <td>
@@ -638,10 +756,10 @@ const PendingQueue = () => {
                         {active === 'ntp'
                           ? item.ntp.project_status
                             ? item.ntp.project_status
-                            : 'No Data'
+                            : '-'
                           : item.co.project_status
                             ? item.co.project_status
-                            : 'No Data'}
+                            : '-'}
                       </p>
                     </td>
                     <td>
@@ -649,10 +767,10 @@ const PendingQueue = () => {
                         {active === 'ntp'
                           ? item.ntp.sales_rep
                             ? item.ntp.sales_rep
-                            : 'No Data'
+                            : '-'
                           : item.co.sales_rep
                             ? item.co.sales_rep
-                            : 'No Data'}
+                            : '-'}
                       </p>
                     </td>
                     <td>
@@ -660,10 +778,10 @@ const PendingQueue = () => {
                         {active === 'ntp'
                           ? item.ntp.setter
                             ? item.ntp.setter
-                            : 'No Data'
+                            : '-'
                           : item.co.setter
                             ? item.co.setter
-                            : 'No Data'}
+                            : '-'}
                       </p>
                     </td>
                     <td>
@@ -671,10 +789,10 @@ const PendingQueue = () => {
                         {active === 'ntp'
                           ? item.ntp.loan_type
                             ? item.ntp.loan_type
-                            : 'No Data'
+                            : '-'
                           : item.co.loan_type
                             ? item.co.loan_type
-                            : 'No Data'}
+                            : '-'}
                       </p>
                     </td>
                     <td>
@@ -682,10 +800,10 @@ const PendingQueue = () => {
                         {active === 'ntp'
                           ? item.ntp.ntp_complete_date
                             ? item.ntp.ntp_complete_date
-                            : 'No Data'
+                            : '-'
                           : item.co.ntp_complete_date
                             ? item.co.ntp_complete_date
-                            : 'No Data'}
+                            : '-'}
                       </p>
                     </td>
                   </tr>
@@ -704,7 +822,7 @@ const PendingQueue = () => {
         </div>
 
         <div className="page-heading-container">
-          {dataPending?.length > 0 ? (
+          {cuurentPageData?.length > 0 ? (
             <>
               <p className="page-heading">
                 Showing {startIndex} -{' '}
@@ -716,7 +834,7 @@ const PendingQueue = () => {
                 currentPage={page}
                 totalPages={totalPages}
                 paginate={(num) => setPage(num)}
-                currentPageData={dataPending}
+                currentPageData={cuurentPageData}
                 goToNextPage={() => setPage(page + 1)}
                 goToPrevPage={() => setPage(page - 1)}
                 perPage={itemsPerPage}
@@ -725,7 +843,13 @@ const PendingQueue = () => {
           ) : null}
         </div>
       </div>
-      {isModalOpen && <PendModal closeModal={closeModal} />}
+      {isModalOpen && (
+        <PendModal
+          closeModal={closeModal}
+          active={active}
+          cuurentPageData={cuurentPageData}
+        />
+      )}
     </>
   );
 };
