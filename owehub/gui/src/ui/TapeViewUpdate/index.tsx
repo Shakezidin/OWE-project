@@ -276,7 +276,7 @@ const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
                     <img src="https://i.gifer.com/7efs.gif" alt="Completed" width="165" height="121" />
                   </>
                 ) : (
-                  <p style={{ color: 'red' }}>{message}</p>
+                  <p style={{fontSize: '14px', color: 'red' }}>{message}</p>
                 )}
               </div>
             )}
