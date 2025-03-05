@@ -638,12 +638,19 @@ func buildFilterQuery(filters []models.Filter) string {
 			continue // skip unknown columns
 		}
 
-		operator := GetFilterDBMappedOperator(filter.Operation)
+		operator := getFilterDBMapped(filter.Operation)
+
+		// handle "BETWEEN" case for date ranges
+		if filter.Operation == "btw" {
+			conditions = append(conditions, fmt.Sprintf("%s BETWEEN '%s' AND '%s'", tableColumn, filter.StartDate, filter.EndDate))
+			continue
+		}
+
 		value := fmt.Sprintf("%v", filter.Data)
 
-		// handle string-based operations
-		if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
-			value = GetFilterModifiedValue(filter.Operation, value)
+		// handle LIKE-based operations
+		if filter.Operation == "sw" || filter.Operation == "ew" || filter.Operation == "cont" {
+			value = getFilterModifiedValue(filter.Operation, value)
 		}
 
 		conditions = append(conditions, fmt.Sprintf("LOWER(%s) %s LOWER('%s')", tableColumn, operator, value))
@@ -654,4 +661,38 @@ func buildFilterQuery(filters []models.Filter) string {
 	}
 
 	return "AND " + strings.Join(conditions, " AND ")
+}
+
+func getFilterDBMapped(operation string) string {
+	switch operation {
+	case "eqs":
+		return "="
+	case "lst":
+		return "<"
+	case "lsteqs":
+		return "<="
+	case "grt":
+		return ">"
+	case "grteqs":
+		return ">="
+	case "sw", "ew", "cont":
+		return "ILIKE"
+	case "btw":
+		return "BETWEEN"
+	default:
+		return "="
+	}
+}
+
+func getFilterModifiedValue(operation, data string) string {
+	switch operation {
+	case "sw":
+		return fmt.Sprintf("%s%%", strings.ToLower(data))
+	case "ew":
+		return fmt.Sprintf("%%%s", strings.ToLower(data))
+	case "cont":
+		return fmt.Sprintf("%%%s%%", strings.ToLower(data))
+	default:
+		return data
+	}
 }
