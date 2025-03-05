@@ -365,10 +365,6 @@ func PendingActionPageCoQueryNew(filterUserQuery, searchValue, filterQuery strin
 	filtersBuilder.WriteString(fmt.Sprintf(`
         SELECT
             customers_customers_schema.unique_id,
-            ntp_ntp_schema.production_discrepancy,
-            ntp_ntp_schema.finance_ntp_of_project,
-            ntp_ntp_schema.utility_bill_uploaded,
-            ntp_ntp_schema.powerclerk_signatures_complete,
             ntp_ntp_schema.change_order_status,
             customers_customers_schema.customer_name AS home_owner,
             ntp_ntp_schema.ntp_complete_date AS ntp_date,
