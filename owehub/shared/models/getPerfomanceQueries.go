@@ -357,7 +357,7 @@ func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
 	return filtersBuilder.String()
 }
 
-func PendingActionPageCoQueryNew(filterUserQuery, searchValue string) string {
+func PendingActionPageCoQueryNew(filterUserQuery, searchValue, filterQuery string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
@@ -398,9 +398,8 @@ func PendingActionPageCoQueryNew(filterUserQuery, searchValue string) string {
         'Pending NTP Review', 'Pending QC', 'Pending NTP',
         'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
      ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
-     %v %v
-    `, filterUserQuery, searchValue))
-
+     %v %v %v
+    `, filterUserQuery, searchValue, filterQuery))
 	return filtersBuilder.String()
 }
 
@@ -429,7 +428,7 @@ func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
 	return filtersBuilder.String()
 }
 
-func PendingActionPageNtpQueryNew(filterUserQuery, searchValue string) string {
+func PendingActionPageNtpQueryNew(filterUserQuery, searchValue, filterQuery string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
@@ -471,8 +470,8 @@ func PendingActionPageNtpQueryNew(filterUserQuery, searchValue string) string {
         'Pending NTP Review', 'Pending QC', 'Pending NTP',
         'Pending NTP - Change Order', 'Under Review'
     )
-     %v %v
-    `, filterUserQuery, searchValue))
+     %v %v %v
+    `, filterUserQuery, searchValue, filterQuery))
 
 	return filtersBuilder.String()
 }

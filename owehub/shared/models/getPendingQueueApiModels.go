@@ -7,8 +7,9 @@
 package models
 
 type PendingQueueReq struct {
-	PageNumber           int `json:"page_number"`
-	PageSize             int `json:"page_size"`
+	Filters              []Filter `json:"filters"`
+	PageNumber           int      `json:"page_number"`
+	PageSize             int      `json:"page_size"`
 	Email                string
 	UniqueIds            []string `json:"unique_ids"`
 	DealerNames          []string

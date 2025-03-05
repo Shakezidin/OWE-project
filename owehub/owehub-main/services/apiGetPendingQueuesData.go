@@ -380,7 +380,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	if dataReq.SelectedPendingStage == "co" {
-		query := models.PendingActionPageCoQueryNew(roleFilter, searchValue)
+		query := models.PendingActionPageCoQueryNew(roleFilter, searchValue, buildFilterQuery(dataReq.Filters))
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
@@ -393,7 +393,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 			return
 		}
 	} else {
-		query := models.PendingActionPageNtpQueryNew(roleFilter, searchValue)
+		query := models.PendingActionPageNtpQueryNew(roleFilter, searchValue, buildFilterQuery(dataReq.Filters))
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
@@ -610,4 +610,52 @@ func getProjectAgeDays(uniqueId string) (string, error) {
 	}
 
 	return projectAgeDays, nil
+}
+
+func buildFilterQuery(filters []models.Filter) string {
+	var conditions []string
+
+	// mapping column names to their respective tables
+	columnMap := map[string]string{
+		"uninque_id":        "customers_customers_schema.unique_id",
+		"production":        "ntp_ntp_schema.production_discrepancy",
+		"finance_NTP":       "ntp_ntp_schema.finance_ntp_of_project",
+		"utility_bill":      "ntp_ntp_schema.utility_bill_uploaded",
+		"powerclerk":        "ntp_ntp_schema.powerclerk_signatures_complete",
+		"customer_name":     "customers_customers_schema.customer_name",
+		"ntp_complete_date": "ntp_ntp_schema.ntp_complete_date",
+		"sold_date":         "ntp_ntp_schema.sale_date",
+		"app_status":        "ntp_ntp_schema.app_status",
+		"project_status":    "ntp_ntp_schema.project_status",
+		"sales_rep":         "ntp_ntp_schema.sales_rep",
+		"setter":            "sales_metrics_schema.setter",
+		"deal_type":         "prospects_customers_schema.lead_source",
+	}
+
+	for _, filter := range filters {
+		if filter.Column == "" || filter.Operation == "" {
+			continue // skip invalid filters
+		}
+
+		tableColumn, exists := columnMap[filter.Column]
+		if !exists {
+			continue // skip unknown columns
+		}
+
+		operator := GetFilterDBMappedOperator(filter.Operation)
+		value := fmt.Sprintf("%v", filter.Data)
+
+		// handle string-based operations
+		if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+			value = GetFilterModifiedValue(filter.Operation, value)
+		}
+
+		conditions = append(conditions, fmt.Sprintf("LOWER(%s) %s LOWER('%s')", tableColumn, operator, value))
+	}
+
+	if len(conditions) == 0 {
+		return "" // no filters applied
+	}
+
+	return "AND " + strings.Join(conditions, " AND ")
 }
