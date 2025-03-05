@@ -507,21 +507,40 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 			ntpDelayNotes = val
 		}
 
+		dealType := ""
+		if val, ok := item["deal_type"].(string); ok {
+			dealType = val
+		}
+
+		coType := ""
+		if val, ok := item["co_notes"].(string); ok {
+			coType = val
+		} else {
+			coType = "Please see plan set for CO notes!"
+		}
+
 		CoStatus, _ := getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
 		PendingQueue := models.GetPendingQueue{
 			UniqueId:  UniqueId,
 			HomeOwner: HomeOwner,
 			Co: models.PendingQueueCo{
-				CoStatus:       CoStatus,
-				CO:             Co,
-				SoldDate:       soldDate,
-				AppStatus:      appStatus,
-				ProjectStatus:  projectStatus,
-				SalesRep:       salesRep,
-				Setter:         setter,
-				NtpDelayedBy:   ntpDelayedBy,
-				NtpDelayNotes:  ntpDelayNotes,
-				ProjectAgeDays: projectAgeDays,
+				ProductionDiscrepancy:        ProductionDiscrepancy,
+				FinanceNTPOfProject:          FinanceNTPOfProject,
+				UtilityBillUploaded:          UtilityBillUploaded,
+				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
+				CoStatus:                     CoStatus,
+				CO:                           Co,
+				SoldDate:                     soldDate,
+				AppStatus:                    appStatus,
+				ProjectStatus:                projectStatus,
+				SalesRep:                     salesRep,
+				Setter:                       setter,
+				NtpDelayedBy:                 ntpDelayedBy,
+				NtpDelayNotes:                ntpDelayNotes,
+				ProjectAgeDays:               projectAgeDays,
+				DealType:                     dealType,
+				CoNotes:                      coType,
+				NtpDate:                      ntpD,
 			},
 			Ntp: models.PendingQueueNTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
@@ -536,6 +555,9 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 				NtpDelayedBy:                 ntpDelayedBy,
 				NtpDelayNotes:                ntpDelayNotes,
 				ProjectAgeDays:               projectAgeDays,
+				DealType:                     dealType,
+				CoNotes:                      coType,
+				NtpDate:                      ntpD,
 			},
 			Qc: models.PendingQueueQC{
 				PowerClerk:                           PowerClerk,

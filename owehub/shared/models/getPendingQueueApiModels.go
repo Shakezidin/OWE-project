@@ -42,11 +42,18 @@ type PendingQueueNTP struct {
 	NtpDelayedBy   string `json:"ntp_delayed_by"`
 	NtpDelayNotes  string `json:"ntp_delay_notes"`
 	ProjectAgeDays string `json:"project_age_days"`
+	DealType       string `json:"deal_type"`
+	CoNotes        string `json:"co_notes"`
+	NtpDate        string `json:"ntp_date"`
 }
 
 type PendingQueueCo struct {
-	CO       string `json:"co"`
-	CoStatus string `json:"co_status"`
+	CO                           string `json:"co"`
+	CoStatus                     string `json:"co_status"`
+	ProductionDiscrepancy        string `json:"production"`
+	FinanceNTPOfProject          string `json:"finance_NTP"`
+	UtilityBillUploaded          string `json:"utility_bill"`
+	PowerClerkSignaturesComplete string `json:"powerclerk"`
 
 	// New  fields
 	SoldDate       string `json:"sold_date"`
@@ -57,6 +64,9 @@ type PendingQueueCo struct {
 	NtpDelayedBy   string `json:"ntp_delayed_by"`
 	NtpDelayNotes  string `json:"ntp_delay_notes"`
 	ProjectAgeDays string `json:"project_age_days"`
+	DealType       string `json:"deal_type"`
+	CoNotes        string `json:"co_notes"`
+	NtpDate        string `json:"ntp_date"`
 }
 
 type GetPendingQueue struct {

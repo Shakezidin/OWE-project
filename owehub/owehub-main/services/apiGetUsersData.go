@@ -223,7 +223,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// UserStatus
 		UserStatus, statusOk := item["user_status"].(string)
 		if !statusOk || UserStatus == "" {
-			log.FuncWarnTrace(0, "Failed to get UserStatus for Item: %+v\n", item)
+			log.FuncWarnTrace(0, "user status not availble for Item: %+v\n", item)
 			UserStatus = ""
 		}
 
@@ -317,7 +317,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// Assign Manager Name
 		ManagerRole, managerRoleOK := item["manager_role"].(string)
 		if !managerRoleOK || ManagerRole == "" {
-			log.FuncWarnTrace(0, "Failed to get manager name for Item: %+v\n", item)
+			log.FuncWarnTrace(0, "manager role is not available for Item: %+v\n", item)
 			ManagerRole = ""
 		}
 

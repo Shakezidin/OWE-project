@@ -175,12 +175,8 @@
 
 .pend-project-ages{
   margin-top: 10px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--input-border-color);
-}
-
-.pend-project-ages:hover{
- text-decoration: underline;
 }
 
 .status-item.click:hover {

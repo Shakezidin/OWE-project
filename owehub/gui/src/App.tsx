@@ -73,14 +73,14 @@ import { useDBStatusMonitor } from './hooks/useDBStatusMonitor';
 
 function App() {
   // Add console log suppression at the start of App component
-  // if (
-  //   process.env.NODE_ENV === 'production' ||
-  //   process.env.NODE_ENV === 'development'
-  // ) {
-  //   console.log = () => {};
-  //   console.error = () => {};
-  //   console.warn = () => {};
-  // }
+  if (
+    process.env.NODE_ENV === 'production' ||
+    process.env.NODE_ENV === 'development'
+  ) {
+    console.log = () => {};
+    console.error = () => {};
+    console.warn = () => {};
+  }
 
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(

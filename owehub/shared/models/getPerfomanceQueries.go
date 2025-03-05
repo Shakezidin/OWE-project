@@ -365,6 +365,10 @@ func PendingActionPageCoQueryNew(filterUserQuery, searchValue string) string {
 	filtersBuilder.WriteString(fmt.Sprintf(`
         SELECT
             customers_customers_schema.unique_id,
+            ntp_ntp_schema.production_discrepancy,
+            ntp_ntp_schema.finance_ntp_of_project,
+            ntp_ntp_schema.utility_bill_uploaded,
+            ntp_ntp_schema.powerclerk_signatures_complete,
             ntp_ntp_schema.change_order_status,
             customers_customers_schema.customer_name AS home_owner,
             ntp_ntp_schema.ntp_complete_date AS ntp_date,
@@ -374,7 +378,7 @@ func PendingActionPageCoQueryNew(filterUserQuery, searchValue string) string {
             ntp_ntp_schema.project_status,
             ntp_ntp_schema.sales_rep,
             sales_metrics_schema.setter,
-            --ntp_ntp_schema.deal_type as deal_type
+            prospects_customers_schema.lead_source as deal_type,
             ntp_ntp_schema.pending_ntp_date,
             ntp_ntp_schema.ntp_delayed_by,
             ntp_ntp_schema.ntp_delay_notes
@@ -384,6 +388,8 @@ func PendingActionPageCoQueryNew(filterUserQuery, searchValue string) string {
         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
      LEFT JOIN sales_metrics_schema ON ntp_ntp_schema.unique_id = sales_metrics_schema.unique_id
         AND customers_customers_schema.unique_id != ''
+    LEFT JOIN prospects_customers_schema
+        ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.prospect_id::text
      WHERE ntp_ntp_schema.project_status NOT IN (
         'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED',
         'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
@@ -444,7 +450,7 @@ func PendingActionPageNtpQueryNew(filterUserQuery, searchValue string) string {
             ntp_ntp_schema.project_status,
             ntp_ntp_schema.sales_rep,
             sales_metrics_schema.setter,
-            --ntp_ntp_schema.deal_type as deal_type
+            prospects_customers_schema.lead_source as deal_type,
             ntp_ntp_schema.pending_ntp_date,
             ntp_ntp_schema.ntp_delayed_by,
             ntp_ntp_schema.ntp_delay_notes
@@ -455,13 +461,15 @@ func PendingActionPageNtpQueryNew(filterUserQuery, searchValue string) string {
     LEFT JOIN sales_metrics_schema ON ntp_ntp_schema.unique_id = sales_metrics_schema.unique_id
 
         AND customers_customers_schema.unique_id != ''
+    LEFT JOIN prospects_customers_schema
+        ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.prospect_id::text
      WHERE ntp_ntp_schema.project_status NOT IN (
         'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED',
         'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
      )
       AND ntp_ntp_schema.app_status IN (
         'Pending NTP Review', 'Pending QC', 'Pending NTP',
-        'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
+        'Pending NTP - Change Order', 'Under Review'
     )
      %v %v
     `, filterUserQuery, searchValue))

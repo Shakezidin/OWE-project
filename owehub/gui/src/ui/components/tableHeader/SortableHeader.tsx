@@ -15,6 +15,7 @@ interface SortableHeaderProps {
   isAnyRowSelected: boolean;
   isAllRowsSelected: boolean;
   data: any;
+  style?: React.CSSProperties;
 }
 
 const SortableHeader: React.FC<SortableHeaderProps> = ({
@@ -30,13 +31,14 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
   sortDirection,
   onClick,
   isCheckbox,
+  style
 }) => {
   const handleClick = () => {
     onClick(sortKey);
   };
 
   return (
-    <th>
+    <th style={style}>
       <div className="flex-check">
         {isCheckbox ? (
           <div>
@@ -60,7 +62,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
         ) : null}
 
         <div className="table-header" onClick={handleClick}>
-          <p>{titleName}</p>{' '}
+          <p style={{whiteSpace: "nowrap"}}>{titleName}</p>{' '}
           {sortDirection === 'asc' ? (
             <FaArrowUp className="arrow-icon-table" />
           ) : (
