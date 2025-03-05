@@ -400,7 +400,7 @@ func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate
 			latestApprovedDate = IcApprovedDate
 		}
 		return green, latestApprovedDate
-	} else if !permitSubmittedDate.IsZero() && !IcSubmittedDate.IsZero() {
+	} else if !permitSubmittedDate.IsZero() && !IcSubmittedDate.IsZero() && permitApprovedDate.IsZero() && IcApprovedDate.IsZero(){
 		latestSubmittedDate := permitSubmittedDate
 		if IcSubmittedDate.After(permitSubmittedDate) {
 			latestSubmittedDate = IcSubmittedDate
