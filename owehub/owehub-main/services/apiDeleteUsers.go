@@ -180,21 +180,21 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Delete Usernames
-	for _, username := range deleteUsersReq.Usernames {
-		// Construct SQL statements to revoke privileges and drop the role (user)
-		sqlStatement := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP ROLE %s;", username, username)
+	// // Delete Usernames
+	// for _, username := range deleteUsersReq.Usernames {
+	// 	// Construct SQL statements to revoke privileges and drop the role (user)
+	// 	sqlStatement := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP ROLE %s;", username, username)
 
-		// Execute the SQL statement
-		err := db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, err)
-			// Handle the error as needed, such as logging or returning an HTTP response
-		} else {
-			log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", username)
-			// Optionally, you can log a success message or perform additional actions
-		}
-	}
+	// 	// Execute the SQL statement
+	// 	err := db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+	// 	if err != nil {
+	// 		log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, err)
+	// 		// Handle the error as needed, such as logging or returning an HTTP response
+	// 	} else {
+	// 		log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", username)
+	// 		// Optionally, you can log a success message or perform additional actions
+	// 	}
+	// }
 
 	whereEleList = nil
 	whereEleList = append(whereEleList, pq.Array(userIds))
