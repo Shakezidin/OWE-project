@@ -32,7 +32,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		podioError            error
 		createUserReq         models.CreateUserReq
 		queryParameters       []interface{}
-		tablesPermissionsJSON []byte
+		tablesPermissionsJSON interface{}
 		dbUserCheck           []map[string]interface{}
 		username              string
 	)
@@ -84,7 +84,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 	} else {
-		// Ensure the value is valid JSON (empty array instead of null)
 		tablesPermissionsJSON = nil
 	}
 
