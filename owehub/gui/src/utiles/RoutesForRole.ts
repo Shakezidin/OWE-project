@@ -27,13 +27,6 @@ export default [
   },
 
   {
-    route: ROUTES.TABLE_VIEW,
-    element: TableView,
-    available: TYPE_OF_USER.ADMIN,
-    stagingOnly: true,
-  },
-
-  {
     route: ROUTES.PEINDING_QUEUE,
     element: PendingQueue,
     available: exceptDB,
