@@ -1,0 +1,35 @@
+.tape-main-container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffff;
+    border-radius: 8px;
+}
+.tape-drops{
+    display: flex;
+    flex-direction: column;
+}
+.tape-drops label{
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.tape-view-drop-contain{
+    display: flex;
+    flex-direction: row;
+    gap: 29px;
+    
+}
+.tape-refresh-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+}

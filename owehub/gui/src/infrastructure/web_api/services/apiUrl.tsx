@@ -13,6 +13,7 @@ const LEADS_BASE_URL = `${process.env.REACT_APP_LEADS_URL}`;
 const REPORT_BASE_URL = `${process.env.REACT_APP_REPORT_URL}`;
 const CONFIG_URL = `https://staging.owe-hub.com/api/owe-calc-service/v1`;
 const test_url = `http://155.138.239.170:31024/owe-reports-service/v1/`;
+const TAPE_URL = `http://66.42.90.20:80/api`;
 
 // authService.ts
 export interface LoginResponse {
@@ -169,6 +170,48 @@ export const reportingCaller = async (
       if (error.message === 'Network Error')
         return new Error('No internet connection');
     }
+    throw new Error('Failed to fetch data');
+  }
+};
+
+export const tapeCaller = async (
+  endpoint: string,
+  postData: any,
+  hasChangedBaseUrl: boolean = false
+): Promise<any> => {
+  const config: AxiosRequestConfig = {
+    headers: {
+      Authorization: `${localStorage.getItem('token')}`,
+      // 'Content-Type': 'application/json',
+    },
+  };
+  try {
+    const response: AxiosResponse = await axios.post(
+      `${TAPE_URL}/${endpoint}`,
+      postData,
+      config
+    );
+    return response.data; // Return the data from the response
+  } catch (error) {
+    console.log('axios error', error);
+
+    if (isAxiosError(error)) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          setTimeout(() => {
+            logoutUser();
+          }, 2000);
+          return;
+        }
+
+        return error.response.data;
+      }
+
+      // handle network error
+      if (error.message) return new Error(JSON.stringify(error.message));
+      console.log(error);
+    }
+
     throw new Error('Failed to fetch data');
   }
 };
