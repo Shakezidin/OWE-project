@@ -6,6 +6,7 @@ import { tapeCaller } from '../../infrastructure/web_api/services/apiUrl';
 import SelectOption from '../components/selectOption/SelectOption';
 import './index.css'
 import { ICONS } from '../../resources/icons/Icons';
+import useMatchMedia from '../../hooks/useMatchMedia';
 
 
 type View = {
@@ -194,13 +195,15 @@ const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
     }
   };
 
+  const isMobile = useMatchMedia('(max-width: 768px)');
+
 
 
   return (
     <>
       {showTape &&
         <div className="transparent-model">
-          <div className='tape-main-container' style={{ maxWidth: '400px', margin: 'auto' }}>
+          <div className='tape-main-container' style={{ minWidth: isMobile ? '390px' : '444px', margin: 'auto' }}>
             <div className='tape-header'>
               <h3>View Refresh</h3>
               <div className='tape-cross-cont' onClick={handleShowTape} style={{ cursor: 'pointer' }}>
