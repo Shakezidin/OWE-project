@@ -169,15 +169,12 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 			sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
 			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-			log.FuncErrorTrace(0, " sqlStatement err %+v", err)
-			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
 				appserver.FormAndSendHttpResp(resp, "Failed, User already exist in db user", http.StatusInternalServerError, nil)
 				return
 			}
 
-			log.FuncErrorTrace(0, "createUserReq.TablesPermissions %+v", createUserReq.TablesPermissions)
 			for _, item := range createUserReq.TablesPermissions {
 				switch item.PrivilegeType {
 				case "View":
@@ -188,10 +185,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 					sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s;", item.TableName, username)
 				}
 
-				log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
-
 				err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-				log.FuncErrorTrace(0, " sqlStatement err %+v", err)
 				if err != nil {
 					dropQuery := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
 					dropErr := db.ExecQueryDB(db.RowDataDBIndex, dropQuery)
