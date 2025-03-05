@@ -25,8 +25,8 @@ const PendModal: React.FC<PendModalProps> = ({
               <div key={index} className={classes.card}>
                 <p>
                   {active === 'ntp'
-                    ? item.ntp.ntp_delay_by
-                    : item.co.co_delay_by}
+                    ? item.ntp.ntp_delayed_by
+                    : item.co.co_delayed_by}
                 </p>
               </div>
             ))}
@@ -40,10 +40,10 @@ const PendModal: React.FC<PendModalProps> = ({
               .map((item) =>
                 active === 'ntp'
                   ? item.ntp?.ntp_delay_notes
-                  : item.co?.co_delay_notes
+                  : item.co?.co_notes
               )
-              .filter(Boolean) // Remove any undefined values
-              .join('\n')} // Join all values with new line
+              .filter(Boolean)
+              .join('\n')}
             readOnly
           ></textarea>
         </div>
