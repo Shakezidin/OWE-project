@@ -172,26 +172,9 @@ const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
   }, [isAuthenticated]);
 
 
-  useEffect(() => {
-    if (selectedApp && selectedView) {
-      const interval = setInterval(() => {
-        getRefreshStatus(selectedApp.value, selectedView.value).then(
-          (status) => {
-            if (!status) {
-              setMessage('Refresh Completed!');
-              setRefreshing(false);
-              clearInterval(interval);
-            }
-          }
-        );
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [selectedApp, selectedView]);
-
   const handleRefresh = async () => {
     if (!selectedApp || !selectedView) {
-      setMessage('Please select an App and a View.');
+      toast.error('Please select an App and a View.');
       return;
     }
     setMessage('');
@@ -204,6 +187,10 @@ const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
     } else {
       setMessage('Refresh started...');
       setRefreshing(true);
+      setTimeout(() => {
+        setMessage('Refresh Completed!');
+        setRefreshing(false);
+      }, 10000);
     }
   };
 
@@ -258,7 +245,7 @@ const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
               disabled={!selectedApp || !selectedView || refreshing}
               className='tape-refresh-button'
               style={{
-                marginTop: '6px',
+                marginTop: '65px',
                 padding: '10px 32px',
                 backgroundColor: refreshing ? 'gray' : '#377CF6',
                 color: 'white',
@@ -285,11 +272,11 @@ const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
               <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
                 {message === 'Refresh Completed!' ? (
                   <>
-                    <p style={{ color: 'green' }}>{message}</p>
+                    <p style={{ fontSize: '14px', color: 'green' }}>{message}</p>
                     <img src="https://i.gifer.com/7efs.gif" alt="Completed" width="165" height="121" />
                   </>
                 ) : (
-                  <p style={{ color: 'red' }}>{message}</p>
+                  <p style={{ fontSize: '14px', color: 'red' }}>{message}</p>
                 )}
               </div>
             )}
