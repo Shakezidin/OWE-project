@@ -6,6 +6,7 @@ import { tapeCaller } from '../../infrastructure/web_api/services/apiUrl';
 import SelectOption from '../components/selectOption/SelectOption';
 import './index.css'
 import { ICONS } from '../../resources/icons/Icons';
+import useMatchMedia from '../../hooks/useMatchMedia';
 
 
 type View = {
@@ -26,92 +27,11 @@ type ApiResponse = {
 };
 
 
-const dummyData =
-  [
-    {
-      "app_id": "12345",
-      "app_name": "ntp",
-      "views": [
-        {
-          "view_id": "v101",
-          "view_name": "Dashboard"
-        },
-        {
-          "view_id": "v102",
-          "view_name": "Reports"
-        },
-        {
-          "view_id": "v103",
-          "view_name": "Settings"
-        }
-      ]
-    },
-    {
-      "app_id": "67890",
-      "app_name": "customers",
-      "views": [
-        {
-          "view_id": "v201",
-          "view_name": "Product Listing"
-        },
-        {
-          "view_id": "v202",
-          "view_name": "Orders"
-        },
-        {
-          "view_id": "v203",
-          "view_name": "Customers"
-        }
-      ]
-    },
-    {
-      "app_id": "11223",
-      "app_name": "CRM System",
-      "views": [
-        {
-          "view_id": "v301",
-          "view_name": "Leads"
-        },
-        {
-          "view_id": "v302",
-          "view_name": "Contacts"
-        },
-        {
-          "view_id": "v303",
-          "view_name": "Opportunities"
-        }
-      ]
-    }
-  ];
 
 
-const refreshStatusMap: Record<string, boolean> = {}; // Simulating refresh status
 
-const getAppNameViewName = async () => {
-  return new Promise((resolve) => setTimeout(() => resolve(dummyData), 1000));
-};
 
-const refreshView = async (appId: string, viewId: string) => {
-  return new Promise((resolve) => {
-    if (refreshStatusMap[`${appId}_${viewId}`]) {
-      resolve(true); // Refresh already in progress
-    } else {
-      refreshStatusMap[`${appId}_${viewId}`] = true;
-      setTimeout(() => {
-        refreshStatusMap[`${appId}_${viewId}`] = false; // Simulate refresh completion
-      }, 5000);
-      resolve(false);
-    }
-  });
-};
 
-const getRefreshStatus = async (appId: string, viewId: string) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(refreshStatusMap[`${appId}_${viewId}`] || false);
-    }, 1000);
-  });
-};
 
 // React Component
 type TableViewProps = {
@@ -120,11 +40,69 @@ type TableViewProps = {
 };
 
 const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
+  // const dummyData =
+  //   [
+  //     {
+  //       "app_id": "12345",
+  //       "app_name": "ntp",
+  //       "views": [
+  //         {
+  //           "view_id": "v101",
+  //           "view_name": "Dashboard"
+  //         },
+  //         {
+  //           "view_id": "v102",
+  //           "view_name": "Reports"
+  //         },
+  //         {
+  //           "view_id": "v103",
+  //           "view_name": "Settings"
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       "app_id": "67890",
+  //       "app_name": "customers",
+  //       "views": [
+  //         {
+  //           "view_id": "v201",
+  //           "view_name": "Product Listing"
+  //         },
+  //         {
+  //           "view_id": "v202",
+  //           "view_name": "Orders"
+  //         },
+  //         {
+  //           "view_id": "v203",
+  //           "view_name": "Customers"
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       "app_id": "11223",
+  //       "app_name": "CRM System",
+  //       "views": [
+  //         {
+  //           "view_id": "v301",
+  //           "view_name": "Leads"
+  //         },
+  //         {
+  //           "view_id": "v302",
+  //           "view_name": "Contacts"
+  //         },
+  //         {
+  //           "view_id": "v303",
+  //           "view_name": "Opportunities"
+  //         }
+  //       ]
+  //     }
+  //   ];
   const [apps, setApps] = useState<AppData[]>([]);
   const [selectedApp, setSelectedApp] = useState<any>(null);
   const [selectedView, setSelectedView] = useState<any>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
+  const [dummyData, setdummyData] = useState<any>([]);
 
   useEffect(() => {
     // Fetch App & View data on mount
@@ -154,9 +132,9 @@ const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
           const response = await tapeCaller(
             'get-app-name-view-name', {},
           );
-          const result: ApiResponse = await response.json();
-          if (result.status === 200) {
-            setApps(result.data);
+          console.log(response.data, "result");
+          if (response.status === 200) {
+            setdummyData(response.data);
           } else if (response.status > 201) {
             toast.error(response.data.message);
           }
@@ -169,7 +147,7 @@ const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
 
       fetchData();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, showTape]);
 
 
   const handleRefresh = async () => {
@@ -193,6 +171,30 @@ const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
       }, 10000);
     }
   };
+  const refreshStatusMap: Record<string, boolean> = {}; // Simulating refresh status
+
+  const getAppNameViewName = async () => {
+    return new Promise((resolve) => setTimeout(() => resolve(dummyData), 1000));
+  };
+
+  const refreshView = async (appId: string, viewId: string) => {
+    return new Promise((resolve) => {
+      if (refreshStatusMap[`${appId}_${viewId}`]) {
+        resolve(true); // Refresh already in progress
+      } else {
+        refreshStatusMap[`${appId}_${viewId}`] = true;
+        setTimeout(() => {
+          refreshStatusMap[`${appId}_${viewId}`] = false; // Simulate refresh completion
+        }, 5000);
+        resolve(false);
+      }
+    });
+  };
+
+
+  const isMobile = useMatchMedia('(max-width: 768px)');
+
+
 
 
 
@@ -200,7 +202,7 @@ const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
     <>
       {showTape &&
         <div className="transparent-model">
-          <div className='tape-main-container' style={{ maxWidth: '400px', margin: 'auto' }}>
+          <div className='tape-main-container' style={{ minWidth: isMobile ? '390px' : '444px', margin: 'auto' }}>
             <div className='tape-header'>
               <h3>View Refresh</h3>
               <div className='tape-cross-cont' onClick={handleShowTape} style={{ cursor: 'pointer' }}>
