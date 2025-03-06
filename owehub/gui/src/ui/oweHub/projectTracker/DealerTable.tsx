@@ -408,7 +408,7 @@ const DealerTablePipeline = () => {
   }, [selectedDealerName, table, selectedRow, selectedSRRow]);
 
   const handleSetterEdit = async (id: any) => {
-    if (selectedAM !== null) {
+    if (selectedAM !== null && selectedAM.value !== '') {
       setUpdate(true);
       const res = await postCaller(EndPoints.update_setter_sales_rep, {
         "unique_id": id,
@@ -433,7 +433,7 @@ const DealerTablePipeline = () => {
   };
 
   const handleRepEdit = async (id: any) => {
-    if (selectedSR !== null) {
+    if (selectedSR !== null && selectedSR.value !== '') {
       setUpdate(true);
       const res = await postCaller(EndPoints.update_setter_sales_rep, {
         "unique_id": id,
@@ -648,6 +648,9 @@ const DealerTablePipeline = () => {
                     <tr key={index}>
                       <td>{item.unique_id || '-'}</td>
                       <td>{item.home_owner || '-'}</td>
+                      <td>
+                        {item.project_status ? item.project_status : '-'}
+                      </td>
                       <td>{item.finance_company || '-'}</td>
                       <td>{item.type || '-'}</td>
                       <td>{item.loan_type || '-'}</td>
@@ -661,6 +664,102 @@ const DealerTablePipeline = () => {
 
 
                       <td>{item.partner_dealer || '-'}</td>
+                      <td>
+                        {selectedSRRow !== item.unique_id ? (
+                          <div className="am-select-container">
+                            <span>{item.rep_1 || '-'}</span>
+
+                            <CiEdit
+                              size={16}
+                              onClick={() => {
+                                setSelectedSRRow(item.unique_id);
+                                setSelectedTable("primary_sales_rep");
+                                setSelectedDealerName(item.partner_dealer);
+                                setSelectedSR({ value: item.rep_1, label: item.rep_1 });
+                              }}
+                              style={{ cursor: "pointer", marginLeft: "8px" }}
+                            />
+
+                          </div>
+                        ) : (
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <TiTick
+                              size={20}
+                              onClick={() => { setSelectedSRRow(null); handleRepEdit(item.unique_id) }}
+                              style={{ cursor: "pointer", color: "black" }}
+                            />
+                            <SelectOption
+                              options={srOptions}
+                              onChange={(value: any) => {
+                                if (value === "for test" || value === "sd") {
+                                  return; // Prevent selection
+                                }
+                                setSelectedSR(value);
+                              }}
+                              value={selectedSR}
+                              controlStyles={{
+                                marginTop: 0,
+                                minHeight: 30,
+                                minWidth: isMobile ? 67 : 150,
+                              }}
+                              menuWidth={isMobile ? "120px" : "150px"}
+                              menuListStyles={{ fontWeight: 400 }}
+                              singleValueStyles={{ fontWeight: 400 }}
+                              placeholder="Select Sales Rep"
+                            />
+
+                          </div>
+                        )}
+                      </td>
+                      <td>{item.rep_2 || '-'}</td>
+                      <td>
+                        {selectedRow !== item.unique_id ? (
+                          <div className="am-select-container">
+                            <span>{item.setter ? item.setter : '-'}</span>
+
+                            <CiEdit
+                              size={16}
+                              onClick={() => {
+                                setSelectedAM({ value: item.setter, label: item.setter });
+                                setSelectedRow(item.unique_id);
+                                setSelectedTable("setter");
+                                setSelectedDealerName(item.partner_dealer);
+                              }}
+                              style={{ cursor: "pointer", marginLeft: "8px" }}
+                            />
+
+                          </div>
+                        ) : (
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <TiTick
+                              size={20}
+                              onClick={() => { setSelectedRow(null); handleSetterEdit(item.unique_id) }}
+                              style={{ cursor: "pointer", color: "black" }}
+                            />
+                            <SelectOption
+                              options={amOptions}
+                              onChange={(value: any) => {
+                                if (value.value === "for test" || value.value === "sd") {
+                                  return;
+                                }
+                                setSelectedAM(value);
+                              }}
+                              value={selectedAM}
+                              controlStyles={{
+                                marginTop: 0,
+                                minHeight: 30,
+                                minWidth: isMobile ? 67 : 150,
+                              }}
+                              menuWidth={isMobile ? "120px" : "150px"}
+                              menuListStyles={{ fontWeight: 400 }}
+                              singleValueStyles={{ fontWeight: 400 }}
+                              placeholder="Select Setter"
+
+                            />
+
+                          </div>
+                        )}
+                      </td>
                       <td>{item.system_size || '0'}</td>
                       <td>{item.contract_amount || '0'}</td>
                       <td>
@@ -713,7 +812,8 @@ const DealerTablePipeline = () => {
                           )
                           : '-'}
                       </td>
-                      <td>{item.rep_2 || '-'}</td>
+
+
                       <td>
                         {item.cancel_date
                           ? format(parseISO(item.cancel_date), 'dd-MM-yyyy')
@@ -756,105 +856,6 @@ const DealerTablePipeline = () => {
                       <td>{item.days_permits ? item.days_permits : '-'}</td>
                       <td>{item.days_install ? item.days_install : '-'}</td>
                       <td>{item.days_pto ? item.days_pto : '-'}</td>
-                      <td>
-                        {selectedSRRow !== item.unique_id ? (
-                          <div className="am-select-container">
-                            <span>{item.rep_1 || '-'}</span>
-                            {item.rep_1 === '' &&
-                              <CiEdit
-                                size={16}
-                                onClick={() => {
-                                  setSelectedSRRow(item.unique_id);
-                                  setSelectedTable("primary_sales_rep");
-                                  setSelectedDealerName(item.partner_dealer);
-                                  setSelectedSR(null);
-                                }}
-                                style={{ cursor: "pointer", marginLeft: "8px" }}
-                              />
-                            }
-                          </div>
-                        ) : (
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <TiTick
-                              size={20}
-                              onClick={() => { setSelectedSRRow(null); handleRepEdit(item.unique_id) }}
-                              style={{ cursor: "pointer", color: "black" }}
-                            />
-                            <SelectOption
-                              options={srOptions}
-                              onChange={(value: any) => {
-                                if (value === "for test" || value === "sd") {
-                                  return; // Prevent selection
-                                }
-                                setSelectedSR(value);
-                              }}
-                              value={selectedSR}
-                              controlStyles={{
-                                marginTop: 0,
-                                minHeight: 30,
-                                minWidth: isMobile ? 67 : 150,
-                              }}
-                              menuWidth={isMobile ? "120px" : "150px"}
-                              menuListStyles={{ fontWeight: 400 }}
-                              singleValueStyles={{ fontWeight: 400 }}
-                              placeholder="Select Sales Rep"
-                            />
-
-                          </div>
-                        )}
-                      </td>
-                      <td>
-                        {selectedRow !== item.unique_id ? (
-                          <div className="am-select-container">
-                            <span>{item.setter ? item.setter : '-'}</span>
-                            {item.setter === '' &&
-                              <CiEdit
-                                size={16}
-                                onClick={() => {
-                                  setSelectedAM(null);
-                                  setSelectedRow(item.unique_id);
-                                  setSelectedTable("setter");
-                                  setSelectedDealerName(item.partner_dealer);
-                                }}
-                                style={{ cursor: "pointer", marginLeft: "8px" }}
-                              />
-                            }
-                          </div>
-                        ) : (
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <TiTick
-                              size={20}
-                              onClick={() => { setSelectedRow(null); handleSetterEdit(item.unique_id) }}
-                              style={{ cursor: "pointer", color: "black" }}
-                            />
-                            <SelectOption
-                              options={amOptions}
-                              onChange={(value: any) => {
-                                if (value.value === "for test" || value.value === "sd") {
-                                  return;
-                                }
-                                setSelectedAM(value);
-                              }}
-                              value={selectedAM}
-                              controlStyles={{
-                                marginTop: 0,
-                                minHeight: 30,
-                                minWidth: isMobile ? 67 : 150,
-                              }}
-                              menuWidth={isMobile ? "120px" : "150px"}
-                              menuListStyles={{ fontWeight: 400 }}
-                              singleValueStyles={{ fontWeight: 400 }}
-                              placeholder="Select Setter"
-
-                            />
-
-                          </div>
-                        )}
-                      </td>
-
-                      <td>
-                        {item.project_status ? item.project_status : '-'}
-                      </td>
                     </tr>
                   ))}
               </tbody>

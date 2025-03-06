@@ -10,7 +10,13 @@ export default [
     displayName: 'Home Owner',
     type: 'string',
     isCheckbox: false,
-    filter:'customer_name'
+    filter: 'customer_name'
+  },
+  {
+    name: 'project_status',
+    displayName: 'Project Status',
+    type: 'string',
+    isCheckbox: false,
   },
   {
     name: 'finance_company',
@@ -61,35 +67,56 @@ export default [
     type: 'string',
     isCheckbox: false,
   },
-  
+
   {
     name: 'partner_dealer',
     displayName: 'Partner',
     type: 'string',
     isCheckbox: false,
-    filter:'dealer'
+    filter: 'dealer'
+  },
+  {
+    name: 'rep_1',
+    displayName: 'Sales Rep1',
+    type: 'string',
+    isCheckbox: false,
+    filter: 'primary_sales_rep'
+  },
+  {
+    name: 'rep_2',
+    displayName: 'Sales Rep2',
+    type: 'string',
+    isCheckbox: false,
+    filter: 'secondary_sales_rep'
+  },
+  {
+    name: 'setter',
+    displayName: 'Setter',
+    type: 'string',
+    isCheckbox: false,
+
   },
   {
     name: 'system_size',
     displayName: 'Sys. Size',
     type: 'number',
     isCheckbox: false,
-    filter:'contracted_system_size'
+    filter: 'contracted_system_size'
   },
   {
     name: 'contract_amount',
     displayName: 'Contract $$',
     type: 'string',
     isCheckbox: false,
-    filter:'total_system_cost'
+    filter: 'total_system_cost'
   },
- 
+
   {
     name: 'contract_date',
     displayName: 'Contract ✓',
     type: 'date',
     isCheckbox: false,
-    filter:'sale_date'
+    filter: 'sale_date'
   },
   {
     name: 'survey_final_completion_date',
@@ -109,36 +136,30 @@ export default [
     displayName: 'Perm Submit',
     type: 'date',
     isCheckbox: false,
-    filter:'pv_submitted'
+    filter: 'pv_submitted'
   },
   {
     name: 'permit_approval_date',
     displayName: 'Perm App',
     type: 'date',
     isCheckbox: false,
-    filter:'pv_approved'
+    filter: 'pv_approved'
   },
   {
     name: 'ic_submit_date',
     displayName: 'IC Sub',
     type: 'date',
     isCheckbox: false,
-    filter:'ic_submitted_date'
+    filter: 'ic_submitted_date'
   },
   {
     name: 'ic_approval_date',
     displayName: 'IC APP',
     type: 'date',
     isCheckbox: false,
-    filter:'ic_approved_date'
+    filter: 'ic_approved_date'
   },
-  {
-    name: 'rep_2',
-    displayName: 'Rep 2',
-    type: 'string',
-    isCheckbox: false,
-    filter: 'secondary_sales_rep'
-  },
+
   {
     name: 'cancel_date',
     displayName: 'Cancel Date',
@@ -150,22 +171,22 @@ export default [
     displayName: 'Pv Install Date',
     type: 'date',
     isCheckbox: false,
-    filter:'pv_completion_date'
+    filter: 'pv_completion_date'
   },
   {
     name: 'pto_date',
     displayName: 'PTO Date',
     type: 'date',
     isCheckbox: false,
-    filter:'pto_granted'
+    filter: 'pto_granted'
   },
-  
+
   {
     name: 'fin_complete_date',
     displayName: 'Fin Date',
     type: 'date',
     isCheckbox: false,
-    filter:'pv_fin_date'
+    filter: 'pv_fin_date'
   },
   {
     name: 'jeopardy_date',
@@ -180,7 +201,7 @@ export default [
     isCheckbox: false,
     // isNotFilter: true
   },
- 
+
   {
     name: 'days_pending_ntp',
     displayName: 'Days Pending NTP',
@@ -200,34 +221,15 @@ export default [
     displayName: 'Days Pending Install',
     type: 'number',
     isCheckbox: false,
-   
+
   },
   {
     name: 'days_pending_pto',
     displayName: 'Days Pending PTO',
     type: 'number',
     isCheckbox: false,
-    
+
   },
-  {
-    name: 'rep_1',
-    displayName: 'Sales Rep',
-    type: 'string',
-    isCheckbox: false,
-    filter: 'primary_sales_rep'
-  },
-  {
-    name: 'setter',
-    displayName: 'Setter',
-    type: 'string',
-    isCheckbox: false,
-    
-  },
-  {
-    name: 'project_status',
-    displayName: 'Project Status',
-    type: 'string',
-    isCheckbox: false,
-    
-  },
+
+
 ];
