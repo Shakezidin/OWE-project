@@ -61,13 +61,7 @@ export default [
     type: 'string',
     isCheckbox: false,
   },
-  {
-    name: 'rep_1',
-    displayName: 'Rep 1',
-    type: 'string',
-    isCheckbox: false,
-    filter: 'primary_sales_rep'
-  },
+  
   {
     name: 'partner_dealer',
     displayName: 'Partner',
@@ -212,6 +206,27 @@ export default [
     name: 'days_pending_pto',
     displayName: 'Days Pending PTO',
     type: 'number',
+    isCheckbox: false,
+    
+  },
+  {
+    name: 'rep_1',
+    displayName: 'Sales Rep',
+    type: 'string',
+    isCheckbox: false,
+    filter: 'primary_sales_rep'
+  },
+  {
+    name: 'setter',
+    displayName: 'Setter',
+    type: 'string',
+    isCheckbox: false,
+    
+  },
+  {
+    name: 'project_status',
+    displayName: 'Project Status',
+    type: 'string',
     isCheckbox: false,
     
   },
