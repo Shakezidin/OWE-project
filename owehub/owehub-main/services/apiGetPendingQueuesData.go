@@ -644,7 +644,7 @@ func buildFilterQuery(filters []models.Filter) string {
 
 		operator := getFilterDBMapped(filter.Operation)
 
-		// handle "BETWEEN" case for date ranges
+		// handle "BETWEEN" case for date range
 		if filter.Operation == "btw" {
 			conditions = append(conditions, fmt.Sprintf("%s BETWEEN '%s' AND '%s'", tableColumn, filter.StartDate, filter.EndDate))
 			continue
