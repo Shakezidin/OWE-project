@@ -104,6 +104,13 @@
     scroll-behavior: smooth;
 }
 
+.TableContainer-pipeline table thead tr {
+    background-color: #d5e4ff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
 .TableContainer-pipeline::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -195,4 +202,10 @@
     transform: scale(1.05);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     background-color: #000000 !important;
+  }
+  .am-select-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 9px;
   }

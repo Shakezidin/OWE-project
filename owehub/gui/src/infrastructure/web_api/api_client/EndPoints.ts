@@ -78,6 +78,7 @@ interface Endpoints {
 
   //DB manager
   Get_DBManager_User_Activity: string;
+  update_setter_sales_rep:string;
 }
 
 export const EndPoints: Endpoints = {
@@ -155,4 +156,5 @@ export const EndPoints: Endpoints = {
 
   //DB Manager
   Get_DBManager_User_Activity: 'useractivity',
+  update_setter_sales_rep: 'update_setter_sales_rep',
 };
