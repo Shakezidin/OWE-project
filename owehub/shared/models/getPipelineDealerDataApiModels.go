@@ -38,6 +38,8 @@ type PipelineDealerData struct {
 	PvInstallDate         string `json:"pv_install_date"`
 	FinCompleteDate       string `json:"fin_complete_date"`
 	PtoDate               string `json:"pto_date"`
+	Setter                string `json:"setter"`
+	ProjectStatus         string `json:"project_status"`
 	DaysPendingNTP        string `json:"days_ntp,omitempty"`
 	DaysPendingPermits    string `json:"days_permits,omitempty"`
 	DaysPendingInstall    string `json:"days_install,omitempty"`

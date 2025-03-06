@@ -1431,6 +1431,8 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
         cust.total_system_cost AS contract_amount,
         cust.sale_date AS created_date,
         cust.sale_date AS contract_date,
+        cust.setter AS setter,
+        cust.project_status,
 
         -- NTP Dates
         ntp.ntp_complete_date,
