@@ -35,11 +35,7 @@ const MyProfile = () => {
   const tableData = {
     tableNames: [
       'partners',
-      'states',
-      'installers',
-      'owe_cost',
-      'loan_type',
-      'tier',
+      'states'
     ],
   };
 
