@@ -39,9 +39,14 @@ const PendingQueue = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExportingData, setIsExporting] = useState(false);
   const [exportShow, setExportShow] = useState<boolean>(false);
+  const [selectedRowData, setSelectedRowData] = useState<any>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = (rowData: any) => {
+    setSelectedRowData(rowData);
+    setIsModalOpen(true);
+  };
+  
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
@@ -106,8 +111,8 @@ const PendingQueue = () => {
     setFilterModal(true);
   };
 
-  const cuurentPageData = dataPending && dataPending?.slice();
-
+  const cuurentPageData = Array.isArray(dataPending) ? dataPending.slice() : [];
+ 
   const ExportCsv = async () => {
     setIsExporting(true);
 
@@ -205,7 +210,8 @@ const PendingQueue = () => {
     setIsExporting(false);
     setExportShow(false);
   };
-
+ 
+  
   const filteredColumns =
     active === 'co'
       ? [
@@ -280,26 +286,27 @@ const PendingQueue = () => {
         resetOnChange={false}
         columns={
           active === 'co'
-            ? PendingActionColumn.filter(
-                (col) =>
-                  ![
-                    'production',
-                    'utility_bill',
-                    'powerclerk',
-                    'finance_NTP',
-                  ].includes(col.name)
-              ).concat([
-                PendingActionColumn[1],
-                {
-                  name: 'co_request',
-                  displayName: 'CO Request',
-                  type: 'string',
-                  isCheckbox: false,
-                  filter: 'co_request',
-                },
-              ])
+            ? (() => {
+                const filteredColumns = PendingActionColumn.filter(
+                  (col) =>
+                    !['utility_bill', 'powerclerk', 'finance_NTP'].includes(col.name) // Removing unwanted columns
+                );
+        
+                return [
+                  filteredColumns[0], 
+                  {
+                    name: 'co_request',
+                    displayName: 'CO Request',
+                    type: 'string',
+                    isCheckbox: false,
+                    filter: 'co_request',
+                  },
+                  ...filteredColumns.slice(1),
+                ];
+              })()
             : PendingActionColumn
         }
+        
         page_number={page}
         page_size={20}
         fetchFunction={fetchFunction}
@@ -673,7 +680,7 @@ const PendingQueue = () => {
                             item,
                             'co_status',
                             active,
-                            openModal
+                            () => openModal(item)
                           )}
                         </div>
                       </td>
@@ -681,12 +688,8 @@ const PendingQueue = () => {
                       <>
                         <td>
                           <div className="">
-                            {renderStatusCell(
-                              item,
-                              'production',
-                              active,
-                              openModal
-                            )}
+                          {renderStatusCell(item, 'production', active, () => openModal(item))}
+
                           </div>
                         </td>
                         <td>
@@ -695,7 +698,7 @@ const PendingQueue = () => {
                               item,
                               'finance_NTP',
                               active,
-                              openModal
+                              () => openModal(item)
                             )}
                           </div>
                         </td>
@@ -705,7 +708,7 @@ const PendingQueue = () => {
                               item,
                               'utility_bill',
                               active,
-                              openModal
+                              () => openModal(item)
                             )}
                           </div>
                         </td>
@@ -715,7 +718,7 @@ const PendingQueue = () => {
                               item,
                               'powerclerk',
                               active,
-                              openModal
+                              () => openModal(item)
                             )}
                           </div>
                         </td>
@@ -787,22 +790,22 @@ const PendingQueue = () => {
                     <td>
                       <p className={styles['pend-header-txt']}>
                         {active === 'ntp'
-                          ? item.ntp.loan_type
-                            ? item.ntp.loan_type
+                          ? item.ntp.deal_type
+                            ? item.ntp.deal_type
                             : '-'
-                          : item.co.loan_type
-                            ? item.co.loan_type
+                          : item.co.deal_type
+                            ? item.co.deal_type
                             : '-'}
                       </p>
                     </td>
                     <td>
                       <p className={styles['pend-header-txt']}>
                         {active === 'ntp'
-                          ? item.ntp.ntp_complete_date
-                            ? item.ntp.ntp_complete_date
+                          ? item.ntp.ntp_date
+                            ? item.ntp.ntp_date
                             : '-'
-                          : item.co.ntp_complete_date
-                            ? item.co.ntp_complete_date
+                          : item.co.ntp_date
+                            ? item.co.ntp_date
                             : '-'}
                       </p>
                     </td>
@@ -810,7 +813,7 @@ const PendingQueue = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3}>
+                  <td colSpan={14}>
                     <div className="flex items-center justify-center">
                       <DataNotFound />
                     </div>
@@ -844,12 +847,13 @@ const PendingQueue = () => {
         </div>
       </div>
       {isModalOpen && (
-        <PendModal
-          closeModal={closeModal}
-          active={active}
-          cuurentPageData={cuurentPageData}
-        />
-      )}
+  <PendModal
+    closeModal={closeModal}
+    active={active}
+    currentRowData={selectedRowData}
+  />
+)}
+
     </>
   );
 };
