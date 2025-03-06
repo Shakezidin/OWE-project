@@ -201,7 +201,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		state, _ := item["state"].(string)
 		email, _ := item["email"].(string)
 		phoneNumber, _ := item["phone_number"].(string)
-		rep1, _ := item["rep_1"].(string)
+		// rep1, _ := item["rep_1"].(string)
 		rep2, _ := item["rep_2"].(string)
 		systemSize, _ := item["system_size"].(string)
 		contractAmount, _ := item["contract_amount"].(string)
@@ -232,10 +232,10 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 			}
 		}
 
-		projectStatus, _ := item["project_status"].(string)
-		if projectStatus == "" {
+		rep1, _ := item["rep_1"].(string)
+		if rep1 == "" {
 			if val, exists := TempMap[uniqueId]; exists {
-				projectStatus = val["project_status"]
+				rep1 = val["primary_sales_rep"]
 			}
 		}
 
