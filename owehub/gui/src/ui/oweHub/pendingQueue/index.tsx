@@ -121,7 +121,7 @@ const PendingQueue = () => {
       ['YYYY-MM-DD', 'DD-MM-YYYY', 'MM-DD-YYYY'],
       true
     );
-    return formattedDate.isValid() ? formattedDate.format('MM-DD-YY') : '-'; // Format as MM-DD-YY
+    return formattedDate.isValid() ? formattedDate.format('MM-DD-YYYY') : '-'; // Format as MM-DD-YYYY
   };
 
   const ExportCsv = async () => {
@@ -178,7 +178,7 @@ const PendingQueue = () => {
             item.uninque_id,
             item.home_owner,
             item.co.project_age_days,
-            item.co.co_status,
+            item.co.co,
             item.co.sold_date,
             item.co.app_status,
             item.co.project_status,
@@ -554,7 +554,7 @@ const PendingQueue = () => {
                 />
                 {formattedFilters && formattedFilters.length > 0 && (
                   <span
-                    className="absolute"  
+                    className="absolute"
                     style={{
                       border: '1px solid #fff',
                       borderRadius: '50%',
@@ -605,35 +605,37 @@ const PendingQueue = () => {
 
         <div className="pendingActionTable" style={{ position: 'relative' }}>
           <table>
-            <thead>
-              <tr>
-                {filteredColumns?.map((item, key) => (
-                  <SortableHeader
-                    key={key}
-                    isCheckbox={item.isCheckbox}
-                    titleName={item.displayName}
-                    data={cuurentPageData}
-                    isAllRowsSelected={false}
-                    isAnyRowSelected={false}
-                    selectAllChecked={false}
-                    setSelectAllChecked={() => {}}
-                    selectedRows={selectedRows}
-                    setSelectedRows={setSelectedRows}
-                    sortKey={item.name}
-                    sortDirection={
-                      sortKey === item.name ? sortDirection : undefined
-                    }
-                    onClick={() => handleSort(item.name)}
-                    style={{
-                      position: key === 0 ? 'sticky' : 'static', // Sticky for the first column
-                      left: 0, // For the first column, keep it fixed
-                      zIndex: key === 0 ? 10 : 'auto', // Ensure the first column stays above others
-                      backgroundColor: '#d5e4ff', // Prevent background from overlapping
-                    }}
-                  />
-                ))}
-              </tr>
-            </thead>
+            {cuurentPageData && cuurentPageData.length > 0 && (
+              <thead>
+                <tr>
+                  {filteredColumns?.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={cuurentPageData}
+                      isAllRowsSelected={false}
+                      isAnyRowSelected={false}
+                      selectAllChecked={false}
+                      setSelectAllChecked={() => {}}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={
+                        sortKey === item.name ? sortDirection : undefined
+                      }
+                      onClick={() => handleSort(item.name)}
+                      style={{
+                        position: key === 0 ? 'sticky' : 'static', // Sticky for the first column
+                        left: 0, // For the first column, keep it fixed
+                        zIndex: key === 0 ? 10 : 'auto', // Ensure the first column stays above others
+                        backgroundColor: '#d5e4ff', // Prevent background from overlapping
+                      }}
+                    />
+                  ))}
+                </tr>
+              </thead>
+            )}
             <tbody>
               {loading ? (
                 <tr>
