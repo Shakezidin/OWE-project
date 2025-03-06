@@ -621,15 +621,15 @@ func buildFilterQuery(filters []models.Filter) string {
 
 	// mapping column names to their respective tables
 	columnMap := map[string]string{
-		"uninque_id":        "customers_customers_schema.unique_id",
-		"customer_name":     "customers_customers_schema.customer_name",
-		"ntp_complete_date": "ntp_ntp_schema.ntp_complete_date",
-		"sold_date":         "ntp_ntp_schema.sale_date",
-		"app_status":        "ntp_ntp_schema.app_status",
-		"project_status":    "ntp_ntp_schema.project_status",
-		"sales_rep":         "ntp_ntp_schema.sales_rep",
-		"setter":            "sales_metrics_schema.setter",
-		"deal_type":         "prospects_customers_schema.lead_source",
+		"uninque_id":     "customers_customers_schema.unique_id",
+		"customer_name":  "customers_customers_schema.customer_name",
+		"ntp_date":       "ntp_ntp_schema.ntp_complete_date",
+		"sold_date":      "ntp_ntp_schema.sale_date",
+		"app_status":     "ntp_ntp_schema.app_status",
+		"project_status": "ntp_ntp_schema.project_status",
+		"sales_rep":      "ntp_ntp_schema.sales_rep",
+		"setter":         "sales_metrics_schema.setter",
+		"deal_type":      "prospects_customers_schema.lead_source",
 	}
 
 	for _, filter := range filters {
