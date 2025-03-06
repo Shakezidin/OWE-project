@@ -622,6 +622,7 @@ func buildFilterQuery(filters []models.Filter) string {
 	// mapping column names to their respective tables
 	columnMap := map[string]string{
 		"uninque_id":     "customers_customers_schema.unique_id",
+		"co_request":     "ntp_ntp_schema.change_order_status",
 		"customer_name":  "customers_customers_schema.customer_name",
 		"ntp_date":       "ntp_ntp_schema.ntp_complete_date",
 		"sold_date":      "ntp_ntp_schema.sale_date",
