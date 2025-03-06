@@ -449,7 +449,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			ntpD = ""
 		} else {
-			ntpD = ntpDate.Format("2006-01-02")
+			ntpD = ntpDate.Format("01-02-2006")
 		}
 
 		if val, ok := item["first_value"].(string); ok {
@@ -474,7 +474,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 		if val, ok := item["sold_date"].(string); ok && val != "" {
 			soldDate = val
 		} else if val, ok := item["sold_date"].(time.Time); ok {
-			soldDate = val.Format("2006-01-02")
+			soldDate = val.Format("01-02-2006")
 		}
 
 		appStatus := ""
@@ -515,8 +515,6 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 		coType := ""
 		if val, ok := item["co_notes"].(string); ok {
 			coType = val
-		} else {
-			coType = "Please see plan set for CO notes!"
 		}
 
 		CoStatus, _ := getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
