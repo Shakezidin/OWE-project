@@ -8,4 +8,5 @@ package models
 
 type CreateNewFormDataRequest struct {
 	TableNames []string `json:"tableNames"`
+	Dealer     string   `json:"dealer"`
 }

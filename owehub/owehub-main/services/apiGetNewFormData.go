@@ -155,6 +155,14 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		case "recruiter":
 			query = `SELECT DISTINCT recruiter as data FROM sales_partner_dbhub_schema
 						WHERE recruiter IS NOT NULL AND recruiter <> '';`
+		case "setter":
+			query = fmt.Sprintf(`SELECT DISTINCT setter as data FROM customers_customers_schema 
+						WHERE dealer = '%v'`, newFormDataReq.Dealer)
+			dbIndex = db.RowDataDBIndex
+		case "primary_sales_rep":
+			query = fmt.Sprintf(`SELECT DISTINCT primary_sales_rep as data FROM customers_customers_schema 
+									WHERE dealer = '%v'`, newFormDataReq.Dealer)
+			dbIndex = db.RowDataDBIndex
 		default:
 			log.FuncErrorTrace(0, "Invalid table name provided: %v", tableName)
 			responseData[tableName] = nil
