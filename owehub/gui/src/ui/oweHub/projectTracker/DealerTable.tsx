@@ -452,7 +452,7 @@ const DealerTablePipeline = () => {
         setUpdate(false);
       }
     } else {
-      toast.error("Please select Rep");
+      toast.error("Please select Sales Rep");
     }
 
   };
