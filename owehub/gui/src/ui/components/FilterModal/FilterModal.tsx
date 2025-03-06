@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom';
 import { showAlert } from '../alert/ShowAlert';
 import { dateFormat } from '../../../utiles/formatDate';
 import useMatchMedia from '../../../hooks/useMatchMedia';
-
+ 
 interface Column {
   name: string;
   filter?: string;
@@ -45,7 +45,7 @@ interface Option {
   value: string;
   label: string;
 }
-
+ 
 interface ErrorState {
   [key: string]: string;
 }
@@ -60,12 +60,12 @@ const FilterModal: React.FC<TableProps> = ({
   isNew,
 }) => {
   const dispatch = useAppDispatch();
-
+ 
   const [filters, setFilters] = useState<FilterModel[]>([
     { Column: '', Operation: '', Data: '', start_date: '', end_date: '', data1: '', data2: '' },
   ]);
-
-
+ 
+ 
   const [applyFilters, setApplyFilters] = useState<FilterModel[]>([
     { Column: '', Operation: '', Data: '', start_date: '', end_date: '', data1: '', data2: '' },
   ]);
@@ -76,12 +76,12 @@ const FilterModal: React.FC<TableProps> = ({
       value: column.filter ? column.filter : column.name,
       label: column.displayName,
     }));
-
-    console.log(options, "sdjhsjgd")
-
+ 
+ 
+ 
   const { pathname } = useLocation();
   const init = useRef(true);
-
+ 
   useEffect(() => {
     setApplyFilters([...filters]);
   }, []);
@@ -121,7 +121,7 @@ const FilterModal: React.FC<TableProps> = ({
       setErrors({});
     }
   };
-
+ 
   useEffect(() => {
     const resetFilters = filters
       .filter((_, ind) => ind === 0)
@@ -141,19 +141,19 @@ const FilterModal: React.FC<TableProps> = ({
       fetchFunction({ page_number, page_size });
       setApplyFilters([...resetFilters]);
     }
-
+ 
     return () => {
       dispatch(disableFilter({ name: pathname }));
     };
   }, [resetOnChange]);
-
+ 
   const handleAddRow = () => {
     setFilters([
       ...filters,
       { Column: '', Operation: '', Data: '', start_date: '', end_date: '', data1: '', data2: '' },
     ]);
   };
-
+ 
   const handleRemoveRow = (index: number) => {
     if (filters.length === 1) {
       if (true) {
@@ -192,7 +192,7 @@ const FilterModal: React.FC<TableProps> = ({
     updatedFilters.splice(index, 1);
     setFilters(updatedFilters);
   };
-
+ 
   const handleChange = (
     index: number,
     field: keyof FilterModel,
@@ -212,33 +212,46 @@ const FilterModal: React.FC<TableProps> = ({
     value: string,
     type: 'number' | 'date' | 'boolean' | 'text' | 'start' | 'end' | 'data1' | 'data2'
   ) => {
-    const newFilters = [...filters];
-
-    if (type === 'start') {
-      newFilters[index].start_date = value;
-      newFilters[index].Data = ''; // Clear Data when setting start_date
-    } else if (type === 'end') {
-      newFilters[index].end_date = value;
-      newFilters[index].Data = ''; // Clear Data when setting end_date
-    } if (type === 'data1') {
-      newFilters[index].data1 = value;
-      newFilters[index].Data = ''; // Clear Data when setting start_date
-    } else if (type === 'data2') {
-      newFilters[index].data2 = value;
-      newFilters[index].Data = ''; // Clear Data when setting end_date
-    } else {
-      newFilters[index].Data = value;
-      newFilters[index].start_date = ''; // Clear start_date for non-date types
-      newFilters[index].end_date = '';
-      newFilters[index].data1 = '';// Clear end_date for non-date types
-      newFilters[index].data2 = '';
-    }
-
-    newFilters[index].type = type;
-    setFilters(newFilters);
+    setFilters(prevFilters => {
+      const newFilters = [...prevFilters]; // Create a shallow copy of the array
+ 
+      newFilters[index] = { // Create a new object instead of mutating existing one
+        ...newFilters[index], // Copy existing properties
+        type, // Always update type
+      };
+ 
+      console.log(value, type, "virat");
+ 
+      if (type === 'start') {
+        console.log(newFilters[index], "veer");
+        newFilters[index].start_date = value;
+        newFilters[index].Data = ''; // Clear Data when setting start_date
+      } else if (type === 'end') {
+        newFilters[index].end_date = value;
+        newFilters[index].Data = ''; // Clear Data when setting end_date
+      } else if (type === 'data1') {
+        newFilters[index].data1 = value;
+        newFilters[index].Data = ''; // Clear Data when setting data1
+      } else if (type === 'data2') {
+        newFilters[index].data2 = value;
+        newFilters[index].Data = ''; // Clear Data when setting data2
+      } else {
+        newFilters[index] = { // Ensure we are properly resetting for other types
+          ...newFilters[index],
+          Data: value,
+          start_date: '',
+          end_date: '',
+          data1: '',
+          data2: '',
+        };
+      }
+ 
+      return newFilters; // Return new array to trigger re-render
+    });
   };
-
-
+ 
+ 
+ 
   const getInputType = (columnName: string) => {
     const type = columns.find(
       (option) => (option.filter ? option.filter : option.name) === columnName
@@ -253,15 +266,15 @@ const FilterModal: React.FC<TableProps> = ({
       return 'text';
     }
   };
-
+ 
   const applyFilter = async () => {
     setErrors({});
-
+ 
     // Validation
     const newErrors: ErrorState = {};
     filters.forEach((filter, index) => {
       console.log((!filter.Data && filter.Operation === 'Operation' && (filter.type === 'text') && (filter.data1 === '' || filter.data2 === '')), "dfhjds")
-
+ 
       if (!filter.Column) {
         newErrors[`column${index}`] = `Please provide Column Name`;
       }
@@ -281,7 +294,7 @@ const FilterModal: React.FC<TableProps> = ({
         newErrors[`data${index}`] = `Please provide Data`;
       }
     });
-
+ 
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
       const formattedFilters: FilterModel[] = filters.map((filter) => {
@@ -290,7 +303,7 @@ const FilterModal: React.FC<TableProps> = ({
           Operation: filter.Operation,
           Data: filter.type === 'date' ? `${String(new Date(filter.Data).getMonth() + 1).padStart(2, '0')}-${String(new Date(filter.Data).getDate()).padStart(2, '0')}-${new Date(filter.Data).getFullYear()}` : filter.Data, // Ensure Data always exists
         };
-
+ 
         if (isNew) {
           filterModel.start_date =
             filter.type === 'date' && filter.start_date
@@ -298,7 +311,7 @@ const FilterModal: React.FC<TableProps> = ({
                 new Date(filter.start_date).getDate()
               ).padStart(2, '0')}-${new Date(filter.start_date).getFullYear()}`
               : filter.start_date;
-
+ 
           filterModel.end_date =
             filter.type === 'date' && filter.end_date
               ? `${String(new Date(filter.end_date).getMonth() + 1).padStart(2, '0')}-${String(
@@ -306,39 +319,39 @@ const FilterModal: React.FC<TableProps> = ({
               ).padStart(2, '0')}-${new Date(filter.end_date).getFullYear()}`
               : filter.end_date;
         }
-
+ 
         if (isNew) {
           filterModel.data1 = filter.data1;
           filterModel.data2 = filter.data2;
         }
-
+ 
         return filterModel;
       });
-
-
-
+ 
+ 
+ 
       const req = {
         page_number: page_number,
         page_size: page_size,
         filters: formattedFilters,
       };
-
+ 
       setApplyFilters([...formattedFilters]);
       dispatch(activeFilter({ name: pathname }));
       handleClose();
       fetchFunction(req);
     }
   };
-
-
-
+ 
+ 
+ 
   const handleCloseModal = () => {
     handleClose();
     setErrors({});
   };
-
+ 
   const isMobile = useMatchMedia('(max-width: 767px)');
-
+ 
   return (
     <div className="transparent-model">
       <div className="modal">
@@ -369,7 +382,7 @@ const FilterModal: React.FC<TableProps> = ({
             <div className="createProfileTextView">
               {filters?.map((filter, index) => {
                 const type = getInputType(filter.Column);
-
+ 
                 return (
                   <div className="create-input-container" key={index}>
                     <div
@@ -381,7 +394,7 @@ const FilterModal: React.FC<TableProps> = ({
                             ? '23%'
                             : '',
                       }}
-
+ 
                     >
                       <label
                         className="inputLabel-select"
@@ -402,7 +415,7 @@ const FilterModal: React.FC<TableProps> = ({
                             setErrors({ ...errors, [`column${index}`]: '' });
                           }}
                         />
-
+ 
                         {errors[`column${index}`] && (
                           <span style={{ color: 'red', fontSize: '12px' }}>
                             {errors[`column${index}`]}
@@ -419,7 +432,7 @@ const FilterModal: React.FC<TableProps> = ({
                             ? '23%'
                             : '',
                       }}
-
+ 
                     >
                       <label
                         className="inputLabel-select"
@@ -447,11 +460,11 @@ const FilterModal: React.FC<TableProps> = ({
                         selected={filter.Column}
                       />
                     </div>
-
+ 
                     <div
                       className="create-input-field"
                       style={{
-
+ 
                         paddingRight:
                           ((type === 'date' && isNew === true) || (type === 'number' && filter.Operation === 'btw' && isNew === true)) ? '7px' : '',
                         width:
@@ -482,12 +495,12 @@ const FilterModal: React.FC<TableProps> = ({
                             <>
                               <div
                                 style={{
-
+ 
                                   display:
                                     type === 'number' && filter.Operation === 'btw' && isNew === true ? 'flex' : '',
                                   gap:
                                     type === 'number' && filter.Operation === 'btw' && isNew === true ? '6px' : '',
-
+ 
                                 }}
                               >
                                 <Input
@@ -513,7 +526,7 @@ const FilterModal: React.FC<TableProps> = ({
                                         [`data${index}`]: '',
                                       });
                                     }
-
+ 
                                   }}
                                   placeholder={'Enter'}
                                 />
@@ -542,7 +555,7 @@ const FilterModal: React.FC<TableProps> = ({
                                         [`data${index}`]: '',
                                       });
                                     }
-
+ 
                                   }}
                                   placeholder={'Enter'}
                                 />
@@ -553,12 +566,12 @@ const FilterModal: React.FC<TableProps> = ({
                             <>
                               <div
                                 style={{
-
+ 
                                   display:
                                     type === 'date' && isNew === true ? 'flex' : '',
                                   gap:
                                     type === 'date' && isNew === true ? '6px' : '',
-
+ 
                                 }}
                               >
                                 <Input
@@ -583,7 +596,7 @@ const FilterModal: React.FC<TableProps> = ({
                                         [`data${index}`]: '',
                                       });
                                     }
-
+ 
                                   }}
                                   placeholder={'Enter'}
                                 />
@@ -611,7 +624,7 @@ const FilterModal: React.FC<TableProps> = ({
                                         [`data${index}`]: '',
                                       });
                                     }
-
+ 
                                   }}
                                   placeholder={'Enter'}
                                 />
@@ -621,7 +634,7 @@ const FilterModal: React.FC<TableProps> = ({
                           {!((type === 'date' && isNew === true) || (type === 'number' && filter.Operation === 'btw' && isNew === true)) && (
                             <>
                               <Input
-
+ 
                                 type={type}
                                 label="Data"
                                 name="Data"

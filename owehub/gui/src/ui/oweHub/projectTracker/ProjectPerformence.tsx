@@ -40,6 +40,8 @@ import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
 import Slider from 'rc-slider';
 import useEscapeKey from '../../../hooks/useEscape';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import TableView from '../../TapeViewUpdate';
+import { CiViewList, CiViewTable } from 'react-icons/ci';
 interface Option {
   value: string;
   label: string;
@@ -701,6 +703,8 @@ const ProjectPerformence = () => {
     (role === TYPE_OF_USER.SALES_REPRESENTATIVE) || (role === TYPE_OF_USER.SALE_MANAGER) || (role === TYPE_OF_USER.ADMIN);
 
 
+  const showTapePage = (role === TYPE_OF_USER.ADMIN && isStaging === 'staging');
+
 
   const navigate = useNavigate();
   const handleNewPage = () => {
@@ -709,1024 +713,1070 @@ const ProjectPerformence = () => {
 
   const isMobile = useMatchMedia('(max-width: 767px)');
   const [isNewHovered, setIsNewHovered] = useState(false);
+  const [isTapeHovered, setIsTapeHovered] = useState(false);
 
+  const [showTape, setShowTape] = useState(false);
+  const handleShowTape = () => {
+    setShowTape(!showTape);
+  }
 
 
 
 
   return (
+    <>
+      <TableView showTape={showTape} handleShowTape={handleShowTape} />
+      <div className="project-main-wrp">
+        <div className="project-container">
+          <div className="project-heading pipeline-heading">
+            <h2>{activeTab === 'Active Queue' ? 'Active' : 'Non-Active'}</h2>
+            <div className="pipeline-header-btns">
+              <div className='pipeline-new-btns'>
+                {(showTapePage) &&
+                  <>
+                    <div
+                      className="skygroup-btn"
+                      onClick={handleShowTape}
+                      data-tooltip-id={isMobile ? '' : 'dealer-refresh'}
+                      style={{
+                        cursor: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'not-allowed' : 'pointer',
+                        pointerEvents: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'none' : 'auto',
+                        opacity: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 0.6 : 1, // Optional: Reduce opacity for a disabled effect
+                        width: '34px'
+                      }}
+                      onMouseEnter={() => setIsTapeHovered(true)}
+                      onMouseLeave={() => setIsTapeHovered(false)}
+                    >
+                      <CiViewList size={22} color={isTapeHovered ? 'white' : '#377CF6'} />
+                    </div>
 
-    <div className="project-main-wrp">
-      <div className="project-container">
-        <div className="project-heading pipeline-heading">
-          <h2>{activeTab === 'Active Queue' ? 'Active' : 'Non-Active'}</h2>
-          <div className="pipeline-header-btns">
 
-            {(showNewPage) &&
-              <>
+                    <Tooltip
+                      style={{
+                        zIndex: 103,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: '400',
+                      }}
+                      offset={8}
+                      id="dealer-refresh"
+                      place="bottom"
+                      content="View Refresh"
+                      className="pagination-tooltip"
+                    />
+                  </>
+                }
+
+                {(showNewPage) &&
+                  <>
+                    <div
+                      className="skygroup-btn"
+                      onClick={handleNewPage}
+                      data-tooltip-id={isMobile ? '' : 'dealer-filter'}
+                      style={{
+                        cursor: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'not-allowed' : 'pointer',
+                        pointerEvents: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'none' : 'auto',
+                        opacity: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 0.6 : 1, // Optional: Reduce opacity for a disabled effect
+                      }}
+                      onMouseEnter={() => setIsNewHovered(true)}
+                      onMouseLeave={() => setIsNewHovered(false)}
+                    >
+                      <img src={isNewHovered ? ICONS.sky : ICONS.skyBlue} alt="sky" />
+                    </div>
+
+
+                    <Tooltip
+                      style={{
+                        zIndex: 103,
+                        background: '#f7f7f7',
+                        color: '#000',
+                        fontSize: 12,
+                        paddingBlock: 4,
+                        fontWeight: '400',
+                      }}
+                      offset={8}
+                      id="dealer-filter"
+                      place="bottom"
+                      content="Projects Data Entry & Aging Report"
+                      className="pagination-tooltip"
+                    />
+                  </>
+                }
+
+                {(showDropdown) && (
+                  <DropdownCheckbox
+                    label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
+                    placeholder="Search partners"
+                    selectedOptions={selectedDealer}
+                    options={dealerOption}
+                    onChange={(val) => {
+                      setSelectedDealer(val);
+                      setPage(1);
+                    }}
+                    disabled={loading || isLoading}
+                  />
+
+                )}
+              </div>
+            <div className='pipeline-new-btns-active'>
+              <button
+                disabled={loading || isLoading}
+                className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
+                onClick={() => {
+                  handleActiveTab('Active Queue'), setPage(1);
+                }}
+              >
+                Active
+              </button>
+              <button
+                disabled={loading || isLoading}
+                className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
+                onClick={() => {
+                  handleActiveTab('Active Queue'), setPage(1);
+                }}
+              >
+                Active
+              </button>
+
+              <button
+                disabled={loading || isLoading}
+                className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
+                onClick={() => {
+                  handleActiveTab('Hold & Jeopardy'), setPage(1);
+                }}
+              >
+                Non-Active
+              </button>
+              <button
+                disabled={loading || isLoading}
+                className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
+                onClick={() => {
+                  handleActiveTab('Hold & Jeopardy'), setPage(1);
+                }}
+              >
+                H&J
+              </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex stats-card-wrapper">
+            <div
+              ref={containerRef}
+              style={{ width: '100%', cursor: 'grab' }}
+              className="project-card-container-1"
+            >
+              {loading ? (
                 <div
-                  className="skygroup-btn"
-                  onClick={handleNewPage}
-                  data-tooltip-id={isMobile ? '' : 'dealer-filter'}
                   style={{
-                    cursor: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'not-allowed' : 'pointer',
-                    pointerEvents: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 'none' : 'auto',
-                    opacity: (role === TYPE_OF_USER.ADMIN && (loading || isLoading)) ? 0.6 : 1, // Optional: Reduce opacity for a disabled effect
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    marginInline: 'auto',
                   }}
-                  onMouseEnter={() => setIsNewHovered(true)}
-                  onMouseLeave={() => setIsNewHovered(false)}
                 >
-                  <img src={isNewHovered ? ICONS.sky : ICONS.skyBlue} alt="sky" />
+                  <MicroLoader />
+                </div>
+              ) : (
+                <>
+                  {topCardsData.map((card, index) => {
+                    const cardColor = cardColors[index % cardColors.length];
+                    const hoverColor = hoverColors[index % hoverColors.length];
+                    const activeColor = activeColors[index % activeColors.length];
+                    const isActive = activeCardId === card.id;
+
+                    const handleCardClick = (cardId: any, title: string) => {
+                      setActiveCardId(cardId);
+                      setActiveCardTitle(title);
+                    };
+
+                    return (
+                      <div
+                        key={card.id}
+                        className="flex items-center arrow-wrap"
+                        style={{ marginRight: '-20px' }}
+                      >
+                        <div
+                          key={card.id}
+                          className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''
+                            } ${isActive ? 'active' : ''}`}
+                          onMouseEnter={() => setIsHovered(index)}
+                          onMouseLeave={() => setIsHovered(-1)}
+                          style={{
+                            backgroundColor: isActive
+                              ? activeColor
+                              : isHovered === index
+                                ? hoverColor
+                                : '#F6F6F6',
+                            border:
+                              isHovered === index
+                                ? `none`
+                                : `2px solid ${cardColor}`,
+                          }}
+                          onClick={(e) => {
+                            handlePendingRequest(card?.pending);
+                            handleCardClick(card.id, card.title);
+                          }}
+                        >
+                          <span
+                            className="stages-numbers"
+                            style={{ color: cardColor, borderColor: cardColor }}
+                          >
+                            {activeCardId === card.id ? <MdDone /> : card.id}
+                          </span>
+                          <p style={{ color: isActive ? '#fff' : '' }}>
+                            {card.title || 'N/A'}
+                          </p>
+                          <h2
+                            style={{
+                              color:
+                                isHovered === index && !isActive
+                                  ? 'var(--input-border-color)'
+                                  : isActive
+                                    ? '#fff'
+                                    : cardColor,
+                            }}
+                          >
+                            {card.value || '0'}
+                          </h2>
+                        </div>
+                        {index < topCardsData.length - 1 && (
+                          <div
+                            className="flex arrow-dir"
+                            style={{ padding: '0 5px' }}
+                          >
+                            <MdOutlineKeyboardDoubleArrowRight
+                              style={{
+                                width: '1.5rem',
+                                height: '1.5rem',
+                                color: cardColor,
+                                marginLeft:
+                                  activeCardId === card.id ? '8px' : '0px',
+                              }}
+                            />
+                            <MdOutlineKeyboardDoubleArrowRight
+                              style={{
+                                marginLeft: '-10px',
+                                height: '1.5rem',
+                                width: '1.5rem',
+                                color:
+                                  cardColors[(index + 1) % cardColors.length],
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="project-container"
+          style={{ marginTop: '1rem', padding: '0 0 1rem 0' }}
+        >
+          <div className="performance-table-heading" style={{ marginTop: "1.2rem" }}>
+            <div className="proper-top pipeline-agingReport-filter">
+              <div className="performance-project">
+                <div className="proper-select">
+                  {/* <IoIosSearch className="search-icon" /> */}
+                  <Input
+                    type="text"
+                    placeholder="Search for Unique ID or Name"
+                    value={search}
+                    name="Search for Unique ID or Name"
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
+                      if (regex.test(input) && input.length <= 50) {
+                        setSearch(input);
+                        handleSearchChange(e);
+                      }
+                    }}
+                  />
+                </div>
+
+                <div
+                  className="performance-box-container pipeline-box-container"
+                  style={{ padding: '0.7rem 1rem' }}
+                >
+                  <p className="status-indicator">Status indicators</p>
+                  <div className="progress-box-body">
+                    <div
+                      className="progress-box"
+                      style={{ background: '#377CF6', borderRadius: '2px' }}
+                    ></div>
+                    <p>Scheduled</p>
+                  </div>
+                  <div className="progress-box-body">
+                    <div
+                      className="progress-box"
+                      style={{ background: '#63ACA3', borderRadius: '2px' }}
+                    ></div>
+                    <p>Completed</p>
+                  </div>
+                  <div className="progress-box-body">
+                    <div
+                      className="progress-box"
+                      style={{ background: '#E9E9E9', borderRadius: '2px' }}
+                    ></div>
+                    <p>Not Started</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="perf-export-btn relative pipline-export-btn">
+
+                <div className='filterButtonAddition '>
+
+                  <div
+                    className="pipelineFilterLine"
+                    style={{ backgroundColor: '#377CF6' }}
+                    data-tooltip-id='filter'
+                    onClick={HandleFilterClick}
+                  >
+                    <img
+                      src={ICONS.fil_white}
+                      alt=""
+                      style={{ height: '15px', width: '15px', position: filterAplied ? 'relative' : 'static', left: filterAplied ? '5px' : '0px' }}
+                      className='filterImg'
+
+
+                    />
+                    {filterAplied &&
+                      <div className='pipeLine-filter-ActiveSign'></div>
+                    }
+
+                  </div>
+
+
+                  <button
+                    disabled={isExportingData}
+                    onClick={ExportCsv}
+                    data-tooltip-id="export"
+                    className={`performance-exportbtn performance-exp-mob flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
+                  >
+                    {isExportingData ? (
+                      <MdDownloading
+                        className="downloading-animation"
+                        size={20}
+                      />
+                    ) : (
+                      <LuImport size={20} />
+                    )}
+                  </button>
                 </div>
 
 
                 <Tooltip
                   style={{
-                    zIndex: 103,
+                    zIndex: 20,
                     background: '#f7f7f7',
-                    color: '#000',
+                    color: '#292b2e',
                     fontSize: 12,
                     paddingBlock: 4,
-                    fontWeight: '400',
                   }}
                   offset={8}
-                  id="dealer-filter"
+                  id="export"
                   place="bottom"
-                  content="Projects Data Entry & Aging Report"
-                  className="pagination-tooltip"
+                  content="Export"
                 />
-              </>
-            }
-
-            {(showDropdown) && (
-              <DropdownCheckbox
-                label={`${selectedDealer.length} Partner${selectedDealer.length === 1 ? '' : 's'} `}
-                placeholder="Search partners"
-                selectedOptions={selectedDealer}
-                options={dealerOption}
-                onChange={(val) => {
-                  setSelectedDealer(val);
-                  setPage(1);
-                }}
-                disabled={loading || isLoading}
-              />
-
-            )}
-
-            <button
-              disabled={loading || isLoading}
-              className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
-              onClick={() => {
-                handleActiveTab('Active Queue'), setPage(1);
-              }}
-            >
-              Active
-            </button>
-            <button
-              disabled={loading || isLoading}
-              className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
-              onClick={() => {
-                handleActiveTab('Active Queue'), setPage(1);
-              }}
-            >
-              Active
-            </button>
-
-            <button
-              disabled={loading || isLoading}
-              className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
-              onClick={() => {
-                handleActiveTab('Hold & Jeopardy'), setPage(1);
-              }}
-            >
-              Non-Active
-            </button>
-            <button
-              disabled={loading || isLoading}
-              className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
-              onClick={() => {
-                handleActiveTab('Hold & Jeopardy'), setPage(1);
-              }}
-            >
-              H&J
-            </button>
-          </div>
-        </div>
-        <div className="flex stats-card-wrapper">
-          <div
-            ref={containerRef}
-            style={{ width: '100%', cursor: 'grab' }}
-            className="project-card-container-1"
-          >
-            {loading ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%',
-                  marginInline: 'auto',
-                }}
-              >
-                <MicroLoader />
-              </div>
-            ) : (
-              <>
-                {topCardsData.map((card, index) => {
-                  const cardColor = cardColors[index % cardColors.length];
-                  const hoverColor = hoverColors[index % hoverColors.length];
-                  const activeColor = activeColors[index % activeColors.length];
-                  const isActive = activeCardId === card.id;
-
-                  const handleCardClick = (cardId: any, title: string) => {
-                    setActiveCardId(cardId);
-                    setActiveCardTitle(title);
-                  };
-
-                  return (
-                    <div
-                      key={card.id}
-                      className="flex items-center arrow-wrap"
-                      style={{ marginRight: '-20px' }}
-                    >
-                      <div
-                        key={card.id}
-                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''
-                          } ${isActive ? 'active' : ''}`}
-                        onMouseEnter={() => setIsHovered(index)}
-                        onMouseLeave={() => setIsHovered(-1)}
-                        style={{
-                          backgroundColor: isActive
-                            ? activeColor
-                            : isHovered === index
-                              ? hoverColor
-                              : '#F6F6F6',
-                          border:
-                            isHovered === index
-                              ? `none`
-                              : `2px solid ${cardColor}`,
-                        }}
-                        onClick={(e) => {
-                          handlePendingRequest(card?.pending);
-                          handleCardClick(card.id, card.title);
-                        }}
-                      >
-                        <span
-                          className="stages-numbers"
-                          style={{ color: cardColor, borderColor: cardColor }}
-                        >
-                          {activeCardId === card.id ? <MdDone /> : card.id}
-                        </span>
-                        <p style={{ color: isActive ? '#fff' : '' }}>
-                          {card.title || 'N/A'}
-                        </p>
-                        <h2
-                          style={{
-                            color:
-                              isHovered === index && !isActive
-                                ? 'var(--input-border-color)'
-                                : isActive
-                                  ? '#fff'
-                                  : cardColor,
-                          }}
-                        >
-                          {card.value || '0'}
-                        </h2>
-                      </div>
-                      {index < topCardsData.length - 1 && (
-                        <div
-                          className="flex arrow-dir"
-                          style={{ padding: '0 5px' }}
-                        >
-                          <MdOutlineKeyboardDoubleArrowRight
-                            style={{
-                              width: '1.5rem',
-                              height: '1.5rem',
-                              color: cardColor,
-                              marginLeft:
-                                activeCardId === card.id ? '8px' : '0px',
-                            }}
-                          />
-                          <MdOutlineKeyboardDoubleArrowRight
-                            style={{
-                              marginLeft: '-10px',
-                              height: '1.5rem',
-                              width: '1.5rem',
-                              color:
-                                cardColors[(index + 1) % cardColors.length],
-                            }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="project-container"
-        style={{ marginTop: '1rem', padding: '0 0 1rem 0' }}
-      >
-        <div className="performance-table-heading" style={{ marginTop: "1.2rem" }}>
-          <div className="proper-top pipeline-agingReport-filter">
-            <div className="performance-project">
-              <div className="proper-select">
-                {/* <IoIosSearch className="search-icon" /> */}
-                <Input
-                  type="text"
-                  placeholder="Search for Unique ID or Name"
-                  value={search}
-                  name="Search for Unique ID or Name"
-                  onChange={(e) => {
-                    const input = e.target.value;
-                    const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
-                    if (regex.test(input) && input.length <= 50) {
-                      setSearch(input);
-                      handleSearchChange(e);
-                    }
+                {!openFilter && <Tooltip
+                  style={{
+                    zIndex: 20,
+                    background: '#f7f7f7',
+                    color: '#292b2e',
+                    fontSize: 12,
+                    paddingBlock: 4,
                   }}
-                />
-              </div>
+                  offset={8}
+                  id="filter"
+                  place="bottom"
+                  content="Filter"
+                />}
+                {openFilter && !loading && <div ref={filterRef} className='dropDownFilter'>
 
-              <div
-                className="performance-box-container pipeline-box-container"
-                style={{ padding: '0.7rem 1rem' }}
-              >
-                <p className="status-indicator">Status indicators</p>
-                <div className="progress-box-body">
-                  <div
-                    className="progress-box"
-                    style={{ background: '#377CF6', borderRadius: '2px' }}
-                  ></div>
-                  <p>Scheduled</p>
-                </div>
-                <div className="progress-box-body">
-                  <div
-                    className="progress-box"
-                    style={{ background: '#63ACA3', borderRadius: '2px' }}
-                  ></div>
-                  <p>Completed</p>
-                </div>
-                <div className="progress-box-body">
-                  <div
-                    className="progress-box"
-                    style={{ background: '#E9E9E9', borderRadius: '2px' }}
-                  ></div>
-                  <p>Not Started</p>
-                </div>
+                  <div className='filterOptions'>
+                    {['Project Age', 'NTP', 'Permitting', 'Install', 'PTO'].map(
+                      (option: string, index) => (
+                        <div className="eachOption" key={index}>
+                          <input
+                            id={`pipeline-filter-options-${index}`}
+                            type="checkbox"
+                            checked={checkedStates[index]}
+                            onChange={() => {
+                              const newCheckedStates = [...checkedStates];
+                              newCheckedStates[index] = !newCheckedStates[index];
+
+                              setCheckedStates(newCheckedStates);
+
+                              // Update the checkedOptions based on the new state
+                              if (newCheckedStates[index]) {
+                                // Add the option if checked
+                                setCheckedOptions((prev) => [...prev, option]);
+                              } else {
+                                // Remove the option if unchecked
+                                setCheckedOptions((prev) => prev.filter((opt) => opt !== option));
+                              }
+                            }}
+                          />
+                          <label
+                            className="options"
+                            style={{ color: checkedStates[index] ? '#377CF6' : '#292b2e', cursor: 'pointer' }}
+                            htmlFor={`pipeline-filter-options-${index}`}
+                          >
+                            {option}
+                          </label>
+                          {
+
+                          }
+                        </div>
+                      )
+                    )}
+                  </div>
+
+
+                  <div className='breakLine'>
+                  </div>
+                  <div className='secondHalfFilter'>
+                    <div className='selectDaysDiv'>
+                      <p className='selectDays'>Select Days</p>
+                    </div>
+
+                    <div className='filterdays'>
+                      <div className='startDay'>
+                        <div className='mThen'>
+                          <p className='moreThen'>More than</p>
+                        </div>
+                        <label className='pipeline-inputBox-div'>
+                          <input
+                            className='dayBox'
+                            value={minValue === 0 ? '' : minValue}
+                            type="text"
+                            onChange={handleMinChange}
+                            onBlur={() => {
+                              set_minValue(minValue <= 0 ? 1 : minValue);
+                            }}
+                            style={{
+                              outline: 'none', width: minValue.toString().length === 1 ? '15px' :
+                                minValue.toString().length === 2 ? '24px' : '30px'
+                            }}
+                            min={1}
+                            max={180}
+                          />
+                          {minValue !== 0 && <p className='pipeline-inputBox-div-para'>{minValue === 1 ? 'day' : 'days'}</p>}
+                        </label>
+                      </div>
+                      <div className='endDay'>
+                        <div className='lThen'>
+                          <p className='lessThen'>Less than</p>
+                        </div>
+                        <label className='pipeline-inputBox-div'>
+                          <input
+                            className='dayBox'
+                            value={maxValue === 0 ? '' : maxValue}
+                            type="text"
+                            onChange={handleMaxChange}
+                            disabled={minValue === 180}
+
+                            onBlur={() => {
+                              set_maxValue(maxValue <= 0 ? 180 : maxValue);
+
+                            }}
+                            style={{
+                              outline: 'none', width: maxValue.toString().length === 1 ? '15px' :
+                                maxValue.toString().length === 2 ? '24px' : '30px'
+                            }}
+                            min={1}
+                            max={360}
+                          />
+                          {maxValue !== 0 && <p className='pipeline-inputBox-div-para'>{maxValue === 1 ? 'day' : 'days'}</p>}
+                        </label>
+                      </div>
+                    </div>
+
+                    <Slider
+                      range
+                      min={1}
+                      max={180}
+                      value={[minValue, maxValue]}
+                      onChange={handleSliderChange}
+                      marks={{
+                        1: {
+                          label: <span style={{ color: '#292b2e' }}>1</span>,
+                        },
+                        30: {
+                          label: <span style={{ color: '#292b2e' }}>30</span>,
+                        },
+                        60: {
+                          label: <span style={{ color: '#292b2e' }}>60</span>,
+                        },
+                        90: {
+                          label: <span style={{ color: '#292b2e' }}>90</span>,
+                        },
+                        120: {
+                          label: <span style={{ color: '#292b2e' }}>120</span>,
+                        },
+                        150: {
+                          label: <span style={{ color: '#292b2e' }}>150</span>,
+                        },
+                        180: {
+                          label: <span style={{ color: '#292b2e' }}>180</span>,
+                        },
+                      }}
+                      className="custom-slider"
+                      railStyle={{
+                        backgroundColor: '#E5E7EB',
+                        height: 2,
+                      }}
+                      trackStyle={{
+                        backgroundColor: '#3B82F6',
+                        height: 2,
+                      }}
+                      handleStyle={{
+                        borderColor: '#3B82F6',
+                        backgroundColor: '#3B82F6',
+                        opacity: 1,
+                        width: 12,
+                        height: 12,
+                        marginTop: -4,
+                        boxShadow: '0 0 0 2px white',
+                      }}
+                    />
+
+
+
+
+
+                    <div className='filterButtons'>
+
+                      <div className='cancelButton' onClick={() => {
+                        setFieldData([]); const resetStates = new Array(5).fill(false);
+                        setCheckedStates(resetStates);
+                        set_maxValue(75);
+                        set_minValue(25);
+                        setPage(1);
+                        // Also clear the checkedOptions array
+                        setCheckedOptions([]); setOpenFilter(false);
+                        setFilterAplied(false);
+                        setFiltered(prev => !prev);
+
+                      }} style={{ cursor: "pointer" }}> Cancel </div>
+
+
+                      <div className='applyButton'
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          if (minValue > maxValue) {
+                            toast.error("In Range Min value can not be more than Max value");
+                            set_minValue(25);
+                            set_maxValue(70);
+                            setFilterAplied(false);
+                          }
+                          else if (fieldData.length === 0) {
+                            toast.error("Please Select atleast one Option!");
+                          }
+                          else {
+                            setFiltered(prev => !prev);
+                            setOpenFilter(false);
+                            setFilterAplied(true);
+                            setPage(1);
+                          }
+
+
+                        }}
+                      > Apply </div>
+                    </div>
+                  </div>
+
+                </div>}
               </div>
             </div>
 
-            <div className="perf-export-btn relative pipline-export-btn">
-
-              <div className='filterButtonAddition '>
-
-                <div
-                  className="pipelineFilterLine"
-                  style={{ backgroundColor: '#377CF6' }}
-                  data-tooltip-id='filter'
-                  onClick={HandleFilterClick}
-                >
-                  <img
-                    src={ICONS.fil_white}
-                    alt=""
-                    style={{ height: '15px', width: '15px', position: filterAplied ? 'relative' : 'static', left: filterAplied ? '5px' : '0px' }}
-                    className='filterImg'
-
-
-                  />
-                  {filterAplied &&
-                    <div className='pipeLine-filter-ActiveSign'></div>
-                  }
-
-                </div>
-
-
-                <button
-                  disabled={isExportingData}
-                  onClick={ExportCsv}
-                  data-tooltip-id="export"
-                  className={`performance-exportbtn performance-exp-mob flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
-                >
-                  {isExportingData ? (
-                    <MdDownloading
-                      className="downloading-animation"
-                      size={20}
-                    />
-                  ) : (
-                    <LuImport size={20} />
-                  )}
-                </button>
-              </div>
-
-
-              <Tooltip
-                style={{
-                  zIndex: 20,
-                  background: '#f7f7f7',
-                  color: '#292b2e',
-                  fontSize: 12,
-                  paddingBlock: 4,
-                }}
-                offset={8}
-                id="export"
-                place="bottom"
-                content="Export"
-              />
-              {!openFilter && <Tooltip
-                style={{
-                  zIndex: 20,
-                  background: '#f7f7f7',
-                  color: '#292b2e',
-                  fontSize: 12,
-                  paddingBlock: 4,
-                }}
-                offset={8}
-                id="filter"
-                place="bottom"
-                content="Filter"
-              />}
-              {openFilter && !loading && <div ref={filterRef} className='dropDownFilter'>
-
-                <div className='filterOptions'>
-                  {['Project Age', 'NTP', 'Permitting', 'Install', 'PTO'].map(
-                    (option: string, index) => (
-                      <div className="eachOption" key={index}>
-                        <input
-                          id={`pipeline-filter-options-${index}`}
-                          type="checkbox"
-                          checked={checkedStates[index]}
-                          onChange={() => {
-                            const newCheckedStates = [...checkedStates];
-                            newCheckedStates[index] = !newCheckedStates[index];
-
-                            setCheckedStates(newCheckedStates);
-
-                            // Update the checkedOptions based on the new state
-                            if (newCheckedStates[index]) {
-                              // Add the option if checked
-                              setCheckedOptions((prev) => [...prev, option]);
-                            } else {
-                              // Remove the option if unchecked
-                              setCheckedOptions((prev) => prev.filter((opt) => opt !== option));
-                            }
-                          }}
-                        />
-                        <label
-                          className="options"
-                          style={{ color: checkedStates[index] ? '#377CF6' : '#292b2e', cursor: 'pointer' }}
-                          htmlFor={`pipeline-filter-options-${index}`}
-                        >
-                          {option}
-                        </label>
-                        {
-
-                        }
+            <div className="performance-milestone-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th style={{ padding: '0px' }}>
+                      <div className="milestone-header">
+                        <div className="project-info">
+                          <p>Project Info</p>
+                        </div>
+                        <div className="header-milestone">
+                          <p>Milestones</p>
+                        </div>
                       </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isLoading ? (
+                    <tr>
+                      <td
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                        colSpan={6}
+                      >
+                        <MicroLoader />
+                      </td>
+                    </tr>
+                  ) : projectStatus.length < 1 && !isLoading ? (
+                    <tr>
+                      <td colSpan={7} style={{ textAlign: 'center' }}>
+                        <div
+                          className=""
+                          style={{ display: 'flex', justifyContent: 'center' }}
+                        >
+                          <DataNotFound />
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    pipelineData.map(
+                      (project: (typeof pipelineData)[0], index: number) => {
+                        const newObj: any = { ...project };
+                        delete newObj?.['unqiue_id'];
+                        return (
+                          <tr key={index}>
+                            <td style={{ padding: '0px' }}>
+                              <div className="milestone-data">
+                                <div className="project-info-details">
+
+
+                                  <Link
+                                    to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
+
+                                  >
+                                    <div className="deco-text">
+                                      <h3>{project.customer}</h3>
+                                      <p className="install-update">
+                                        {project.unqiue_id}
+                                      </p>
+                                    </div>
+                                  </Link>
+                                  {project.days_project_age && project.days_project_age !== '-' && project.days_project_age !== '0' && <div className='projectAge'>
+                                    <p>Project age :
+                                      {
+                                        ' ' + project.days_project_age.split(" ")[0] + " days"
+
+                                      }
+                                    </p>
+
+                                  </div>}
+                                  {
+                                    !project.days_project_age && <div style={{ margin: '5px 0px' }}> </div>
+                                  }
+                                  <div className="milestone-status">
+
+                                    <div
+                                      className="status-item qc-item click qc"
+                                      onClick={() => {
+                                        setSelectedProjectQC(project.qc);
+                                        filter();
+                                      }}
+                                    >
+                                      QC:
+                                      <img
+                                        src={
+                                          Object.values(project.qc).some(
+                                            (value) => value === 'Pending'
+                                          ) ||
+                                            project.qc.qc_action_required_count > 0
+                                            ? ICONS.Pendingqc
+                                            : ICONS.complete
+                                        }
+                                        width={16}
+                                        alt="img"
+                                      />
+                                      {Object.values(project.qc).every(
+                                        (value) => value !== 'Pending'
+                                      ) && project.qc.qc_action_required_count > 0
+                                        ? project.qc.qc_action_required_count
+                                        : ''}
+                                    </div>
+                                    <div
+                                      className={`status-item ntp-item click ${project.co_status === 'CO Complete' ? 'ntp' : ''}`}
+                                      onClick={() => {
+                                        setSelectedProjectQC(project.ntp);
+                                        ntpAction();
+                                        setNtpValue(project.days_ntp);
+                                      }}
+                                    >
+                                      NTP:
+                                      <img
+                                        src={
+                                          Object.values(project.ntp).some(
+                                            (value) => value === 'Pending'
+                                          ) ||
+                                            project.ntp.action_required_count > 0
+                                            ? ICONS.Pendingqc
+                                            : ICONS.complete
+                                        }
+                                        width={16}
+                                        alt="img"
+                                      />
+                                      {Object.values(project.ntp).every(
+                                        (value) => value !== 'Pending'
+                                      ) && project.qc.qc_action_required_count > 0
+                                        ? project.ntp.action_required_count
+                                        : ''}
+                                      {
+                                        project.days_ntp && project.days_ntp !== '-' && project.days_ntp !== '0 day pending' &&
+
+                                        <div className='ntpActionRequired'>
+                                          <p>{project.days_ntp.split(" ")[0] + project.days_ntp.split(" ")[0] === '1' ? 'day' : 'days'}</p>
+                                        </div>
+                                      }
+                                    </div>
+                                    {
+
+                                    }
+
+                                    {project.co_status !== 'CO Complete' &&
+                                      project.co_status && (
+                                        <div
+                                          className="status-item co"
+                                          data-tooltip={project.co_status} // Custom tooltip
+                                        >
+                                          C/O
+                                        </div>
+                                      )}
+
+                                  </div>
+                                </div>
+
+                                {/* <p className='performance-info-p' onClick={() => {}}>More info.</p> */}
+
+                                <div className="strips-wrapper">
+                                  {/* Site Survey */}
+                                  <div className="strip-container">
+                                    <div
+                                      className="milestone-strips"
+                                      style={getColorStyle(project.site_survey_colour)}
+                                    >
+                                      <p className="strips-data">site survey</p>
+                                      <div className="strip-title">
+                                        {project.site_survey_date ? (
+                                          <p>{project?.site_survey_date}</p>
+                                        ) : (
+                                          <p className={`${project.site_survey_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                            {'No Data'}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <div className="strip-arrow">
+                                        <MdOutlineKeyboardDoubleArrowRight
+                                          style={{
+                                            width: '1.2rem',
+                                            height: '1.2rem',
+                                            color: project.site_survey_colour,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    {/* Days Remaining */}
+                                    {project.days_site_survey && project.days_site_survey !== '0 day pending' && project.days_site_survey !== '-' && <div className="pendingDayDiv">
+                                      <p className="daysRemaining">{project.days_site_survey}</p>
+                                      <div className='simpleLine'> </div>
+                                    </div>}
+                                  </div>
+
+                                  {/* CAD Design */}
+                                  <div className="strip-container">
+                                    <div
+                                      className="notch-strip"
+                                      style={getColorStyle(project.cad_design_colour)}
+                                    >
+                                      <p className="strips-data">cad design</p>
+                                      <div className="notch-title">
+                                        {project.cad_design_date ? (
+                                          <p>{project?.cad_design_date}</p>
+                                        ) : (
+                                          <p className={`${project.cad_design_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                            {'No Data'}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <div className="strip-arrow">
+                                        <MdOutlineKeyboardDoubleArrowRight
+                                          style={{
+                                            width: '1.2rem',
+                                            height: '1.2rem',
+                                            color: project.cad_design_colour,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    {/* Days Remaining */}
+                                    {project.cad_design_colour === '#377CF6' && project.days_cad_design && project.days_cad_design !== '0 day pending' && project.days_cad_design !== '-' && <div className="pendingDayDiv">
+                                      <p className="daysRemaining">{project.days_cad_design}</p>
+                                      <div className='simpleLine'> </div>
+                                    </div>}
+                                  </div>
+
+                                  {/* Permitting */}
+                                  <div className="strip-container">
+                                    <div
+                                      className="notch-strip"
+                                      style={getColorStyle(project.permitting_colour)}
+                                    >
+                                      <p className="strips-data">permitting</p>
+                                      <div className="notch-title">
+                                        {project.permitting_date ? (
+                                          <p>{project?.permitting_date}</p>
+                                        ) : (
+                                          <p className={`${project.permitting_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                            {'No Data'}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <div className="strip-arrow">
+                                        <MdOutlineKeyboardDoubleArrowRight
+                                          style={{
+                                            width: '1.2rem',
+                                            height: '1.2rem',
+                                            color: project.permitting_colour,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    {/* Days Remaining */}
+                                    {project.days_permits && project.days_permits !== '0 day pending' && project.days_permits !== '-' && <div className="pendingDayDiv">
+                                      <p className="daysRemaining">{project.days_permits}</p>
+                                      <div className='simpleLine'> </div>
+                                    </div>}
+                                  </div>
+
+                                  {/* Roofing */}
+                                  {project.roofing_colour && (
+                                    <div className="strip-container">
+                                      <div
+                                        className="notch-strip"
+                                        style={getColorStyle(project.roofing_colour)}
+                                      >
+                                        <p className="strips-data">roofing</p>
+                                        <div className="notch-title">
+                                          {project.roofing_date ? (
+                                            <p>{project?.roofing_date}</p>
+                                          ) : (
+                                            <p className={`${project.roofing_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                              {'No Data'}
+                                            </p>
+                                          )}
+                                        </div>
+                                        <div className="strip-arrow">
+                                          <MdOutlineKeyboardDoubleArrowRight
+                                            style={{
+                                              width: '1.2rem',
+                                              height: '1.2rem',
+                                              color: project.roofing_colour,
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                      {/* Days Remaining */}
+                                      {project.days_roofing && project.days_roofing !== '-' && project.days_roofing !== '0 day pending' && <div className="pendingDayDiv">
+                                        <p className="daysRemaining">{project.days_roofing}</p>
+                                        <div className='simpleLine'> </div>
+                                      </div>}
+                                    </div>
+                                  )}
+
+                                  {/* Install */}
+                                  <div className="strip-container">
+                                    <div
+                                      className="notch-strip"
+                                      style={getColorStyle(project.install_colour)}
+                                    >
+                                      <p className="strips-data">install</p>
+                                      <div className="notch-title">
+                                        {project.install_date ? (
+                                          <p>{project?.install_date}</p>
+                                        ) : (
+                                          <p className={`${project.install_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                            {'No Data'}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <div className="strip-arrow">
+                                        <MdOutlineKeyboardDoubleArrowRight
+                                          style={{
+                                            width: '1.2rem',
+                                            height: '1.2rem',
+                                            color: project.install_colour,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    {/* Days Remaining */}
+                                    {project.days_install && project.days_install !== '0 day pending' && project.days_install !== '-' && <div className="pendingDayDiv">
+                                      <p className="daysRemaining">{project.days_install}</p>
+                                      <div className='simpleLine'> </div>
+                                    </div>}
+                                  </div>
+
+                                  {/* Electrical */}
+                                  {project?.electrical_date && (
+                                    <div className="strip-container">
+                                      <div
+                                        className="notch-strip"
+                                        style={getColorStyle(project.electrical_colour)}
+                                      >
+                                        <p className="strips-data">electrical</p>
+                                        <div className="notch-title">
+                                          {project.electrical_date ? (
+                                            <p>{project?.electrical_date}</p>
+                                          ) : (
+                                            <p className={`${project.electrical_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                              {'No Data'}
+                                            </p>
+                                          )}
+                                        </div>
+                                        <div className="strip-arrow">
+                                          <MdOutlineKeyboardDoubleArrowRight
+                                            style={{
+                                              width: '1.2rem',
+                                              height: '1.2rem',
+                                              color: project.electrical_colour,
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                      {/* Days Remaining */}
+                                      {project.days_electrical && project.days_electrical !== '0 day pending' && project.days_electrical !== '-' && <div className="pendingDayDiv">
+                                        <p className="daysRemaining">{project.days_electrical}</p>
+                                        <div className='simpleLine'> </div>
+                                      </div>}
+                                    </div>
+                                  )}
+
+                                  {/* Inspection */}
+                                  <div className="strip-container">
+                                    <div
+                                      className="notch-strip"
+                                      style={getColorStyle(project.inspectionsColour)}
+                                    >
+                                      <p className="strips-data">inspection</p>
+                                      <div className="notch-title">
+                                        {project.inspection_date ? (
+                                          <p>{project?.inspection_date}</p>
+                                        ) : (
+                                          <p className={`${project.inspectionsColour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                            {'No Data'}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <div className="strip-arrow">
+                                        <MdOutlineKeyboardDoubleArrowRight
+                                          style={{
+                                            width: '1.2rem',
+                                            height: '1.2rem',
+                                            color: project.inspectionsColour,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    {/* Days Remaining */}
+                                    {project.days_inspection && project.days_inspection !== '0 day pending' && project.days_inspection !== '-' && <div className="pendingDayDiv">
+                                      <p className="daysRemaining">{project.days_inspection}</p>
+                                      <div className='simpleLine'> </div>
+                                    </div>}
+                                  </div>
+
+                                  {/* Activation */}
+                                  <div className="strip-container">
+                                    <div
+                                      className="notch-strip"
+                                      style={getColorStyle(project.activation_colour)}
+                                    >
+                                      <p className="strips-data">activation</p>
+                                      <div className="notch-title">
+                                        {project.activation_date ? (
+                                          <p>{project?.activation_date}</p>
+                                        ) : (
+                                          <p className={`${project.activation_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
+                                            {'No Data'}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <div>
+                                        <MdOutlineKeyboardDoubleArrowRight
+                                          style={{
+                                            width: '1.2rem',
+                                            height: '1.2rem',
+                                            color: project.activation_colour,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    {/* Days Remaining */}
+                                    {project.days_activation && project.days_activation !== '0 day pending' && project.days_activation !== '-' && <div className="pendingDayDiv">
+                                      <p className="daysRemaining">{project.days_activation}</p>
+                                      <div className='simpleLine'> </div>
+                                    </div>}
+                                  </div>
+                                </div>
+
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      }
                     )
                   )}
-                </div>
 
-
-                <div className='breakLine'>
-                </div>
-                <div className='secondHalfFilter'>
-                  <div className='selectDaysDiv'>
-                    <p className='selectDays'>Select Days</p>
-                  </div>
-
-                  <div className='filterdays'>
-                    <div className='startDay'>
-                      <div className='mThen'>
-                        <p className='moreThen'>More than</p>
-                      </div>
-                      <label className='pipeline-inputBox-div'>
-                        <input
-                          className='dayBox'
-                          value={minValue === 0 ? '' : minValue}
-                          type="text"
-                          onChange={handleMinChange}
-                          onBlur={() => {
-                            set_minValue(minValue <= 0 ? 1 : minValue);
-                          }}
-                          style={{
-                            outline: 'none', width: minValue.toString().length === 1 ? '15px' :
-                              minValue.toString().length === 2 ? '24px' : '30px'
-                          }}
-                          min={1}
-                          max={180}
-                        />
-                        {minValue !== 0 && <p className='pipeline-inputBox-div-para'>{minValue === 1 ? 'day' : 'days'}</p>}
-                      </label>
-                    </div>
-                    <div className='endDay'>
-                      <div className='lThen'>
-                        <p className='lessThen'>Less than</p>
-                      </div>
-                      <label className='pipeline-inputBox-div'>
-                        <input
-                          className='dayBox'
-                          value={maxValue === 0 ? '' : maxValue}
-                          type="text"
-                          onChange={handleMaxChange}
-                          disabled={minValue === 180}
-
-                          onBlur={() => {
-                            set_maxValue(maxValue <= 0 ? 180 : maxValue);
-
-                          }}
-                          style={{
-                            outline: 'none', width: maxValue.toString().length === 1 ? '15px' :
-                              maxValue.toString().length === 2 ? '24px' : '30px'
-                          }}
-                          min={1}
-                          max={360}
-                        />
-                        {maxValue !== 0 && <p className='pipeline-inputBox-div-para'>{maxValue === 1 ? 'day' : 'days'}</p>}
-                      </label>
-                    </div>
-                  </div>
-
-                  <Slider
-                    range
-                    min={1}
-                    max={180}
-                    value={[minValue, maxValue]}
-                    onChange={handleSliderChange}
-                    marks={{
-                      1: {
-                        label: <span style={{ color: '#292b2e' }}>1</span>,
-                      },
-                      30: {
-                        label: <span style={{ color: '#292b2e' }}>30</span>,
-                      },
-                      60: {
-                        label: <span style={{ color: '#292b2e' }}>60</span>,
-                      },
-                      90: {
-                        label: <span style={{ color: '#292b2e' }}>90</span>,
-                      },
-                      120: {
-                        label: <span style={{ color: '#292b2e' }}>120</span>,
-                      },
-                      150: {
-                        label: <span style={{ color: '#292b2e' }}>150</span>,
-                      },
-                      180: {
-                        label: <span style={{ color: '#292b2e' }}>180</span>,
-                      },
-                    }}
-                    className="custom-slider"
-                    railStyle={{
-                      backgroundColor: '#E5E7EB',
-                      height: 2,
-                    }}
-                    trackStyle={{
-                      backgroundColor: '#3B82F6',
-                      height: 2,
-                    }}
-                    handleStyle={{
-                      borderColor: '#3B82F6',
-                      backgroundColor: '#3B82F6',
-                      opacity: 1,
-                      width: 12,
-                      height: 12,
-                      marginTop: -4,
-                      boxShadow: '0 0 0 2px white',
-                    }}
+                  <QCPopUp
+                    projectDetail={selectedProjectQC}
+                    isOpen={filterOPen}
+                    handleClose={filterClose}
                   />
-
-
-
-
-
-                  <div className='filterButtons'>
-
-                    <div className='cancelButton' onClick={() => {
-                      setFieldData([]); const resetStates = new Array(5).fill(false);
-                      setCheckedStates(resetStates);
-                      set_maxValue(75);
-                      set_minValue(25);
-                      setPage(1);
-                      // Also clear the checkedOptions array
-                      setCheckedOptions([]); setOpenFilter(false);
-                      setFilterAplied(false);
-                      setFiltered(prev => !prev);
-
-                    }} style={{ cursor: "pointer" }}> Cancel </div>
-
-
-                    <div className='applyButton'
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        if (minValue > maxValue) {
-                          toast.error("In Range Min value can not be more than Max value");
-                          set_minValue(25);
-                          set_maxValue(70);
-                          setFilterAplied(false);
-                        }
-                        else if (fieldData.length === 0) {
-                          toast.error("Please Select atleast one Option!");
-                        }
-                        else {
-                          setFiltered(prev => !prev);
-                          setOpenFilter(false);
-                          setFilterAplied(true);
-                          setPage(1);
-                        }
-
-
-                      }}
-                    > Apply </div>
-                  </div>
-                </div>
-
-              </div>}
+                  <NtpPopUp
+                    projectDetail={selectedProjectQC}
+                    isOpen={ntpOPen}
+                    handleClose={ntpClose}
+                    ntpValue={ntpValue}
+                  />
+                </tbody>
+              </table>
             </div>
-          </div>
 
-          <div className="performance-milestone-table">
-            <table>
-              <thead>
-                <tr>
-                  <th style={{ padding: '0px' }}>
-                    <div className="milestone-header">
-                      <div className="project-info">
-                        <p>Project Info</p>
-                      </div>
-                      <div className="header-milestone">
-                        <p>Milestones</p>
-                      </div>
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                      colSpan={6}
-                    >
-                      <MicroLoader />
-                    </td>
-                  </tr>
-                ) : projectStatus.length < 1 && !isLoading ? (
-                  <tr>
-                    <td colSpan={7} style={{ textAlign: 'center' }}>
-                      <div
-                        className=""
-                        style={{ display: 'flex', justifyContent: 'center' }}
-                      >
-                        <DataNotFound />
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  pipelineData.map(
-                    (project: (typeof pipelineData)[0], index: number) => {
-                      const newObj: any = { ...project };
-                      delete newObj?.['unqiue_id'];
-                      return (
-                        <tr key={index}>
-                          <td style={{ padding: '0px' }}>
-                            <div className="milestone-data">
-                              <div className="project-info-details">
-
-
-                                <Link
-                                  to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
-
-                                >
-                                  <div className="deco-text">
-                                    <h3>{project.customer}</h3>
-                                    <p className="install-update">
-                                      {project.unqiue_id}
-                                    </p>
-                                  </div>
-                                </Link>
-                                {project.days_project_age && project.days_project_age !== '-' && project.days_project_age !== '0' && <div className='projectAge'>
-                                  <p>Project age :
-                                    {
-                                      ' ' + project.days_project_age.split(" ")[0] + " days"
-
-                                    }
-                                  </p>
-
-                                </div>}
-                                {
-                                  !project.days_project_age && <div style={{ margin: '5px 0px' }}> </div>
-                                }
-                                <div className="milestone-status">
-
-                                  <div
-                                    className="status-item qc-item click qc"
-                                    onClick={() => {
-                                      setSelectedProjectQC(project.qc);
-                                      filter();
-                                    }}
-                                  >
-                                    QC:
-                                    <img
-                                      src={
-                                        Object.values(project.qc).some(
-                                          (value) => value === 'Pending'
-                                        ) ||
-                                          project.qc.qc_action_required_count > 0
-                                          ? ICONS.Pendingqc
-                                          : ICONS.complete
-                                      }
-                                      width={16}
-                                      alt="img"
-                                    />
-                                    {Object.values(project.qc).every(
-                                      (value) => value !== 'Pending'
-                                    ) && project.qc.qc_action_required_count > 0
-                                      ? project.qc.qc_action_required_count
-                                      : ''}
-                                  </div>
-                                  <div
-                                    className={`status-item ntp-item click ${project.co_status === 'CO Complete' ? 'ntp' : ''}`}
-                                    onClick={() => {
-                                      setSelectedProjectQC(project.ntp);
-                                      ntpAction();
-                                      setNtpValue(project.days_ntp);
-                                    }}
-                                  >
-                                    NTP:
-                                    <img
-                                      src={
-                                        Object.values(project.ntp).some(
-                                          (value) => value === 'Pending'
-                                        ) ||
-                                          project.ntp.action_required_count > 0
-                                          ? ICONS.Pendingqc
-                                          : ICONS.complete
-                                      }
-                                      width={16}
-                                      alt="img"
-                                    />
-                                    {Object.values(project.ntp).every(
-                                      (value) => value !== 'Pending'
-                                    ) && project.qc.qc_action_required_count > 0
-                                      ? project.ntp.action_required_count
-                                      : ''}
-                                    {
-                                      project.days_ntp && project.days_ntp !== '-' && project.days_ntp !== '0 day pending' &&
-
-                                      <div className='ntpActionRequired'>
-                                        <p>{project.days_ntp.split(" ")[0] + project.days_ntp.split(" ")[0] === '1' ? 'day' : 'days'}</p>
-                                      </div>
-                                    }
-                                  </div>
-                                  {
-
-                                  }
-
-                                  {project.co_status !== 'CO Complete' &&
-                                    project.co_status && (
-                                      <div
-                                        className="status-item co"
-                                        data-tooltip={project.co_status} // Custom tooltip
-                                      >
-                                        C/O
-                                      </div>
-                                    )}
-
-                                </div>
-                              </div>
-
-                              {/* <p className='performance-info-p' onClick={() => {}}>More info.</p> */}
-
-                              <div className="strips-wrapper">
-                                {/* Site Survey */}
-                                <div className="strip-container">
-                                  <div
-                                    className="milestone-strips"
-                                    style={getColorStyle(project.site_survey_colour)}
-                                  >
-                                    <p className="strips-data">site survey</p>
-                                    <div className="strip-title">
-                                      {project.site_survey_date ? (
-                                        <p>{project?.site_survey_date}</p>
-                                      ) : (
-                                        <p className={`${project.site_survey_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
-                                          {'No Data'}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <div className="strip-arrow">
-                                      <MdOutlineKeyboardDoubleArrowRight
-                                        style={{
-                                          width: '1.2rem',
-                                          height: '1.2rem',
-                                          color: project.site_survey_colour,
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  {/* Days Remaining */}
-                                  {project.days_site_survey && project.days_site_survey !== '0 day pending' && project.days_site_survey !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_site_survey}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
-                                </div>
-
-                                {/* CAD Design */}
-                                <div className="strip-container">
-                                  <div
-                                    className="notch-strip"
-                                    style={getColorStyle(project.cad_design_colour)}
-                                  >
-                                    <p className="strips-data">cad design</p>
-                                    <div className="notch-title">
-                                      {project.cad_design_date ? (
-                                        <p>{project?.cad_design_date}</p>
-                                      ) : (
-                                        <p className={`${project.cad_design_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
-                                          {'No Data'}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <div className="strip-arrow">
-                                      <MdOutlineKeyboardDoubleArrowRight
-                                        style={{
-                                          width: '1.2rem',
-                                          height: '1.2rem',
-                                          color: project.cad_design_colour,
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  {/* Days Remaining */}
-                                  {project.cad_design_colour === '#377CF6' && project.days_cad_design && project.days_cad_design !== '0 day pending' && project.days_cad_design !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_cad_design}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
-                                </div>
-
-                                {/* Permitting */}
-                                <div className="strip-container">
-                                  <div
-                                    className="notch-strip"
-                                    style={getColorStyle(project.permitting_colour)}
-                                  >
-                                    <p className="strips-data">permitting</p>
-                                    <div className="notch-title">
-                                      {project.permitting_date ? (
-                                        <p>{project?.permitting_date}</p>
-                                      ) : (
-                                        <p className={`${project.permitting_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
-                                          {'No Data'}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <div className="strip-arrow">
-                                      <MdOutlineKeyboardDoubleArrowRight
-                                        style={{
-                                          width: '1.2rem',
-                                          height: '1.2rem',
-                                          color: project.permitting_colour,
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  {/* Days Remaining */}
-                                  {project.days_permits && project.days_permits !== '0 day pending' && project.days_permits !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_permits}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
-                                </div>
-
-                                {/* Roofing */}
-                                {project.roofing_colour && (
-                                  <div className="strip-container">
-                                    <div
-                                      className="notch-strip"
-                                      style={getColorStyle(project.roofing_colour)}
-                                    >
-                                      <p className="strips-data">roofing</p>
-                                      <div className="notch-title">
-                                        {project.roofing_date ? (
-                                          <p>{project?.roofing_date}</p>
-                                        ) : (
-                                          <p className={`${project.roofing_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
-                                            {'No Data'}
-                                          </p>
-                                        )}
-                                      </div>
-                                      <div className="strip-arrow">
-                                        <MdOutlineKeyboardDoubleArrowRight
-                                          style={{
-                                            width: '1.2rem',
-                                            height: '1.2rem',
-                                            color: project.roofing_colour,
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                    {/* Days Remaining */}
-                                    {project.days_roofing && project.days_roofing !== '-' && project.days_roofing !== '0 day pending' && <div className="pendingDayDiv">
-                                      <p className="daysRemaining">{project.days_roofing}</p>
-                                      <div className='simpleLine'> </div>
-                                    </div>}
-                                  </div>
-                                )}
-
-                                {/* Install */}
-                                <div className="strip-container">
-                                  <div
-                                    className="notch-strip"
-                                    style={getColorStyle(project.install_colour)}
-                                  >
-                                    <p className="strips-data">install</p>
-                                    <div className="notch-title">
-                                      {project.install_date ? (
-                                        <p>{project?.install_date}</p>
-                                      ) : (
-                                        <p className={`${project.install_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
-                                          {'No Data'}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <div className="strip-arrow">
-                                      <MdOutlineKeyboardDoubleArrowRight
-                                        style={{
-                                          width: '1.2rem',
-                                          height: '1.2rem',
-                                          color: project.install_colour,
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  {/* Days Remaining */}
-                                  {project.days_install && project.days_install !== '0 day pending' && project.days_install !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_install}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
-                                </div>
-
-                                {/* Electrical */}
-                                {project?.electrical_date && (
-                                  <div className="strip-container">
-                                    <div
-                                      className="notch-strip"
-                                      style={getColorStyle(project.electrical_colour)}
-                                    >
-                                      <p className="strips-data">electrical</p>
-                                      <div className="notch-title">
-                                        {project.electrical_date ? (
-                                          <p>{project?.electrical_date}</p>
-                                        ) : (
-                                          <p className={`${project.electrical_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
-                                            {'No Data'}
-                                          </p>
-                                        )}
-                                      </div>
-                                      <div className="strip-arrow">
-                                        <MdOutlineKeyboardDoubleArrowRight
-                                          style={{
-                                            width: '1.2rem',
-                                            height: '1.2rem',
-                                            color: project.electrical_colour,
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                    {/* Days Remaining */}
-                                    {project.days_electrical && project.days_electrical !== '0 day pending' && project.days_electrical !== '-' && <div className="pendingDayDiv">
-                                      <p className="daysRemaining">{project.days_electrical}</p>
-                                      <div className='simpleLine'> </div>
-                                    </div>}
-                                  </div>
-                                )}
-
-                                {/* Inspection */}
-                                <div className="strip-container">
-                                  <div
-                                    className="notch-strip"
-                                    style={getColorStyle(project.inspectionsColour)}
-                                  >
-                                    <p className="strips-data">inspection</p>
-                                    <div className="notch-title">
-                                      {project.inspection_date ? (
-                                        <p>{project?.inspection_date}</p>
-                                      ) : (
-                                        <p className={`${project.inspectionsColour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
-                                          {'No Data'}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <div className="strip-arrow">
-                                      <MdOutlineKeyboardDoubleArrowRight
-                                        style={{
-                                          width: '1.2rem',
-                                          height: '1.2rem',
-                                          color: project.inspectionsColour,
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  {/* Days Remaining */}
-                                  {project.days_inspection && project.days_inspection !== '0 day pending' && project.days_inspection !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_inspection}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
-                                </div>
-
-                                {/* Activation */}
-                                <div className="strip-container">
-                                  <div
-                                    className="notch-strip"
-                                    style={getColorStyle(project.activation_colour)}
-                                  >
-                                    <p className="strips-data">activation</p>
-                                    <div className="notch-title">
-                                      {project.activation_date ? (
-                                        <p>{project?.activation_date}</p>
-                                      ) : (
-                                        <p className={`${project.activation_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}>
-                                          {'No Data'}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <div>
-                                      <MdOutlineKeyboardDoubleArrowRight
-                                        style={{
-                                          width: '1.2rem',
-                                          height: '1.2rem',
-                                          color: project.activation_colour,
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  {/* Days Remaining */}
-                                  {project.days_activation && project.days_activation !== '0 day pending' && project.days_activation !== '-' && <div className="pendingDayDiv">
-                                    <p className="daysRemaining">{project.days_activation}</p>
-                                    <div className='simpleLine'> </div>
-                                  </div>}
-                                </div>
-                              </div>
-
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )
+            {!isLoading && (
+              <div className="page-heading-container">
+                {!!projectsCount && (
+                  <p className="page-heading">
+                    {startIndex} -{' '}
+                    {endIndex > projectsCount ? projectsCount : endIndex} of{' '}
+                    {projectsCount} item
+                  </p>
                 )}
 
-                <QCPopUp
-                  projectDetail={selectedProjectQC}
-                  isOpen={filterOPen}
-                  handleClose={filterClose}
-                />
-                <NtpPopUp
-                  projectDetail={selectedProjectQC}
-                  isOpen={ntpOPen}
-                  handleClose={ntpClose}
-                  ntpValue={ntpValue}
-                />
-              </tbody>
-            </table>
+                {projectStatus?.length > 0 ? (
+                  <Pagination
+                    currentPage={page}
+                    totalPages={Math.ceil(projectsCount / perPage)}
+                    paginate={(num) => setPage(num)}
+                    currentPageData={projectStatus}
+                    goToNextPage={() => setPage((prev) => prev + 1)}
+                    goToPrevPage={() =>
+                      setPage((prev) => (prev < 1 ? prev - 1 : prev))
+                    }
+                    perPage={perPage}
+                  />
+                ) : null}
+              </div>
+            )}
           </div>
-
-          {!isLoading && (
-            <div className="page-heading-container">
-              {!!projectsCount && (
-                <p className="page-heading">
-                  {startIndex} -{' '}
-                  {endIndex > projectsCount ? projectsCount : endIndex} of{' '}
-                  {projectsCount} item
-                </p>
-              )}
-
-              {projectStatus?.length > 0 ? (
-                <Pagination
-                  currentPage={page}
-                  totalPages={Math.ceil(projectsCount / perPage)}
-                  paginate={(num) => setPage(num)}
-                  currentPageData={projectStatus}
-                  goToNextPage={() => setPage((prev) => prev + 1)}
-                  goToPrevPage={() =>
-                    setPage((prev) => (prev < 1 ? prev - 1 : prev))
-                  }
-                  perPage={perPage}
-                />
-              ) : null}
-            </div>
-          )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

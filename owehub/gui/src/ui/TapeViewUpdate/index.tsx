@@ -1,62 +1,108 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+import { toast } from 'react-toastify';
+import useAuth from '../../hooks/useAuth';
+import { tapeCaller } from '../../infrastructure/web_api/services/apiUrl';
+import SelectOption from '../components/selectOption/SelectOption';
+import './index.css'
+import { ICONS } from '../../resources/icons/Icons';
+import useMatchMedia from '../../hooks/useMatchMedia';
 
 
-const dummyData = [
-  {
-    app_id: 'app1',
-    app_name: 'Application 1',
-    views: [
-      { view_id: 'view1', view_name: 'View 1' },
-      { view_id: 'view2', view_name: 'View 2' },
-    ],
-  },
-  {
-    app_id: 'app2',
-    app_name: 'Application 2',
-    views: [
-      { view_id: 'view3', view_name: 'View 3' },
-      { view_id: 'view4', view_name: 'View 4' },
-    ],
-  },
-];
-
-
-const refreshStatusMap: Record<string, boolean> = {}; // Simulating refresh status
-
-const getAppNameViewName = async () => {
-  return new Promise((resolve) => setTimeout(() => resolve(dummyData), 1000));
+type View = {
+  view_id: string;
+  view_name: string;
 };
 
-const refreshView = async (appId: string, viewId: string) => {
-  return new Promise((resolve) => {
-    if (refreshStatusMap[`${appId}_${viewId}`]) {
-      resolve(true); // Refresh already in progress
-    } else {
-      refreshStatusMap[`${appId}_${viewId}`] = true;
-      setTimeout(() => {
-        refreshStatusMap[`${appId}_${viewId}`] = false; // Simulate refresh completion
-      }, 5000);
-      resolve(false);
-    }
-  });
+type AppData = {
+  app_id: string;
+  app_name: string;
+  views: View[];
 };
 
-const getRefreshStatus = async (appId: string, viewId: string) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(refreshStatusMap[`${appId}_${viewId}`] || false);
-    }, 1000);
-  });
+type ApiResponse = {
+  status: number;
+  message: string;
+  data: AppData[];
 };
+
+
+
+
+
+
+
 
 // React Component
-const TableView: React.FC = () => {
-  const [apps, setApps] = useState<any[]>([]);
+type TableViewProps = {
+  showTape: boolean;
+  handleShowTape: () => void;
+};
+
+const TableView: React.FC<TableViewProps> = ({ showTape, handleShowTape }) => {
+  // const dummyData =
+  //   [
+  //     {
+  //       "app_id": "12345",
+  //       "app_name": "ntp",
+  //       "views": [
+  //         {
+  //           "view_id": "v101",
+  //           "view_name": "Dashboard"
+  //         },
+  //         {
+  //           "view_id": "v102",
+  //           "view_name": "Reports"
+  //         },
+  //         {
+  //           "view_id": "v103",
+  //           "view_name": "Settings"
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       "app_id": "67890",
+  //       "app_name": "customers",
+  //       "views": [
+  //         {
+  //           "view_id": "v201",
+  //           "view_name": "Product Listing"
+  //         },
+  //         {
+  //           "view_id": "v202",
+  //           "view_name": "Orders"
+  //         },
+  //         {
+  //           "view_id": "v203",
+  //           "view_name": "Customers"
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       "app_id": "11223",
+  //       "app_name": "CRM System",
+  //       "views": [
+  //         {
+  //           "view_id": "v301",
+  //           "view_name": "Leads"
+  //         },
+  //         {
+  //           "view_id": "v302",
+  //           "view_name": "Contacts"
+  //         },
+  //         {
+  //           "view_id": "v303",
+  //           "view_name": "Opportunities"
+  //         }
+  //       ]
+  //     }
+  //   ];
+  const [apps, setApps] = useState<AppData[]>([]);
   const [selectedApp, setSelectedApp] = useState<any>(null);
   const [selectedView, setSelectedView] = useState<any>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
+  const [dummyData, setdummyData] = useState<any>([]);
 
   useEffect(() => {
     // Fetch App & View data on mount
@@ -68,27 +114,45 @@ const TableView: React.FC = () => {
       setSelectedView(null);
     }
   }, [selectedApp]);
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const { authData, saveAuthData } = useAuth();
+  const [loading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
+
 
   useEffect(() => {
-    if (selectedApp && selectedView) {
-      const interval = setInterval(() => {
-        getRefreshStatus(selectedApp.value, selectedView.value).then(
-          (status) => {
-            if (!status) {
-              setMessage('Refresh Completed');
-              setRefreshing(false);
-              clearInterval(interval);
-            }
+    if (isAuthenticated) {
+      const fetchData = async () => {
+        try {
+          // setIsLoading(true);
+          const response = await tapeCaller(
+            'get-app-name-view-name', {},
+          );
+          console.log(response.data, "result");
+          if (response.status === 200) {
+            setdummyData(response.data);
+          } else if (response.status > 201) {
+            toast.error(response.data.message);
           }
-        );
-      }, 30000);
-      return () => clearInterval(interval);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          // setIsLoading(false);
+        }
+      };
+
+      fetchData();
     }
-  }, [selectedApp, selectedView]);
+  }, [isAuthenticated, showTape]);
+
 
   const handleRefresh = async () => {
     if (!selectedApp || !selectedView) {
-      setMessage('Please select an App and a View.');
+      toast.error('Please select an App and a View.');
       return;
     }
     setMessage('');
@@ -101,55 +165,128 @@ const TableView: React.FC = () => {
     } else {
       setMessage('Refresh started...');
       setRefreshing(true);
+      setTimeout(() => {
+        setMessage('Refresh Completed!');
+        setRefreshing(false);
+      }, 10000);
     }
   };
+  const refreshStatusMap: Record<string, boolean> = {}; // Simulating refresh status
+
+  const getAppNameViewName = async () => {
+    return new Promise((resolve) => setTimeout(() => resolve(dummyData), 1000));
+  };
+
+  const refreshView = async (appId: string, viewId: string) => {
+    return new Promise((resolve) => {
+      if (refreshStatusMap[`${appId}_${viewId}`]) {
+        resolve(true); // Refresh already in progress
+      } else {
+        refreshStatusMap[`${appId}_${viewId}`] = true;
+        setTimeout(() => {
+          refreshStatusMap[`${appId}_${viewId}`] = false; // Simulate refresh completion
+        }, 5000);
+        resolve(false);
+      }
+    });
+  };
+
+
+  const isMobile = useMatchMedia('(max-width: 768px)');
+
+
+
+
 
   return (
-    <div style={{ padding: '20px', maxWidth: '400px', margin: 'auto' }}>
-      <h3>App & View Refresh</h3>
+    <>
+      {showTape &&
+        <div className="transparent-model">
+          <div className='tape-main-container' style={{ minWidth: isMobile ? '390px' : '444px', margin: 'auto' }}>
+            <div className='tape-header'>
+              <h3>View Refresh</h3>
+              <div className='tape-cross-cont' onClick={handleShowTape} style={{ cursor: 'pointer' }}>
+                <img src={ICONS.cross} alt='delete' />
+              </div>
+            </div>
 
-      {/* App Dropdown */}
-      <label>Select Application</label>
-      <Select
-        options={apps.map((app) => ({ value: app.app_id, label: app.app_name }))}
-        value={selectedApp}
-        onChange={setSelectedApp}
-      />
+            <div>
+              <div className='tape-view-drop-contain'>
+                <div className='tape-drops'>
+                  <label>Select Tape App Name</label>
+                  <SelectOption
+                    options={apps.map((app) => ({ value: app.app_id, label: app.app_name }))}
+                    value={selectedApp}
+                    onChange={setSelectedApp}
+                    marginTop={'7px'}
+                  />
+                </div>
 
-      {/* View Dropdown */}
-      <label>Select View</label>
-      <Select
-        options={
-          selectedApp
-            ? apps
-                .find((app) => app.app_id === selectedApp.value)
-                ?.views.map((view:any) => ({ value: view.view_id, label: view.view_name })) || []
-            : []
-        }
-        value={selectedView}
-        onChange={setSelectedView}
-        isDisabled={!selectedApp}
-      />
+                <div className='tape-drops'>
+                  <label>Pipeline View Refresh</label>
+                  <SelectOption
+                    options={
+                      selectedApp
+                        ? apps
+                          .find((app) => app.app_id === selectedApp.value)
+                          ?.views.map((view: any) => ({ value: view.view_id, label: view.view_name })) || []
+                        : []
+                    }
+                    value={selectedView}
+                    onChange={setSelectedView}
+                    disabled={!selectedApp}
+                    marginTop={'7px'}
+                  />
+                </div>
+              </div>
+            </div>
 
-      {/* Refresh Button */}
-      <button
-        onClick={handleRefresh}
-        disabled={!selectedApp || !selectedView || refreshing}
-        style={{
-          marginTop: '10px',
-          padding: '10px',
-          backgroundColor: refreshing ? 'gray' : 'blue',
-          color: 'white',
-          border: 'none',
-          cursor: (refreshing || !selectedApp || !selectedView) ? 'not-allowed' : 'pointer',
-        }}
-      >
-        {refreshing ? 'Refreshing...' : 'Refresh'}
-      </button>
 
-      {/* Status Message */}
-      {message && <p style={{ marginTop: '10px', color: 'red' }}>{message}</p>}
-    </div>
+            <button
+              onClick={handleRefresh}
+              disabled={!selectedApp || !selectedView || refreshing}
+              className='tape-refresh-button'
+              style={{
+                marginTop: '65px',
+                padding: '10px 32px',
+                backgroundColor: refreshing ? 'gray' : '#377CF6',
+                color: 'white',
+                border: 'none',
+                cursor: (refreshing || !selectedApp || !selectedView) ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+              }}
+            >
+              {refreshing ? (
+                <>
+                  <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." width="20" height="20" />
+                  Refreshing...
+                </>
+              ) : (
+                'Refresh'
+              )}
+            </button>
+
+            {/* Status Message with GIF */}
+            {message && (
+              <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                {message === 'Refresh Completed!' ? (
+                  <>
+                    <p style={{ fontSize: '14px', color: 'green' }}>{message}</p>
+                    <img src="https://i.gifer.com/7efs.gif" alt="Completed" width="165" height="121" />
+                  </>
+                ) : (
+                  <p style={{ fontSize: '14px', color: 'red' }}>{message}</p>
+                )}
+              </div>
+            )}
+
+          </div>
+        </div>
+      }
+    </>
   );
 };
 

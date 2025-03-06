@@ -11,6 +11,8 @@ type Filter struct {
 	Column    string      `json:"Column"`
 	Operation string      `json:"operation"`
 	Data      interface{} `json:"Data"`
+	StartDate string      `json:"start_date"`
+	EndDate   string      `json:"end_date"`
 }
 
 type DataRequestBody struct {

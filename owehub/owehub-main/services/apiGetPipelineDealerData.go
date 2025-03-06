@@ -54,6 +54,8 @@ var columnMap = map[string]ColumnInfo{
 	"pv_completion_date":           {"install", TypeDate, ""},
 	"pv_fin_date":                  {"fin", TypeDate, ""},
 	"pto_granted":                  {"pto", TypeDate, ""},
+	"setter":                       {"cust", TypeString, ""},
+	"project_status":               {"cust", TypeString, ""},
 }
 
 type PipelineByDealerReq struct {
@@ -199,7 +201,6 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		state, _ := item["state"].(string)
 		email, _ := item["email"].(string)
 		phoneNumber, _ := item["phone_number"].(string)
-		rep1, _ := item["rep_1"].(string)
 		rep2, _ := item["rep_2"].(string)
 		systemSize, _ := item["system_size"].(string)
 		contractAmount, _ := item["contract_amount"].(string)
@@ -223,6 +224,21 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		pvInstallDate, _ = item["pv_install_date"].(time.Time)
 		finCompleteDate, _ = item["fin_complete_date"].(time.Time)
 		ptoDate, _ = item["pto_date"].(time.Time)
+		setter, _ := item["setter"].(string)
+		if setter == "" {
+			if val, exists := TempMap[uniqueId]; exists {
+				setter = val["setter"]
+			}
+		}
+
+		rep1, _ := item["rep_1"].(string)
+		if rep1 == "" {
+			if val, exists := TempMap[uniqueId]; exists {
+				rep1 = val["primary_sales_rep"]
+			}
+		}
+
+		projectStatus, _ := item["project_status"].(string)
 
 		var jeopardyStatus bool
 		if !jeopardyDate.IsZero() {
@@ -259,6 +275,8 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 			PvInstallDate:        formatDate(pvInstallDate),
 			FinCompleteDate:      formatDate(finCompleteDate),
 			PtoDate:              formatDate(ptoDate),
+			Setter:               setter,
+			ProjectStatus:        projectStatus,
 		}
 
 		pipelineDealerDataList.PipelineDealerDataList = append(pipelineDealerDataList.PipelineDealerDataList, pipelineDealerData)

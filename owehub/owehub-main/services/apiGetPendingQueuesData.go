@@ -380,7 +380,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	if dataReq.SelectedPendingStage == "co" {
-		query := models.PendingActionPageCoQueryNew(roleFilter, searchValue)
+		query := models.PendingActionPageCoQueryNew(roleFilter, searchValue, buildFilterQuery(dataReq.Filters))
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
@@ -393,7 +393,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 			return
 		}
 	} else {
-		query := models.PendingActionPageNtpQueryNew(roleFilter, searchValue)
+		query := models.PendingActionPageNtpQueryNew(roleFilter, searchValue, buildFilterQuery(dataReq.Filters))
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
@@ -449,7 +449,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			ntpD = ""
 		} else {
-			ntpD = ntpDate.Format("2006-01-02")
+			ntpD = ntpDate.Format("02-01-2006") // dd-mm-yy format
 		}
 
 		if val, ok := item["first_value"].(string); ok {
@@ -474,7 +474,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 		if val, ok := item["sold_date"].(string); ok && val != "" {
 			soldDate = val
 		} else if val, ok := item["sold_date"].(time.Time); ok {
-			soldDate = val.Format("2006-01-02")
+			soldDate = val.Format("02-01-2006") // dd-mm-yyyy format
 		}
 
 		appStatus := ""
@@ -515,8 +515,6 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 		coType := ""
 		if val, ok := item["co_notes"].(string); ok {
 			coType = val
-		} else {
-			coType = "Please see plan set for CO notes!"
 		}
 
 		CoStatus, _ := getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
@@ -524,23 +522,19 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 			UniqueId:  UniqueId,
 			HomeOwner: HomeOwner,
 			Co: models.PendingQueueCo{
-				ProductionDiscrepancy:        ProductionDiscrepancy,
-				FinanceNTPOfProject:          FinanceNTPOfProject,
-				UtilityBillUploaded:          UtilityBillUploaded,
-				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
-				CoStatus:                     CoStatus,
-				CO:                           Co,
-				SoldDate:                     soldDate,
-				AppStatus:                    appStatus,
-				ProjectStatus:                projectStatus,
-				SalesRep:                     salesRep,
-				Setter:                       setter,
-				NtpDelayedBy:                 ntpDelayedBy,
-				NtpDelayNotes:                ntpDelayNotes,
-				ProjectAgeDays:               projectAgeDays,
-				DealType:                     dealType,
-				CoNotes:                      coType,
-				NtpDate:                      ntpD,
+				CoStatus:       CoStatus,
+				CO:             Co,
+				SoldDate:       soldDate,
+				AppStatus:      appStatus,
+				ProjectStatus:  projectStatus,
+				SalesRep:       salesRep,
+				Setter:         setter,
+				NtpDelayedBy:   []string{ntpDelayedBy},
+				NtpDelayNotes:  ntpDelayNotes,
+				ProjectAgeDays: projectAgeDays,
+				DealType:       dealType,
+				CoNotes:        coType,
+				NtpDate:        ntpD,
 			},
 			Ntp: models.PendingQueueNTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
@@ -552,7 +546,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 				ProjectStatus:                projectStatus,
 				SalesRep:                     salesRep,
 				Setter:                       setter,
-				NtpDelayedBy:                 ntpDelayedBy,
+				NtpDelayedBy:                 []string{ntpDelayedBy},
 				NtpDelayNotes:                ntpDelayNotes,
 				ProjectAgeDays:               projectAgeDays,
 				DealType:                     dealType,
@@ -573,6 +567,12 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	RecordCount = int64(len(pendingqueueList.PendingQueueList))
+
+	if len(dataReq.Filters) != 0 {
+		pendingqueueList.PendingQueueList = filterByNtpStatus(pendingqueueList.PendingQueueList, dataReq.Filters)
+		RecordCount = int64(len(pendingqueueList.PendingQueueList))
+	}
+
 	// It supports pagination for normal requests and returns all data when the export button is clicked
 	var finalData []models.GetPendingQueue
 	if dataReq.IsExport {
@@ -580,6 +580,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 	} else {
 		finalData = Paginate(pendingqueueList.PendingQueueList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	}
+
 	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", len(finalData), finalData)
 	appserver.FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, finalData, RecordCount)
 }
@@ -610,4 +611,169 @@ func getProjectAgeDays(uniqueId string) (string, error) {
 	}
 
 	return projectAgeDays, nil
+}
+
+func buildFilterQuery(filters []models.Filter) string {
+	if len(filters) == 0 {
+		return ""
+	}
+	var conditions []string
+
+	// mapping column names to their respective tables
+	columnMap := map[string]string{
+		"uninque_id":        "customers_customers_schema.unique_id",
+		"customer_name":     "customers_customers_schema.customer_name",
+		"ntp_complete_date": "ntp_ntp_schema.ntp_complete_date",
+		"sold_date":         "ntp_ntp_schema.sale_date",
+		"app_status":        "ntp_ntp_schema.app_status",
+		"project_status":    "ntp_ntp_schema.project_status",
+		"sales_rep":         "ntp_ntp_schema.sales_rep",
+		"setter":            "sales_metrics_schema.setter",
+		"deal_type":         "prospects_customers_schema.lead_source",
+	}
+
+	for _, filter := range filters {
+		if filter.Column == "" || filter.Operation == "" {
+			continue // skip invalid filters
+		}
+
+		tableColumn, exists := columnMap[filter.Column]
+		if !exists {
+			continue // skip unknown columns
+		}
+
+		operator := getFilterDBMapped(filter.Operation)
+
+		// handle "BETWEEN" case for date ranges
+		if filter.Operation == "btw" {
+			conditions = append(conditions, fmt.Sprintf("%s BETWEEN '%s' AND '%s'", tableColumn, filter.StartDate, filter.EndDate))
+			continue
+		}
+
+		value := fmt.Sprintf("%v", filter.Data)
+
+		// handle LIKE-based operations
+		if filter.Operation == "sw" || filter.Operation == "ew" || filter.Operation == "cont" {
+			value = getFilterModifiedValue(filter.Operation, value)
+		}
+
+		conditions = append(conditions, fmt.Sprintf("LOWER(%s) %s LOWER('%s')", tableColumn, operator, value))
+	}
+
+	if len(conditions) == 0 {
+		return "" // no filters applied
+	}
+
+	return "AND " + strings.Join(conditions, " AND ")
+}
+
+func getFilterDBMapped(operation string) string {
+	switch operation {
+	case "eqs":
+		return "="
+	case "lst":
+		return "<"
+	case "lsteqs":
+		return "<="
+	case "grt":
+		return ">"
+	case "grteqs":
+		return ">="
+	case "sw", "ew", "cont":
+		return "ILIKE"
+	case "btw":
+		return "BETWEEN"
+	default:
+		return "="
+	}
+}
+
+func getFilterModifiedValue(operation, data string) string {
+	switch operation {
+	case "sw":
+		return fmt.Sprintf("%s%%", strings.ToLower(data))
+	case "ew":
+		return fmt.Sprintf("%%%s", strings.ToLower(data))
+	case "cont":
+		return fmt.Sprintf("%%%s%%", strings.ToLower(data))
+	default:
+		return data
+	}
+}
+
+// filterByNtpStatus filters the pending queue list based on NTP "production", "powerclerk "finance_NTP", "utility_bill".
+// It processes each filter, checks the respective field, and returns the filtered list.
+// The function avoids duplicate entries by tracking processed UniqueIds.
+func filterByNtpStatus(pendingQueueList []models.GetPendingQueue, filters []models.Filter) []models.GetPendingQueue {
+	// check if any of the filters match expected columns; otherwise, return the full list
+	validColumns := map[string]bool{
+		"production":   true,
+		"powerclerk":   true,
+		"finance_NTP":  true,
+		"utility_bill": true,
+	}
+
+	hasValidFilter := false
+	for _, filter := range filters {
+		if validColumns[filter.Column] {
+			hasValidFilter = true
+			break
+		}
+	}
+
+	if !hasValidFilter {
+		return pendingQueueList
+	}
+
+	var filteredData []models.GetPendingQueue
+	seen := make(map[string]bool)
+
+	for _, filter := range filters {
+		filterData, ok := filter.Data.(string)
+		if !ok || filterData == "" {
+			continue
+		}
+		filterData = strings.ToLower(filterData)
+		col := filter.Column
+
+		for _, item := range pendingQueueList {
+			itemID := item.UniqueId // Using UniqueId to track duplicates
+			if seen[itemID] {       // Skip if already added
+				continue
+			}
+
+			var isCompleted, isPending bool
+
+			switch col {
+			case "production":
+				isCompleted = item.Ntp.ProductionDiscrepancy == "Completed"
+				isPending = item.Ntp.ProductionDiscrepancy == "Pending" || item.Ntp.ProductionDiscrepancy == "Pending (Action Required)"
+			case "powerclerk":
+				isCompleted = item.Ntp.PowerClerkSignaturesComplete == "Completed"
+				isPending = item.Ntp.PowerClerkSignaturesComplete == "Pending" || item.Ntp.PowerClerkSignaturesComplete == "Pending (Action Required)"
+			case "finance_NTP":
+				isCompleted = item.Ntp.FinanceNTPOfProject == "Completed"
+				isPending = item.Ntp.FinanceNTPOfProject == "Pending" || item.Ntp.FinanceNTPOfProject == "Pending (Action Required)"
+			case "utility_bill":
+				isCompleted = item.Ntp.UtilityBillUploaded == "Completed"
+				isPending = item.Ntp.UtilityBillUploaded == "Pending" || item.Ntp.UtilityBillUploaded == "Pending (Action Required)"
+			default:
+				isCompleted = item.Ntp.ProductionDiscrepancy == "Completed" || item.Ntp.PowerClerkSignaturesComplete == "Completed" || item.Ntp.FinanceNTPOfProject == "Completed" || item.Ntp.UtilityBillUploaded == "Completed"
+				isPending = item.Ntp.ProductionDiscrepancy == "Pending" || item.Ntp.ProductionDiscrepancy == "Pending (Action Required)" ||
+					item.Ntp.PowerClerkSignaturesComplete == "Pending" || item.Ntp.PowerClerkSignaturesComplete == "Pending (Action Required)" ||
+					item.Ntp.FinanceNTPOfProject == "Pending" || item.Ntp.FinanceNTPOfProject == "Pending (Action Required)" ||
+					item.Ntp.UtilityBillUploaded == "Pending" || item.Ntp.UtilityBillUploaded == "Pending (Action Required)"
+			}
+
+			if filterData == "completed" && isCompleted {
+				filteredData = append(filteredData, item)
+				seen[itemID] = true
+			} else if (filterData == "pending" || filterData == "pending (action required)" || filterData == "action req") && isPending {
+				filteredData = append(filteredData, item)
+				seen[itemID] = true
+			}
+		}
+	}
+
+	return filteredData
 }

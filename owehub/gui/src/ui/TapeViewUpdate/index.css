@@ -1,0 +1,95 @@
+.tape-main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    align-items: center;
+    background-color: #ffff;
+    border-radius: 8px;
+    min-height: 396px;
+
+}
+
+.tape-drops {
+    display: flex;
+    flex-direction: column;
+}
+
+.tape-drops label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.tape-view-drop-contain {
+    display: flex;
+    flex-direction: row;
+    gap: 48px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+}
+
+.tape-refresh-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+.tape-header {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: 1px solid #2828281f;
+}
+
+.tape-cross-cont {
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.tape-cross-cont:hover {
+    transform: scale(1.06);
+}
+
+@media screen and (max-width: 767px) {
+    .tape-view-drop-contain {
+        gap: 20px;
+    }
+
+    .pipeline-header-btns {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+    }
+}
+
+.pipeline-new-btns {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.pipeline-new-btns-active {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}

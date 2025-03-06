@@ -545,6 +545,13 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupDealerAccounts},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-main-service/v1/update_setter_sales_rep",
+		apiHandler.HandleUpdateSetterSalesRepRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 }
 
 /******************************************************************************

@@ -357,7 +357,7 @@ func PendingActionPageCoQuery(filterUserQuery, searchValue string) string {
 	return filtersBuilder.String()
 }
 
-func PendingActionPageCoQueryNew(filterUserQuery, searchValue string) string {
+func PendingActionPageCoQueryNew(filterUserQuery, searchValue, filterQuery string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
@@ -365,10 +365,6 @@ func PendingActionPageCoQueryNew(filterUserQuery, searchValue string) string {
 	filtersBuilder.WriteString(fmt.Sprintf(`
         SELECT
             customers_customers_schema.unique_id,
-            ntp_ntp_schema.production_discrepancy,
-            ntp_ntp_schema.finance_ntp_of_project,
-            ntp_ntp_schema.utility_bill_uploaded,
-            ntp_ntp_schema.powerclerk_signatures_complete,
             ntp_ntp_schema.change_order_status,
             customers_customers_schema.customer_name AS home_owner,
             ntp_ntp_schema.ntp_complete_date AS ntp_date,
@@ -398,9 +394,8 @@ func PendingActionPageCoQueryNew(filterUserQuery, searchValue string) string {
         'Pending NTP Review', 'Pending QC', 'Pending NTP',
         'Pending NTP - Legal', 'Pending NTP - Change Order', 'Under Review'
      ) AND ntp_ntp_schema.app_status = 'Pending NTP - Change Order'
-     %v %v
-    `, filterUserQuery, searchValue))
-
+     %v %v %v
+    `, filterUserQuery, searchValue, filterQuery))
 	return filtersBuilder.String()
 }
 
@@ -429,7 +424,7 @@ func PendingActionPageNtpQuery(filterUserQuery, searchValue string) string {
 	return filtersBuilder.String()
 }
 
-func PendingActionPageNtpQueryNew(filterUserQuery, searchValue string) string {
+func PendingActionPageNtpQueryNew(filterUserQuery, searchValue, filterQuery string) string {
 	if filterUserQuery != "" {
 		filterUserQuery = "AND " + filterUserQuery
 	}
@@ -471,8 +466,8 @@ func PendingActionPageNtpQueryNew(filterUserQuery, searchValue string) string {
         'Pending NTP Review', 'Pending QC', 'Pending NTP',
         'Pending NTP - Change Order', 'Under Review'
     )
-     %v %v
-    `, filterUserQuery, searchValue))
+     %v %v %v
+    `, filterUserQuery, searchValue, filterQuery))
 
 	return filtersBuilder.String()
 }
@@ -1275,37 +1270,47 @@ func GetBasePipelineQuery(uniqueIds string) string {
             ntp.ntp_complete_date AS ntp_complete_date,
 
 			survey.original_survey_scheduled_date AS site_survey_scheduled_date,
-            CASE
-                WHEN (survey.reschedule_needed_on_date IS NOT NULL
-                    AND survey.twond_visit_date IS NULL)
-                    THEN NULL
-                WHEN survey.twond_visit_date IS NOT NULL
-                    THEN survey.twond_completion_date
-                ELSE survey.survey_completion_date
-            END AS survey_final_completion_date
+			survey.survey_completion_date AS survey_final_completion_date
+            -- CASE
+            --     WHEN (survey.reschedule_needed_on_date IS NOT NULL
+            --         AND survey.twond_visit_date IS NULL)
+            --         THEN NULL
+            --     WHEN survey.twond_visit_date IS NOT NULL
+            --         THEN survey.twond_completion_date
+            --     ELSE survey.survey_completion_date
+            -- END AS survey_final_completion_date
         FROM
             customers_customers_schema AS cust
         LEFT JOIN
 			ntp_ntp_schema AS ntp ON cust.unique_id = ntp.unique_id
+			AND ntp.project_status NOT ILIKE '%%duplicate%%' AND ntp.app_status NOT ILIKE '%%duplicate%%'
         LEFT JOIN
             permit_fin_pv_permits_schema AS permit ON cust.unique_id = permit.customer_unique_id
+			AND permit.project_status NOT ILIKE '%%duplicate%%' AND permit.app_status NOT ILIKE '%%duplicate%%'
         LEFT JOIN
             ic_ic_pto_schema AS ic ON cust.unique_id = ic.customer_unique_id
+			AND ic.project_status NOT ILIKE '%%duplicate%%' AND ic.app_status NOT ILIKE '%%duplicate%%'
         LEFT JOIN
             survey_survey_schema AS survey ON cust.our = survey.customer_unique_id
+			AND survey.project_status NOT ILIKE '%%duplicate%%' AND survey.app_status NOT ILIKE '%%duplicate%%'
         LEFT JOIN
             pv_install_install_subcontracting_schema AS install ON cust.unique_id = install.customer_unique_id
+			AND install.project_status NOT ILIKE '%%duplicate%%' AND install.app_status NOT ILIKE '%%duplicate%%'
         LEFT JOIN
             roofing_request_install_subcontracting_schema AS roofing ON cust.our = roofing.customer_unique_id
+			AND roofing.project_status NOT ILIKE '%%duplicate%%' AND roofing.app_status NOT ILIKE '%%duplicate%%'
         LEFT JOIN
             planset_cad_schema AS cad ON cust.unique_id = cad.our_number
         LEFT JOIN
             batteries_service_electrical_schema b ON cust.unique_id = b.customer_unique_id
+			AND b.project_status NOT ILIKE '%%duplicate%%' AND b.app_status NOT ILIKE '%%duplicate%%'
         LEFT JOIN
             fin_permits_fin_schema AS fin ON cust.unique_id = fin.customer_unique_id
+			AND fin.project_status NOT ILIKE '%%duplicate%%' AND fin.app_status NOT ILIKE '%%duplicate%%'
         LEFT JOIN
             pto_ic_schema AS pto ON cust.our = pto.customer_unique_id
-		WHERE cust.unique_id in (%v) ORDER BY cust.unique_id, install.pv_completion_date DESC NULLS LAST`, uniqueIds)
+			AND pto.project_status NOT ILIKE '%%duplicate%%' 
+		WHERE cust.project_status NOT ILIKE '%%duplicate%%' AND cust.unique_id in (%v) ORDER BY cust.unique_id, install.pv_completion_date DESC NULLS LAST`, uniqueIds)
 }
 
 func PipelineDealerDataQuery(filterUserQuery string) string {
@@ -1421,6 +1426,8 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
         cust.total_system_cost AS contract_amount,
         cust.sale_date AS created_date,
         cust.sale_date AS contract_date,
+        cust.setter AS setter,
+        cust.project_status,
 
         -- NTP Dates
         ntp.ntp_complete_date,

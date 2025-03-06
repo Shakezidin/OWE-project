@@ -43,7 +43,7 @@ type CreateBulkUserReq struct {
 	MobileNumber      string `json:"mobile_number"`
 	EmailId           string `json:"email_id"`
 	PasswordChangeReq bool   `json:"password_change_req"`
-	ReportingManager  string `json:"reporting_manager"`
+	ReportingManager  string `json:"reporting_manager_email_id"`
 	UserStatus        string `json:"user_status"`
 	Designation       string `json:"designation"`
 	Description       string `json:"description"`
@@ -62,14 +62,14 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 	err := req.ParseMultipartForm(5 << 20)
 	if err != nil {
 		log.FuncErrorTrace(0, "Error parsing multipart form: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Unable to parse form", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Unable to parse form", http.StatusBadRequest, result)
 		return
 	}
 
 	file, _, err := req.FormFile("file")
 	if err != nil {
 		log.FuncErrorTrace(0, "Error retrieving file: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Unable to get file", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Unable to get file", http.StatusBadRequest, result)
 		return
 	}
 	defer file.Close()
@@ -78,7 +78,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 	headers, err := reader.Read()
 	if err != nil {
 		log.FuncErrorTrace(0, "Error reading CSV headers: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Error reading CSV file", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Error reading CSV file", http.StatusBadRequest, result)
 		return
 	}
 
@@ -189,7 +189,7 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 
 		/**************************** if Reporting  Manager is NOT required ****************************/
 
-		reportingManagerEmail := getValue(headers, record, "reporting_manager")
+		reportingManagerEmail := getValue(headers, record, "reporting_manager_email_id")
 
 		isReportingMngrRequired := !(CreateBulkUserReq.RoleName == "Admin" ||
 			CreateBulkUserReq.RoleName == "Finance Admin" ||
@@ -314,6 +314,13 @@ func HandleBulkImportUsersCsvRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		result.Successful++
+
+		log.FuncDebugTrace(0, "email is sending to %v with name = %v", CreateBulkUserReq.EmailId, CreateBulkUserReq.Name)
+		err = SendMailToClient(CreateBulkUserReq.EmailId, CreateBulkUserReq.Name)
+		if err != nil {
+			// Log the error, but continue processing
+			log.FuncErrorTrace(0, "Failed to send email with err: %v", err)
+		}
 	}
 
 	appserver.FormAndSendHttpResp(resp, "Bulk import completed", http.StatusOK, result)

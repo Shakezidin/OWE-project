@@ -58,7 +58,7 @@ const ImportUser: React.FC<createUserProps> = ({
         'email_id',
         'mobile_number',
         'role_name',
-        'reporting_manager',
+        'reporting_manager_email_id',
         'partner_name',
         'description',
       ],

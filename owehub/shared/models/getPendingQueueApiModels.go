@@ -7,8 +7,9 @@
 package models
 
 type PendingQueueReq struct {
-	PageNumber           int `json:"page_number"`
-	PageSize             int `json:"page_size"`
+	Filters              []Filter `json:"filters"`
+	PageNumber           int      `json:"page_number"`
+	PageSize             int      `json:"page_size"`
 	Email                string
 	UniqueIds            []string `json:"unique_ids"`
 	DealerNames          []string
@@ -34,39 +35,35 @@ type PendingQueueNTP struct {
 	PowerClerkSignaturesComplete string `json:"powerclerk"`
 
 	// New  fields
-	SoldDate       string `json:"sold_date"`
-	AppStatus      string `json:"app_status"`
-	ProjectStatus  string `json:"project_status"`
-	SalesRep       string `json:"sales_rep"`
-	Setter         string `json:"setter"`
-	NtpDelayedBy   string `json:"ntp_delayed_by"`
-	NtpDelayNotes  string `json:"ntp_delay_notes"`
-	ProjectAgeDays string `json:"project_age_days"`
-	DealType       string `json:"deal_type"`
-	CoNotes        string `json:"co_notes"`
-	NtpDate        string `json:"ntp_date"`
+	SoldDate       string   `json:"sold_date"`
+	AppStatus      string   `json:"app_status"`
+	ProjectStatus  string   `json:"project_status"`
+	SalesRep       string   `json:"sales_rep"`
+	Setter         string   `json:"setter"`
+	NtpDelayedBy   []string `json:"ntp_delayed_by"`
+	NtpDelayNotes  string   `json:"ntp_delay_notes"`
+	ProjectAgeDays string   `json:"project_age_days"`
+	DealType       string   `json:"deal_type"`
+	CoNotes        string   `json:"co_notes"`
+	NtpDate        string   `json:"ntp_date"`
 }
 
 type PendingQueueCo struct {
-	CO                           string `json:"co"`
-	CoStatus                     string `json:"co_status"`
-	ProductionDiscrepancy        string `json:"production"`
-	FinanceNTPOfProject          string `json:"finance_NTP"`
-	UtilityBillUploaded          string `json:"utility_bill"`
-	PowerClerkSignaturesComplete string `json:"powerclerk"`
+	CO       string `json:"co"`
+	CoStatus string `json:"co_status"`
 
 	// New  fields
-	SoldDate       string `json:"sold_date"`
-	AppStatus      string `json:"app_status"`
-	ProjectStatus  string `json:"project_status"`
-	SalesRep       string `json:"sales_rep"`
-	Setter         string `json:"setter"`
-	NtpDelayedBy   string `json:"ntp_delayed_by"`
-	NtpDelayNotes  string `json:"ntp_delay_notes"`
-	ProjectAgeDays string `json:"project_age_days"`
-	DealType       string `json:"deal_type"`
-	CoNotes        string `json:"co_notes"`
-	NtpDate        string `json:"ntp_date"`
+	SoldDate       string   `json:"sold_date"`
+	AppStatus      string   `json:"app_status"`
+	ProjectStatus  string   `json:"project_status"`
+	SalesRep       string   `json:"sales_rep"`
+	Setter         string   `json:"setter"`
+	NtpDelayedBy   []string `json:"co_delayed_by"`
+	NtpDelayNotes  string   `json:"co_delay_notes"`
+	ProjectAgeDays string   `json:"project_age_days"`
+	DealType       string   `json:"deal_type"`
+	CoNotes        string   `json:"co_notes"`
+	NtpDate        string   `json:"ntp_date"`
 }
 
 type GetPendingQueue struct {
