@@ -19,6 +19,7 @@ import PendModal from './PendModal';
 import SortableHeader from '../../components/tableHeader/SortableHeader';
 import { FilterModel } from '../../../core/models/data_models/FilterSelectModel';
 import Papa from 'papaparse';
+import moment from 'moment';
 
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
@@ -46,7 +47,7 @@ const PendingQueue = () => {
     setSelectedRowData(rowData);
     setIsModalOpen(true);
   };
-  
+
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
@@ -112,7 +113,17 @@ const PendingQueue = () => {
   };
 
   const cuurentPageData = Array.isArray(dataPending) ? dataPending.slice() : [];
- 
+
+  const formatDate = (dateString: any) => {
+    if (!dateString) return '-'; // Handle empty/null values
+    const formattedDate = moment(
+      dateString,
+      ['YYYY-MM-DD', 'DD-MM-YYYY', 'MM-DD-YYYY'],
+      true
+    );
+    return formattedDate.isValid() ? formattedDate.format('MM-DD-YY') : '-'; // Format as MM-DD-YY
+  };
+
   const ExportCsv = async () => {
     setIsExporting(true);
 
@@ -122,7 +133,7 @@ const PendingQueue = () => {
             'Project ID',
             'Home Owner',
             'Project Ages',
-            'CO Request',
+            'CO Status',
             'Sold Date',
             'App Status',
             'Project Status',
@@ -210,15 +221,14 @@ const PendingQueue = () => {
     setIsExporting(false);
     setExportShow(false);
   };
- 
-  
+
   const filteredColumns =
     active === 'co'
       ? [
           PendingActionColumn[0],
           {
             name: 'co_status',
-            displayName: 'CO Request',
+            displayName: 'CO Status',
             type: 'string',
             isCheckbox: false,
             filter: 'co_status',
@@ -278,25 +288,57 @@ const PendingQueue = () => {
     });
   }
 
+  const formattedFilters = filters
+    ? filters.map((filter) => {
+        if (filter.Column === 'jeopardy_date') {
+          return {
+            column: 'jeopardy_date',
+            operation: filter.Data !== 'yes' ? 'isnull' : 'isnotnull',
+          };
+        } else if (filter.start_date !== '' && filter.end_date !== '') {
+          return {
+            column: filter.Column,
+            operation: 'btw',
+            start_date: filter.start_date,
+            end_date: filter.end_date,
+          };
+        } else if (filter.data1 !== '' && filter.data2 !== '') {
+          return {
+            column: filter.Column,
+            operation: 'btw',
+            Data: [filter.data1, filter.data2],
+          };
+        } else {
+          return {
+            column: filter.Column,
+            operation: filter.Operation,
+            data: filter.Data,
+          };
+        }
+      })
+    : [];
+
   return (
     <>
       <FilterHoc
         isOpen={filterModal}
         handleClose={filterClose}
-        resetOnChange={false}
+        resetOnChange={active === 'ntp' ? false : true}
         columns={
           active === 'co'
             ? (() => {
                 const filteredColumns = PendingActionColumn.filter(
                   (col) =>
-                    !['utility_bill', 'powerclerk', 'finance_NTP'].includes(col.name) // Removing unwanted columns
+                    !['utility_bill', 'powerclerk', 'finance_NTP'].includes(
+                      col.name
+                    )
                 );
-        
+
                 return [
-                  filteredColumns[0], 
+                  filteredColumns[0],
                   {
                     name: 'co_request',
-                    displayName: 'CO Request',
+                    displayName: 'CO Status',
                     type: 'string',
                     isCheckbox: false,
                     filter: 'co_request',
@@ -306,7 +348,6 @@ const PendingQueue = () => {
               })()
             : PendingActionColumn
         }
-        
         page_number={page}
         page_size={20}
         fetchFunction={fetchFunction}
@@ -484,7 +525,7 @@ const PendingQueue = () => {
                 }}
               />
               <div
-                className="filter-line"
+                className="filter-line relative"
                 onClick={open}
                 style={{ backgroundColor: '#377cf6', marginTop: '5.5px' }}
                 data-tooltip-id="pend-action-filter"
@@ -495,6 +536,7 @@ const PendingQueue = () => {
                   width={15}
                   alt="pending actions table filter"
                 />
+
                 <Tooltip
                   style={{
                     zIndex: 103,
@@ -510,6 +552,20 @@ const PendingQueue = () => {
                   content="Filter"
                   className="filter-line"
                 />
+                {formattedFilters && formattedFilters.length > 0 && (
+                  <span
+                    className="absolute"  
+                    style={{
+                      border: '1px solid #fff',
+                      borderRadius: '50%',
+                      backgroundColor: '#2DC74F',
+                      width: 8,
+                      height: 8,
+                      top: 0,
+                      right: -2,
+                    }}
+                  ></span>
+                )}
               </div>
               <div data-tooltip-id="pend-down">
                 <button
@@ -600,10 +656,10 @@ const PendingQueue = () => {
                       }}
                     >
                       <div>
-                        <Link
-                          to={`/project-management?project_id=${item.uninque_id}&customer-name=${item.home_owner}`}
-                        >
-                          <div>
+                        <div style={{ position: 'relative' }}>
+                          <Link
+                            to={`/project-management?project_id=${item.uninque_id}&customer-name=${item.home_owner}`}
+                          >
                             <div
                               className="project-info-details deco-text"
                               style={{ flexShrink: 0 }}
@@ -627,60 +683,69 @@ const PendingQueue = () => {
                                   content={item.home_owner}
                                 />
                               </h3>
+
                               <div className="flex items-center gap-2">
                                 <p className="install-update">
                                   {item.uninque_id}
                                 </p>
-                                {item.ntp.finance_NTP === 'Completed' &&
-                                  item.ntp.powerclerk === 'Completed' &&
-                                  item.ntp.production === 'Completed' &&
-                                  item.ntp.utility_bill === 'Completed' && (
-                                    <>
-                                      <AiFillMinusCircle
-                                        size={16}
-                                        color={'#EBA900'}
-                                        data-tooltip-id={item.uninque_id}
-                                      />
-                                      <Tooltip
-                                        style={{
-                                          zIndex: 999,
-                                          background: '#555',
-                                          color: '#f7f7f7',
-                                          fontSize: 12,
-                                          paddingBlock: 4,
-                                        }}
-                                        offset={8}
-                                        id={item.uninque_id}
-                                        place="top"
-                                        content="Pending"
-                                      />
-                                    </>
-                                  )}
                               </div>
                             </div>
-                            <p className="pend-project-ages">
-                              Project ages:{' '}
-                              {active === 'ntp'
+                          </Link>
+                          <span
+                            onClick={() => openModal(item)}
+                            style={{
+                              cursor: 'pointer',
+                              position: 'absolute',
+                              right: '90px',
+                              top: '27px',
+                            }}
+                          >
+                            {' '}
+                            {item.ntp.finance_NTP === 'Completed' &&
+                              item.ntp.powerclerk === 'Completed' &&
+                              item.ntp.production === 'Completed' &&
+                              item.ntp.utility_bill === 'Completed' && (
+                                <>
+                                  <AiFillMinusCircle
+                                    size={16}
+                                    color={'#EBA900'}
+                                    data-tooltip-id={item.uninque_id}
+                                  />
+                                  <Tooltip
+                                    style={{
+                                      zIndex: 999,
+                                      background: '#555',
+                                      color: '#f7f7f7',
+                                      fontSize: 12,
+                                      paddingBlock: 4,
+                                    }}
+                                    offset={8}
+                                    id={item.uninque_id}
+                                    place="top"
+                                    content="Pending"
+                                  />
+                                </>
+                              )}
+                          </span>
+                          <p className="pend-project-ages">
+                            Project ages:{' '}
+                            {active === 'ntp'
+                              ? item.ntp.project_age_days
                                 ? item.ntp.project_age_days
-                                  ? item.ntp.project_age_days
-                                  : ''
-                                : item.co.project_age_days
-                                  ? item.co.project_age_days
-                                  : ''}{' '}
-                              days
-                            </p>
-                          </div>
-                        </Link>
+                                : ''
+                              : item.co.project_age_days
+                                ? item.co.project_age_days
+                                : ''}{' '}
+                            days
+                          </p>
+                        </div>
                       </div>
                     </td>
                     {active === 'co' ? (
                       <td>
                         <div className="">
-                          {renderStatusCell(
-                            item,
-                            'co_status',
-                            active,
-                            () => openModal(item)
+                          {renderStatusCell(item, 'co_status', active, () =>
+                            openModal(item)
                           )}
                         </div>
                       </td>
@@ -688,17 +753,15 @@ const PendingQueue = () => {
                       <>
                         <td>
                           <div className="">
-                          {renderStatusCell(item, 'production', active, () => openModal(item))}
-
+                            {renderStatusCell(item, 'production', active, () =>
+                              openModal(item)
+                            )}
                           </div>
                         </td>
                         <td>
                           <div className="">
-                            {renderStatusCell(
-                              item,
-                              'finance_NTP',
-                              active,
-                              () => openModal(item)
+                            {renderStatusCell(item, 'finance_NTP', active, () =>
+                              openModal(item)
                             )}
                           </div>
                         </td>
@@ -714,11 +777,8 @@ const PendingQueue = () => {
                         </td>
                         <td>
                           <div className="">
-                            {renderStatusCell(
-                              item,
-                              'powerclerk',
-                              active,
-                              () => openModal(item)
+                            {renderStatusCell(item, 'powerclerk', active, () =>
+                              openModal(item)
                             )}
                           </div>
                         </td>
@@ -728,12 +788,8 @@ const PendingQueue = () => {
                     <td>
                       <p className={styles['pend-header-txt']}>
                         {active === 'ntp'
-                          ? item.ntp.sold_date
-                            ? item.ntp.sold_date
-                            : '-'
-                          : item.co.sold_date
-                            ? item.co.sold_date
-                            : '-'}
+                          ? formatDate(item.ntp.sold_date)
+                          : formatDate(item.co.sold_date)}
                       </p>
                     </td>
                     <td>
@@ -801,18 +857,14 @@ const PendingQueue = () => {
                     <td>
                       <p className={styles['pend-header-txt']}>
                         {active === 'ntp'
-                          ? item.ntp.ntp_date
-                            ? item.ntp.ntp_date
-                            : '-'
-                          : item.co.ntp_date
-                            ? item.co.ntp_date
-                            : '-'}
+                          ? formatDate(item.ntp.ntp_date)
+                          : formatDate(item.co.ntp_date)}
                       </p>
                     </td>
                   </tr>
                 ))
               ) : (
-                <tr>
+                <tr style={{ backgroundColor: '#fff' }}>
                   <td colSpan={14}>
                     <div className="flex items-center justify-center">
                       <DataNotFound />
@@ -847,13 +899,12 @@ const PendingQueue = () => {
         </div>
       </div>
       {isModalOpen && (
-  <PendModal
-    closeModal={closeModal}
-    active={active}
-    currentRowData={selectedRowData}
-  />
-)}
-
+        <PendModal
+          closeModal={closeModal}
+          active={active}
+          currentRowData={selectedRowData}
+        />
+      )}
     </>
   );
 };
@@ -890,47 +941,40 @@ const renderStatusCell = (
       <div
         className={`flex items-center ${getCoStatusColor(item.co.co_status)} ${styles.outline_card_wrapper}`}
       >
-        {item.co.co_status === 'Pending (Action Required)' ? (
-          <AiFillMinusCircle size={16} color="#E14514" />
-        ) : item.co.co_status === 'Pending' ? (
+        {item.co.co_status === 'Pending' &&
+        item.co.co === 'CO Requested - Working' ? (
+          <AiFillMinusCircle size={16} color="#EBA900" />
+        ) : item.co.co_status === 'Pending' && item.co.co === 'Request CO' ? (
           <AiFillMinusCircle size={16} color="#EBA900" />
         ) : item.co.co_status === 'Completed' ? (
           <AiFillCheckCircle size={16} color="#2EAF71" />
         ) : null}
         <span
-          className={`${item.co.co_status === 'Pending (Action Required)' || item.co.co_status === 'Pending' ? styles.hoverUnderlineScale : ''}`}
-          onClick={
-            item.co.co_status === 'Pending (Action Required)' ||
-            item.co.co_status === 'Pending'
-              ? openModal
-              : undefined
-          }
+          className={`$ {
+            item.co.co_status === 'Pending' ? styles.hoverUnderlineScale : ''
+          }`}
+          onClick={item.co.co_status === 'Pending' ? openModal : undefined}
           style={{
             fontWeight: 400,
             fontSize: 12,
             whiteSpace: 'nowrap',
-            marginLeft: '5px',
-            cursor:
-              item.co.co_status === 'Pending (Action Required)' ||
-              item.co.co_status === 'Pending'
-                ? 'pointer'
-                : 'default',
+            marginLeft: '10px',
+            cursor: item.co.co_status === 'Pending' ? 'pointer' : 'default',
             color:
-              item.co.co_status === 'Pending (Action Required)'
-                ? '#E14514'
-                : item.co.co_status === 'Pending'
-                  ? '#EBA900'
-                  : item.co.co_status === 'Completed'
-                    ? '#2EAF71'
-                    : 'inherit',
+              item.co.co_status === 'Pending'
+                ? '#EBA900'
+                : item.co.co_status === 'Completed'
+                  ? '#2EAF71'
+                  : 'inherit',
           }}
         >
-          {item.co.co_status === 'Pending (Action Required)'
-            ? 'Action req.'
-            : item.co.co_status === 'Pending'
-              ? 'Pending'
-              : item.co.co_status === 'Completed'
-                ? 'Complete'
+          {item.co.co_status === 'Completed'
+            ? 'CO Completed'
+            : item.co.co_status === 'Pending' &&
+                item.co.co === 'CO Requested - Working'
+              ? 'CO Requested - Working'
+              : item.co.co_status === 'Pending' && item.co.co === 'Request CO'
+                ? 'Request CO'
                 : item.co.co
                     .replace(/_/g, ' ')
                     .replace(/\b\w/g, (char: any) => char.toUpperCase())}
@@ -977,11 +1021,11 @@ const renderStatusCell = (
           }}
         >
           {item[active][key] === 'Pending (Action Required)'
-            ? 'Action req.'
+            ? 'Action req'
             : item[active][key] === 'Pending'
               ? 'Pending'
               : item[active][key] === 'Completed'
-                ? 'Complete'
+                ? 'Completed'
                 : key
                     .replace(/_/g, ' ')
                     .replace(/\b\w/g, (char) => char.toUpperCase())}

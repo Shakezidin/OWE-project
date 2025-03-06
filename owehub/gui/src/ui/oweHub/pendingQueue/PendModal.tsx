@@ -12,11 +12,9 @@ const PendModal: React.FC<PendModalProps> = ({
   active,
   currentRowData,
 }) => {
-
-
-  // // Check if currentRowData is valid
-  // if (!currentRowData) return null;
-  console.log(currentRowData, 'skgf');
+  const cardsData = Array.isArray(currentRowData)
+    ? currentRowData
+    : [currentRowData];
   return (
     <div className={classes.transparent_lib}>
       <div className={classes.customer_wrapper_list}>
@@ -26,13 +24,15 @@ const PendModal: React.FC<PendModalProps> = ({
             <IoClose onClick={closeModal} size={20} />
           </div>
           <div className={classes.card_container}>
-            <div className={classes.card}>
-              <p>
-                {active === 'ntp'
-                  ? currentRowData.ntp?.ntp_delayed_by || 'N/A'
-                  : currentRowData.co?.co_delayed_by || 'N/A'}
-              </p>
-            </div>
+            {cardsData.map((row: any, index: any) => (
+              <div key={index} className={classes.card}>
+                <p>
+                  {active === 'ntp'
+                    ? row.ntp?.ntp_delayed_by?.toString().trim() || '-'
+                    : row.co?.co_delayed_by?.toString().trim() || '-'}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
         <div style={{ marginTop: '40px' }}>
@@ -41,8 +41,8 @@ const PendModal: React.FC<PendModalProps> = ({
             className={classes.textArea}
             value={
               active === 'ntp'
-                ? currentRowData.ntp?.ntp_delay_notes || ''
-                : currentRowData.co?.co_notes || ''
+                ? currentRowData.ntp?.ntp_delay_notes || '-'
+                : currentRowData.co?.co_notes || '-'
             }
             readOnly
           ></textarea>

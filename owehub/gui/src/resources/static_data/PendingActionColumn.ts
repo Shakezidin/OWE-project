@@ -77,11 +77,11 @@ export default [
       filter: 'deal_type',
     },
     {
-      name: 'ntp_complete_date',
+      name: 'ntp_date',
       displayName: 'NTP Date',
       type: 'date',
       isCheckbox: false,
-      filter: 'ntp_complete_date',
+      filter: 'ntp_date',
     }
   ];
   
