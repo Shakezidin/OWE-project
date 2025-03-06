@@ -449,7 +449,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			ntpD = ""
 		} else {
-			ntpD = ntpDate.Format("01-02-2006")
+			ntpD = ntpDate.Format("02-01-2006") // dd-mm-yy format
 		}
 
 		if val, ok := item["first_value"].(string); ok {
@@ -474,7 +474,7 @@ func HandleGetNewPendingQuesDataRequest(resp http.ResponseWriter, req *http.Requ
 		if val, ok := item["sold_date"].(string); ok && val != "" {
 			soldDate = val
 		} else if val, ok := item["sold_date"].(time.Time); ok {
-			soldDate = val.Format("01-02-2006")
+			soldDate = val.Format("02-01-2006") // dd-mm-yyyy format
 		}
 
 		appStatus := ""
@@ -765,10 +765,10 @@ func filterByNtpStatus(pendingQueueList []models.GetPendingQueue, filters []mode
 					item.Ntp.UtilityBillUploaded == "Pending" || item.Ntp.UtilityBillUploaded == "Pending (Action Required)"
 			}
 
-			if filterData == "complete" && isCompleted {
+			if filterData == "completed" && isCompleted {
 				filteredData = append(filteredData, item)
 				seen[itemID] = true
-			} else if (filterData == "pending" || filterData == "pending (action required)" || filterData == "action req.") && isPending {
+			} else if (filterData == "pending" || filterData == "pending (action required)" || filterData == "action req") && isPending {
 				filteredData = append(filteredData, item)
 				seen[itemID] = true
 			}
