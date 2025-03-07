@@ -346,8 +346,10 @@ const DealerTablePipeline = () => {
 
   const [selectedAM, setSelectedAM] = useState<any>(null);
   const [selectedSR, setSelectedSR] = useState<any>(null);
+  const [selectedSR2, setSelectedSR2] = useState<any>(null);
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
   const [selectedSRRow, setSelectedSRRow] = useState<string | null>(null);
+  const [selectedSR2Row, setSelectedSR2Row] = useState<string | null>(null);
   const [selectedDealerName, setSelectedDealerName] = useState('');
   const [table, setSelectedTable] = useState('');
 
@@ -405,7 +407,7 @@ const DealerTablePipeline = () => {
 
   useEffect(() => {
     getNewFormData();
-  }, [selectedDealerName, table, selectedRow, selectedSRRow]);
+  }, [selectedDealerName, table, selectedRow, selectedSR2Row, selectedSRRow]);
 
   const handleSetterEdit = async (id: any) => {
     if (selectedAM !== null && selectedAM.value !== '') {
@@ -446,7 +448,32 @@ const DealerTablePipeline = () => {
         return;
       }
       else {
-        toast.success("Sales Rep Updated Successfully");
+        toast.success("Sales Rep1 Updated Successfully");
+        setSelectedSR(null);
+        setSelectedSRRow(null);
+        setUpdate(false);
+      }
+    } else {
+      toast.error("Please select Sales Rep");
+    }
+
+  };
+
+  const handleRep2Edit = async (id: any) => {
+    if (selectedSR2 !== null && selectedSR2.value !== '') {
+      setUpdate(true);
+      const res = await postCaller(EndPoints.update_setter_sales_rep, {
+        "unique_id": id,
+        "field": "secondry_sales_rep",
+        "data": selectedSR2.value,
+      });
+      if (res.status !== 200) {
+        toast.error("Failed to update Sales Rep2");
+        setUpdate(false);
+        return;
+      }
+      else {
+        toast.success("Sales Rep2 Updated Successfully");
         setSelectedSR(null);
         setSelectedSRRow(null);
         setUpdate(false);
@@ -683,11 +710,7 @@ const DealerTablePipeline = () => {
                           </div>
                         ) : (
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <TiTick
-                              size={20}
-                              onClick={() => { setSelectedSRRow(null); handleRepEdit(item.unique_id) }}
-                              style={{ cursor: "pointer", color: "black" }}
-                            />
+
                             <SelectOption
                               options={srOptions}
                               onChange={(value: any) => {
@@ -707,11 +730,66 @@ const DealerTablePipeline = () => {
                               singleValueStyles={{ fontWeight: 400 }}
                               placeholder="Select Sales Rep"
                             />
+                            <div
+                              className='edit-setter'
+                              onClick={() => { setSelectedSRRow(null); handleRepEdit(item.unique_id) }}
+                              style={{ cursor: "pointer", color: "black", justifyContent: "center" }}
+                            >
+                              <img src={ICONS.check} alt="" />
+                            </div>
 
                           </div>
                         )}
                       </td>
-                      <td>{item.rep_2 || '-'}</td>
+                      <td>
+                        {selectedSR2Row !== item.unique_id ? (
+                          <div className="am-select-container">
+                            <span>{item.rep_2 || '-'}</span>
+
+                            <CiEdit
+                              size={16}
+                              onClick={() => {
+                                setSelectedSR2Row(item.unique_id);
+                                setSelectedTable("primary_sales_rep");
+                                setSelectedDealerName(item.partner_dealer);
+                                setSelectedSR2({ value: item.rep_2, label: item.rep_2 });
+                              }}
+                              style={{ cursor: "pointer", marginLeft: "8px" }}
+                            />
+
+                          </div>
+                        ) : (
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+
+                            <SelectOption
+                              options={srOptions}
+                              onChange={(value: any) => {
+                                if (value === "for test" || value === "sd") {
+                                  return; // Prevent selection
+                                }
+                                setSelectedSR2(value);
+                              }}
+                              value={selectedSR2}
+                              controlStyles={{
+                                marginTop: 0,
+                                minHeight: 30,
+                                minWidth: isMobile ? 67 : 150,
+                              }}
+                              menuWidth={isMobile ? "120px" : "150px"}
+                              menuListStyles={{ fontWeight: 400 }}
+                              singleValueStyles={{ fontWeight: 400 }}
+                              placeholder="Select Sales Rep2"
+                            />
+                            <div
+                              className='edit-setter'
+                              onClick={() => { setSelectedSR2Row(null); handleRep2Edit(item.unique_id) }}
+                              style={{ cursor: "pointer", color: "black", justifyContent: "center" }}
+                            >
+                              <img src={ICONS.check} alt="" />
+                            </div>
+                          </div>
+                        )}
+                      </td>
                       <td>
                         {selectedRow !== item.unique_id ? (
                           <div className="am-select-container">
@@ -731,11 +809,7 @@ const DealerTablePipeline = () => {
                           </div>
                         ) : (
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <TiTick
-                              size={20}
-                              onClick={() => { setSelectedRow(null); handleSetterEdit(item.unique_id) }}
-                              style={{ cursor: "pointer", color: "black" }}
-                            />
+
                             <SelectOption
                               options={amOptions}
                               onChange={(value: any) => {
@@ -754,8 +828,14 @@ const DealerTablePipeline = () => {
                               menuListStyles={{ fontWeight: 400 }}
                               singleValueStyles={{ fontWeight: 400 }}
                               placeholder="Select Setter"
-
                             />
+                            <div
+                              className='edit-setter'
+                              onClick={() => { setSelectedRow(null); handleSetterEdit(item.unique_id) }}
+                              style={{ cursor: "pointer", color: "black", justifyContent: "center" }}
+                            >
+                              <img src={ICONS.check} alt="" />
+                            </div>
 
                           </div>
                         )}
