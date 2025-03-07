@@ -113,7 +113,7 @@ func HandleUpdateSetterSalesRepRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	log.FuncDebugTrace(0, "jsonData = %v", payload)
+	log.FuncDebugTrace(0, "project_id = %v  old_data = %v   new_data = %v, field = %v", updateData.ProjectRecordId, updateData.OldData, updateData.NewData, updateData.Field)
 	// Create HTTP request
 	req, err = http.NewRequest(http.MethodPut, apiURL, bytes.NewBuffer(jsonData))
 	if err != nil {
