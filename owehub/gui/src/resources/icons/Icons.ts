@@ -187,6 +187,7 @@ import sky from '../../resources/assets/sky.svg';
 import skyfilter from '../../resources/assets/skyfilter.svg';
 import pendingAction from '../../resources/assets/pending action.svg';
 import skyBlue from './skyBlue.svg';
+import check from '../../resources/assets/Check.svg';
 
 
 
@@ -393,5 +394,6 @@ export const ICONS = {
   Whats_Send:Whats_Send,
   sky:sky,
   skyfilter:skyfilter,
-  skyBlue:skyBlue
+  skyBlue:skyBlue,
+  check:check,
 };
