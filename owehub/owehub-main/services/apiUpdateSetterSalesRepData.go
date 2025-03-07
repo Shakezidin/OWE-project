@@ -81,7 +81,7 @@ func HandleUpdateSetterSalesRepRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	if len(updateData.ProjectRecordId) <= 0 || updateData.Field == "" || len(updateData.UpdatedRecordid) <= 0 {
+	if len(updateData.ProjectRecordId) <= 0 || updateData.Field == "" {
 		err = fmt.Errorf("Invalid input fields in API request")
 		log.FuncErrorTrace(0, "%v", err)
 		appserver.FormAndSendHttpResp(resp, "Invalid input fields in API request", http.StatusBadRequest, nil)
