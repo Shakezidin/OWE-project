@@ -649,25 +649,31 @@ const DealerTablePipeline = () => {
             <table>
               <thead>
                 <tr style={{ background: '#F3F3FF' }}>
-                  {pipeLineColumn?.map((item, key) => (
-                    <SortableHeader
-                      key={key}
-                      isCheckbox={item.isCheckbox}
-                      titleName={item.displayName}
-                      data={cuurentPageData}
-                      isAllRowsSelected={false}
-                      isAnyRowSelected={false}
-                      selectAllChecked={false}
-                      setSelectAllChecked={() => { }}
-                      selectedRows={selectedRows}
-                      setSelectedRows={setSelectedRows}
-                      sortKey={item.name}
-                      sortDirection={
-                        sortKey === item.name ? sortDirection : undefined
-                      }
-                      onClick={() => handleSort(item.name)}
-                    />
-                  ))}
+                  {pipeLineColumn
+                    ?.filter(item =>
+                      isStaging !== 'staging'
+                        ? item.name !== 'project_status' && item.name !== 'setter'
+                        : true // If staging === 'staging', keep all items
+                    )
+                    .map((item, key) => (
+                      <SortableHeader
+                        key={key}
+                        isCheckbox={item.isCheckbox}
+                        titleName={item.displayName}
+                        data={cuurentPageData}
+                        isAllRowsSelected={false}
+                        isAnyRowSelected={false}
+                        selectAllChecked={false}
+                        setSelectAllChecked={() => { }}
+                        selectedRows={selectedRows}
+                        setSelectedRows={setSelectedRows}
+                        sortKey={item.name}
+                        sortDirection={
+                          sortKey === item.name ? sortDirection : undefined
+                        }
+                        onClick={() => handleSort(item.name)}
+                      />
+                    ))}
                 </tr>
               </thead>
               <tbody>
@@ -676,9 +682,11 @@ const DealerTablePipeline = () => {
                     <tr key={index}>
                       <td>{item.unique_id || '-'}</td>
                       <td>{item.home_owner || '-'}</td>
-                      <td>
-                        {item.project_status ? item.project_status : '-'}
-                      </td>
+                      {isStaging === 'staging' &&
+                        <td>
+                          {item.project_status ? item.project_status : '-'}
+                        </td>
+                      }
                       <td>{item.finance_company || '-'}</td>
                       <td>{item.type || '-'}</td>
                       <td>{item.loan_type || '-'}</td>
@@ -793,11 +801,12 @@ const DealerTablePipeline = () => {
                           </div>
                         )}
                       </td>
-                      <td>
-                        {selectedRow !== item.unique_id ? (
-                          <div className="am-select-container">
-                            <span>{item.setter ? item.setter : '-'}</span>
-                            {isStaging === 'staging' &&
+                      {isStaging === 'staging' &&
+                        <td>
+                          {selectedRow !== item.unique_id ? (
+                            <div className="am-select-container">
+                              <span>{item.setter ? item.setter : '-'}</span>
+
                               <CiEdit
                                 size={16}
                                 onClick={() => {
@@ -808,42 +817,43 @@ const DealerTablePipeline = () => {
                                 }}
                                 style={{ cursor: "pointer", marginLeft: "8px" }}
                               />
-                            }
 
-                          </div>
-                        ) : (
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 
-                            <SelectOption
-                              options={amOptions}
-                              onChange={(value: any) => {
-                                if (value.value === "for test" || value.value === "sd") {
-                                  return;
-                                }
-                                setSelectedAM(value);
-                              }}
-                              value={selectedAM}
-                              controlStyles={{
-                                marginTop: 0,
-                                minHeight: 30,
-                                minWidth: isMobile ? 67 : 150,
-                              }}
-                              menuWidth={isMobile ? "120px" : "150px"}
-                              menuListStyles={{ fontWeight: 400 }}
-                              singleValueStyles={{ fontWeight: 400 }}
-                              placeholder="Select Setter"
-                            />
-                            <div
-                              className='edit-setter'
-                              onClick={() => { setSelectedRow(null); handleSetterEdit(item.unique_id) }}
-                              style={{ cursor: "pointer", color: "black", justifyContent: "center" }}
-                            >
-                              <img src={ICONS.check} alt="" />
                             </div>
+                          ) : (
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 
-                          </div>
-                        )}
-                      </td>
+                              <SelectOption
+                                options={amOptions}
+                                onChange={(value: any) => {
+                                  if (value.value === "for test" || value.value === "sd") {
+                                    return;
+                                  }
+                                  setSelectedAM(value);
+                                }}
+                                value={selectedAM}
+                                controlStyles={{
+                                  marginTop: 0,
+                                  minHeight: 30,
+                                  minWidth: isMobile ? 67 : 150,
+                                }}
+                                menuWidth={isMobile ? "120px" : "150px"}
+                                menuListStyles={{ fontWeight: 400 }}
+                                singleValueStyles={{ fontWeight: 400 }}
+                                placeholder="Select Setter"
+                              />
+                              <div
+                                className='edit-setter'
+                                onClick={() => { setSelectedRow(null); handleSetterEdit(item.unique_id) }}
+                                style={{ cursor: "pointer", color: "black", justifyContent: "center" }}
+                              >
+                                <img src={ICONS.check} alt="" />
+                              </div>
+
+                            </div>
+                          )}
+                        </td>
+                      }
                       <td>{item.system_size || '0'}</td>
                       <td>{item.contract_amount || '0'}</td>
                       <td>
