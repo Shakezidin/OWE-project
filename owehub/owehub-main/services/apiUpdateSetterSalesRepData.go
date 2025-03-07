@@ -12,6 +12,7 @@ import (
 	models "OWEApp/shared/models"
 	"bytes"
 	"sync"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -26,7 +27,11 @@ var (
 	limiters   = make(map[string]*rate.Limiter) // Map to store rate limiters per IP
 	rateLimit  = 5                              // 5 requests per second
 	burstLimit = 10                             // Allow small bursts
-	authToken  = "user_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJm77-977-9XHUwMDAzVO-_vWPvv73vv70iLCJzY29wZSI6InVrX3YxIiwidHlwZSI6IlVTRVJfQVBJX0tFWSJ9.oHUitRsj8CQgROYR9Q-pCSc1Mc3YkHpU3rJSDddKMg8"
+	authTokens = []string{"user_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJm77-977-9XHUwMDAzVO-_vWPvv73vv70iLCJzY29wZSI6InVrX3YxIiwidHlwZSI6IlVTRVJfQVBJX0tFWSJ9.oHUitRsj8CQgROYR9Q-pCSc1Mc3YkHpU3rJSDddKMg8",
+		"user_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjXe-_ve-_vW3vv73vv73vv70x77-9Iiwic2NvcGUiOiJ1a192MSIsInR5cGUiOiJVU0VSX0FQSV9LRVkifQ.ewBrfXelga2DDikb4rUiiIbljaOYc03PNwAOLSEFdnA",
+		"user_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJrbe-_vXnYs--_vWJhTiIsInNjb3BlIjoidWtfdjEiLCJ0eXBlIjoiVVNFUl9BUElfS0VZIn0.H8JCYHMpobgbHQxVLD__2aBPyn0fLlM24vH7v-lnS8o",
+		"user_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJcdO-_vWbvv73vv71x77-9bVx1MDAwZe-_vSIsInNjb3BlIjoidWtfdjEiLCJ0eXBlIjoiVVNFUl9BUElfS0VZIn0.hQuW6xoWVakBpORnTayWGsT9uaGm2J8QEF8gRnvCh6k",
+		"user_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjXe-_ve-_vW3vv73vv73vv70x77-9Iiwic2NvcGUiOiJ1a192MSIsInR5cGUiOiJVU0VSX0FQSV9LRVkifQ.ewBrfXelga2DDikb4rUiiIbljaOYc03PNwAOLSEFdnA"}
 )
 
 /******************************************************************************
@@ -96,46 +101,18 @@ func HandleUpdateSetterSalesRepRequest(resp http.ResponseWriter, req *http.Reque
 		log.FuncErrorTrace(0, "invalide field name")
 		appserver.FormAndSendHttpResp(resp, "Invalid input field name in API request", http.StatusBadRequest, nil)
 	}
-
-	// Prepare request payload
-	apiURL := "https://api.tapeapp.com/v1/record/" + updateData.ProjectRecordId
-	payload := map[string]interface{}{
-		"fields": map[string][]string{
-			updateData.Field: updateData.UpdatedRecordid,
-		},
-	}
-
-	// Convert payload to JSON
-	jsonData, err := json.Marshal(payload)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to marshal JSON: %v\n", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to marshal JSON", http.StatusBadRequest, nil)
-		return
-	}
-
 	log.FuncDebugTrace(0, "project_id = %v  old_data = %v   new_data = %v, field = %v", updateData.ProjectRecordId, updateData.OldData, updateData.NewData, updateData.Field)
-	// Create HTTP request
-	req, err = http.NewRequest(http.MethodPut, apiURL, bytes.NewBuffer(jsonData))
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to create request: %v\n", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to marshal JSON", http.StatusBadRequest, nil)
-		return
-	}
 
-	// Set headers
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+authToken)
-
-	// Make HTTP request
-	client := &http.Client{}
-	respAPI, err := client.Do(req)
+	// Call the API with retry mechanism
+	respAPI, err := sendTapeAPIRequest(updateData.ProjectRecordId, updateData.Field, updateData.UpdatedRecordid)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to send request: %v\n", err)
-		appserver.FormAndSendHttpResp(resp, "failed to update data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "API request failed: %v", err)
+		appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Failed to update data: %v", err), http.StatusInternalServerError, nil)
 		return
 	}
 	defer respAPI.Body.Close()
 
+	// Handle successful response
 	appserver.FormAndSendHttpResp(resp, updateData.Field+" name updated successfully", http.StatusOK, nil)
 }
 
@@ -150,4 +127,69 @@ func getLimiter(ip string) *rate.Limiter {
 		limiters[ip] = limiter
 	}
 	return limiter
+}
+
+func sendTapeAPIRequest(projectRecordID, field string, updatedRecordIDs []string) (*http.Response, error) {
+	// Prepare request payload
+	apiURL := "https://api.tapeapp.com/v1/record/" + projectRecordID
+	payload := map[string]interface{}{
+		"fields": map[string][]string{
+			field: updatedRecordIDs,
+		},
+	}
+
+	// Convert payload to JSON
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal JSON: %w", err)
+	}
+
+	maxRetries := len(authTokens)
+	client := &http.Client{Timeout: 10 * time.Second}
+	var respAPI *http.Response
+	var lastErr error
+
+	// Try with each auth token until success or all tokens exhausted
+	for retry := 0; retry < maxRetries; retry++ {
+		// Create HTTP request
+		req, err := http.NewRequest(http.MethodPut, apiURL, bytes.NewBuffer(jsonData))
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create request: %v\n", err)
+			lastErr = fmt.Errorf("failed to create request: %w", err)
+			continue
+		}
+
+		// Set headers with current token
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Authorization", "Bearer "+authTokens[retry])
+
+		// Make HTTP request
+		respAPI, err = client.Do(req)
+		if err != nil {
+			log.FuncErrorTrace(0, "Request attempt %d failed: %v\n", retry+1, err)
+			lastErr = fmt.Errorf("request attempt %d failed: %w", retry+1, err)
+			continue
+		}
+
+		// Check for token expiration or rate limiting
+		if respAPI.StatusCode == http.StatusUnauthorized ||
+			respAPI.StatusCode == http.StatusForbidden ||
+			respAPI.StatusCode == http.StatusTooManyRequests {
+
+			log.FuncErrorTrace(0, "Token expired or rate limited (status: %d). Trying next token.\n", respAPI.StatusCode)
+			respAPI.Body.Close()
+			lastErr = fmt.Errorf("token expired or rate limited (status: %d)", respAPI.StatusCode)
+			continue
+		}
+
+		// Success
+		return respAPI, nil
+	}
+
+	// All retries failed
+	if lastErr == nil {
+		lastErr = fmt.Errorf("failed to update record after trying all available tokens")
+	}
+
+	return nil, lastErr
 }
