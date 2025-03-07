@@ -769,7 +769,7 @@ func filterByNtpStatus(pendingQueueList []models.GetPendingQueue, filters []mode
 			if filterData == "completed" && isCompleted {
 				filteredData = append(filteredData, item)
 				seen[itemID] = true
-			} else if (filterData == "pending" || filterData == "pending (action required)" || filterData == "action req") && isPending {
+			} else if (filterData == "pending" || filterData == "pending (action required)" || filterData == "action req" || filterData == "action") && isPending {
 				filteredData = append(filteredData, item)
 				seen[itemID] = true
 			}

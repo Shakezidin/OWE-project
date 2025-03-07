@@ -149,18 +149,14 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 							ELSE cs.state
 						END
 						) AS data from customers_customers_schema cs
-	LEFT JOIN pv_install_install_subcontracting_schema pis ON cs.unique_id = pis.customer_unique_id
-	where pis.pv_completion_date IS NOT NULL`
+					LEFT JOIN pv_install_install_subcontracting_schema pis ON cs.unique_id = pis.customer_unique_id
+					where pis.pv_completion_date IS NOT NULL`
 			dbIndex = db.RowDataDBIndex
 		case "recruiter":
 			query = `SELECT DISTINCT recruiter as data FROM sales_partner_dbhub_schema
 						WHERE recruiter IS NOT NULL AND recruiter <> '';`
-		case "setter":
-			query = fmt.Sprintf(`SELECT DISTINCT setter as data FROM customers_customers_schema 
-						WHERE dealer = '%v'`, newFormDataReq.Dealer)
-			dbIndex = db.RowDataDBIndex
 		case "primary_sales_rep":
-			query = fmt.Sprintf(`SELECT DISTINCT primary_sales_rep as data FROM customers_customers_schema 
+			query = fmt.Sprintf(`SELECT name as data, record_id FROM sales_rep_dbhub_schema 
 									WHERE dealer = '%v'`, newFormDataReq.Dealer)
 			dbIndex = db.RowDataDBIndex
 		default:
@@ -176,18 +172,38 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		for _, item := range data {
-			name, ok := item["data"].(string)
-			if !ok {
-				log.FuncErrorTrace(0, "Failed to get data item for Item: %+v\n", item)
-				continue
+		if tableName == "primary_sales_rep" {
+			var salesRepData []map[string]interface{}
+			for _, item := range data {
+				recordID, ok := item["record_id"].(int64)
+				if !ok {
+					log.FuncErrorTrace(0, "Failed to get record_id item for Item: %+v\n", item)
+					continue
+				}
+
+				name, ok := item["data"].(string)
+				if !ok {
+					log.FuncErrorTrace(0, "Failed to get data for Item: %+v\n", item)
+					// continue
+				}
+
+				salesRepData = append(salesRepData, map[string]interface{}{
+					"name":      name,
+					"record_id": recordID,
+				})
 			}
-			items = append(items, name)
+			responseData[tableName] = salesRepData
+		} else {
+			for _, item := range data {
+				name, ok := item["data"].(string)
+				if !ok {
+					log.FuncErrorTrace(0, "Failed to get data item for Item: %+v\n", item)
+					continue
+				}
+				items = append(items, name)
+			}
+			responseData[tableName] = items
 		}
-		if tableName == "dealer_name" && (role != string(types.RoleAccountManager) && role != string(types.RoleAccountExecutive) && role != string(types.RoleProjectManager)) {
-			items = append(items, "")
-		}
-		responseData[tableName] = items
 	}
 
 	// Send the response
