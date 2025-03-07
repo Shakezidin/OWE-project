@@ -7,7 +7,7 @@
 package models
 
 type UpdateSetterSalesRepReq struct {
-	UniqueId string `json:"unique_id"`
-	Field    string `json:"field"`
-	Data     string `json:"data"`
+	ProjectRecordId string   `json:"project_record_id"`
+	UpdatedRecordid []string `json:"updated_record_id"`
+	Field           string   `json:"field"` //primar_sale_rep, setter
 }
