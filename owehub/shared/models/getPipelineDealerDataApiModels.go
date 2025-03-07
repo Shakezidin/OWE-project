@@ -11,6 +11,7 @@ type PipelineDealerDataList struct {
 }
 
 type PipelineDealerData struct {
+	RecordId              int64  `json:"record_id"`
 	HomeOwner             string `json:"home_owner"`
 	PartnerDealer         string `json:"partner_dealer"`
 	FinanceCompany        string `json:"finance_company"`

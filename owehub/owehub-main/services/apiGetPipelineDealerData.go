@@ -191,6 +191,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	for _, item := range data {
+		recordId, _ := item["record_id"].(int64)
 		customerName, _ := item["customer_name"].(string)
 		partnerDealer, _ := item["partner_dealer"].(string)
 		financeCompany, _ := item["finance_company"].(string)
@@ -225,19 +226,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		finCompleteDate, _ = item["fin_complete_date"].(time.Time)
 		ptoDate, _ = item["pto_date"].(time.Time)
 		setter, _ := item["setter"].(string)
-		if setter == "" {
-			if val, exists := TempMap[uniqueId]; exists {
-				setter = val["setter"]
-			}
-		}
-
 		rep1, _ := item["rep_1"].(string)
-		if rep1 == "" {
-			if val, exists := TempMap[uniqueId]; exists {
-				rep1 = val["primary_sales_rep"]
-			}
-		}
-
 		projectStatus, _ := item["project_status"].(string)
 
 		var jeopardyStatus bool
@@ -248,6 +237,7 @@ func HandleGetPipelineDealerData(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		pipelineDealerData := models.PipelineDealerData{
+			RecordId:             recordId,
 			HomeOwner:            customerName,
 			PartnerDealer:        partnerDealer,
 			FinanceCompany:       financeCompany,

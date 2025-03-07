@@ -1415,6 +1415,7 @@ func PipelineDealerDataQuery(filterUserQuery string) string {
     )
     SELECT
         -- Customer Basic Information
+        cust.record_id,
         cust.unique_id,
         cust.customer_name,
         cust.dealer AS partner_dealer,
