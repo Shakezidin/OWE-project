@@ -16,7 +16,7 @@ CREATE TABLE if NOT EXISTS leads_info (
     street_address character varying,
     city VARCHAR(80),
     state INT,
-    zipcode INT NOT NULL,
+    zipcode INT,
     proposal_type TEXT,
     finance_type TEXT,
     finance_company TEXT,
