@@ -23,11 +23,6 @@ import { Tooltip } from 'react-tooltip';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { format, parseISO } from 'date-fns';
-import SelectOption from '../../components/selectOption/SelectOption';
-import DropDownLeadTable from '../../leadmanagement/components/LeadDashboardTable/Dropdowns/CustomDrop';
-import { CiCircleCheck, CiEdit } from 'react-icons/ci';
-import { TiTick } from 'react-icons/ti';
-import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 interface ColumnMap {
   [key: string]: string;
@@ -55,8 +50,6 @@ const DealerTablePipeline = () => {
   const [filters, setFilters] = useState<FilterModel[]>([]);
   const navigate = useNavigate();
   const isMobile = useMatchMedia('(max-width: 767px)');
-  const [update, setUpdate] = useState(false);
-
 
   const handleClick = () => {
     navigate('/pipeline');
@@ -68,7 +61,7 @@ const DealerTablePipeline = () => {
     }, 800),
     []
   );
-
+ 
   const formattedFilters = filters
     ? filters.map((filter) => {
       if (filter.Column === 'jeopardy_date') {
@@ -83,7 +76,7 @@ const DealerTablePipeline = () => {
           start_date: filter.start_date,
           end_date: filter.end_date,
         };
-      } else if (filter.data1 !== '' && filter.data2 !== '') {
+      }else if (filter.data1 !== '' && filter.data2 !== '') {
         return {
           column: filter.Column,
           operation: 'btw',
@@ -112,19 +105,19 @@ const DealerTablePipeline = () => {
             formattedFilters && formattedFilters.length > 0
               ? formattedFilters
               : [
-                { column: 'unique_id', operation: 'cont', data: searchTerm },
-                {
-                  column: 'customer_name',
-                  operation: 'cont',
-                  data: searchTerm,
-                },
-              ],
+                  { column: 'unique_id', operation: 'cont', data: searchTerm },
+                  {
+                    column: 'customer_name',
+                    operation: 'cont',
+                    data: searchTerm,
+                  },
+                ],
           sort_by: '',
           sort_order: '',
         },
       })
     );
-  }, [update, page, searchTerm, filters]);
+  }, [page, searchTerm, filters]);
 
   const { pipelineData } = useAppSelector((state) => state.pipelineSlice);
 
@@ -159,7 +152,7 @@ const DealerTablePipeline = () => {
     const actualSortKey = sortKeyMapping[sortKey] || sortKey;
 
     cuurentPageData?.sort((a: any, b: any) => {
-
+     
       const aValue = a[actualSortKey];
       const bValue = b[actualSortKey];
 
@@ -242,13 +235,13 @@ const DealerTablePipeline = () => {
             formattedFilters && formattedFilters.length > 0
               ? formattedFilters
               : [
-                { column: 'unique_id', operation: 'cont', data: searchTerm },
-                {
-                  column: 'customer_name',
-                  operation: 'cont',
-                  data: searchTerm,
-                },
-              ],
+                  { column: 'unique_id', operation: 'cont', data: searchTerm },
+                  {
+                    column: 'customer_name',
+                    operation: 'cont',
+                    data: searchTerm,
+                  },
+                ],
           sort_by: '',
           sort_order: '',
         },
@@ -270,7 +263,7 @@ const DealerTablePipeline = () => {
           item.state || '-',
           item.email || '-',
           item.phone_number || '-',
-
+          item.rep_1 || '-',
           item.partner_dealer || '-',
           item.system_size || '0',
           `${item.contract_amount || '0'}`,
@@ -312,14 +305,11 @@ const DealerTablePipeline = () => {
             : item.jeopardy_date === true
               ? 'True'
               : 'False',
-          item.days_project_age || '-',
-          item.days_ntp || '-',
-          item.days_permits || '-',
-          item.days_install || '-',
-          item.days_pto || '-',
-          item.rep_1 || '-',
-          item.setter || '-',
-          item.project_status || '-',
+          item.days_project_age,
+          item.days_ntp,
+          item.days_permits,
+          item.days_install,
+          item.days_pto,
         ]
       );
 
@@ -341,150 +331,6 @@ const DealerTablePipeline = () => {
     }
     setIsExporting(false);
   };
-
-  /////////////////////////////////////////////////////////////////////
-
-  const [selectedAM, setSelectedAM] = useState<any>(null);
-  const [selectedSR, setSelectedSR] = useState<any>(null);
-  const [selectedSR2, setSelectedSR2] = useState<any>(null);
-  const [selectedRow, setSelectedRow] = useState<string | null>(null);
-  const [selectedSRRow, setSelectedSRRow] = useState<string | null>(null);
-  const [selectedSR2Row, setSelectedSR2Row] = useState<string | null>(null);
-  const [selectedDealerName, setSelectedDealerName] = useState('');
-  const [table, setSelectedTable] = useState('');
-
-
-
-
-  const tableData = {
-    "tableNames": [table],
-    "dealer": selectedDealerName
-  }
-
-  const [amOptions, setAmOptions] = useState([
-    { value: 'for test', label: 'Loading...' },
-  ]);
-  const [srOptions, setSrOptions] = useState([
-    { value: 'for test', label: 'Loading...' },
-  ]);
-
-  const getNewFormData = async () => {
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    if (res.status !== 200) return;
-
-    if (table === "setter") {
-      if (!res.data || !Array.isArray(res.data.setter) || res.data.setter.length === 0 || (res.data.setter.length === 1 && res.data.setter[0] === "")) {
-        setAmOptions([{ value: "sd", label: "Data Not Found" }]);
-        return;
-      }
-
-      console.log("we are at setter");
-      const newOptions = res.data.setter
-        .filter((name: string) => name.trim() !== "")
-        .map((name: string) => ({
-          value: name,
-          label: name,
-        }));
-
-      setAmOptions(newOptions);
-    } else {
-      if (!res.data || !Array.isArray(res.data.primary_sales_rep) || res.data.primary_sales_rep.length === 0 || (res.data.primary_sales_rep.length === 1 && res.data.primary_sales_rep[0] === "")) {
-        setSrOptions([{ value: "ds", label: "Data Not Found" }]);
-        return;
-      }
-
-      const newOptions = res.data.primary_sales_rep
-        .filter((name: string) => name.trim() !== "")
-        .map((name: string) => ({
-          value: name,
-          label: name,
-        }));
-
-      setSrOptions(newOptions);
-    }
-  };
-
-
-  useEffect(() => {
-    getNewFormData();
-  }, [selectedDealerName, table, selectedRow, selectedSR2Row, selectedSRRow]);
-
-  const handleSetterEdit = async (id: any) => {
-    if (selectedAM !== null && selectedAM.value !== '') {
-      setUpdate(true);
-      const res = await postCaller(EndPoints.update_setter_sales_rep, {
-        "unique_id": id,
-        "field": table,
-        "data": selectedAM.value,
-      });
-      if (res.status !== 200) {
-        toast.error("Failed to update Setter");
-        setUpdate(false);
-        return;
-      }
-      else {
-        toast.success("Setter Updated Successfully");
-        setSelectedAM(null);
-        setSelectedRow(null);
-        setUpdate(false);
-      }
-    } else {
-      toast.error("Please select Setter");
-    }
-
-  };
-
-  const handleRepEdit = async (id: any) => {
-    if (selectedSR !== null && selectedSR.value !== '') {
-      setUpdate(true);
-      const res = await postCaller(EndPoints.update_setter_sales_rep, {
-        "unique_id": id,
-        "field": table,
-        "data": selectedSR.value,
-      });
-      if (res.status !== 200) {
-        toast.error("Failed to update Sales Rep");
-        setUpdate(false);
-        return;
-      }
-      else {
-        toast.success("Sales Rep1 Updated Successfully");
-        setSelectedSR(null);
-        setSelectedSRRow(null);
-        setUpdate(false);
-      }
-    } else {
-      toast.error("Please select Sales Rep");
-    }
-
-  };
-
-  const handleRep2Edit = async (id: any) => {
-    if (selectedSR2 !== null && selectedSR2.value !== '') {
-      setUpdate(true);
-      const res = await postCaller(EndPoints.update_setter_sales_rep, {
-        "unique_id": id,
-        "field": "secondry_sales_rep",
-        "data": selectedSR2.value,
-      });
-      if (res.status !== 200) {
-        toast.error("Failed to update Sales Rep2");
-        setUpdate(false);
-        return;
-      }
-      else {
-        toast.success("Sales Rep2 Updated Successfully");
-        setSelectedSR(null);
-        setSelectedSRRow(null);
-        setUpdate(false);
-      }
-    } else {
-      toast.error("Please select Sales Rep");
-    }
-
-  };
-  const isStaging = process.env.REACT_APP_ENV;
-
 
   return (
     <>
@@ -658,7 +504,7 @@ const DealerTablePipeline = () => {
                       isAllRowsSelected={false}
                       isAnyRowSelected={false}
                       selectAllChecked={false}
-                      setSelectAllChecked={() => { }}
+                      setSelectAllChecked={() => {}}
                       selectedRows={selectedRows}
                       setSelectedRows={setSelectedRows}
                       sortKey={item.name}
@@ -676,9 +522,6 @@ const DealerTablePipeline = () => {
                     <tr key={index}>
                       <td>{item.unique_id || '-'}</td>
                       <td>{item.home_owner || '-'}</td>
-                      <td>
-                        {item.project_status ? item.project_status : '-'}
-                      </td>
                       <td>{item.finance_company || '-'}</td>
                       <td>{item.type || '-'}</td>
                       <td>{item.loan_type || '-'}</td>
@@ -690,160 +533,8 @@ const DealerTablePipeline = () => {
                       <td>{item.email || '-'}</td>
                       <td>{item.phone_number || '-'}</td>
 
-
+                      <td>{item.rep_1 || '-'}</td>
                       <td>{item.partner_dealer || '-'}</td>
-                      <td>
-                        {selectedSRRow !== item.unique_id ? (
-                          <div className="am-select-container">
-                            <span>{item.rep_1 || '-'}</span>
-                            {isStaging === 'staging' &&
-                              <CiEdit
-                                size={16}
-                                onClick={() => {
-                                  setSelectedSRRow(item.unique_id);
-                                  setSelectedTable("primary_sales_rep");
-                                  setSelectedDealerName(item.partner_dealer);
-                                  setSelectedSR({ value: item.rep_1, label: item.rep_1 });
-                                }}
-                                style={{ cursor: "pointer", marginLeft: "8px" }}
-                              />
-                            }
-
-                          </div>
-                        ) : (
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-
-                            <SelectOption
-                              options={srOptions}
-                              onChange={(value: any) => {
-                                if (value === "for test" || value === "sd") {
-                                  return; // Prevent selection
-                                }
-                                setSelectedSR(value);
-                              }}
-                              value={selectedSR}
-                              controlStyles={{
-                                marginTop: 0,
-                                minHeight: 30,
-                                minWidth: isMobile ? 67 : 150,
-                              }}
-                              menuWidth={isMobile ? "120px" : "150px"}
-                              menuListStyles={{ fontWeight: 400 }}
-                              singleValueStyles={{ fontWeight: 400 }}
-                              placeholder="Select Sales Rep"
-                            />
-                            <div
-                              className='edit-setter'
-                              onClick={() => { setSelectedSRRow(null); handleRepEdit(item.unique_id) }}
-                              style={{ cursor: "pointer", color: "black", justifyContent: "center" }}
-                            >
-                              <img src={ICONS.check} alt="" />
-                            </div>
-
-                          </div>
-                        )}
-                      </td>
-                      <td>
-                        {selectedSR2Row !== item.unique_id ? (
-                          <div className="am-select-container">
-                            <span>{item.rep_2 || '-'}</span>
-                            {isStaging === 'staging' &&
-                              <CiEdit
-                                size={16}
-                                onClick={() => {
-                                  setSelectedSR2Row(item.unique_id);
-                                  setSelectedTable("primary_sales_rep");
-                                  setSelectedDealerName(item.partner_dealer);
-                                  setSelectedSR2({ value: item.rep_2, label: item.rep_2 });
-                                }}
-                                style={{ cursor: "pointer", marginLeft: "8px" }}
-                              />
-                            }
-
-                          </div>
-                        ) : (
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-
-                            <SelectOption
-                              options={srOptions}
-                              onChange={(value: any) => {
-                                if (value === "for test" || value === "sd") {
-                                  return; // Prevent selection
-                                }
-                                setSelectedSR2(value);
-                              }}
-                              value={selectedSR2}
-                              controlStyles={{
-                                marginTop: 0,
-                                minHeight: 30,
-                                minWidth: isMobile ? 67 : 150,
-                              }}
-                              menuWidth={isMobile ? "120px" : "150px"}
-                              menuListStyles={{ fontWeight: 400 }}
-                              singleValueStyles={{ fontWeight: 400 }}
-                              placeholder="Select Sales Rep2"
-                            />
-                            <div
-                              className='edit-setter'
-                              onClick={() => { setSelectedSR2Row(null); handleRep2Edit(item.unique_id) }}
-                              style={{ cursor: "pointer", color: "black", justifyContent: "center" }}
-                            >
-                              <img src={ICONS.check} alt="" />
-                            </div>
-                          </div>
-                        )}
-                      </td>
-                      <td>
-                        {selectedRow !== item.unique_id ? (
-                          <div className="am-select-container">
-                            <span>{item.setter ? item.setter : '-'}</span>
-                            {isStaging === 'staging' &&
-                              <CiEdit
-                                size={16}
-                                onClick={() => {
-                                  setSelectedAM({ value: item.setter, label: item.setter });
-                                  setSelectedRow(item.unique_id);
-                                  setSelectedTable("setter");
-                                  setSelectedDealerName(item.partner_dealer);
-                                }}
-                                style={{ cursor: "pointer", marginLeft: "8px" }}
-                              />
-                            }
-
-                          </div>
-                        ) : (
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-
-                            <SelectOption
-                              options={amOptions}
-                              onChange={(value: any) => {
-                                if (value.value === "for test" || value.value === "sd") {
-                                  return;
-                                }
-                                setSelectedAM(value);
-                              }}
-                              value={selectedAM}
-                              controlStyles={{
-                                marginTop: 0,
-                                minHeight: 30,
-                                minWidth: isMobile ? 67 : 150,
-                              }}
-                              menuWidth={isMobile ? "120px" : "150px"}
-                              menuListStyles={{ fontWeight: 400 }}
-                              singleValueStyles={{ fontWeight: 400 }}
-                              placeholder="Select Setter"
-                            />
-                            <div
-                              className='edit-setter'
-                              onClick={() => { setSelectedRow(null); handleSetterEdit(item.unique_id) }}
-                              style={{ cursor: "pointer", color: "black", justifyContent: "center" }}
-                            >
-                              <img src={ICONS.check} alt="" />
-                            </div>
-
-                          </div>
-                        )}
-                      </td>
                       <td>{item.system_size || '0'}</td>
                       <td>{item.contract_amount || '0'}</td>
                       <td>
@@ -854,33 +545,33 @@ const DealerTablePipeline = () => {
                       <td>
                         {item.survey_final_completion_date
                           ? format(
-                            parseISO(item.survey_final_completion_date),
-                            'dd-MM-yyyy'
-                          )
+                              parseISO(item.survey_final_completion_date),
+                              'dd-MM-yyyy'
+                            )
                           : '-'}
                       </td>
                       <td>
                         {item.ntp_complete_date
                           ? format(
-                            parseISO(item.ntp_complete_date),
-                            'dd-MM-yyyy'
-                          )
+                              parseISO(item.ntp_complete_date),
+                              'dd-MM-yyyy'
+                            )
                           : '-'}
                       </td>
                       <td>
                         {item.permit_submit_date
                           ? format(
-                            parseISO(item.permit_submit_date),
-                            'dd-MM-yyyy'
-                          )
+                              parseISO(item.permit_submit_date),
+                              'dd-MM-yyyy'
+                            )
                           : '-'}
                       </td>
                       <td>
                         {item.permit_approval_date
                           ? format(
-                            parseISO(item.permit_approval_date),
-                            'dd-MM-yyyy'
-                          )
+                              parseISO(item.permit_approval_date),
+                              'dd-MM-yyyy'
+                            )
                           : '-'}
                       </td>
                       <td>
@@ -891,13 +582,12 @@ const DealerTablePipeline = () => {
                       <td>
                         {item.ic_approval_date
                           ? format(
-                            parseISO(item.ic_approval_date),
-                            'dd-MM-yyyy'
-                          )
+                              parseISO(item.ic_approval_date),
+                              'dd-MM-yyyy'
+                            )
                           : '-'}
                       </td>
-
-
+                      <td>{item.rep_2 || '-'}</td>
                       <td>
                         {item.cancel_date
                           ? format(parseISO(item.cancel_date), 'dd-MM-yyyy')
@@ -916,17 +606,15 @@ const DealerTablePipeline = () => {
                       <td>
                         {item.fin_complete_date
                           ? format(
-                            parseISO(item.fin_complete_date),
-                            'dd-MM-yyyy'
-                          )
+                              parseISO(item.fin_complete_date),
+                              'dd-MM-yyyy'
+                            )
                           : '-'}
                       </td>
 
-
-
                       <td>
                         {item.jeopardy_date === undefined ||
-                          item.jeopardy_date === null
+                        item.jeopardy_date === null
                           ? 'N/A'
                           : item.jeopardy_date === true
                             ? 'Yes'
@@ -947,8 +635,8 @@ const DealerTablePipeline = () => {
           )}
         </div>
         {cuurentPageData &&
-          cuurentPageData?.length > 0 &&
-          !pipelineData.loading ? (
+        cuurentPageData?.length > 0 &&
+        !pipelineData.loading ? (
           <div className="page-heading-container">
             <p className="page-heading">
               {startIndex} - {endIndex > totalCount! ? totalCount : endIndex} of{' '}
