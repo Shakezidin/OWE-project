@@ -7,6 +7,7 @@ import {
 import { Credentials } from '../../../core/models/api_models/AuthModel';
 import { EndPoints } from '../api_client/EndPoints';
 import { toast } from 'react-toastify';
+import api from './axiosInterceptor';
 
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 const LEADS_BASE_URL = `${process.env.REACT_APP_LEADS_URL}`;
@@ -61,7 +62,7 @@ export const postCaller = async (
     },
   };
   try {
-    const response: AxiosResponse = await axios.post(
+    const response: AxiosResponse = await api.post(
       `${hasChangedBaseUrl ? LEADS_BASE_URL : BASE_URL}/${endpoint}`,
       postData,
       config
@@ -147,7 +148,7 @@ export const reportingCaller = async (
       ? endpoint.substring(1)
       : endpoint;
 
-    const response: AxiosResponse = await axios.post(
+    const response: AxiosResponse = await api.post(
       `${baseUrl}${baseUrl.endsWith('/') ? '' : '/'}${cleanEndpoint}`,
       postData,
       config

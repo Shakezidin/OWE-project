@@ -483,6 +483,7 @@ const DealerTablePipeline = () => {
     }
 
   };
+  const isStaging = process.env.REACT_APP_ENV;
 
 
   return (
@@ -695,17 +696,18 @@ const DealerTablePipeline = () => {
                         {selectedSRRow !== item.unique_id ? (
                           <div className="am-select-container">
                             <span>{item.rep_1 || '-'}</span>
-
-                            <CiEdit
-                              size={16}
-                              onClick={() => {
-                                setSelectedSRRow(item.unique_id);
-                                setSelectedTable("primary_sales_rep");
-                                setSelectedDealerName(item.partner_dealer);
-                                setSelectedSR({ value: item.rep_1, label: item.rep_1 });
-                              }}
-                              style={{ cursor: "pointer", marginLeft: "8px" }}
-                            />
+                            {isStaging === 'staging' &&
+                              <CiEdit
+                                size={16}
+                                onClick={() => {
+                                  setSelectedSRRow(item.unique_id);
+                                  setSelectedTable("primary_sales_rep");
+                                  setSelectedDealerName(item.partner_dealer);
+                                  setSelectedSR({ value: item.rep_1, label: item.rep_1 });
+                                }}
+                                style={{ cursor: "pointer", marginLeft: "8px" }}
+                              />
+                            }
 
                           </div>
                         ) : (
@@ -745,17 +747,18 @@ const DealerTablePipeline = () => {
                         {selectedSR2Row !== item.unique_id ? (
                           <div className="am-select-container">
                             <span>{item.rep_2 || '-'}</span>
-
-                            <CiEdit
-                              size={16}
-                              onClick={() => {
-                                setSelectedSR2Row(item.unique_id);
-                                setSelectedTable("primary_sales_rep");
-                                setSelectedDealerName(item.partner_dealer);
-                                setSelectedSR2({ value: item.rep_2, label: item.rep_2 });
-                              }}
-                              style={{ cursor: "pointer", marginLeft: "8px" }}
-                            />
+                            {isStaging === 'staging' &&
+                              <CiEdit
+                                size={16}
+                                onClick={() => {
+                                  setSelectedSR2Row(item.unique_id);
+                                  setSelectedTable("primary_sales_rep");
+                                  setSelectedDealerName(item.partner_dealer);
+                                  setSelectedSR2({ value: item.rep_2, label: item.rep_2 });
+                                }}
+                                style={{ cursor: "pointer", marginLeft: "8px" }}
+                              />
+                            }
 
                           </div>
                         ) : (
@@ -794,17 +797,18 @@ const DealerTablePipeline = () => {
                         {selectedRow !== item.unique_id ? (
                           <div className="am-select-container">
                             <span>{item.setter ? item.setter : '-'}</span>
-
-                            <CiEdit
-                              size={16}
-                              onClick={() => {
-                                setSelectedAM({ value: item.setter, label: item.setter });
-                                setSelectedRow(item.unique_id);
-                                setSelectedTable("setter");
-                                setSelectedDealerName(item.partner_dealer);
-                              }}
-                              style={{ cursor: "pointer", marginLeft: "8px" }}
-                            />
+                            {isStaging === 'staging' &&
+                              <CiEdit
+                                size={16}
+                                onClick={() => {
+                                  setSelectedAM({ value: item.setter, label: item.setter });
+                                  setSelectedRow(item.unique_id);
+                                  setSelectedTable("setter");
+                                  setSelectedDealerName(item.partner_dealer);
+                                }}
+                                style={{ cursor: "pointer", marginLeft: "8px" }}
+                              />
+                            }
 
                           </div>
                         ) : (
