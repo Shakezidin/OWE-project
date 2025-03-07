@@ -80,7 +80,7 @@ api.interceptors.response.use(
                 status: "Success",
                 data: response.data,
             };
-            // await saveLogToIndexedDB(log);
+             await saveLogToIndexedDB(log);
             console.log(`✅ [${log.timestamp}] POST Success: ${log.url}`);
         }
         return response;
