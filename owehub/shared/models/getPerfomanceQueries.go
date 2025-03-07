@@ -377,8 +377,9 @@ func PendingActionPageCoQueryNew(filterUserQuery, searchValue, filterQuery strin
             prospects_customers_schema.lead_source as deal_type,
             ntp_ntp_schema.pending_ntp_date,
             ntp_ntp_schema.ntp_delayed_by,
-            ntp_ntp_schema.ntp_delay_notes
-
+            ntp_ntp_schema.ntp_delay_notes,
+            change_orders_ntp_schema.co_notes
+        
      FROM ntp_ntp_schema
      LEFT JOIN customers_customers_schema
         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
@@ -386,6 +387,8 @@ func PendingActionPageCoQueryNew(filterUserQuery, searchValue, filterQuery strin
         AND customers_customers_schema.unique_id != ''
     LEFT JOIN prospects_customers_schema
         ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.prospect_id::text
+    Left Join change_orders_ntp_schema 
+		ON change_orders_ntp_schema.our = ntp_ntp_schema.unique_id
      WHERE ntp_ntp_schema.project_status NOT IN (
         'HOLD', E'PTO\'d (Service)', E'PTO\'d (Audit)', 'BLOCKED',
         'JEOPARDY', 'CANCEL', 'DUPLICATE', 'COMPETING'
