@@ -752,22 +752,20 @@ const PendingQueue = () => {
                               )}
                           </span>
                           {(active === 'ntp' &&
-                            // If all relevant 'ntp' fields are 'Completed', don't show the icon
-                            (item.ntp.production == 'Completed' ||
-                              item.ntp.finance_NTP == 'Completed' ||
-                              item.ntp.utility_bill == 'Completed' ||
-                              item.ntp.powerclerk == 'Completed') &&
-                            // If either field has valid data (ignore '-')
-                            ((item.ntp_delayed_by?.trim() !== '-' &&
-                              item.ntp_delayed_by?.trim() !== '') ||
-                              (item.ntp.ntp_delay_notes?.trim() !== '-' &&
-                                item.ntp.ntp_delay_notes?.trim() !== ''))) ||
+                             
+                            !item.ntp.ntp_delayed_by?.some(
+                              (entry: string) =>
+                                entry.trim() !== '' && entry.trim() !== '-'
+                            )) ||
                           (active === 'co' &&
-                            // If either field has valid data (ignore '-')
-                            ((item.co_delayed_by?.trim() !== '-' &&
-                              item.co_delayed_by?.trim() !== '') ||
-                              (item.co_notes?.trim() !== '-' &&
-                                item.co.notes?.trim() !== ''))) ? (
+                            !item.co.co_delayed_by?.some(
+                              (entry: string) =>
+                                entry.trim() !== '' && entry.trim() !== '-'
+                            ) &&
+                            (item.co.co_notes?.trim() === '' ||
+                              item.co.co_notes?.trim() === '-')) ? (
+                            <span>{''}</span>
+                          ) : (
                             <span
                               style={{
                                 cursor: 'pointer',
@@ -795,8 +793,6 @@ const PendingQueue = () => {
                                 content="We have some status here Please Check!"
                               />
                             </span>
-                          ) : (
-                            <span>{''}</span>
                           )}
 
                           <p className="pend-project-ages">
