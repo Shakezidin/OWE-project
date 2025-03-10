@@ -778,7 +778,7 @@ const PendingQueue = () => {
                             >
                               <BiSolidMessageDetail
                                 size={16}
-                                color={'#EBA900'}
+                                color={'rgb(62 164 255)'}
                               />
                               <Tooltip
                                 style={{
@@ -876,15 +876,11 @@ const PendingQueue = () => {
                         className={styles['pend-header-txt']}
                         style={{
                           overflowX: 'hidden',
-                          width: '150px',
+                          maxWidth: "250px",
+                          width: 'fit-content',
                           textOverflow: 'ellipsis',
-                          borderRadius: 20,
+                          borderRadius: 4,
                           padding: '2px 10px',
-                          textAlign:
-                            item.ntp.project_status ||
-                            item.co.project_status !== ''
-                              ? 'center'
-                              : 'left',
                           background:
                             (active === 'ntp' && item.ntp.project_status) ||
                             (active !== 'ntp' && item.co.project_status)
