@@ -131,7 +131,7 @@ func getLimiter(ip string) *rate.Limiter {
 
 func sendTapeAPIRequest(projectRecordID, field string, updatedRecordIDs []string) (*http.Response, error) {
 	// Prepare request payload
-	apiURL := "https://api.tapeapp.com/v1/record/" + projectRecordID
+	apiURL := "https://api.tapeapp.com/v1/record/" + projectRecordID + "?workflow=false"
 	payload := map[string]interface{}{
 		"fields": map[string][]string{
 			field: updatedRecordIDs,
