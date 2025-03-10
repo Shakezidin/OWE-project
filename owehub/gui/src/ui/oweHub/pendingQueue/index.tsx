@@ -166,6 +166,7 @@ const PendingQueue = () => {
       selected_pending_stage: active,
       unique_ids: [debouncedSearch],
       isExport: true,
+      filters,
     });
 
     if (getAllData.status > 201) {
@@ -321,19 +322,19 @@ const PendingQueue = () => {
 
   const getProjectColor = (status: string): string => {
     const colorMap: Record<string, string> = {
-      hold: '#E6B800',
-      'hold - co needed': '#E60073',
-      'hold - exceptions': '#E60073',
-      cancel: '#E60073',
-      active: '#009973',
-      duplicate: '#009973',
-      "pto'd (audit)": '#009973',
-      "pto'd (service)": '#009973',
-      "pto'd": '#0073E6',
-      jeopardy: '#FF6600',
-      unresponsive: '#8000FF',
-      arm: '#E60073',
-      'legal - customer has an attorney involved': '#FF3333',
+      hold: '#F8EDCC',
+      'hold - co needed': '#F8CCE6',
+      'hold - exceptions': '#F8CCE6',
+      cancel: '#F8CCE6',
+      active: '#C2DDD7',
+      duplicate: '#C2DDD7',
+      "pto'd (audit)": '#C2DDD7',
+      "pto'd (service)": '#C2DDD7',
+      "pto'd": '#CCE4F8',
+      jeopardy: '#FDDFCC',
+      unresponsive: '#E1D3F8',
+      arm: '#F8CCE6',
+      'legal - customer has an attorney involved': '#FFCCD1',
     };
 
     return colorMap[status.toLowerCase()] || '#292b2e';
@@ -721,7 +722,7 @@ const PendingQueue = () => {
                               cursor: 'pointer',
                               position: 'absolute',
                               right: '90px',
-                              top: '28px',
+                              top: '27px',
                             }}
                           >
                             {' '}
@@ -752,7 +753,6 @@ const PendingQueue = () => {
                               )}
                           </span>
                           {(active === 'ntp' &&
-                             
                             !item.ntp.ntp_delayed_by?.some(
                               (entry: string) =>
                                 entry.trim() !== '' && entry.trim() !== '-'
@@ -773,6 +773,7 @@ const PendingQueue = () => {
                                 right: '70px',
                                 top: '28px',
                               }}
+                              onClick={() => openModal(item)}
                               data-tooltip-id="icon"
                             >
                               <BiSolidMessageDetail
@@ -790,7 +791,7 @@ const PendingQueue = () => {
                                 offset={8}
                                 id="icon"
                                 place="top"
-                                content="We have some status here Please Check!"
+                                content="Check Status!"
                               />
                             </span>
                           )}
@@ -876,17 +877,23 @@ const PendingQueue = () => {
                         style={{
                           overflowX: 'hidden',
                           width: '150px',
-                          fontWeight: 500,
                           textOverflow: 'ellipsis',
-                          color: getProjectColor(
-                            active === 'ntp'
-                              ? item.ntp.project_status
-                                ? item.ntp.project_status.toLowerCase()
-                                : '-'
-                              : item.co.project_status
-                                ? item.co.project_status.toLowerCase()
-                                : '-'
-                          ),
+                          borderRadius: 20,
+                          padding: '2px 10px',
+                          textAlign:
+                            item.ntp.project_status ||
+                            item.co.project_status !== ''
+                              ? 'center'
+                              : 'left',
+                          background:
+                            (active === 'ntp' && item.ntp.project_status) ||
+                            (active !== 'ntp' && item.co.project_status)
+                              ? getProjectColor(
+                                  active === 'ntp'
+                                    ? item.ntp.project_status.toLowerCase()
+                                    : item.co.project_status.toLowerCase()
+                                )
+                              : 'transparent',
                         }}
                       >
                         {active === 'ntp'
