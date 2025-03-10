@@ -770,7 +770,7 @@ const PendingQueue = () => {
                               style={{
                                 cursor: 'pointer',
                                 position: 'absolute',
-                                right: '70px',
+                                right: active === 'ntp' ? 70 : 130,
                                 top: '28px',
                               }}
                               onClick={() => openModal(item)}
