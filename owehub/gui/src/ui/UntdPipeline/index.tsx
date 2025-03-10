@@ -1,11 +1,11 @@
 import React from 'react'
 
-const index = () => {
+const UNTD_PIPELINE = () => {
   return (
     <div>
-      
+      Test
     </div>
   )
 }
 
-export default index
+export default UNTD_PIPELINE
