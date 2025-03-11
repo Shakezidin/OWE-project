@@ -53,6 +53,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		totalBattery     float64
 		dealerCodes      map[string]string
 		combinedResults  []models.CombinedResult
+		teamRegionData   map[string]string
 	)
 
 	log.EnterFn(0, "HandleGetLeaderBoardDataRequest")
@@ -176,6 +177,19 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	dateRange, _ := CreateDateRange(dataReq.StartDate, dataReq.EndDate)
 	resultChan := make(chan ResultChan, LeaderBoardDataCount)
 	hasError := false
+	// Use the appropriate fetch function based on whether team grouping is needed
+	if strings.Contains(dataReq.GroupBy, "team") || strings.Contains(dataReq.GroupBy, "region") {
+		teamRegionData = make(map[string]string)
+		// Use the cross-database fetch function for team grouping
+		if strings.Contains(dataReq.GroupBy, "team") {
+			groupBy = strings.Replace(groupBy, "team", "primary_sales_rep", 1)
+		} else if strings.Contains(dataReq.GroupBy, "region") {
+			groupBy = strings.Replace(groupBy, "region", "primary_sales_rep", 1)
+		}
+
+		teamRegionData, err = fetchDataWithTeam(dealerIn, dataReq.GroupBy)
+	}
+	// Use the regular fetch function for non-team grouping
 	go fetchLeaderBoardData(models.LeaderBoardSaleCancelData, dateRange, dealerIn, groupBy, dataReq.Type, resultChan)
 	go fetchLeaderBoardData(models.LeaderBoardInstallBatteryData, dateRange, dealerIn, groupBy, dataReq.Type, resultChan)
 	go fetchLeaderBoardData(models.LeaderBoardNTPData, dateRange, dealerIn, groupBy, dataReq.Type, resultChan)
@@ -205,7 +219,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	// Combine the results
-	combinedResults, totalSale, totalNtp, totalCancel, totalBattery, totalInstall = combineResults(saleCancelData, installBatteryData, ntpData, dataReq.Role, HighLightDlrName, HighlightName, dataReq.GroupBy, dealerCodes)
+	combinedResults, totalSale, totalNtp, totalCancel, totalBattery, totalInstall = combineResultss(saleCancelData, installBatteryData, ntpData, teamRegionData, dataReq.Role, HighLightDlrName, HighlightName, dataReq.GroupBy, dealerCodes)
 
 	sort.Slice(combinedResults, func(i, j int) bool {
 		switch dataReq.SortBy {
@@ -424,10 +438,215 @@ func shouldIncludeDealerInGroupBy(groupBy string) bool {
 	return groupBy == "primary_sales_rep" || groupBy == "team" || groupBy == "setter"
 }
 
-func combineResults(saleCancelData, installBatteryData, ntpData []map[string]interface{}, role, HighLightDlrName, HighlightName, groupBy string, dealerCoded map[string]string) (combinedResults []models.CombinedResult, totalSale, totalNtp, totalCancel, totalBattery, totalInstall float64) {
-	combinedMap := make(map[string]models.CombinedResult)
-	var saleemptyKey, ntpemptyKey, InstallEmptykey bool
+// func combineResults(saleCancelData, installBatteryData, ntpData []map[string]interface{}, teamData map[string]string, role, HighLightDlrName, HighlightName, groupBy string, dealerCoded map[string]string) (combinedResults []models.CombinedResult, totalSale, totalNtp, totalCancel, totalBattery, totalInstall float64) {
+// 	combinedMap := make(map[string]models.CombinedResult)
+// 	log.FuncErrorTrace(0, "data of team = %v", teamData)
+// 	// Helper functions remain the same
+// 	getString := func(m map[string]interface{}, key string) string {
+// 		if val, ok := m[key].(string); ok {
+// 			return val
+// 		}
+// 		return ""
+// 	}
 
+// 	buildKey := func(row map[string]interface{}) string {
+// 		name, nameOk := row["name"].(string)
+// 		dealer, dealerOk := row["dealer"].(string)
+
+// 		if nameOk && dealerOk {
+// 			key := name + "_" + dealer
+// 			return key
+// 		} else if nameOk {
+// 			return name
+// 		} else if dealerOk {
+// 			return dealer
+// 		}
+// 		return ""
+// 	}
+
+// 	getNumber := func(m map[string]interface{}, key string) float64 {
+// 		val, ok := m[key]
+// 		if !ok {
+// 			return 0
+// 		}
+// 		switch v := val.(type) {
+// 		case float64:
+// 			return v
+// 		case int64:
+// 			return float64(v)
+// 		case int:
+// 			return float64(v)
+// 		default:
+// 			return 0
+// 		}
+// 	}
+
+// 	// Process sale and cancel data first
+// 	for _, row := range saleCancelData {
+// 		key := buildKey(row)
+
+// 		sale := getNumber(row, "sale")
+// 		cancel := getNumber(row, "cancel")
+
+// 		result := models.CombinedResult{
+// 			Name:   getString(row, "name"),
+// 			Dealer: getString(row, "dealer"),
+// 			Sale:   sale,
+// 			Cancel: cancel,
+// 		}
+// 		combinedMap[key] = result
+
+// 		totalSale += sale
+// 		totalCancel += cancel
+// 	}
+
+// 	// Process install and battery data
+// 	for _, row := range installBatteryData {
+// 		key := buildKey(row)
+
+// 		result := combinedMap[key] // Get existing or zero value
+// 		install := getNumber(row, "install")
+// 		battery := getNumber(row, "battery")
+
+// 		result.Name = getString(row, "name") // Ensure name is set even if it's a new entry
+// 		result.Dealer = getString(row, "dealer")
+// 		result.Install = install
+// 		result.Battery = battery
+
+// 		combinedMap[key] = result // Store back in map
+
+// 		totalInstall += install
+// 		totalBattery += battery
+// 	}
+
+// 	// Process NTP data
+// 	for _, row := range ntpData {
+// 		key := buildKey(row)
+
+// 		result := combinedMap[key] // Get existing or zero value
+// 		ntp := getNumber(row, "ntp")
+
+// 		result.Name = getString(row, "name") // Ensure name is set even if it's a new entry
+// 		result.Dealer = getString(row, "dealer")
+// 		result.Ntp = ntp
+
+// 		combinedMap[key] = result // Store back in map
+
+// 		totalNtp += ntp
+// 	}
+
+// 	// Convert map to slice and handle highlighting
+// 	for _, result := range combinedMap {
+
+// 		if role == string(types.RoleDealerOwner) && groupBy == "dealer" {
+// 			if result.Name != HighLightDlrName {
+// 				if value, exists := dealerCoded[result.Name]; exists && value != "" {
+// 					result.Name = value
+// 				}
+// 			}
+// 		}
+
+// 		if HighLightDlrName == result.Dealer &&
+// 			HighlightName == result.Name &&
+// 			(role == string(types.RoleSalesRep) || role == string(types.RoleApptSetter)) &&
+// 			groupBy == "primary_sales_rep" {
+// 			result.HighLight = true
+// 		}
+
+// 		if result.Battery == 0 && result.Cancel == 0 && result.Install == 0 && result.Ntp == 0 && result.Sale == 0 {
+// 			continue
+// 		}
+
+// 		combinedResults = append(combinedResults, result)
+// 	}
+
+// 	return combinedResults, totalSale, totalNtp, totalCancel, totalBattery, totalInstall
+// }
+
+// First, let's create a function to fetch teams and their members from the user database
+func fetchTeamsAndMembers(dealerFilter string, groupBy string) (map[string][]string, error) {
+	var query string
+	var selectField string
+	if strings.Contains(groupBy, "team") {
+		selectField = "team_name"
+	} else {
+		selectField = "region"
+	}
+
+	// Simplified query with only needed fields
+	baseQuery := fmt.Sprintf(`
+    SELECT
+        ud.name,
+        t.%s as data
+    FROM
+        team_members tm
+    JOIN
+        user_details ud ON tm.user_id = ud.user_id
+    JOIN
+        teams t ON tm.team_id = t.team_id
+    JOIN
+        sales_partner_dbhub_schema sp ON t.partner_id = sp.partner_id
+    `, selectField)
+
+	dealerFilter = strings.Replace(dealerFilter, "dealer", "sales_partner_name", 1)
+	// Add dealer filter if provided
+	if dealerFilter != "" {
+		query = baseQuery + " WHERE sp." + dealerFilter
+	} else {
+		query = baseQuery
+	}
+
+	rows, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching teams data: %v", err)
+	}
+
+	// Create a map of team name to list of member names
+	teamMembers := make(map[string][]string)
+	for _, row := range rows {
+		teamName, ok1 := row["data"].(string)
+		memberName, ok2 := row["name"].(string)
+
+		if !ok1 || !ok2 {
+			log.FuncErrorTrace(0, "error while getting team details ")
+			return teamMembers, nil
+		}
+
+		// Add member name to the team
+		teamMembers[teamName] = append(teamMembers[teamName], memberName)
+	}
+
+	return teamMembers, nil
+}
+
+// Create a helper function to build a map from sales rep to team
+func buildSalesRepToTeamMap(teamMembers map[string][]string) map[string]string {
+	salesRepToTeam := make(map[string]string)
+	for teamName, members := range teamMembers {
+		for _, member := range members {
+			salesRepToTeam[member] = teamName
+		}
+	}
+	return salesRepToTeam
+}
+
+// Modify the fetchLeaderBoardData function to handle team grouping
+func fetchDataWithTeam(dealers, originalGroupBy string) (map[string]string, error) {
+	// For team grouping, we need to fetch teams and map sales reps to teams
+	teamMembers, err := fetchTeamsAndMembers(dealers, originalGroupBy)
+	if err != nil {
+		return nil, err
+	}
+
+	salesRepToTeam := buildSalesRepToTeamMap(teamMembers)
+
+	return salesRepToTeam, nil
+
+}
+
+func combineResultss(saleCancelData, installBatteryData, ntpData []map[string]interface{}, teamData map[string]string, role, HighLightDlrName, HighlightName, groupBy string, dealerCoded map[string]string) (combinedResults []models.CombinedResult, totalSale, totalNtp, totalCancel, totalBattery, totalInstall float64) {
+	combinedMap := make(map[string]models.CombinedResult)
+	log.FuncErrorTrace(0, "data of team = %v", teamData)
 	// Helper functions remain the same
 	getString := func(m map[string]interface{}, key string) string {
 		if val, ok := m[key].(string); ok {
@@ -470,20 +689,20 @@ func combineResults(saleCancelData, installBatteryData, ntpData []map[string]int
 
 	// Process sale and cancel data first
 	for _, row := range saleCancelData {
+		var name string
 		key := buildKey(row)
-		if key == "" {
-			if !saleemptyKey {
-				saleemptyKey = true
-			} else {
-				continue
-			}
-		}
 
 		sale := getNumber(row, "sale")
 		cancel := getNumber(row, "cancel")
 
+		name = getString(row, "name")
+		// Check if the member exists in the team/region mapping
+		if strings.Contains(groupBy, "team") || strings.Contains(groupBy, "region") {
+			name = normalizeMemberName(getString(row, "name"), teamData)
+		}
+
 		result := models.CombinedResult{
-			Name:   getString(row, "name"),
+			Name:   name,
 			Dealer: getString(row, "dealer"),
 			Sale:   sale,
 			Cancel: cancel,
@@ -497,19 +716,15 @@ func combineResults(saleCancelData, installBatteryData, ntpData []map[string]int
 	// Process install and battery data
 	for _, row := range installBatteryData {
 		key := buildKey(row)
-		if key == "" {
-			if !InstallEmptykey {
-				InstallEmptykey = true
-			} else {
-				continue
-			}
-		}
 
 		result := combinedMap[key] // Get existing or zero value
 		install := getNumber(row, "install")
 		battery := getNumber(row, "battery")
-
-		result.Name = getString(row, "name") // Ensure name is set even if it's a new entry
+		result.Name = getString(row, "name")
+		// Check if the member exists in the team/region mapping
+		if strings.Contains(groupBy, "team") || strings.Contains(groupBy, "region") {
+			result.Name = normalizeMemberName(getString(row, "name"), teamData)
+		}
 		result.Dealer = getString(row, "dealer")
 		result.Install = install
 		result.Battery = battery
@@ -523,18 +738,15 @@ func combineResults(saleCancelData, installBatteryData, ntpData []map[string]int
 	// Process NTP data
 	for _, row := range ntpData {
 		key := buildKey(row)
-		if key == "" {
-			if !ntpemptyKey {
-				ntpemptyKey = true
-			} else {
-				continue
-			}
-		}
 
 		result := combinedMap[key] // Get existing or zero value
 		ntp := getNumber(row, "ntp")
+		result.Name = getString(row, "name")
+		// Check if the member exists in the team/region mapping
+		if strings.Contains(groupBy, "team") || strings.Contains(groupBy, "region") {
+			result.Name = normalizeMemberName(getString(row, "name"), teamData)
+		}
 
-		result.Name = getString(row, "name") // Ensure name is set even if it's a new entry
 		result.Dealer = getString(row, "dealer")
 		result.Ntp = ntp
 
@@ -543,9 +755,35 @@ func combineResults(saleCancelData, installBatteryData, ntpData []map[string]int
 		totalNtp += ntp
 	}
 
+	if strings.Contains(groupBy, "team") || strings.Contains(groupBy, "region") {
+		// Create a map to hold N/A results grouped by dealer
+		naResultsByDealer := make(map[string]models.CombinedResult)
+
+		for key, result := range combinedMap {
+			if result.Name == "N/A" {
+				dealer := result.Dealer
+				naResult := naResultsByDealer[dealer]
+				naResult.Name = "N/A"
+				naResult.Dealer = dealer
+				naResult.Sale += result.Sale
+				naResult.Ntp += result.Ntp
+				naResult.Cancel += result.Cancel
+				naResult.Install += result.Install
+				naResult.Battery += result.Battery
+				naResultsByDealer[dealer] = naResult
+
+				delete(combinedMap, key) // Remove the individual N/A entries
+			}
+		}
+
+		// Add the N/A results grouped by dealer back to the combinedMap
+		for dealer, naResult := range naResultsByDealer {
+			combinedMap["N/A_"+dealer] = naResult
+		}
+	}
+
 	// Convert map to slice and handle highlighting
 	for _, result := range combinedMap {
-
 		if role == string(types.RoleDealerOwner) && groupBy == "dealer" {
 			if result.Name != HighLightDlrName {
 				if value, exists := dealerCoded[result.Name]; exists && value != "" {
@@ -569,4 +807,13 @@ func combineResults(saleCancelData, installBatteryData, ntpData []map[string]int
 	}
 
 	return combinedResults, totalSale, totalNtp, totalCancel, totalBattery, totalInstall
+}
+
+func normalizeMemberName(memberName string, teamData map[string]string) string {
+	var val string
+	var exists bool
+	if val, exists = teamData[memberName]; !exists || memberName == "" {
+		return "N/A"
+	}
+	return val
 }
