@@ -121,4 +121,6 @@ export const ROUTES = {
   DAT_TOOL: '/dat_tool',
   DEALERDATA_PIPELINE: '/pipeline/pipeline_data',
   TABLE_VIEW: '/tape_view_refresh',
+  UNTD_PIPELINE: '/untd_pipeline',
+  UNTD_PIPELINE_GRAPH: '/untd_pipeline_graph',
 };

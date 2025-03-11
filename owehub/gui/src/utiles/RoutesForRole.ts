@@ -15,6 +15,8 @@ import LeadManagementDashboard from '../ui/leadmanagement/LeadManagementDashboar
 import Summary_Dashboard from '../ui/reporting/Summary-Dashboard/Summary_Dashboard';
 import ChatBot from '../ui/oweHub/chatbot/ChatBot';
 import TableView from '../ui/TapeViewUpdate';
+import GraphPage from '../ui/UntdPipeline/pages/GraphPage';
+import UNTD_PIPELINE from '../ui/UntdPipeline';
 const exceptDB = Object.values(TYPE_OF_USER).filter(
   (item) => item !== 'DB User'
 );
@@ -24,6 +26,19 @@ export default [
     element: Leaderboard,
     available: exceptDB,
     stagingOnly: false,
+  },
+  {
+    route: ROUTES.UNTD_PIPELINE,
+    element: UNTD_PIPELINE,
+    available: exceptDB,
+    stagingOnly: true,
+  },
+
+  {
+    route: ROUTES.UNTD_PIPELINE_GRAPH,
+    element: GraphPage,
+    available: exceptDB,
+    stagingOnly: true,
   },
 
   {

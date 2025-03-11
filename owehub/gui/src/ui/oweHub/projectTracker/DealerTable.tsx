@@ -671,11 +671,7 @@ const DealerTablePipeline = () => {
               <thead>
                 <tr style={{ background: '#F3F3FF' }}>
                   {pipeLineColumn
-                    ?.filter(item =>
-                      isStaging !== 'staging'
-                        ? item.name !== 'project_status' && item.name !== 'setter'
-                        : true // If staging === 'staging', keep all items
-                    )
+                   
                     .map((item, key) => (
                       <SortableHeader
                         key={key}
@@ -703,11 +699,10 @@ const DealerTablePipeline = () => {
                     <tr key={index}>
                       <td>{item.unique_id || '-'}</td>
                       <td>{item.home_owner || '-'}</td>
-                      {isStaging === 'staging' &&
+                    
                         <td>
                           {item.project_status ? item.project_status : '-'}
                         </td>
-                      }
                       <td>{item.finance_company || '-'}</td>
                       <td>{item.type || '-'}</td>
                       <td>{item.loan_type || '-'}</td>
@@ -725,7 +720,7 @@ const DealerTablePipeline = () => {
                         {selectedSRRow !== item.unique_id ? (
                           <div className="am-select-container">
                             <span>{item.rep_1 || '-'}</span>
-                            {isStaging === 'staging' &&
+                          
                               <CiEdit
                                 size={16}
                                 onClick={() => {
@@ -736,7 +731,6 @@ const DealerTablePipeline = () => {
                                 }}
                                 style={{ cursor: "pointer", marginLeft: "8px" }}
                               />
-                            }
 
                           </div>
                         ) : (
@@ -777,7 +771,6 @@ const DealerTablePipeline = () => {
                         {selectedSR2Row !== item.unique_id ? (
                           <div className="am-select-container">
                             <span>{item.rep_2 || '-'}</span>
-                            {isStaging === 'staging' &&
                               <CiEdit
                                 size={16}
                                 onClick={() => {
@@ -788,7 +781,6 @@ const DealerTablePipeline = () => {
                                 }}
                                 style={{ cursor: "pointer", marginLeft: "8px" }}
                               />
-                            }
 
                           </div>
                         ) : (
