@@ -15,6 +15,7 @@ CREATE OR REPLACE FUNCTION create_new_team(
     p_team_description character varying,
     p_sale_rep_codes TEXT[],
     p_manager_codes TEXT[],
+    p_region character varying,
     OUT v_team_id INT
 )
 RETURNS INT
@@ -28,12 +29,14 @@ BEGIN
     INSERT INTO teams (
         team_name,
         description,
-        partner_id
+        partner_id,
+        region
     )
     VALUES (
         p_team_name,
         p_team_description,
-        p_dealer_id
+        p_dealer_id,
+        p_region
     )
     RETURNING team_id INTO v_team_id;
     FOREACH sale_rep_code IN ARRAY p_sale_rep_codes
@@ -67,3 +70,7 @@ BEGIN
         END LOOP;
 END;
 $$ LANGUAGE plpgsql;
+
+ALTER TABLE teams ADD COLUMN region TEXT;
+
+

@@ -13,6 +13,7 @@ type TeamData struct {
 	ManagerIds  []string `json:"manager_ids"`
 	Description string   `json:"description"`
 	Email       string
+	Region      string `json:"region"`
 }
 
 type TeamsList struct {
@@ -56,10 +57,11 @@ type GetTeamResponse struct {
 	TeamName           string           `json:"team_name"`
 	TeamID             int64            `json:"team_id"`
 	SaleRep            []GetRepResponse `json:"sale_rep_list"`
-	MemberCount        int64              `jsosn:"member_count"`
-	ManagerCount       int64             `json:"manager_count"`
+	MemberCount        int64            `jsosn:"member_count"`
+	ManagerCount       int64            `json:"manager_count"`
 	DealerCode         string           `json:"dealer_name"`
 	LoggedInMemberRole string           `json:"logged_in_member_role"`
+	Region             string           `json:"region"`
 }
 
 //* manage team data

@@ -31,6 +31,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		dealerCode       string
 		loggedMemberRole string
 		teamName         string
+		region           string
 	)
 
 	log.EnterFn(0, "HandleGetTeamDataRequest")
@@ -86,6 +87,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		 SELECT
 			 ud.user_code,
 			 t.team_name,
+			 t.region,
 			 tm.role_in_team,
 			 ud.name,
 			 ud.email_id,
@@ -129,6 +131,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		teamName, _ = item["team_name"].(string)
 		memberCount, _ = item["member_count"].(int64)
 		managerCount, _ = item["manager_count"].(int64)
+		region, _ = item["region"].(string)
 
 		if !ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6 {
 			log.FuncErrorTrace(0, "Failed to get details for Item: %+v\n", item)
@@ -160,6 +163,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		ManagerCount:       managerCount,
 		DealerCode:         dealerCode,
 		LoggedInMemberRole: loggedMemberRole,
+		Region:             region,
 	}
 
 	filer, _ = PrepareTeamsFilters("", dataReq, true)
@@ -189,7 +193,7 @@ func PrepareTeamsFilters(tableName string, dataFilter models.GetTeamRequest, for
 	var filtersBuilder strings.Builder
 
 	if forDataCount {
-		filtersBuilder.WriteString(" GROUP BY ud.user_code, t.team_name, tm.role_in_team, ud.name, ud.email_id, tm.team_member_id, ud.mobile_number, sp.sales_partner_name")
+		filtersBuilder.WriteString(" GROUP BY ud.user_code, t.team_name,t.region, tm.role_in_team, ud.name, ud.email_id, tm.team_member_id, ud.mobile_number, sp.sales_partner_name")
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize

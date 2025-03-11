@@ -154,6 +154,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, TeamData.Description)
 	queryParameters = append(queryParameters, pq.Array(TeamData.SaleRepIds))
 	queryParameters = append(queryParameters, pq.Array(TeamData.ManagerIds))
+	queryParameters = append(queryParameters, TeamData.Region)
 
 	// var v_team_id int
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateTeamFunction, queryParameters)
